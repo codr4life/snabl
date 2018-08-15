@@ -6,13 +6,24 @@
 namespace snabl {
 	struct Sym {
 	public:
+		friend std::hash<Sym>;
 		Sym(const std::string &name);
 	private:
 		const std::string _name;
+		const size_t _hash;
 	};
 
 	bool operator==(const Sym &x, const Sym &y);
 	bool operator!=(const Sym &x, const Sym &y);
+}
+
+namespace std {
+	template<>
+	struct hash<snabl::Sym> {
+		size_t operator()(const snabl::Sym &x) const {
+			return x._hash;
+    }
+	};
 }
 
 #endif

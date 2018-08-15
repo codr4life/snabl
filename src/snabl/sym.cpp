@@ -1,7 +1,8 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	Sym::Sym(const std::string &name): _name(name) {
+	Sym::Sym(const std::string &name):
+		_name(name), _hash(std::hash<std::string>{}(name)) {
 	}
 
 	bool operator==(const Sym &x, const Sym &y) {
