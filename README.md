@@ -1,1 +1,1 @@
-![Logo][logo.png?raw=true]
+![Logo](logo.png?raw=true)
