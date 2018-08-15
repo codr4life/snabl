@@ -10,6 +10,9 @@ namespace snabl {
 	private:
 		const std::string _name;
 	};
+
+	bool operator==(const Sym &x, const Sym &y);
+	bool operator!=(const Sym &x, const Sym &y);
 }
 
 #endif

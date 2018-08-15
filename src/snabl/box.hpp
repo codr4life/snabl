@@ -21,7 +21,8 @@ namespace snabl {
 	};
 
 	template <typename ValueT>
-	Box::Box(Type<ValueT> &type, const ValueT &value): _type(type), _value(value) { }
+	Box::Box(Type<ValueT> &type, const ValueT &value): _type(type), _value(value) {
+	}
 }
 
 #endif
