@@ -6,24 +6,13 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class AFunc {
-	protected:
-		AFunc(const Sym &id);
-	private:
-		const Sym _id;
-	};
-	
-	using AFuncPtr = std::shared_ptr<AFunc>;
-
-	template <size_t NARGS>
-	class Func: public AFunc {
+	class Func {
 	public:
+		const Sym id;
 		Func(const Sym &id);
 	};
 
-	template <size_t NARGS>
-	Func<NARGS>::Func(const Sym &id): AFunc(id) {
-	}
+	using FuncPtr = std::shared_ptr<Func>;
 }
 
 #endif

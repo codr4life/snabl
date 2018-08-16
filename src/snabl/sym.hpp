@@ -16,17 +16,15 @@ namespace snabl {
 		const size_t _hash;
 	};
 
-	using SymPtr = std::shared_ptr<SymImp>;
-	
 	struct Sym {
 	public:
 		friend std::hash<Sym>;
 		friend bool operator==(const Sym &x, const Sym &y);
 		friend bool operator!=(const Sym &x, const Sym &y);
 		
-		Sym(const SymPtr &imp);
+		Sym(const SymImp *imp);
 	private:
-		const SymPtr _imp;
+		const SymImp *_imp;
 	};
 
 	bool operator==(const Sym &x, const Sym &y);

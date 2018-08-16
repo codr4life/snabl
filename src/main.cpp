@@ -4,8 +4,7 @@
 
 int main() {
 	snabl::Env env;
-	snabl::Type<int> int_type(env.get_sym("Int"));
-	snabl::AFuncPtr add(std::make_shared<snabl::Func<2>>(env.get_sym("+")));
-	env.push(int_type, 42);
+	auto add(env.lobby.add_func(env.get_sym("+")));
+	env.push(env.int_type, 42L);
 	return 0;
 }

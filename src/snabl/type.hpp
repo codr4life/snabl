@@ -5,10 +5,10 @@
 
 namespace snabl {
 	class AType {
+	public:
+		const Sym id;
 	protected:
 		AType(const Sym &id);
-	private:
-		const Sym _id;
 	};
 
 	using ATypePtr = std::shared_ptr<AType>;
@@ -22,6 +22,9 @@ namespace snabl {
 	template <typename ValueT>
 	Type<ValueT>::Type(const Sym &id): AType(id) {
 	}
+
+	template <typename ValueT>
+	using TypePtr = std::shared_ptr<Type<ValueT>>;
 }
 
 #endif

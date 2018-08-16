@@ -5,7 +5,7 @@ namespace snabl {
 		_name(name), _hash(std::hash<std::string>{}(name)) {
 	}
 
-	Sym::Sym(const SymPtr &imp): _imp(imp) {
+	Sym::Sym(const SymImp *imp): _imp(imp) {
 	}
 
 	bool operator==(const Sym &x, const Sym &y) {

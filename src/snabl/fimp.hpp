@@ -6,14 +6,24 @@
 #include "snabl/func.hpp"
 
 namespace snabl {
-	class Fimp {
+	class AFimp {
 	public:
-		Fimp(const AFuncPtr &func);
+		AFimp(const FuncPtr &func);
 	private:
-		const AFuncPtr _func;
+		const FuncPtr _func;
 	};
 
-	using FimpPtr = std::shared_ptr<Fimp>;
+	using AFimpPtr = std::shared_ptr<AFimp>;
+
+	template <size_t NARGS>
+	class Fimp: public AFimp {
+	public:
+		Fimp(const FuncPtr &func);
+	};
+
+	template <size_t NARGS>
+	Fimp<NARGS>::Fimp(const FuncPtr &func): AFimp(func) {
+	}
 }
 
 #endif

@@ -14,9 +14,9 @@ namespace snabl {
 	class Bin {
 	public:
 		Bin();
-		std::optional<Pos> get_fimp(const FimpPtr &ptr);
+		std::optional<Pos> get_fimp_pos(const AFimpPtr &ptr);
 	private:
-		std::map<FimpPtr, Pos> _fimps;
+		std::map<AFimpPtr, Pos> _fimps;
 		std::deque<Op> _ops;
 	};
 }

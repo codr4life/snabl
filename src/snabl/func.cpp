@@ -1,6 +1,6 @@
 #include "snabl/func.hpp"
 
 namespace snabl {
-	AFunc::AFunc(const Sym &id): _id(id) {
+	Func::Func(const Sym &id): id(id) {
 	}
 }
