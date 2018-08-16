@@ -1,13 +1,10 @@
-* add const optional<Imp> Fimp.imp
-** add using Imp = std::function<>
-* add forms_begin/end/imp constructors to Fimp
+* add Form
+** union like Op
+* add Fimp.forms
+** add forms_begin/end/imp constructors to Fimp
 * implement Bin.compile
-** add Form
-*** union like Op
-** add Fimp.forms
 * add optional func.parent_scope
 ** use as parent for begin
-* ---
 * add jump op
 ** ssize_t nops
 ** update pc
