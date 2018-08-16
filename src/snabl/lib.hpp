@@ -9,10 +9,14 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
+	class Env;
+	
 	class Lib {
 	public:
+		Env &env;
 		const Sym id;
-		Lib(const Sym &id);
+		
+		Lib(Env &env, const Sym &id);
 
 		template <typename TypeT, typename... ArgsT>
 		std::shared_ptr<TypeT> add_type(ArgsT&&... args);
@@ -42,10 +46,10 @@ namespace snabl {
 				throw Error("Wrong nr of args");
 			}
 			
-			return std::static_pointer_cast<Func<NARGS, NRETS>>(found->second);
+			return std::static_pointer_cast<Func<NARGS, NRETS>>(f);
 		}
 		
-		auto f(std::make_shared<Func<NARGS, NRETS>>(id));
+		auto f(std::make_shared<Func<NARGS, NRETS>>(*this, id));
 		_funcs.emplace(f->id, f);
 		return f;
 	}

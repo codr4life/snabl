@@ -1,21 +1,32 @@
-* add drop/reset ops
+* add const optional<Imp> Fimp.imp
+** add using Imp = std::function<>
+* add forms_begin/end/imp constructors to Fimp
+* implement Bin.compile
+** add Form
+*** union like Op
+** add Fimp.forms
+* add optional func.parent_scope
+** use as parent for begin
+* ---
+* add jump op
+** ssize_t nops
+** update pc
+* add eval(str) fn
+** add Str type
+** emit into ops
+** use jump to skip
+** nested run
+* add drop/swap/reset ops
 * add set/get_var ops
-* add BinFimp struct
-** Ops::iterator begin/end
-** store in bin.fimps (rename)
 * add env.push/pop_scope
 ** update stack_begin in push
 * add arg
 ** use union to differentiate between cases
 * add Call with AFimpPtr/ScopePtr
-* add optional<Imp> Fimp._imp
-** add using Imp = std::function
-* Implement basic VM using computed goto
-** bookmark
-** add push/drop/call ops
-* add op to update location
-** use to update row, col
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
+* Disambiguate funcalls
+** scan op stream backwards and build up args
+*** throw error on fail
 * Use ',', ';', '()' and '.' to separate expressions

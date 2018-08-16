@@ -6,11 +6,14 @@
 	goto *op_labels[(_pc++)->type.label_offs];				\
 
 namespace snabl {
+	BinFimp::BinFimp(const Ops::iterator &begin, const Ops::iterator &end):
+		begin(begin), end(end) { }
+	
 	Bin::Bin(Env &env): env(env), _pc(_ops.begin()) { }
 
-	std::optional<Ops::iterator> Bin::get_fimp_offs(const AFimpPtr &ptr) {
-		auto found = _fimp_offs.find(ptr);
-		return (found == _fimp_offs.end())
+	std::optional<BinFimp> Bin::get_fimp(const AFimpPtr &ptr) {
+		auto found = _fimps.find(ptr);
+		return (found == _fimps.end())
 			? std::nullopt
 			: std::make_optional(found->second);
 	}

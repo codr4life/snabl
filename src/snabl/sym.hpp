@@ -9,11 +9,10 @@ namespace snabl {
 	
 	class SymImp {
 	public:
-		friend std::hash<Sym>;
+		const std::string name;
+		const size_t hash;
+		
 		SymImp(const std::string &name);
-	private:
-		const std::string _name;
-		const size_t _hash;
 	};
 
 	class Sym {
@@ -23,6 +22,7 @@ namespace snabl {
 		friend bool operator!=(const Sym &x, const Sym &y);
 		
 		Sym(const SymImp *imp);
+		const std::string &name() const;
 	private:
 		const SymImp *_imp;
 	};
@@ -35,7 +35,7 @@ namespace std {
 	template<>
 	struct hash<snabl::Sym> {
 		size_t operator()(const snabl::Sym &x) const {
-			return x._imp->_hash;
+			return x._imp->hash;
     }
 	};
 }

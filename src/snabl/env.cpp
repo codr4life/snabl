@@ -2,7 +2,7 @@
 
 namespace snabl {
 	Env::Env():
-		lobby(get_sym("lobby")),
+		lobby(*this, get_sym("lobby")),
 		int_type(lobby.add_type<IntType>(get_sym("Int"))),
 		bin(*this),
 		main(begin(nullptr)) { }

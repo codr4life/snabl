@@ -1,7 +1,7 @@
 #include "snabl/func.hpp"
 
 namespace snabl {
-	AFunc::AFunc(const Sym &id, int nargs, int nrets):
-		id(id), nargs(nargs), nrets(nrets) {
+	AFunc::AFunc(Lib &lib, const Sym &id, int nargs, int nrets):
+		lib(lib), id(id), nargs(nargs), nrets(nrets) {
 	}
 }
