@@ -5,9 +5,9 @@
 #include <string>
 
 namespace snabl {
-	struct Sym;
+	class Sym;
 	
-	struct SymImp {
+	class SymImp {
 	public:
 		friend std::hash<Sym>;
 		SymImp(const std::string &name);
@@ -16,7 +16,7 @@ namespace snabl {
 		const size_t _hash;
 	};
 
-	struct Sym {
+	class Sym {
 	public:
 		friend std::hash<Sym>;
 		friend bool operator==(const Sym &x, const Sym &y);

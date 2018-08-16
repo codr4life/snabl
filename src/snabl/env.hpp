@@ -3,10 +3,13 @@
 
 #include <deque>
 #include <unordered_map>
+#include <vector>
 
-#include "snabl/box.hpp"
+#include "snabl/bin.hpp"
 #include "snabl/int.hpp"
 #include "snabl/lib.hpp"
+#include "snabl/scope.hpp"
+#include "snabl/stack.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -15,18 +18,26 @@ namespace snabl {
 	
 	class Env {
 	private:
+		std::vector<ScopePtr> _scopes;
 		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
 	public:
+		Bin code;
 		Lib lobby;
 		const TypePtr<Int> int_type;
+		const ScopePtr main;
 		
 		Env();
 		Sym get_sym(const std::string &name);
+
+		ScopePtr begin(const ScopePtr &parent=nullptr);
+		ScopePtr end();
 		
 		template <typename ValueT>
 		void push(const TypePtr<ValueT> &type, const ValueT &value);
+
+		Stack::iterator stack_begin();
 	private:
-		std::deque<Box> _stack;
+		Stack _stack;
 	};
 
 	template <typename ValueT>

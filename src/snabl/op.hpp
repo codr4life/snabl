@@ -2,7 +2,7 @@
 #define SNABL_OP_HPP
 
 namespace snabl {
-	struct Op {
+	class Op {
 	public:
 	private:
 	};

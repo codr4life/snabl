@@ -5,7 +5,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	struct Box {
+	class Box {
 	public:
 		template <typename ValueT>
 		Box(const TypePtr<ValueT> &type, const ValueT &value);
