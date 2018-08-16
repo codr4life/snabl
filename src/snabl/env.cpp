@@ -30,5 +30,12 @@ namespace snabl {
 		return s;
 	}
 
-	Stack::iterator Env::stack_begin() { return _stack.begin(); }
+	std::optional<Box> Env::pop_stack() {
+		if (_stack.empty()) { return std::nullopt; }
+		Box v(_stack.back());
+		_stack.pop_back();
+		return v;
+	}
+
+	Stack::iterator Env::stack_end() { return _stack.end(); }
 }

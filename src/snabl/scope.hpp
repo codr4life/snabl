@@ -17,18 +17,22 @@ namespace snabl {
 		const Stack::iterator stack_begin;
 		
 		Scope(Env &env, const ScopePtr &parent);
+
+		Box pop_stack();
+		Box const* get_var(const Sym &key);
 		
-		Box const* get(const Sym &key); 
 		template <typename ValueT>
-		const Box &set(const Sym &key, const TypePtr<ValueT> &type, const ValueT &value);
+		const Box &set_var(const Sym &key,
+											 const TypePtr<ValueT> &type,
+											 const ValueT &value);
 	private:
 		std::unordered_map<Sym, Box> _vars;
 	};
 
 	template <typename ValueT>
-	const Box &Scope::set(const Sym &key,
-												const TypePtr<ValueT> &type,
-												const ValueT &value) {
+	const Box &Scope::set_var(const Sym &key,
+														const TypePtr<ValueT> &type,
+														const ValueT &value) {
 		auto found(_vars.find(key));
 
 		if (found != _vars.end()) {

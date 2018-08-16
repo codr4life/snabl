@@ -34,15 +34,16 @@ namespace snabl {
 		ScopePtr end();
 		
 		template <typename ValueT>
-		void push(const TypePtr<ValueT> &type, const ValueT &value);
-
-		Stack::iterator stack_begin();
+		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
+		std::optional<Box> pop_stack();
+		
+		Stack::iterator stack_end();
 	private:
 		Stack _stack;
 	};
 
 	template <typename ValueT>
-	void Env::push(const TypePtr<ValueT> &type, const ValueT &value) {
+	void Env::push_stack(const TypePtr<ValueT> &type, const ValueT &value) {
 		_stack.emplace_back(type, value);
 	}
 }

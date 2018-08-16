@@ -4,4 +4,7 @@
 * Implement basic VM using computed goto
 ** bookmark
 ** add push/drop/call ops
+* add recall op
+** jump immediately
+** remember scope iter and truncate before jump
 * Use ',', ';', '()' and '.' to separate expressions
