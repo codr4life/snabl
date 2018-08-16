@@ -6,7 +6,7 @@
 
 int main() {
 	snabl::Env env;
-	auto add(env.lobby.add_func(env.get_sym("+")));
+	auto add(env.lobby.add_func<2, 1>(env.get_sym("+")));
 	auto s(env.begin(env.scope()));
 	env.push_stack(env.int_type, snabl::Int(42));
 	assert(s->pop_stack().as<snabl::Int>() == snabl::Int(42));

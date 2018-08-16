@@ -15,10 +15,12 @@ namespace snabl {
 
 		template <typename TypeT, typename... ArgsT>
 		std::shared_ptr<TypeT> add_type(ArgsT&&... args);
-		FuncPtr add_func(const Sym &id);
+
+		template <int NARGS, int NRETS>
+		AFuncPtr add_func(const Sym &id);
 	private:
 		std::unordered_map<Sym, ATypePtr> _types;
-		std::unordered_map<Sym, FuncPtr> _funcs;
+		std::unordered_map<Sym, AFuncPtr> _funcs;
 	};
 
 	template <typename TypeT, typename... ArgsT>
@@ -26,6 +28,15 @@ namespace snabl {
 		auto t(std::make_shared<TypeT>(args...));
 		_types.emplace(t->id, t);
 		return t;
+	}
+
+	template <int NARGS, int NRETS>
+	AFuncPtr Lib::add_func(const Sym &id) {
+		auto found(_funcs.find(id));
+		if (found != _funcs.end()) { return found->second; }
+		auto f(std::make_shared<Func<NARGS, NRETS>>(id));
+		_funcs.emplace(f->id, f);
+		return f;
 	}
 }
 
