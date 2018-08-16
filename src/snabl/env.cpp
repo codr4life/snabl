@@ -8,7 +8,7 @@ namespace snabl {
 	}
 
 	Sym Env::get_sym(const std::string &name) {
-		auto found = _syms.find(name);
+		auto found(_syms.find(name));
 
 		return Sym((found == _syms.end())
 							 ? _syms.emplace(name,
@@ -25,7 +25,7 @@ namespace snabl {
 	ScopePtr Env::scope() { return _scopes.back(); }
 
 	ScopePtr Env::end() {
-		auto s = _scopes.back();
+		auto s(_scopes.back());
 		_scopes.pop_back();
 		return s;
 	}
