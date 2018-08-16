@@ -10,7 +10,7 @@ namespace snabl {
 	}
 
 	namespace ops {
-		const OpType Push::type("Push", 0);
+		static const OpType PUSH("Push", 0);
 
 		Push::Push(const Box &value): value(value) {
 		}

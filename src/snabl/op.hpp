@@ -30,8 +30,6 @@ namespace snabl {
 
 	namespace ops {
 		struct Push {
-			static const OpType type;
-			
 			const Box value;
 			Push(const Box &value);
 		};

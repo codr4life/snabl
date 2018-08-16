@@ -1,3 +1,6 @@
+* replace any with union in ops
+* add arg
+** use union to differentiate between cases
 * add begin/end ops
 * add Call with ScopePtr
 * add optional<Imp> Fimp._imp
