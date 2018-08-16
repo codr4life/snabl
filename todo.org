@@ -1,4 +1,3 @@
-* replace any with union in ops
 * add begin/end ops
 * add drop/reset ops
 * add env.push/pop_scope

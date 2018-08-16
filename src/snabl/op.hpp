@@ -2,7 +2,6 @@
 #define SNABL_OP_HPP
 
 #include "snabl/box.hpp"
-#include "snabl/std/any.hpp"
 
 namespace snabl {
 	class OpType {
@@ -12,28 +11,27 @@ namespace snabl {
 
 		OpType(const std::string &id, size_t label_offs);
 	};
-	
+
+	namespace ops {
+		struct Push {
+			static const OpType type;
+			
+			Box value;
+			Push(const Box &value);
+		};
+	}
+
 	class Op {
 	public:
 		const OpType &type;
 
-		Op(const OpType &type, const std::any &data);
+		union {
+			ops::Push as_push;
+		}; 
 
-		template <typename OpT>
-		OpT as();
-	private:
-		std::any _data;
+		Op(const OpType &type);
+		~Op();
 	};
-
-	template <typename OpT>
-	OpT Op::as() { return std::any_cast<OpT>(_data); }
-
-	namespace ops {
-		struct Push {
-			const Box value;
-			Push(const Box &value);
-		};
-	}
 }
 
 #endif
