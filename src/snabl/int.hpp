@@ -4,7 +4,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	using Int = long;
+	using Int = long long;
 	
 	class IntType: public Type<Int> {
 	public:

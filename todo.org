@@ -1,3 +1,9 @@
+* add Scope/ScopePtr
+* add Call with ScopePtr
+* add public const ScopePtr env.main
+* add public Bin env.code
+* add optional<Imp> Fimp._imp
+** add using Imp = std::function
 * Implement basic VM using computed goto
 ** bookmark
 ** add push/drop/call ops
