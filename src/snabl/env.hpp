@@ -14,12 +14,12 @@ namespace snabl {
 	class Env {
 	public:
 		Env();
-		const Sym &get_sym(const std::string &name);
+		Sym get_sym(const std::string &name);
 		
 		template <typename ValueT>
 		void push(Type<ValueT> &type, const ValueT &value);
 	private:
-		std::map<std::string, Sym> _syms;
+		std::map<std::string, std::shared_ptr<SymImp>> _syms;
 		std::deque<Box> _stack;
 	};
 
