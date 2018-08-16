@@ -1,5 +1,10 @@
+* assign op label offs in sequentially
+** add static field
 * add begin/end ops
 * add drop/reset ops
+* add BinFimp struct
+** Ops::iterator begin/end
+** store in bin.fimps (rename)
 * add env.push/pop_scope
 ** update stack_begin in push
 * add arg
