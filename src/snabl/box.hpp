@@ -11,7 +11,7 @@ namespace snabl {
 		Box(const TypePtr<ValueT> &type, const ValueT &value);
 
 		template <typename ValueT>
-		ValueT value() const;
+		ValueT as() const;
 	private:
 		ATypePtr _type;
 		std::any _value;
@@ -23,7 +23,7 @@ namespace snabl {
 	}
 
 	template <typename ValueT>
-	ValueT Box::value() const { return std::any_cast<ValueT>(_value); }
+	ValueT Box::as() const { return std::any_cast<ValueT>(_value); }
 }
 
 #endif
