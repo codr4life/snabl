@@ -9,7 +9,9 @@ namespace snabl {
 	class AFunc {
 	public:
 		const Sym id;
-		AFunc(const Sym &id);
+		const int nargs, nrets;
+		
+		AFunc(const Sym &id, int nargs, int nrets);
 	};
 
 	using AFuncPtr = std::shared_ptr<AFunc>;
@@ -21,7 +23,7 @@ namespace snabl {
 	};
 
 	template <int NARGS, int NRETS>
-	Func<NARGS, NRETS>::Func(const Sym &id): AFunc(id) {
+	Func<NARGS, NRETS>::Func(const Sym &id): AFunc(id, NARGS, NRETS) {
 	}
 
 	template <int NARGS, int NRETS> 

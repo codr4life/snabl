@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 
+#include "snabl/error.hpp"
 #include "snabl/func.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/type.hpp"
@@ -17,7 +18,7 @@ namespace snabl {
 		std::shared_ptr<TypeT> add_type(ArgsT&&... args);
 
 		template <int NARGS, int NRETS>
-		AFuncPtr add_func(const Sym &id);
+		FuncPtr<NARGS, NRETS> add_func(const Sym &id);
 	private:
 		std::unordered_map<Sym, ATypePtr> _types;
 		std::unordered_map<Sym, AFuncPtr> _funcs;
@@ -31,9 +32,19 @@ namespace snabl {
 	}
 
 	template <int NARGS, int NRETS>
-	AFuncPtr Lib::add_func(const Sym &id) {
+	FuncPtr<NARGS, NRETS> Lib::add_func(const Sym &id) {
 		auto found(_funcs.find(id));
-		if (found != _funcs.end()) { return found->second; }
+		
+		if (found != _funcs.end()) {
+			auto f(found->second);
+
+			if (f->nargs != NARGS || f->nrets != NRETS) {
+				throw Error("Wrong nr of args");
+			}
+			
+			return std::static_pointer_cast<Func<NARGS, NRETS>>(found->second);
+		}
+		
 		auto f(std::make_shared<Func<NARGS, NRETS>>(id));
 		_funcs.emplace(f->id, f);
 		return f;
