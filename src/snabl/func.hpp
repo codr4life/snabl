@@ -23,8 +23,7 @@ namespace snabl {
 	};
 
 	template <int NARGS, int NRETS>
-	Func<NARGS, NRETS>::Func(const Sym &id): AFunc(id, NARGS, NRETS) {
-	}
+	Func<NARGS, NRETS>::Func(const Sym &id): AFunc(id, NARGS, NRETS) { }
 
 	template <int NARGS, int NRETS> 
 	using FuncPtr = std::shared_ptr<Func<NARGS, NRETS>>;

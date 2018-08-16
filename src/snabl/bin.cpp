@@ -1,9 +1,12 @@
 #include "snabl/bin.hpp"
 #include "snabl/env.hpp"
 
+#define SNABEL_DISPATCH()														\
+	if (_pc == end) { return; }												\
+	goto *op_labels[(_pc++)->type.label_offs];				\
+
 namespace snabl {
-	Bin::Bin(Env &env): env(env), _pc(_ops.begin()) {
-	}
+	Bin::Bin(Env &env): env(env), _pc(_ops.begin()) { }
 
 	std::optional<Ops::iterator> Bin::get_fimp_offs(const AFimpPtr &ptr) {
 		auto found = _fimp_offs.find(ptr);
@@ -11,10 +14,6 @@ namespace snabl {
 			? std::nullopt
 			: std::make_optional(found->second);
 	}
-
-#define SNABEL_DISPATCH()														\
-	if (_pc == end) { return; }												\
-	goto *op_labels[(_pc++)->type.label_offs];				\
 
 	void Bin::run(std::optional<Ops::iterator> begin,
 								std::optional<Ops::iterator> end) {

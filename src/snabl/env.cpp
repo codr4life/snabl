@@ -5,8 +5,7 @@ namespace snabl {
 		lobby(get_sym("lobby")),
 		int_type(lobby.add_type<IntType>(get_sym("Int"))),
 		bin(*this),
-		main(begin(nullptr)) {
-	}
+		main(begin(nullptr)) { }
 
 	Sym Env::get_sym(const std::string &name) {
 		auto found(_syms.find(name));
@@ -31,9 +30,7 @@ namespace snabl {
 		return s;
 	}
 
-	void Env::push_stack(const Box &value) {
-		_stack.push_back(value);
-	}
+	void Env::push_stack(const Box &value) { _stack.push_back(value); }
 
 	std::optional<Box> Env::pop_stack() {
 		if (_stack.empty()) { return std::nullopt; }

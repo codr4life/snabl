@@ -1,10 +1,10 @@
-* add env.push/pop_scope
-** update stack_begin in push
 * replace any with union in ops
-* add arg
-** use union to differentiate between cases
 * add begin/end ops
 * add drop/reset ops
+* add env.push/pop_scope
+** update stack_begin in push
+* add arg
+** use union to differentiate between cases
 * add Call with AFimpPtr/ScopePtr
 * add optional<Imp> Fimp._imp
 ** add using Imp = std::function

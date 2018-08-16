@@ -4,8 +4,7 @@
 
 namespace snabl {
 	Scope::Scope(Env &env, const ScopePtr &parent):
-		env(env), parent(parent), stack_begin(env.stack_end()) {
-	}
+		env(env), parent(parent), stack_begin(env.stack_end()) { }
 
 	Box Scope::pop_stack() {
 		if (env.stack_end() <= stack_begin) { throw Error("Nothing to pop"); }
