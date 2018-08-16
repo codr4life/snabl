@@ -21,9 +21,9 @@ namespace snabl {
 		std::vector<ScopePtr> _scopes;
 		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
 	public:
-		Bin bin;
 		Lib lobby;
 		const TypePtr<Int> int_type;
+		Bin bin;
 		const ScopePtr main;
 		
 		Env();
@@ -35,6 +35,7 @@ namespace snabl {
 		
 		template <typename ValueT>
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
+		void push_stack(const Box &value);
 		std::optional<Box> pop_stack();
 		
 		Stack::iterator stack_end();

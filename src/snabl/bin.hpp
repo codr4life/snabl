@@ -9,14 +9,21 @@
 #include "snabl/std/optional.hpp"
 
 namespace snabl {
+	class Env;
+
+	using Ops = std::deque<Op>;
+	
 	class Bin {
 	public:
-		Bin();
-		std::optional<size_t> get_fimp_offs(const AFimpPtr &ptr);
+		Env &env;
+		Bin(Env &env);
+		std::optional<Ops::iterator> get_fimp_offs(const AFimpPtr &ptr);
+		void run(std::optional<Ops::iterator> begin=std::nullopt,
+						 std::optional<Ops::iterator> end=std::nullopt);
 	private:
-		std::map<AFimpPtr, size_t> _fimp_offs;
-		std::deque<Op> _ops;
-		size_t _pc;
+		std::map<AFimpPtr, Ops::iterator> _fimp_offs;
+		Ops _ops;
+		Ops::iterator _pc;
 	};
 }
 

@@ -4,6 +4,7 @@ namespace snabl {
 	Env::Env():
 		lobby(get_sym("lobby")),
 		int_type(lobby.add_type<IntType>(get_sym("Int"))),
+		bin(*this),
 		main(begin(nullptr)) {
 	}
 
@@ -28,6 +29,10 @@ namespace snabl {
 		auto s(_scopes.back());
 		_scopes.pop_back();
 		return s;
+	}
+
+	void Env::push_stack(const Box &value) {
+		_stack.push_back(value);
 	}
 
 	std::optional<Box> Env::pop_stack() {
