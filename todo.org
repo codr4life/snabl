@@ -2,6 +2,7 @@
 ** add static field
 * add begin/end ops
 * add drop/reset ops
+* add set/get_var ops
 * add BinFimp struct
 ** Ops::iterator begin/end
 ** store in bin.fimps (rename)
