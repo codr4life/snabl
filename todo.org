@@ -4,6 +4,8 @@
 * Implement basic VM using computed goto
 ** bookmark
 ** add push/drop/call ops
+* add op to update location
+** use to update row, col
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump

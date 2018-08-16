@@ -9,15 +9,14 @@
 #include "snabl/std/optional.hpp"
 
 namespace snabl {
-	using Pos = size_t;
-	
 	class Bin {
 	public:
 		Bin();
-		std::optional<Pos> get_fimp_pos(const AFimpPtr &ptr);
+		std::optional<size_t> get_fimp_offs(const AFimpPtr &ptr);
 	private:
-		std::map<AFimpPtr, Pos> _fimps;
+		std::map<AFimpPtr, size_t> _fimp_offs;
 		std::deque<Op> _ops;
+		size_t _pc;
 	};
 }
 
