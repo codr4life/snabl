@@ -5,6 +5,7 @@
 
 namespace std {
 	using experimental::any;
+	using experimental::any_cast;
 }
 
 #endif

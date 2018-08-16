@@ -1,5 +1,3 @@
-* add Scope.vars
-** unordered_map<Sym, Box>
 * add Call with ScopePtr
 * add optional<Imp> Fimp._imp
 ** add using Imp = std::function

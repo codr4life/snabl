@@ -21,7 +21,7 @@ namespace snabl {
 		std::vector<ScopePtr> _scopes;
 		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
 	public:
-		Bin code;
+		Bin bin;
 		Lib lobby;
 		const TypePtr<Int> int_type;
 		const ScopePtr main;
