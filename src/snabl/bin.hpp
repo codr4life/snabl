@@ -19,6 +19,9 @@ namespace snabl {
 		Bin(Env &env);
 		std::optional<Ops::iterator> get_fimp_offs(const AFimpPtr &ptr);
 
+		Op &emit_op(const OpType &type);
+		Op &emit_begin(const ScopePtr &parent);
+		Op &emit_end();
 		Op &emit_push(const Box &value);
 
 		void run(std::optional<Ops::iterator> begin=std::nullopt,

@@ -1,12 +1,18 @@
 #include "snabl/op.hpp"
 
 namespace snabl {
-	OpType::OpType(const std::string &id, size_t label_offs):
-		id(id), label_offs(label_offs) { }
+	size_t OpType::next_label_offs(0);
+
+	OpType::OpType(const std::string &id):
+		id(id), label_offs(next_label_offs++) { }
 
 	namespace ops {
-		const OpType Push::type("Push", 0);
+		const OpType Begin::type("Begin");
+		const OpType End::type("End");
+		const OpType Push::type("Push");
 
+		Begin::Begin(const ScopePtr &parent): parent(parent) { }
+		End::End() { }
 		Push::Push(const Box &value): value(value) { }
 	}
 

@@ -1,6 +1,3 @@
-* assign op label offs in sequentially
-** add static field
-* add begin/end ops
 * add drop/reset ops
 * add set/get_var ops
 * add BinFimp struct

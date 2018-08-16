@@ -2,6 +2,8 @@
 #define SNABL_SCOPE_HPP
 
 #include <memory>
+#include <unordered_map>
+
 #include "snabl/stack.hpp"
 
 namespace snabl {
