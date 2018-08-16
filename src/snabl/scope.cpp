@@ -7,7 +7,8 @@ namespace snabl {
 	}
 
 	Box const* Scope::get(const Sym &key) {
-		auto found = _vars.find(key);
-		return (found == _vars.end()) ? nullptr : &found->second;
+		auto found(_vars.find(key));
+		if (found != _vars.end()) { return &found->second; }
+		return parent ? parent->get(key) : nullptr;
 	}
 }

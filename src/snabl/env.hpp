@@ -30,6 +30,7 @@ namespace snabl {
 		Sym get_sym(const std::string &name);
 
 		ScopePtr begin(const ScopePtr &parent=nullptr);
+		ScopePtr scope();
 		ScopePtr end();
 		
 		template <typename ValueT>

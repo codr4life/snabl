@@ -22,6 +22,8 @@ namespace snabl {
 		return s;
 	}
 
+	ScopePtr Env::scope() { return _scopes.back(); }
+
 	ScopePtr Env::end() {
 		auto s = _scopes.back();
 		_scopes.pop_back();
