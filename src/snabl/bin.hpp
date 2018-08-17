@@ -24,8 +24,8 @@ namespace snabl {
 		Bin(Env &env);
 		std::optional<BinFimp> get_fimp(const AFimpPtr &ptr);
 
-		template <typename ImpT>
-		Op &emit_op(const OpType<ImpT> &type, const ImpT &imp);
+		template <typename ImpT, typename... ArgsT>
+		Op &emit_op(const OpType<ImpT> &type, ArgsT... args);
 		
 		Op &emit_begin(const ScopePtr &parent);
 		Op &emit_end();
@@ -39,9 +39,9 @@ namespace snabl {
 		Ops::iterator _pc;
 	};
 
-	template <typename ImpT>
-	Op &Bin::emit_op(const OpType<ImpT> &type, const ImpT &imp) {
-		_ops.emplace_back(type, imp);
+	template <typename ImpT, typename... ArgsT>
+	Op &Bin::emit_op(const OpType<ImpT> &type, ArgsT... args) {
+		_ops.emplace_back(type, args...);
 		return _ops.back();
 	}
 }

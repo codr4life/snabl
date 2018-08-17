@@ -19,15 +19,15 @@ namespace snabl {
 	}
 
 	Op &Bin::emit_begin(const ScopePtr &parent) {
-		return emit_op(ops::Begin::type, ops::Begin(parent));
+		return emit_op(ops::Begin::type, parent);
 	}
 
 	Op &Bin::emit_end() {
-		return emit_op(ops::End::type, ops::End());
+		return emit_op(ops::End::type);
 	}
 
 	Op &Bin::emit_push(const Box &value) {
-		return emit_op(ops::Push::type, ops::Push(value));
+		return emit_op(ops::Push::type, value);
 	}
 	
 	void Bin::run(std::optional<Ops::iterator> begin,
