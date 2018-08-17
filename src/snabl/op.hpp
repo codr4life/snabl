@@ -34,7 +34,7 @@ namespace snabl {
 		Op(const OpType<ImpT> &type);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Op(const OpType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args);
+		Op(const OpType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args);
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -46,8 +46,8 @@ namespace snabl {
 	Op::Op(const OpType<ImpT> &type): type(type) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
-	Op::Op(const OpType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args):
-		type(type), _imp(new ImpT(arg1, args...)) { }
+	Op::Op(const OpType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args):
+		type(type), _imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }

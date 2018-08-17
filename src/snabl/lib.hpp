@@ -19,7 +19,7 @@ namespace snabl {
 		Lib(Env &env, const Sym &id);
 
 		template <typename TypeT, typename... ArgsT>
-		std::shared_ptr<TypeT> add_type(ArgsT&&... args);
+		std::shared_ptr<TypeT> add_type(ArgsT &&... args);
 
 		template <int NARGS, int NRETS>
 		FuncPtr<NARGS, NRETS> add_func(const Sym &id);
@@ -29,8 +29,8 @@ namespace snabl {
 	};
 
 	template <typename TypeT, typename... ArgsT>
-	std::shared_ptr<TypeT> Lib::add_type(ArgsT&&... args) {
-		auto t(std::make_shared<TypeT>(args...));
+	std::shared_ptr<TypeT> Lib::add_type(ArgsT &&... args) {
+		auto t(std::make_shared<TypeT>(std::forward<ArgsT>(args)...));
 		_types.emplace(t->id, t);
 		return t;
 	}

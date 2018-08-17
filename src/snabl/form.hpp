@@ -24,7 +24,7 @@ namespace snabl {
 		Form(const FormType<ImpT> &type);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Form(const FormType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args);
+		Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args);
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -36,8 +36,8 @@ namespace snabl {
 	Form::Form(const FormType<ImpT> &type): type(type) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
-	Form::Form(const FormType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args):
-		type(type), _imp(new ImpT(arg1, args...)) { }
+	Form::Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args):
+		type(type), _imp(new ImpT(arg1, std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }

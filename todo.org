@@ -1,4 +1,5 @@
 * add add_fimp(lib) fn for convenience
+** call add_func/add_fimp
 ** use in main
 * add Fimp.forms
 ** add forms_begin/end/imp constructors to Fimp

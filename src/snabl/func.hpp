@@ -43,7 +43,7 @@ namespace snabl {
 		static FimpPtr<NARGS, NRETS> add_fimp(const FuncPtr<NARGS, NRETS> &func,
 																					const Args &args,
 																					const Rets &rets,
-																					ImpT... imp);
+																					ImpT &&... imp);
 		
 		Func(Lib &lib, const Sym &id);
 	private:
@@ -59,12 +59,14 @@ namespace snabl {
 	Func<NARGS, NRETS>::add_fimp(const FuncPtr<NARGS, NRETS> &func,
 															 const typename Func<NARGS, NRETS>::Args &args,
 															 const typename Func<NARGS, NRETS>::Rets &rets,
-															 ImpT... imp) {
+															 ImpT &&... imp) {
 		auto id(Fimp<NARGS, NRETS>::get_id(func, args));
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
-		auto f(std::make_shared<Fimp<NARGS, NRETS>>(func, args, rets, imp...));
+		auto f(std::make_shared<Fimp<NARGS, NRETS>>(func,
+																								args, rets,
+																								std::forward<ImpT>(imp)...));
 		func->_fimps.emplace(id, f);
 		return f;
 	}
