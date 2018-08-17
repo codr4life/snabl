@@ -9,6 +9,7 @@ namespace snabl {
 	class IntType: public Type<Int> {
 	public:
 		IntType(const Sym &id);
+		virtual void dump(const Box &value, std::ostream &out);
 	};
 }
 

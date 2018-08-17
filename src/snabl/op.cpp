@@ -16,7 +16,5 @@ namespace snabl {
 		Push::Push(const Box &value): value(value) { }
 	}
 
-	Op::Op(const OpType &type): type(type) { }
-
 	Op::~Op() {}
 }

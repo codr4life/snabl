@@ -3,6 +3,7 @@
 
 #include "snabl/box.hpp"
 #include "snabl/scope.hpp"
+#include "snabl/std/any.hpp"
 
 namespace snabl {
 	class OpType {
@@ -15,6 +16,27 @@ namespace snabl {
 		static size_t next_label_offs;
 	};
 
+	class Op {
+	public:
+		const OpType &type;
+
+		template <typename ImpT>
+		Op(const OpType &type, const ImpT &imp);
+
+		template <typename ValueT>
+		ValueT as() const;
+
+		~Op();
+	private:
+		std::any _imp;
+	};
+
+	template <typename ImpT>
+	Op::Op(const OpType &type, const ImpT &imp): type(type), _imp(imp) { }
+
+	template <typename ImpT>
+	ImpT Op::as() const { return std::any_cast<ImpT>(_imp); }
+	
 	namespace ops {
 		struct Begin {
 			static const OpType type;
@@ -34,20 +56,6 @@ namespace snabl {
 			Push(const Box &value);
 		};
 	}
-
-	class Op {
-	public:
-		const OpType &type;
-
-		union {
-			ops::Begin as_begin;
-			ops::End as_end;
-			ops::Push as_push;
-		}; 
-
-		Op(const OpType &type);
-		~Op();
-	};
 }
 
 #endif

@@ -12,6 +12,8 @@ namespace snabl {
 
 		template <typename ValueT>
 		ValueT as() const;
+
+		void dump(std::ostream &out) const;
 	private:
 		ATypePtr _type;
 		std::any _value;

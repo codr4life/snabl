@@ -4,9 +4,12 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
+	class Box;
+	
 	class AType {
 	public:
 		const Sym id;
+		virtual void dump(const Box &value, std::ostream &out);
 	protected:
 		AType(const Sym &id);
 	};
@@ -20,8 +23,7 @@ namespace snabl {
 	};
 
 	template <typename ValueT>
-	Type<ValueT>::Type(const Sym &id): AType(id) {
-	}
+	Type<ValueT>::Type(const Sym &id): AType(id) { }
 
 	template <typename ValueT>
 	using TypePtr = std::shared_ptr<Type<ValueT>>;

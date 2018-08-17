@@ -18,27 +18,16 @@ namespace snabl {
 			: std::make_optional(found->second);
 	}
 
-	Op &Bin::emit_op(const OpType &type) {
-		_ops.emplace_back(ops::Begin::type);
-		return _ops.back();
-	}
-
 	Op &Bin::emit_begin(const ScopePtr &parent) {
-		auto &op(emit_op(ops::Begin::type));
-		op.as_begin = ops::Begin(parent);
-		return op;
+		return emit_op(ops::Begin::type, ops::Begin(parent));
 	}
 
 	Op &Bin::emit_end() {
-		auto &op(emit_op(ops::End::type));
-		op.as_end = ops::End();
-		return op;
+		return emit_op(ops::End::type, ops::End());
 	}
 
 	Op &Bin::emit_push(const Box &value) {
-		auto &op(emit_op(ops::Push::type));
-		op.as_push = ops::Push(value);
-		return op;
+		return emit_op(ops::Push::type, ops::Push(value));
 	}
 	
 	void Bin::run(std::optional<Ops::iterator> begin,
@@ -58,8 +47,7 @@ namespace snabl {
 		env.end();
 		SNABEL_DISPATCH();
 	op_push:
-		auto &op(_pc->as_push);
-		env.push_stack(op.value); 
+		env.push_stack(_pc->as<ops::Push>().value); 
 		SNABEL_DISPATCH();
 	}
 }
