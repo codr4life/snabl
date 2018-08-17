@@ -1,5 +1,4 @@
-* add AType/Type.dump
-** box & out 
+* redo Form on top of any like Op
 * add Fimp.forms
 ** add forms_begin/end/imp constructors to Fimp
 * implement Bin.compile

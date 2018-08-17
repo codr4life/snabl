@@ -25,7 +25,7 @@ namespace snabl {
 		std::optional<BinFimp> get_fimp(const AFimpPtr &ptr);
 
 		template <typename ImpT>
-		Op &emit_op(const OpType &type, const ImpT &imp);
+		Op &emit_op(const OpType<ImpT> &type, const ImpT &imp);
 		
 		Op &emit_begin(const ScopePtr &parent);
 		Op &emit_end();
@@ -40,7 +40,7 @@ namespace snabl {
 	};
 
 	template <typename ImpT>
-	Op &Bin::emit_op(const OpType &type, const ImpT &imp) {
+	Op &Bin::emit_op(const OpType<ImpT> &type, const ImpT &imp) {
 		_ops.emplace_back(type, imp);
 		return _ops.back();
 	}

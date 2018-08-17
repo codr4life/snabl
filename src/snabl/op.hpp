@@ -6,22 +6,31 @@
 #include "snabl/std/any.hpp"
 
 namespace snabl {
-	class OpType {
+	class AOpType {
 	public:
 		const std::string id;
 		const size_t label_offs;
 
-		OpType(const std::string &id);
+		AOpType(const std::string &id);
 	private:
 		static size_t next_label_offs;
 	};
 
+	template <typename ImpT>
+	class OpType: public AOpType {
+	public:
+		OpType(const std::string &id);
+	};
+
+	template <typename ImpT>
+	OpType<ImpT>::OpType(const std::string &id): AOpType(id) { }
+
 	class Op {
 	public:
-		const OpType &type;
+		const AOpType &type;
 
 		template <typename ImpT>
-		Op(const OpType &type, const ImpT &imp);
+		Op(const OpType<ImpT> &type, const ImpT &imp);
 
 		template <typename ValueT>
 		ValueT as() const;
@@ -32,25 +41,25 @@ namespace snabl {
 	};
 
 	template <typename ImpT>
-	Op::Op(const OpType &type, const ImpT &imp): type(type), _imp(imp) { }
+	Op::Op(const OpType<ImpT> &type, const ImpT &imp): type(type), _imp(imp) { }
 
 	template <typename ImpT>
 	ImpT Op::as() const { return std::any_cast<ImpT>(_imp); }
 	
 	namespace ops {
 		struct Begin {
-			static const OpType type;
+			static const OpType<Begin> type;
 			ScopePtr parent;
 			Begin(const ScopePtr &parent);
 		};
 
 		struct End {
-			static const OpType type;
+			static const OpType<End> type;
 			End();
 		};
 
 		struct Push {
-			static const OpType type;
+			static const OpType<Push> type;
 			
 			Box value;
 			Push(const Box &value);
