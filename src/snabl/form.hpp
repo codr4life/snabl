@@ -8,18 +8,11 @@ namespace snabl {
 	
 	class AFormType {
 	public:
-		AFormType();
 		virtual void dump(const Form &form, std::ostream &out)=0;
 	};
 
 	template <typename ImpT>
-	class FormType: public AFormType {
-	public:
-		FormType();
-	};
-
-	template <typename ImpT>
-	FormType<ImpT>::FormType(): AFormType() { }
+	class FormType: public AFormType { };
 
 	struct FormImp { };
 	
@@ -32,8 +25,6 @@ namespace snabl {
 
 		template <typename ImpT>
 		ImpT &as() const;
-
-		~Form();
 	private:
 		std::unique_ptr<FormImp> _imp;
 	};

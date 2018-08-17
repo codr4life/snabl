@@ -1,8 +1,6 @@
 #include "snabl/form.hpp"
 
 namespace snabl {
-	AFormType::AFormType() { }
-
 	namespace forms {
 		const IdType id_type;
 		const LiteralType literal_type;
@@ -19,6 +17,4 @@ namespace snabl {
 			form.as<Literal>().value.dump(out);
 		}		
 	}
-
-	Form::~Form() {}
 }

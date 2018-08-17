@@ -1,6 +1,9 @@
+* add add_fimp(lib) fn for convenience
+** use in main
 * add Fimp.forms
 ** add forms_begin/end/imp constructors to Fimp
 * implement Bin.compile
+** use ',', ';', '()' and '.' to separate expressions
 * add optional func.parent_scope
 ** use as parent for begin
 * add funcall op
@@ -9,19 +12,12 @@
 * add jump op
 ** ssize_t nops
 ** update pc
-* add eval(str) fn
-** add Str type
-** emit into ops
-** use jump to skip
-** nested run
 * add drop/swap/reset ops
 * add set/get_var ops
 * add env.push/pop_scope
 ** update stack_begin in push
 * add arg
 ** use union to differentiate between cases
-* add Call with AFimpPtr/ScopePtr
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
-* Use ',', ';', '()' and '.' to separate expressions

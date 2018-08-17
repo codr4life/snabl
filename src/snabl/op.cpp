@@ -15,6 +15,4 @@ namespace snabl {
 		End::End() { }
 		Push::Push(const Box &value): value(value) { }
 	}
-
-	Op::~Op() {}
 }

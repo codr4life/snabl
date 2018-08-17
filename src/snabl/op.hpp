@@ -35,8 +35,6 @@ namespace snabl {
 
 		template <typename ImpT>
 		ImpT &as() const;
-
-		~Op();
 	private:
 		std::unique_ptr<OpImp> _imp;
 	};
