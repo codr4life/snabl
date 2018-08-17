@@ -22,7 +22,11 @@ int main() {
 			
 			env.push_stack(env.int_type, x+y);
 		});
+
+	Forms forms;
+	env.parse("1 + 2", forms);
 	
+	//"($n < 2) if-else 1 {(fib, $n --) + (fib, $n - 2)}";
 	//env.bin.compile(add_int);
 	
 	auto s(env.begin(env.scope()));

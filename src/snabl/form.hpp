@@ -23,7 +23,7 @@ namespace snabl {
 		const AFormType &type;
 		
 		template <typename ImpT>
-		Form(const FormType<ImpT> &type);
+		Form(const FormType<ImpT> &type, ImpT *imp);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
 		Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args);
@@ -37,7 +37,7 @@ namespace snabl {
 	using Forms = std::deque<Form>;
 	
 	template <typename ImpT>
-	Form::Form(const FormType<ImpT> &type): type(type) { }
+	Form::Form(const FormType<ImpT> &type, ImpT *imp): type(type), _imp(imp) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
 	Form::Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args):

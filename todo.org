@@ -1,7 +1,7 @@
-* add Fimp.forms
-** add forms_begin/end/imp constructors to Fimp
-* implement Bin.compile
-** use ',', ';', '()' and '.' to separate expressions
+* add Bin.compile
+** add compile method to form type
+** exec funcs/macros without args immediately
+** otherwise at end of expr or ,
 * add optional func.parent_scope
 ** use as parent for begin
 * add funcall op
