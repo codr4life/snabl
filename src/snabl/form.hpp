@@ -61,7 +61,7 @@ namespace snabl {
 
 		struct Literal: public FormImp {			
 			Box value;
-			Literal(const Box &value);
+			Literal(Box &&value);
 		};
 
 		class LiteralType: public FormType<Literal> {

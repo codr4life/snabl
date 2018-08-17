@@ -84,7 +84,8 @@ namespace snabl {
 													 const Args &args,
 													 const Rets &rets,
 													 Forms &&forms):
-		AFimp(get_id(func, args), forms), func(func), args(args), rets(rets) { }
+		AFimp(get_id(func, args), std::move(forms)), func(func), args(args),
+		rets(rets) { }
 }
 
 #endif

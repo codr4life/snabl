@@ -11,7 +11,7 @@ namespace snabl {
 			out << form.as<Id>().name;
 		}
 
-		Literal::Literal(const Box &value): value(value) { }
+		Literal::Literal(Box &&value): value(std::move(value)) { }
 
 		void LiteralType::dump(const Form &form, std::ostream &out) {
 			form.as<Literal>().value.dump(out);
