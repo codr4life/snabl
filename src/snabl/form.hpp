@@ -6,49 +6,70 @@
 namespace snabl {
 	class Form;
 	
-	class FormType {
+	class AFormType {
 	public:
-		FormType();
+		AFormType();
 		virtual void dump(const Form &form, std::ostream &out)=0;
 	};
 
-	namespace forms {
-		class IdType: public FormType {
-		public:
-			virtual void dump(const Form &form, std::ostream &out);
-		};
+	template <typename ImpT>
+	class FormType: public AFormType {
+	public:
+		FormType();
+	};
 
-		struct Id {
-			static const IdType type;
+	template <typename ImpT>
+	FormType<ImpT>::FormType(): AFormType() { }
+
+	struct FormImp { };
+	
+	class Form {
+	public:
+		const AFormType &type;
+		
+		template <typename ImpT, typename... ArgsT>
+		Form(const FormType<ImpT> &type, ArgsT... args);
+
+		template <typename ImpT>
+		ImpT &as() const;
+
+		~Form();
+	private:
+		std::unique_ptr<FormImp> _imp;
+	};
+
+	template <typename ImpT, typename... ArgsT>
+	Form::Form(const FormType<ImpT> &type, ArgsT... args):
+		type(type), _imp(new ImpT(args...)) { }
+
+	template <typename ImpT>
+	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }
+
+	namespace forms {
+		struct Id: public FormImp {
 			const std::string name;
 			Id(const std::string &name);
 		};
 
-		class LiteralType: public FormType {
+		class IdType: public FormType<Id> {
 		public:
 			virtual void dump(const Form &form, std::ostream &out);
 		};
 
-		struct Literal {
-			static const LiteralType type;
-			
+		extern const IdType id_type;
+
+		struct Literal: public FormImp {			
 			Box value;
 			Literal(const Box &value);
 		};
+
+		class LiteralType: public FormType<Literal> {
+		public:
+			virtual void dump(const Form &form, std::ostream &out);
+		};
+
+		extern const LiteralType literal_type;
 	}
-
-	class Form {
-	public:
-		const FormType &type;
-
-		union {
-			forms::Id as_id;
-			forms::Literal as_literal;
-		}; 
-
-		Form(const FormType &type);
-		~Form();
-	};
 }
 
 #endif

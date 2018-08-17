@@ -1,27 +1,24 @@
 #include "snabl/form.hpp"
 
 namespace snabl {
-	FormType::FormType() { }
+	AFormType::AFormType() { }
 
 	namespace forms {
-		void IdType::dump(const Form &form, std::ostream &out) {
-			out << form.as_id.name;
-		}
-
-		const IdType Id::type;
+		const IdType id_type;
+		const LiteralType literal_type;
 
 		Id::Id(const std::string &name): name(name) { }
 
-		void LiteralType::dump(const Form &form, std::ostream &out) {
-			form.as_literal.value.dump(out);
+		void IdType::dump(const Form &form, std::ostream &out) {
+			out << form.as<Id>().name;
 		}
 
-		const LiteralType Literal::type;
-
 		Literal::Literal(const Box &value): value(value) { }
-	}
 
-	Form::Form(const FormType &type): type(type) { }
+		void LiteralType::dump(const Form &form, std::ostream &out) {
+			form.as<Literal>().value.dump(out);
+		}		
+	}
 
 	Form::~Form() {}
 }
