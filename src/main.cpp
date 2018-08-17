@@ -7,9 +7,6 @@
 
 using namespace snabl;
 
-static void add_int(Call &call) {
-}
-
 int main() {
 	Env env;
 	auto add(env.lobby.add_func<2, 1>(env.get_sym("+")));
@@ -17,7 +14,15 @@ int main() {
 	Func<2, 1>::add_fimp(add,
 											 {env.int_type, env.int_type},
 											 {env.int_type},
-											 add_int);
+											 [](Call &call) {
+												 Env &env(call.scope->env);
+												 
+												 Int
+													 y(call.scope->pop_stack().as<Int>()),
+													 x(call.scope->pop_stack().as<Int>());
+												 
+												 env.push_stack(env.int_type, x+y);
+											 });
 	
 	//env.bin.compile(add_int);
 	
