@@ -5,6 +5,7 @@
 #include <memory>
 #include <sstream>
 
+#include "snabl/form.hpp"
 #include "snabl/func.hpp"
 #include "snabl/std/optional.hpp"
 #include "snabl/target.hpp"
@@ -16,10 +17,13 @@ namespace snabl {
 	public:
 		using Imp = std::function<void (Call &)>;
 		const Sym id;
-		const std::optional<Imp> imp;
+		const Forms forms;
 		
 		AFimp(const Sym &id, Imp imp);
+		AFimp(const Sym &id, Forms &&forms);
 		virtual void dump(std::ostream &out) const;
+	private:
+		const std::optional<Imp> _imp;
 	};
 
 	using AFimpPtr = std::shared_ptr<AFimp>;
@@ -40,6 +44,11 @@ namespace snabl {
 				 const Args &args, 
 				 const Rets &rets, 
 				 Imp imp);
+
+		Fimp(const FuncPtr<NARGS, NRETS> &func, 
+				 const Args &args, 
+				 const Rets &rets, 
+				 Forms &&forms);
 	};
 
 	template <int NARGS, int NRETS>
@@ -68,8 +77,14 @@ namespace snabl {
 													 const Args &args,
 													 const Rets &rets,
 													 Imp imp):
-		AFimp(get_id(func, args), imp), func(func), args(args), rets(rets) {
-	}
+		AFimp(get_id(func, args), imp), func(func), args(args), rets(rets) { }
+
+	template <int NARGS, int NRETS>
+	Fimp<NARGS, NRETS>::Fimp(const FuncPtr<NARGS, NRETS> &func,
+													 const Args &args,
+													 const Rets &rets,
+													 Forms &&forms):
+		AFimp(get_id(func, args), forms), func(func), args(args), rets(rets) { }
 }
 
 #endif

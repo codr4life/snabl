@@ -1,6 +1,8 @@
 #ifndef SNABL_FORM_HPP
 #define SNABL_FORM_HPP
 
+#include <deque>
+
 #include "snabl/box.hpp"
 
 namespace snabl {
@@ -32,6 +34,8 @@ namespace snabl {
 		std::unique_ptr<FormImp> _imp;
 	};
 
+	using Forms = std::deque<Form>;
+	
 	template <typename ImpT>
 	Form::Form(const FormType<ImpT> &type): type(type) { }
 
