@@ -20,8 +20,11 @@ namespace snabl {
 	public:
 		const AFormType &type;
 		
-		template <typename ImpT, typename... ArgsT>
-		Form(const FormType<ImpT> &type, ArgsT... args);
+		template <typename ImpT>
+		Form(const FormType<ImpT> &type);
+
+		template <typename ImpT, typename ArgT1, typename... ArgsT>
+		Form(const FormType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args);
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -29,9 +32,12 @@ namespace snabl {
 		std::unique_ptr<FormImp> _imp;
 	};
 
-	template <typename ImpT, typename... ArgsT>
-	Form::Form(const FormType<ImpT> &type, ArgsT... args):
-		type(type), _imp(new ImpT(args...)) { }
+	template <typename ImpT>
+	Form::Form(const FormType<ImpT> &type): type(type) { }
+
+	template <typename ImpT, typename ArgT1, typename... ArgsT>
+	Form::Form(const FormType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args):
+		type(type), _imp(new ImpT(arg1, args...)) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }

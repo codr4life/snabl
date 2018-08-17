@@ -30,8 +30,11 @@ namespace snabl {
 	public:
 		const AOpType &type;
 
-		template <typename ImpT, typename... ArgsT>
-		Op(const OpType<ImpT> &type, ArgsT... args);
+		template <typename ImpT>
+		Op(const OpType<ImpT> &type);
+
+		template <typename ImpT, typename ArgT1, typename... ArgsT>
+		Op(const OpType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args);
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -39,9 +42,12 @@ namespace snabl {
 		std::unique_ptr<OpImp> _imp;
 	};
 
-	template <typename ImpT, typename... ArgsT>
-	Op::Op(const OpType<ImpT> &type, ArgsT... args):
-		type(type), _imp(new ImpT(args...)) { }
+	template <typename ImpT>
+	Op::Op(const OpType<ImpT> &type): type(type) { }
+
+	template <typename ImpT, typename ArgT1, typename... ArgsT>
+	Op::Op(const OpType<ImpT> &type, const ArgT1 &arg1, const ArgsT &... args):
+		type(type), _imp(new ImpT(arg1, args...)) { }
 
 	template <typename ImpT>
 	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }
