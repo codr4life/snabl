@@ -23,6 +23,13 @@ namespace snabl {
 
 		template <int NARGS, int NRETS>
 		FuncPtr<NARGS, NRETS> add_func(const Sym &id);
+
+		template <int NARGS, int NRETS, typename... ImpT>
+		FimpPtr<NARGS, NRETS> add_fimp(const Sym &id,
+																	 const typename Func<NARGS, NRETS>::Args &args,
+																	 const typename Func<NARGS, NRETS>::Rets &rets,
+																	 ImpT &&... imp);
+
 	private:
 		std::unordered_map<Sym, ATypePtr> _types;
 		std::unordered_map<Sym, AFuncPtr> _funcs;
@@ -52,6 +59,15 @@ namespace snabl {
 		auto f(std::make_shared<Func<NARGS, NRETS>>(*this, id));
 		_funcs.emplace(f->id, f);
 		return f;
+	}
+
+	template <int NARGS, int NRETS, typename... ImpT>
+	FimpPtr<NARGS, NRETS> Lib::add_fimp(const Sym &id,
+																			const typename Func<NARGS, NRETS>::Args &args,
+																			const typename Func<NARGS, NRETS>::Rets &rets,
+																			ImpT &&... imp) {
+		auto f(add_func<NARGS, NRETS>(id));
+		return Func<NARGS, NRETS>::add_fimp(f, args, rets, imp...);
 	}
 }
 

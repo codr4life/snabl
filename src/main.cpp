@@ -9,20 +9,19 @@ using namespace snabl;
 
 int main() {
 	Env env;
-	auto add(env.lobby.add_func<2, 1>(env.get_sym("+")));
 	
-	Func<2, 1>::add_fimp(add,
-											 {env.int_type, env.int_type},
-											 {env.int_type},
-											 [](Call &call) {
-												 Env &env(call.scope->env);
-												 
-												 Int
-													 y(call.scope->pop_stack().as<Int>()),
-													 x(call.scope->pop_stack().as<Int>());
-												 
-												 env.push_stack(env.int_type, x+y);
-											 });
+	env.lobby.add_fimp<2, 1>(env.get_sym("+"),
+		{env.int_type, env.int_type},
+		{env.int_type},
+		[](Call &call) {
+			Env &env(call.scope->env);
+			
+			Int
+				y(call.scope->pop_stack().as<Int>()),
+				x(call.scope->pop_stack().as<Int>());
+			
+			env.push_stack(env.int_type, x+y);
+		});
 	
 	//env.bin.compile(add_int);
 	
