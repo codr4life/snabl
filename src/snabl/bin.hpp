@@ -14,8 +14,8 @@ namespace snabl {
 	using Ops = std::deque<Op>;
 
 	struct BinFimp {
-		const Ops::iterator begin, end;
-		BinFimp(const Ops::iterator &begin, const Ops::iterator &end);
+		const size_t begin, end;
+		BinFimp(size_t begin, size_t end);
 	};
 	
 	class Bin {
@@ -31,12 +31,11 @@ namespace snabl {
 		Op &emit_end();
 		Op &emit_push(const Box &value);
 
-		void run(std::optional<Ops::iterator> begin=std::nullopt,
-						 std::optional<Ops::iterator> end=std::nullopt);
+		void run(size_t offs=0, size_t nops=0);
 	private:
 		std::unordered_map<AFimpPtr, BinFimp> _fimps;
-		Ops _ops;
 		Ops::iterator _pc;
+		Ops _ops;
 	};
 
 	template <typename ImpT, typename... ArgsT>

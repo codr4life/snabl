@@ -1,12 +1,12 @@
 #include "snabl/bin.hpp"
 #include "snabl/env.hpp"
 
-#define SNABEL_DISPATCH()														\
-	if (_pc == end) { return; }												\
-	goto *op_labels[(_pc++)->type.label_offs];				\
+#define SNABEL_DISPATCH()																		\
+	if (!nops--) { return; }																	\
+	goto *op_labels[(_pc++)->type.label_offs];								\
 
 namespace snabl {
-	BinFimp::BinFimp(const Ops::iterator &begin, const Ops::iterator &end):
+	BinFimp::BinFimp(size_t begin, size_t end):
 		begin(begin), end(end) { }
 	
 	Bin::Bin(Env &env): env(env), _pc(_ops.begin()) { }
@@ -30,11 +30,9 @@ namespace snabl {
 		return emit_op(ops::Push::type, value);
 	}
 	
-	void Bin::run(std::optional<Ops::iterator> begin,
-								std::optional<Ops::iterator> end) {
-		auto begin_op(_ops.begin());
-		_pc = begin.value_or(_ops.begin());
-		if (!end) { end = _ops.end(); }
+	void Bin::run(size_t offs, size_t nops) {
+		_pc = _ops.begin() + offs;
+		if (!nops) { nops = _ops.size(); }
 		
 		static void* op_labels[] = {
 			&&op_begin, &&op_end, &&op_push};
