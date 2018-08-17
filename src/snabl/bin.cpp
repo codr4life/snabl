@@ -2,7 +2,7 @@
 #include "snabl/env.hpp"
 
 #define SNABEL_DISPATCH()																		\
-	if (!nops--) { return; }																	\
+	if (_pc == _ops.end()) { return; }												\
 	goto *op_labels[(_pc++)->type.label_offs];								\
 
 namespace snabl {
@@ -30,9 +30,8 @@ namespace snabl {
 		return emit_op(ops::Push::type, value);
 	}
 	
-	void Bin::run(size_t offs, size_t nops) {
+	void Bin::run(size_t offs) {
 		_pc = _ops.begin() + offs;
-		if (!nops) { nops = _ops.size(); }
 		
 		static void* op_labels[] = {
 			&&op_begin, &&op_end, &&op_push};

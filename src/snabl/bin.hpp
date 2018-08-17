@@ -31,7 +31,7 @@ namespace snabl {
 		Op &emit_end();
 		Op &emit_push(const Box &value);
 
-		void run(size_t offs=0, size_t nops=0);
+		void run(size_t offs=0);
 	private:
 		std::unordered_map<AFimpPtr, BinFimp> _fimps;
 		Ops::iterator _pc;
