@@ -1,6 +1,6 @@
 #include "snabl/call.hpp"
 
 namespace snabl {
-	Call::Call(const AFimpPtr &fimp, const ScopePtr &scope):
-		fimp(fimp), scope(scope) { }
+	Call::Call(const TargetPtr &target, const ScopePtr &scope):
+		target(target), scope(scope) { }
 }

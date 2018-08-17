@@ -3,14 +3,15 @@
 
 #include "snabl/fimp.hpp"
 #include "snabl/scope.hpp"
+#include "snabl/target.hpp"
 
 namespace snabl {
 	class Call {
 	public:
-		const AFimpPtr fimp;
+		const TargetPtr target;
 		const ScopePtr scope;
 		
-		Call(const AFimpPtr &fimp, const ScopePtr &scope);
+		Call(const TargetPtr &target, const ScopePtr &scope);
 	};
 }
 

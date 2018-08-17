@@ -7,17 +7,19 @@
 
 #include "snabl/func.hpp"
 #include "snabl/std/optional.hpp"
+#include "snabl/target.hpp"
 
 namespace snabl {
 	class Call;
 
-	class AFimp {
+	class AFimp: public Target {
 	public:
 		using Imp = std::function<void (Call &)>;
 		const Sym id;
 		const std::optional<Imp> imp;
 		
 		AFimp(const Sym &id, Imp imp);
+		virtual void dump(std::ostream &out) const;
 	};
 
 	using AFimpPtr = std::shared_ptr<AFimp>;
