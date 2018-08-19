@@ -1,10 +1,10 @@
-* add  dump_stack fn
-** dump row, col & stack to stderr
 * add parent_types vararg to Type/AType/add_type
 ** add any/num types
 * add Sexpr support
 ** add Sexpr form
 *** eval separately
+* add , support
+** parse rest as Sexpr
 * add swap macro
 * add let: macro
 * add set/del places
@@ -20,9 +20,9 @@
 *** add del macro
 **** ('foo'[1] del)
 **** check/modify previous op during compilation
-* add , support
-** eval rest separately on each comma
 * finish fib support
+* add  dump_stack fn
+** dump row, col & stack to stderr
 * add repl(env, in, out) fn
 * add use: macro
 * move +/drop to abc lib
