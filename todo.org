@@ -43,4 +43,6 @@
 *** use instead of add_func
 ** adapt id-parse to handle <..>
 ** call get_fimp instead of get_func if id contains '<'
-
+* add sqlite plugin
+* add wxwidgets plugin
+* add proxygen plugin
