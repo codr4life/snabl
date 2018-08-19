@@ -30,6 +30,15 @@
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
+* add generics
+** add Type._args
+*** deque of ATypePtrs
+** add Type.specialize(type, ...)
+*** check types
+** add virtual protected Type.specialize()
+*** override to create new instance
+** add Sink<T>
+*** add push fn
 * add code generation
 ** generate function
 *** take env param
