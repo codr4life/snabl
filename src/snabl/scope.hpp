@@ -16,10 +16,10 @@ namespace snabl {
 	public:
 		Env &env;
 		const ScopePtr parent;
-		const Stack::iterator stack_begin;
 		
 		Scope(Env &env, const ScopePtr &parent);
-
+		
+		Stack::const_iterator stack_begin() const;
 		Box pop_stack();
 		Box const* get_var(const Sym &key);
 		
@@ -29,6 +29,7 @@ namespace snabl {
 											 const ValueT &value);
 	private:
 		std::unordered_map<Sym, Box> _vars;
+		Stack::const_iterator _stack_begin;
 	};
 
 	template <typename ValueT>

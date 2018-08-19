@@ -29,8 +29,10 @@ namespace snabl {
 		
 		Op &emit_begin(const ScopePtr &parent);
 		Op &emit_end();
+		Op &emit_funcall(const AFuncPtr &func);
+		Op &emit_funcall(const AFimpPtr &fimp);
 		Op &emit_push(const Box &value);
-
+		void compile(const Forms &forms);
 		void run(size_t offs=0);
 	private:
 		std::unordered_map<AFimpPtr, BinFimp> _fimps;

@@ -2,6 +2,7 @@
 #define SNABL_FIMP_HPP
 
 #include <array>
+#include <cmath>
 #include <memory>
 #include <sstream>
 
@@ -19,14 +20,16 @@ namespace snabl {
 		const Sym id;
 		const Forms forms;
 		
+		static void call(const AFimpPtr &fimp);
+		virtual AFuncPtr afunc() const=0;
+		virtual ssize_t score() const=0;
+		virtual void dump(std::ostream &out) const;
+	protected:
 		AFimp(const Sym &id, Imp imp);
 		AFimp(const Sym &id, Forms &&forms);
-		virtual void dump(std::ostream &out) const;
 	private:
 		const std::optional<Imp> _imp;
 	};
-
-	using AFimpPtr = std::shared_ptr<AFimp>;
 
 	template <int NARGS, int NRETS>
 	class Fimp: public AFimp {
@@ -49,6 +52,9 @@ namespace snabl {
 				 const Args &args, 
 				 const Rets &rets, 
 				 Forms &&forms);
+
+		AFuncPtr afunc() const override;
+		ssize_t score() const override;
 	};
 
 	template <int NARGS, int NRETS>
@@ -86,6 +92,29 @@ namespace snabl {
 													 Forms &&forms):
 		AFimp(get_id(func, args), std::move(forms)), func(func), args(args),
 		rets(rets) { }
+
+	template <int NARGS, int NRETS>
+	AFuncPtr Fimp<NARGS, NRETS>::afunc() const { return func; }
+
+	template <int NARGS, int NRETS>
+	ssize_t Fimp<NARGS, NRETS>::score() const {
+		auto &env(func->lib.env);
+		auto &stack(env.stack());
+		if (stack.size() < NARGS) { return -1; }
+		auto i(std::next(stack.begin(), stack.size()-NARGS));
+		if (i < env.scope()->stack_begin()) { return -1; }
+		auto j(args.begin());
+		size_t score(0);
+		
+		for (; j != args.end(); i++, j++) {
+			auto &it(i->type()), &jt(*j);
+			if (i == stack.end()) { return -1; }
+			if (!it->isa(jt)) { return -1; }
+			score += std::abs(it->tag-jt->tag);
+		}
+
+		return score;
+	}
 }
 
 #endif

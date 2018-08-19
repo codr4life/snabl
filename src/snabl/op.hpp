@@ -2,6 +2,7 @@
 #define SNABL_OP_HPP
 
 #include "snabl/box.hpp"
+#include "snabl/fimp.hpp"
 #include "snabl/scope.hpp"
 
 namespace snabl {
@@ -57,6 +58,16 @@ namespace snabl {
 			static const OpType<Begin> type;
 			ScopePtr parent;
 			Begin(const ScopePtr &parent);
+		};
+
+		struct Funcall: public OpImp {
+			static const OpType<Funcall> type;
+
+			AFuncPtr func;
+			AFimpPtr fimp, prev_fimp;
+			
+			Funcall(const AFuncPtr &func);
+			Funcall(const AFimpPtr &fimp);
 		};
 
 		struct End: public OpImp {

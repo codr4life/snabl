@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "snabl/bin.hpp"
+#include "snabl/call.hpp"
 #include "snabl/float.hpp"
 #include "snabl/int.hpp"
 #include "snabl/lib.hpp"
@@ -34,24 +35,36 @@ namespace snabl {
 		const ScopePtr main;
 		
 		Env();
+		size_t next_type_tag();
 		void parse(const std::string &in, Forms &out);
 		void parse(std::istream &in, Pos start_pos, Forms &out);
 		Sym get_sym(const std::string &name);
 
+		void push_lib(Lib *lib);
+		Lib *lib();
+		Lib *pop_lib();
+
 		ScopePtr begin(const ScopePtr &parent=nullptr);
 		ScopePtr scope();
 		ScopePtr end();
+
+		Call &push_call(const TargetPtr &target, ssize_t return_pc);
+		Call *peek_call();
+		void pop_call();
 		
 		template <typename ValueT>
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
 		void push_stack(const Box &value);
 		std::optional<Box> pop_stack();
 		
-		Stack::iterator stack_end();
+		const Stack &stack();
 	private:
+		size_t _type_tag;
 		Pos _pos;
+		std::vector<Lib *> _libs;
+		std::deque<Call> _calls;
 		Stack _stack;
-
+		
 		void parse_id(std::istream &in, Forms &out);
 		void parse_num(std::istream &in, Forms &out);
 	};

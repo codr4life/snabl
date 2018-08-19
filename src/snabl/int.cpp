@@ -4,7 +4,7 @@
 #include "snabl/int.hpp"
 
 namespace snabl {
-	IntType::IntType(const Sym &id): Type<Int>(id) { }
+	IntType::IntType(Lib &lib, const Sym &id): Type<Int>(lib, id) { }
 
 	void IntType::dump(const Box &value, std::ostream &out) {
 		out << value.as<Int>();

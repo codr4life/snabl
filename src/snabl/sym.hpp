@@ -34,9 +34,7 @@ namespace snabl {
 namespace std {
 	template<>
 	struct hash<snabl::Sym> {
-		size_t operator()(const snabl::Sym &x) const {
-			return x._imp->hash;
-    }
+		size_t operator()(const snabl::Sym &x) const { return x._imp->hash; }
 	};
 }
 

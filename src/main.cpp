@@ -25,6 +25,8 @@ int main() {
 
 	Forms forms;
 	env.parse("1 + 2", forms);
+	env.bin.compile(forms);
+	env.bin.run();
 	
 	//"($n < 2) if-else 1 {(fib, $n --) + (fib, $n - 2)}";
 	//env.bin.compile(add_int);

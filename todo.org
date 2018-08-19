@@ -1,11 +1,22 @@
-* add Bin.compile
-** add compile method to form type
-** exec funcs/macros without args immediately
+* reorder func/args during compilation
+* forward form/op imp args to constructors
+** rename emit_op to emplace_back
+* respect scope.stack_begin in fimp.score
+* ---
+* add macro support
+** name arity macros xxx:
+*** process all passed in tokens
+* add group support
+** add Group form
+*** eval separately
+* add , support
+** eval rest separately on each comma
+* add ops PushCall PopCall
+* exec funcs/macros without args immediately
 ** otherwise at end of expr or ,
 * add optional func.parent_scope
 ** use as parent for begin
-* add funcall op
-** precompile fimps
+* precompile fimps
 ** compile rest on demand
 * add jump op
 ** ssize_t nops
@@ -19,3 +30,10 @@
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
+* add code generation
+** generate function
+*** take env param
+** snabl compile/build
+** generate harness with env
+** add OpType.emit_cpp fn
+*** generate code to emit op on env bin

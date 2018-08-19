@@ -1,3 +1,4 @@
+#include "snabl/env.hpp"
 #include "snabl/form.hpp"
 
 namespace snabl {
@@ -5,16 +6,31 @@ namespace snabl {
 		const IdType id_type;
 		const LiteralType literal_type;
 
-		Id::Id(const std::string &name): name(name) { }
+		Id::Id(const Sym &id): id(id) { }
 
-		void IdType::dump(const Form &form, std::ostream &out) {
-			out << form.as<Id>().name;
+		void IdType::compile(Forms::const_iterator &in,
+												 const Forms::const_iterator &end,
+												 Bin &out) const {
+			auto f((in++)->as<Id>());
+			auto func(out.env.lib()->get_func(f.id));
+			out.emit_funcall(func);
 		}
 
-		Literal::Literal(Box &&value): value(std::move(value)) { }
+		void IdType::dump(const Form &form, std::ostream &out) {
+			out << form.as<Id>().id.name();
+		}
+
+		Literal::Literal(const Box &value): value(value) { }
 
 		void LiteralType::dump(const Form &form, std::ostream &out) {
 			form.as<Literal>().value.dump(out);
 		}		
+
+		void LiteralType::compile(Forms::const_iterator &in,
+															const Forms::const_iterator &end,
+															Bin &out) const {
+			auto f((in++)->as<Literal>());
+			out.emit_push(f.value);			
+		}
 	}
 }

@@ -1,7 +1,6 @@
 #ifndef SNABL_CALL_HPP
 #define SNABL_CALL_HPP
 
-#include "snabl/fimp.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/target.hpp"
 
@@ -10,8 +9,9 @@ namespace snabl {
 	public:
 		const TargetPtr target;
 		const ScopePtr scope;
+		const ssize_t return_pc;
 		
-		Call(const TargetPtr &target, const ScopePtr &scope);
+		Call(const TargetPtr &target, const ScopePtr &scope, ssize_t return_pc);
 	};
 }
 

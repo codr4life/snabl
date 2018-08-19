@@ -14,7 +14,10 @@ namespace snabl {
 		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
 		bin(*this),
 		main(begin(nullptr)),
-		_pos(home_pos) { }
+		_type_tag(1),
+		_pos(home_pos) { push_lib(&lobby); }
+
+	size_t Env::next_type_tag() { return _type_tag++; }
 
 	void Env::parse(const std::string &in, Forms &out) {
 		std::istringstream s(in);
@@ -66,7 +69,7 @@ namespace snabl {
 			pc = c;
 		}
 
-		out.emplace_back(forms::id_type, new forms::Id(buf.str()));
+		out.emplace_back(forms::id_type, new forms::Id(get_sym(buf.str())));
 	}
 
 	void Env::parse_num(std::istream &in, Forms &out) {
@@ -96,9 +99,22 @@ namespace snabl {
 		auto found(_syms.find(name));
 
 		return Sym((found == _syms.end())
-							 ? _syms.emplace(name,
-															 std::make_unique<SymImp>(name)).first->second.get()
+							 ? _syms.insert(std::make_pair(name, std::make_unique<SymImp>(name)))
+							 .first->second.get()
 							 : found->second.get());
+	}
+
+	void Env::push_lib(Lib *lib) {
+		_libs.push_back(lib);
+	}
+
+	Lib *Env::lib() { return _libs.back(); }
+
+	Lib *Env::pop_lib() {
+		if (_libs.empty()) { throw Error("No libs"); }
+		Lib *l(_libs.back());
+		_libs.pop_back();
+		return l;
 	}
 
 	ScopePtr Env::begin(const ScopePtr &parent) {
@@ -107,7 +123,11 @@ namespace snabl {
 		return s;
 	}
 
-	ScopePtr Env::scope() { return _scopes.back(); }
+	ScopePtr Env::scope() {
+		auto s(_scopes.back());
+		if (!s) { throw Error("No open scopes"); }
+		return s;
+	}
 
 	ScopePtr Env::end() {
 		auto s(_scopes.back());
@@ -115,6 +135,15 @@ namespace snabl {
 		return s;
 	}
 
+	Call &Env::push_call(const TargetPtr &target, ssize_t return_pc) {
+		_calls.emplace_back(target, scope(), return_pc);
+		return _calls.back();
+	}
+	
+	Call *Env::peek_call() { return _calls.empty() ? nullptr : &_calls.back(); }
+
+	void Env::pop_call() { _calls.pop_back(); }
+	
 	void Env::push_stack(const Box &value) { _stack.push_back(value); }
 
 	std::optional<Box> Env::pop_stack() {
@@ -124,5 +153,5 @@ namespace snabl {
 		return v;
 	}
 
-	Stack::iterator Env::stack_end() { return _stack.end(); }
+	const Stack &Env::stack() { return _stack; }
 }

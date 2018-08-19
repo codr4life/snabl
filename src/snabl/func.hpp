@@ -4,18 +4,31 @@
 #include <memory>
 #include <unordered_map>
 
+#include "snabl/error.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
 	class Lib;
+
+	class AFimp;
 	
+	using AFimpPtr = std::shared_ptr<AFimp>;
+	
+	template <int NARGS, int NRETS>
+	class Fimp;
+	
+	template <int NARGS, int NRETS>
+	using FimpPtr = std::shared_ptr<Fimp<NARGS, NRETS>>;
+
 	class AFunc {
 	public:
 		Lib &lib;
 		const Sym id;
 		const int nargs, nrets;
 		
+		virtual AFimpPtr get_best_fimp() const=0;
+	protected:
 		AFunc(Lib &lib, const Sym &id, int nargs, int nrets);
 	};
 
@@ -26,12 +39,6 @@ namespace snabl {
 	
 	template <int NARGS, int NRETS> 
 	using FuncPtr = std::shared_ptr<Func<NARGS, NRETS>>;
-
-	template <int NARGS, int NRETS>
-	class Fimp;
-	
-	template <int NARGS, int NRETS>
-	using FimpPtr = std::shared_ptr<Fimp<NARGS, NRETS>>;
 	
 	template <int NARGS, int NRETS>
 	class Func: public AFunc {
@@ -46,6 +53,7 @@ namespace snabl {
 																					ImpT &&... imp);
 		
 		Func(Lib &lib, const Sym &id);
+		AFimpPtr get_best_fimp() const override;
 	private:
 		std::unordered_map<Sym, FimpPtr<NARGS, NRETS>> _fimps;
 	};
@@ -70,7 +78,26 @@ namespace snabl {
 		func->_fimps.emplace(id, f);
 		return f;
 	}
-}
 
+	template <int NARGS, int NRETS>
+	AFimpPtr Func<NARGS, NRETS>::get_best_fimp() const {
+		ssize_t best_score(-1);
+		AFimpPtr best_fimp;
+		
+		for (auto &fp: _fimps) {
+			auto &f(fp.second);
+			ssize_t fs(f->score());
+			if (!fs) { return f; }
+			
+			if (fs != -1 && (best_score == -1 || fs < best_score)) {
+				best_score = fs;
+				best_fimp = f;
+			}
+		}
+
+		if (!best_fimp) { throw Error("Func not applicable"); }
+		return best_fimp;
+	}
+}
 
 #endif

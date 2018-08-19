@@ -4,7 +4,7 @@
 #include "snabl/float.hpp"
 
 namespace snabl {
-	FloatType::FloatType(const Sym &id): Type<Float>(id) { }
+	FloatType::FloatType(Lib &lib, const Sym &id): Type<Float>(lib, id) { }
 
 	void FloatType::dump(const Box &value, std::ostream &out) {
 		out << value.as<Float>();

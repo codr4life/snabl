@@ -6,10 +6,18 @@
 #include "snabl/box.hpp"
 
 namespace snabl {
+	class Bin;
+	class Env;
 	class Form;
-	
+
+	using Forms = std::deque<Form>;
+
 	class AFormType {
 	public:
+		virtual void compile(Forms::const_iterator &in,
+												 const Forms::const_iterator &end,
+												 Bin &out) const=0;
+		
 		virtual void dump(const Form &form, std::ostream &out)=0;
 	};
 
@@ -33,8 +41,6 @@ namespace snabl {
 	private:
 		std::unique_ptr<FormImp> _imp;
 	};
-
-	using Forms = std::deque<Form>;
 	
 	template <typename ImpT>
 	Form::Form(const FormType<ImpT> &type, ImpT *imp): type(type), _imp(imp) { }
@@ -48,25 +54,33 @@ namespace snabl {
 
 	namespace forms {
 		struct Id: public FormImp {
-			const std::string name;
-			Id(const std::string &name);
+			const Sym id;
+			Id(const Sym &id);
 		};
 
 		class IdType: public FormType<Id> {
 		public:
-			virtual void dump(const Form &form, std::ostream &out);
+			void compile(Forms::const_iterator &in,
+									 const Forms::const_iterator &end,
+									 Bin &out) const override;
+			
+			void dump(const Form &form, std::ostream &out) override;
 		};
 
 		extern const IdType id_type;
 
 		struct Literal: public FormImp {			
 			Box value;
-			Literal(Box &&value);
+			Literal(const Box &value);
 		};
 
 		class LiteralType: public FormType<Literal> {
 		public:
-			virtual void dump(const Form &form, std::ostream &out);
+			void compile(Forms::const_iterator &in,
+									 const Forms::const_iterator &end,
+									 Bin &out) const override;
+			
+			void dump(const Form &form, std::ostream &out) override;
 		};
 
 		extern const LiteralType literal_type;

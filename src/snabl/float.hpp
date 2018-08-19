@@ -8,8 +8,8 @@ namespace snabl {
 	
 	class FloatType: public Type<Float> {
 	public:
-		FloatType(const Sym &id);
-		virtual void dump(const Box &value, std::ostream &out);
+		FloatType(Lib &lib, const Sym &id);
+		void dump(const Box &value, std::ostream &out) override;
 	};
 }
 

@@ -30,6 +30,7 @@ namespace snabl {
 																	 const typename Func<NARGS, NRETS>::Rets &rets,
 																	 ImpT &&... imp);
 
+		AFuncPtr get_func(const Sym &id);
 	private:
 		std::unordered_map<Sym, ATypePtr> _types;
 		std::unordered_map<Sym, AFuncPtr> _funcs;
@@ -37,7 +38,7 @@ namespace snabl {
 
 	template <typename TypeT, typename... ArgsT>
 	std::shared_ptr<TypeT> Lib::add_type(ArgsT &&... args) {
-		auto t(std::make_shared<TypeT>(std::forward<ArgsT>(args)...));
+		auto t(std::make_shared<TypeT>(*this, std::forward<ArgsT>(args)...));
 		_types.emplace(t->id, t);
 		return t;
 	}
