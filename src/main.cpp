@@ -10,7 +10,7 @@ using namespace snabl;
 int main() {
 	Env env;
 	
-	env.lobby.add_fimp<2, 1>(env.get_sym("+"),
+	env.home.add_fimp<2, 1>(env.get_sym("+"),
 		{env.int_type, env.int_type},
 		{env.int_type},
 		[](Call &call) {

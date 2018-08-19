@@ -9,13 +9,13 @@ namespace snabl {
 	
 	Env::Env():
 		_type_tag(1),
-		lobby(*this, get_sym("lobby")),
-		float_type(lobby.add_type<FloatType>(get_sym("Float"))),
-		int_type(lobby.add_type<IntType>(get_sym("Int"))),
+		home(*this, get_sym("home")),
+		float_type(home.add_type<FloatType>(get_sym("Float"))),
+		int_type(home.add_type<IntType>(get_sym("Int"))),
 		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
 		bin(*this),
 		main(begin(nullptr)),
-		_pos(home_pos) { push_lib(&lobby); }
+		_pos(home_pos) { push_lib(&home); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
 

@@ -29,7 +29,7 @@ namespace snabl {
 	public:
 		static const Pos home_pos;
 
-		Lib lobby;
+		Lib home;
 		const TypePtr<Float> float_type;
 		const TypePtr<Int> int_type;
 		std::unordered_set<char> separators;
