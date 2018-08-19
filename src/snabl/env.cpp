@@ -63,11 +63,13 @@ namespace snabl {
 	
 	void Env::parse_id(std::istream &in, Forms &out) {		
 		std::stringstream buf;
-		char c, pc(0);
+		char c;
+		bool prev_sep(true);
 		
 		while (in.get(c)) {
-			if (separators.find(c) == separators.end() ||
-					(isgraph(c) && (!pc || pc == c))) {
+			bool c_sep(separators.find(c) != separators.end());
+			
+			if (!c_sep || (isgraph(c) && prev_sep)) {
 				buf << c;
 				_pos.col++;
 			} else {
@@ -75,7 +77,7 @@ namespace snabl {
 				break;
 			}
 
-			pc = c;
+			prev_sep = c_sep;
 		}
 
 		out.emplace_back(forms::Id::type, get_sym(buf.str()));

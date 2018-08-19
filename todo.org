@@ -1,3 +1,5 @@
+* fix memory leak
+** clear func imps in Lib destructor
 * add macro support
 ** name arity macros xxx:
 *** process all passed in tokens
@@ -5,12 +7,19 @@
 ** add Sexpr form
 *** eval separately
 * add set/del places
+** add []-support
+*** parse as func '[]' and call with args
 ** add Eval enum
 *** enum class Eval {Get/Set/Del}
 *** add Fimp.eval
 **** print after name at:del<Str Int>
-*** add Bin._eval
-**** add set:/del: macros that modify the next func/var
+*** add set: macro
+**** ('foo'[1] set: ..)
+**** modify previous op during compilation
+*** add del macro
+**** ('foo'[1] del)
+**** modify previous op during compilation
+del: macros that modify the next func/var
 ***** add Set/Del ops
 ***** check that Set/Del is followed by Funcall/GetVar
 * add , support
