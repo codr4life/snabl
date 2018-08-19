@@ -1,7 +1,7 @@
 #include "snabl/bin.hpp"
 #include "snabl/env.hpp"
 
-#define SNABEL_DISPATCH()																		\
+#define SNABL_DISPATCH()																		\
 	if (_pc == _ops.end()) { return; }												\
 	goto *op_labels[_pc->type.label_offs];										\
 
@@ -35,8 +35,17 @@ namespace snabl {
 	Op &Bin::emit_push(const Box &value) { return emit_op(ops::Push::type, value); }
 
 	void Bin::compile(const Forms &forms) {
+		AFuncPtr func;
+		AFimpPtr fimp;
+
 		for (auto i(forms.begin()); i != forms.end();) {
-			i->type.compile(i, forms.end(), *this);
+			i->type.compile(i, forms.end(), func, fimp, *this);
+		}
+
+		if (fimp) {
+			emit_funcall(fimp);
+		} else if (func) {
+			emit_funcall(func);
 		}
 	}
 	
@@ -47,15 +56,15 @@ namespace snabl {
 			&&op_begin, &&op_end, &&op_funcall, &&op_push
 		};
 
-		SNABEL_DISPATCH();
+		SNABL_DISPATCH();
 	op_begin:
 		env.begin(_pc->as<ops::Begin>().parent);
 		_pc++;
-		SNABEL_DISPATCH();
+		SNABL_DISPATCH();
 	op_end:
 		env.end();
 		_pc++;
-		SNABEL_DISPATCH();
+		SNABL_DISPATCH();
 	op_funcall:
 		auto &op(_pc->as<ops::Funcall>());
 		auto fimp(op.fimp);
@@ -72,10 +81,10 @@ namespace snabl {
 		if (!op.fimp) { op.prev_fimp = fimp; }
 		AFimp::call(fimp);
 		_pc++;
-		SNABEL_DISPATCH();
+		SNABL_DISPATCH();
 	op_push:
 		env.push_stack(_pc->as<ops::Push>().value); 
 		_pc++;
-		SNABEL_DISPATCH();
+		SNABL_DISPATCH();
 	}
 }

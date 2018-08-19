@@ -5,21 +5,11 @@
 #include <unordered_map>
 
 #include "snabl/error.hpp"
+#include "snabl/ptrs.hpp"
 #include "snabl/sym.hpp"
-#include "snabl/type.hpp"
 
 namespace snabl {
 	class Lib;
-
-	class AFimp;
-	
-	using AFimpPtr = std::shared_ptr<AFimp>;
-	
-	template <int NARGS, int NRETS>
-	class Fimp;
-	
-	template <int NARGS, int NRETS>
-	using FimpPtr = std::shared_ptr<Fimp<NARGS, NRETS>>;
 
 	class AFunc {
 	public:
@@ -32,14 +22,6 @@ namespace snabl {
 		AFunc(Lib &lib, const Sym &id, int nargs, int nrets);
 	};
 
-	using AFuncPtr = std::shared_ptr<AFunc>;
-
-	template <int NARGS, int NRETS> 
-	class Func;
-	
-	template <int NARGS, int NRETS> 
-	using FuncPtr = std::shared_ptr<Func<NARGS, NRETS>>;
-	
 	template <int NARGS, int NRETS>
 	class Func: public AFunc {
 	public:

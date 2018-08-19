@@ -4,6 +4,7 @@
 #include <deque>
 
 #include "snabl/box.hpp"
+#include "snabl/ptrs.hpp"
 
 namespace snabl {
 	class Bin;
@@ -16,6 +17,7 @@ namespace snabl {
 	public:
 		virtual void compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
+												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const=0;
 		
 		virtual void dump(const Form &form, std::ostream &out)=0;
@@ -62,6 +64,7 @@ namespace snabl {
 		public:
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
+									 AFuncPtr &func, AFimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) override;
@@ -78,6 +81,7 @@ namespace snabl {
 		public:
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
+									 AFuncPtr &func, AFimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) override;

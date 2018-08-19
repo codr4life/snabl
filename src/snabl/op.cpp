@@ -14,11 +14,12 @@ namespace snabl {
 
 		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
+		End::End() { }
+
 		Funcall::Funcall(const AFuncPtr &func): func(func) { }
 		
 		Funcall::Funcall(const AFimpPtr &fimp): func(fimp->afunc()), fimp(fimp) { }
 
-		End::End() { }
 		Push::Push(const Box &value): value(value) { }
 	}
 }

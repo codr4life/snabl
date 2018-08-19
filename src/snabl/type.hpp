@@ -4,14 +4,12 @@
 #include <unordered_set>
 #include <vector>
 
+#include "snabl/ptrs.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
 	class Box;
 	class Lib;
-
-	class AType;
-	using ATypePtr = std::shared_ptr<AType>;
 
 	class AType {
 	public:

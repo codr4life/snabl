@@ -1,7 +1,5 @@
-* reorder func/args during compilation
 * forward form/op imp args to constructors
 ** rename emit_op to emplace_back
-* respect scope.stack_begin in fimp.score
 * ---
 * add macro support
 ** name arity macros xxx:

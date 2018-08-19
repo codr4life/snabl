@@ -22,8 +22,10 @@ namespace snabl {
 	
 	class Env {
 	private:
-		std::vector<ScopePtr> _scopes;
 		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
+		size_t _type_tag;
+		std::vector<ScopePtr> _scopes;
+		Stack _stack;
 	public:
 		static const Pos home_pos;
 
@@ -59,11 +61,9 @@ namespace snabl {
 		
 		const Stack &stack();
 	private:
-		size_t _type_tag;
 		Pos _pos;
 		std::vector<Lib *> _libs;
 		std::deque<Call> _calls;
-		Stack _stack;
 		
 		void parse_id(std::istream &in, Forms &out);
 		void parse_num(std::istream &in, Forms &out);

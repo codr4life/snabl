@@ -8,13 +8,13 @@ namespace snabl {
 	const Pos Env::home_pos(1, 0);
 	
 	Env::Env():
+		_type_tag(1),
 		lobby(*this, get_sym("lobby")),
 		float_type(lobby.add_type<FloatType>(get_sym("Float"))),
 		int_type(lobby.add_type<IntType>(get_sym("Int"))),
 		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
 		bin(*this),
 		main(begin(nullptr)),
-		_type_tag(1),
 		_pos(home_pos) { push_lib(&lobby); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
@@ -124,9 +124,8 @@ namespace snabl {
 	}
 
 	ScopePtr Env::scope() {
-		auto s(_scopes.back());
-		if (!s) { throw Error("No open scopes"); }
-		return s;
+		if (_scopes.empty()) { throw Error("No open scopes"); }
+		return _scopes.back();
 	}
 
 	ScopePtr Env::end() {

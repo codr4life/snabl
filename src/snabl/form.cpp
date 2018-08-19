@@ -10,10 +10,10 @@ namespace snabl {
 
 		void IdType::compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
+												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const {
 			auto f((in++)->as<Id>());
-			auto func(out.env.lib()->get_func(f.id));
-			out.emit_funcall(func);
+			func = out.env.lib()->get_func(f.id);
 		}
 
 		void IdType::dump(const Form &form, std::ostream &out) {
@@ -28,6 +28,7 @@ namespace snabl {
 
 		void LiteralType::compile(Forms::const_iterator &in,
 															const Forms::const_iterator &end,
+															AFuncPtr &func, AFimpPtr &fimp,
 															Bin &out) const {
 			auto f((in++)->as<Literal>());
 			out.emit_push(f.value);			

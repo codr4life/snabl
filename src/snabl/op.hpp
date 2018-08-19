@@ -60,19 +60,19 @@ namespace snabl {
 			Begin(const ScopePtr &parent);
 		};
 
+		struct End: public OpImp {
+			static const OpType<End> type;
+			End();
+		};
+
 		struct Funcall: public OpImp {
 			static const OpType<Funcall> type;
-
+			
 			AFuncPtr func;
 			AFimpPtr fimp, prev_fimp;
 			
 			Funcall(const AFuncPtr &func);
 			Funcall(const AFimpPtr &fimp);
-		};
-
-		struct End: public OpImp {
-			static const OpType<End> type;
-			End();
 		};
 
 		struct Push: public OpImp {

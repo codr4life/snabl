@@ -1,6 +1,8 @@
 #ifndef SNABL_FIMP_HPP
 #define SNABL_FIMP_HPP
 
+#include <iostream>
+
 #include <array>
 #include <cmath>
 #include <memory>
@@ -100,9 +102,8 @@ namespace snabl {
 	ssize_t Fimp<NARGS, NRETS>::score() const {
 		auto &env(func->lib.env);
 		auto &stack(env.stack());
-		if (stack.size() < NARGS) { return -1; }
+		if (stack.size() < env.scope()->stack_offs()+NARGS) { return -1; }
 		auto i(std::next(stack.begin(), stack.size()-NARGS));
-		if (i < env.scope()->stack_begin()) { return -1; }
 		auto j(args.begin());
 		size_t score(0);
 		

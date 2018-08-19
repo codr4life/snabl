@@ -4,12 +4,12 @@
 
 namespace snabl {
 	Scope::Scope(Env &env, const ScopePtr &parent):
-		env(env), parent(parent), _stack_begin(env.stack().end()) { }
+		env(env), parent(parent), _stack_offs(env.stack().size()) { }
 
-	Stack::const_iterator Scope::stack_begin() const { return _stack_begin; }
+	size_t Scope::stack_offs() const { return _stack_offs; }
 	
 	Box Scope::pop_stack() {
-		if (env.stack().end() <= _stack_begin) { throw Error("Nothing to pop"); }
+		if (env.stack().size() <= _stack_offs) { throw Error("Nothing to pop"); }
 		return *env.pop_stack();
 	}
 
