@@ -36,6 +36,6 @@ int main() {
 	assert(s->get_var(foo)->as<Int>() == Int(42));
 	env.end();
 
-	env.bin.emit_push(Box(env.int_type, Int(42)));
+	env.bin.emplace_back(ops::Push::type, Box(env.int_type, Int(42)));
 	return 0;
 }

@@ -1,6 +1,3 @@
-* forward form/op imp args to constructors
-** rename emit_op to emplace_back
-* ---
 * add macro support
 ** name arity macros xxx:
 *** process all passed in tokens

@@ -31,7 +31,7 @@ namespace snabl {
 															AFuncPtr &func, AFimpPtr &fimp,
 															Bin &out) const {
 			auto f((in++)->as<Literal>());
-			out.emit_push(f.value);			
+			out.emplace_back(ops::Push::type, f.value);			
 		}
 	}
 }

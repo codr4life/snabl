@@ -26,13 +26,8 @@ namespace snabl {
 		std::optional<BinFimp> get_fimp(const AFimpPtr &ptr);
 
 		template <typename ImpT, typename... ArgsT>
-		Op &emit_op(const OpType<ImpT> &type, ArgsT &&... args);
+		Op &emplace_back(const OpType<ImpT> &type, ArgsT &&... args);
 		
-		Op &emit_begin(const ScopePtr &parent);
-		Op &emit_end();
-		Op &emit_funcall(const AFuncPtr &func);
-		Op &emit_funcall(const AFimpPtr &fimp);
-		Op &emit_push(const Box &value);
 		void compile(const Forms &forms);
 		void run(size_t offs=0);
 	private:
@@ -42,7 +37,7 @@ namespace snabl {
 	};
 
 	template <typename ImpT, typename... ArgsT>
-	Op &Bin::emit_op(const OpType<ImpT> &type, ArgsT &&... args) {
+	Op &Bin::emplace_back(const OpType<ImpT> &type, ArgsT &&... args) {
 		_ops.emplace_back(type, args...);
 		return _ops.back();
 	}

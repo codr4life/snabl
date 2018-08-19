@@ -33,7 +33,7 @@ namespace snabl {
 		const AFormType &type;
 		
 		template <typename ImpT>
-		Form(const FormType<ImpT> &type, ImpT *imp);
+		Form(const FormType<ImpT> &type);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
 		Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args);
@@ -45,11 +45,11 @@ namespace snabl {
 	};
 	
 	template <typename ImpT>
-	Form::Form(const FormType<ImpT> &type, ImpT *imp): type(type), _imp(imp) { }
+	Form::Form(const FormType<ImpT> &type): type(type) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
 	Form::Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args):
-		type(type), _imp(new ImpT(arg1, std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
+		type(type), _imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }

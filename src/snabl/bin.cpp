@@ -20,22 +20,6 @@ namespace snabl {
 			: std::make_optional(found->second);
 	}
 
-	Op &Bin::emit_begin(const ScopePtr &parent) {
-		return emit_op(ops::Begin::type, parent);
-	}
-
-	Op &Bin::emit_end() { return emit_op(ops::End::type); }
-	
-	Op &Bin::emit_funcall(const AFuncPtr &func) {
-		return emit_op(ops::Funcall::type, func);
-	}
-	
-	Op &Bin::emit_funcall(const AFimpPtr &fimp) {
-		return emit_op(ops::Funcall::type, fimp);
-	}
-
-	Op &Bin::emit_push(const Box &value) { return emit_op(ops::Push::type, value); }
-
 	void Bin::compile(const Forms &forms) {
 		AFuncPtr func;
 		AFimpPtr fimp;
@@ -45,9 +29,9 @@ namespace snabl {
 		}
 
 		if (fimp) {
-			emit_funcall(fimp);
+			emplace_back(ops::Funcall::type, fimp);
 		} else if (func) {
-			emit_funcall(func);
+			emplace_back(ops::Funcall::type, func);
 		}
 	}
 	

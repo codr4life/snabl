@@ -78,7 +78,7 @@ namespace snabl {
 			pc = c;
 		}
 
-		out.emplace_back(forms::id_type, new forms::Id(get_sym(buf.str())));
+		out.emplace_back(forms::id_type, get_sym(buf.str()));
 	}
 
 	void Env::parse_num(std::istream &in, Forms &out) {
@@ -97,11 +97,10 @@ namespace snabl {
 			}
 		}
 	 
-		auto f(new forms::Literal(is_float
-															? Box(float_type, std::stold(buf.str()))
-															: Box(int_type, std::stoll(buf.str()))));
-
-		out.emplace_back(forms::literal_type, f);
+		out.emplace_back(forms::literal_type,
+										 is_float
+										 ? Box(float_type, std::stold(buf.str()))
+										 : Box(int_type, std::stoll(buf.str())));
 	}
 	
 	void Env::compile(const std::string &in) {
