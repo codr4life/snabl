@@ -9,7 +9,9 @@ namespace snabl {
 	BinFimp::BinFimp(size_t begin, size_t end):
 		begin(begin), end(end) { }
 	
-	Bin::Bin(Env &env): env(env), _pc(_ops.begin()) { }
+	Bin::Bin(Env &env): env(env) { }
+
+	const Ops &Bin::ops() const { return _ops; }
 
 	std::optional<BinFimp> Bin::get_fimp(const AFimpPtr &ptr) {
 		auto found = _fimps.find(ptr);
@@ -50,7 +52,8 @@ namespace snabl {
 	}
 	
 	void Bin::run(size_t offs) {
-		_pc = _ops.begin() + offs;
+		_pc = _ops.begin();
+		if (offs) { std::advance(_pc, offs); }
 		
 		static void* op_labels[] = {
 			&&op_begin, &&op_end, &&op_funcall, &&op_push

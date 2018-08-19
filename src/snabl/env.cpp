@@ -19,6 +19,15 @@ namespace snabl {
 
 	size_t Env::next_type_tag() { return _type_tag++; }
 
+	Sym Env::get_sym(const std::string &name) {
+		auto found(_syms.find(name));
+
+		return Sym((found == _syms.end())
+							 ? _syms.insert(std::make_pair(name, std::make_unique<SymImp>(name)))
+							 .first->second.get()
+							 : found->second.get());
+	}
+
 	void Env::parse(const std::string &in, Forms &out) {
 		std::istringstream s(in);
 		parse(s, home_pos, out);		
@@ -51,7 +60,7 @@ namespace snabl {
 			}
 		}
 	}
-
+	
 	void Env::parse_id(std::istream &in, Forms &out) {		
 		std::stringstream buf;
 		char c, pc(0);
@@ -95,19 +104,22 @@ namespace snabl {
 		out.emplace_back(forms::literal_type, f);
 	}
 	
-	Sym Env::get_sym(const std::string &name) {
-		auto found(_syms.find(name));
+	void Env::compile(const std::string &in) {
+		Forms forms;
+		parse(in, forms);
+		bin.compile(forms);
+	}
 
-		return Sym((found == _syms.end())
-							 ? _syms.insert(std::make_pair(name, std::make_unique<SymImp>(name)))
-							 .first->second.get()
-							 : found->second.get());
+	void Env::run(const std::string &in) {
+		auto start_pc = bin.ops().size();
+		compile(in);
+		bin.run(start_pc);
 	}
 
 	void Env::push_lib(Lib *lib) {
 		_libs.push_back(lib);
 	}
-
+	
 	Lib *Env::lib() { return _libs.back(); }
 
 	Lib *Env::pop_lib() {

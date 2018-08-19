@@ -38,10 +38,14 @@ namespace snabl {
 		
 		Env();
 		size_t next_type_tag();
+		Sym get_sym(const std::string &name);
+		
 		void parse(const std::string &in, Forms &out);
 		void parse(std::istream &in, Pos start_pos, Forms &out);
-		Sym get_sym(const std::string &name);
-
+		
+		void compile(const std::string &in);
+		void run(const std::string &in);
+		
 		void push_lib(Lib *lib);
 		Lib *lib();
 		Lib *pop_lib();

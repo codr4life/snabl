@@ -22,6 +22,7 @@ namespace snabl {
 	public:
 		Env &env;
 		Bin(Env &env);
+		const Ops &ops() const;
 		std::optional<BinFimp> get_fimp(const AFimpPtr &ptr);
 
 		template <typename ImpT, typename... ArgsT>

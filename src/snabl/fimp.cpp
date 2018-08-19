@@ -7,8 +7,15 @@ namespace snabl {
 		auto &env(fimp->afunc()->lib.env);
 						 
 		if (fimp->_imp) {
+			auto stack_offs(env.stack().size());
 			auto &call(env.push_call(fimp, -1));
 			(*fimp->_imp)(call);
+			auto func(fimp->afunc());
+			
+			if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
+				throw Error("Invalid stack after funcall");
+			}
+			
 			env.pop_call();
 		}
 	}

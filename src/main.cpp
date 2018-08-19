@@ -23,10 +23,7 @@ int main() {
 			env.push_stack(env.int_type, x+y);
 		});
 
-	Forms forms;
-	env.parse("1 + 2", forms);
-	env.bin.compile(forms);
-	env.bin.run();
+	env.run("1 + 2");
 	
 	//"($n < 2) if-else 1 {(fib, $n --) + (fib, $n - 2)}";
 	//env.bin.compile(add_int);
