@@ -6,6 +6,7 @@
 *** eval separately
 * add , support
 ** eval rest separately on each comma
+* finish fib support
 * add repl(env, in, out) fn
 ** eval snabl code
 * add ops PushCall PopCall
