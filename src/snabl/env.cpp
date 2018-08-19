@@ -61,7 +61,8 @@ namespace snabl {
 		}
 	}
 	
-	void Env::parse_id(std::istream &in, Forms &out) {		
+	void Env::parse_id(std::istream &in, Forms &out) {
+		auto start_pos(_pos);
 		std::stringstream buf;
 		char c;
 		bool prev_sep(true);
@@ -80,10 +81,11 @@ namespace snabl {
 			prev_sep = c_sep;
 		}
 
-		out.emplace_back(forms::Id::type, get_sym(buf.str()));
+		out.emplace_back(forms::Id::type, start_pos, get_sym(buf.str()));
 	}
 
 	void Env::parse_num(std::istream &in, Forms &out) {
+		auto start_pos(_pos);
 		std::stringstream buf;
 		bool is_float(false);
 		char c;
@@ -100,6 +102,7 @@ namespace snabl {
 		}
 	 
 		out.emplace_back(forms::Literal::type,
+										 start_pos,
 										 is_float
 										 ? Box(float_type, std::stold(buf.str()))
 										 : Box(int_type, std::stoll(buf.str())));

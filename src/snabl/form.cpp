@@ -12,7 +12,8 @@ namespace snabl {
 												 const Forms::const_iterator &end,
 												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const {
-			auto &id((in++)->as<Id>().sym);
+			auto &op(*in++);
+			auto &id(op.as<Id>().sym);
 			auto &lib(out.env.lib());
 			auto m(lib.get_macro(id));
 			
@@ -26,7 +27,7 @@ namespace snabl {
 					if (func) { throw new Error("Extra func"); }
 					func = f;
 				} else {
-					out.emplace_back(ops::Funcall::type, f);
+					out.emplace_back(ops::Funcall::type, op.pos, f);
 				}
 			}
 		}
@@ -45,8 +46,9 @@ namespace snabl {
 															const Forms::const_iterator &end,
 															AFuncPtr &func, AFimpPtr &fimp,
 															Bin &out) const {
-			auto f((in++)->as<Literal>());
-			out.emplace_back(ops::Push::type, f.value);			
+			auto &op(*in++);
+			auto &f(op.as<Literal>());
+			out.emplace_back(ops::Push::type, op.pos, f.value);			
 		}
 	}
 }

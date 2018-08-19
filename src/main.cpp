@@ -15,9 +15,9 @@ int main() {
 												const Forms::const_iterator &end,
 												AFuncPtr &func, AFimpPtr &fimp,
 												Bin &out) {
-											 in++;
-											 out.emplace_back(ops::Drop::type);			
-											 });
+											 auto &form(*in++);
+											 out.emplace_back(ops::Drop::type, form.pos);			
+										 });
 	
 	env.home.add_fimp<2, 1>(env.get_sym("+"),
 		{env.int_type, env.int_type},
@@ -47,6 +47,5 @@ int main() {
 	assert(s->get_var(foo)->as<Int>() == Int(42));
 	env.end();
 
-	env.bin.emplace_back(ops::Push::type, Box(env.int_type, Int(42)));
 	return 0;
 }

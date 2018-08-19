@@ -4,6 +4,7 @@
 #include <deque>
 
 #include "snabl/box.hpp"
+#include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
 
 namespace snabl {
@@ -31,12 +32,13 @@ namespace snabl {
 	class Form {
 	public:
 		const AFormType &type;
+		const Pos pos;
 		
 		template <typename ImpT>
-		Form(const FormType<ImpT> &type);
+		Form(const FormType<ImpT> &type, const Pos &pos);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args);
+		Form(const FormType<ImpT> &type, const Pos &pos, ArgT1 &&arg1, ArgsT &&... args);
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -45,11 +47,15 @@ namespace snabl {
 	};
 	
 	template <typename ImpT>
-	Form::Form(const FormType<ImpT> &type): type(type) { }
+	Form::Form(const FormType<ImpT> &type, const Pos &pos): type(type), pos(pos) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
-	Form::Form(const FormType<ImpT> &type, ArgT1 &&arg1, ArgsT &&... args):
-		type(type), _imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
+	Form::Form(const FormType<ImpT> &type,
+						 const Pos &pos,
+						 ArgT1 &&arg1, ArgsT &&... args):
+		type(type),
+		pos(pos),
+		_imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }

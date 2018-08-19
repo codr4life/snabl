@@ -28,10 +28,12 @@ namespace snabl {
 			i->type.compile(i, forms.end(), func, fimp, *this);
 		}
 
+		auto pos(forms.begin()->pos);
+		
 		if (fimp) {
-			emplace_back(ops::Funcall::type, fimp);
+			emplace_back(ops::Funcall::type, pos, fimp);
 		} else if (func) {
-			emplace_back(ops::Funcall::type, func);
+			emplace_back(ops::Funcall::type, pos, func);
 		}
 	}
 	

@@ -5,13 +5,19 @@
 *** eval separately
 * add , support
 ** parse rest as Sexpr
-* add swap macro
 * add let: macro
+* add swap macro
+* add type.eqval/equid
+** default implementation throw
+** implement for all typess
+* add =/== funcs
+* add test=/== funcs
+* add load func
+* add run mode
 * add set/del places
 ** add [] indexing support
 *** parse as func '[]' and call with args
-** add location support
-*** enum class AFimp::Mode {Get/Set/Del}
+** enum class AFimp::Mode {Get/Set/Del}
 *** add AFimp.mode
 **** print after name at:del<Str Int>
 *** add set: macro
