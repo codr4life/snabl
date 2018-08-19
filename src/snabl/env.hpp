@@ -46,9 +46,9 @@ namespace snabl {
 		void compile(const std::string &in);
 		void run(const std::string &in);
 		
-		void push_lib(Lib *lib);
-		Lib *lib();
-		Lib *pop_lib();
+		void push_lib(Lib &lib);
+		Lib &lib();
+		Lib &pop_lib();
 
 		ScopePtr begin(const ScopePtr &parent=nullptr);
 		ScopePtr scope();

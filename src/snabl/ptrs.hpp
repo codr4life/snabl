@@ -7,8 +7,17 @@ namespace snabl {
 	class AType;
 	using ATypePtr = std::shared_ptr<AType>;
 
+	template <typename ValueT>
+	class Type;
+
+	template <typename ValueT>
+	using TypePtr = std::shared_ptr<Type<ValueT>>;
+
 	class Scope;	
 	using ScopePtr = std::shared_ptr<Scope>;
+
+	class Macro;
+	using MacroPtr = std::shared_ptr<Macro>;
 	
 	class AFimp;
 	using AFimpPtr = std::shared_ptr<AFimp>;

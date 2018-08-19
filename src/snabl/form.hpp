@@ -69,8 +69,8 @@ namespace snabl {
 
 		struct Id: public FormImp {
 			static const IdType type;
-			const Sym id;
-			Id(const Sym &id);
+			const Sym sym;
+			Id(const Sym &sym);
 		};
 
 		struct Literal;

@@ -40,12 +40,16 @@ namespace snabl {
 		if (offs) { std::advance(_pc, offs); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_end, &&op_funcall, &&op_push
+			&&op_begin, &&op_drop, &&op_end, &&op_funcall, &&op_push
 		};
 
 		SNABL_DISPATCH();
 	op_begin:
 		env.begin(_pc->as<ops::Begin>().parent);
+		_pc++;
+		SNABL_DISPATCH();
+	op_drop:
+		env.pop_stack();
 		_pc++;
 		SNABL_DISPATCH();
 	op_end:
@@ -54,7 +58,7 @@ namespace snabl {
 		SNABL_DISPATCH();
 	op_funcall:
 		auto &op(_pc->as<ops::Funcall>());
-		auto fimp(op.fimp);
+		auto &fimp(op.fimp);
 		
 		if (!fimp && op.prev_fimp) { fimp = op.prev_fimp; }
 

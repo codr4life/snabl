@@ -35,9 +35,6 @@ namespace snabl {
 
 	template <typename ValueT>
 	Type<ValueT>::Type(Lib &lib, const Sym &id): AType(lib, id) { }
-
-	template <typename ValueT>
-	using TypePtr = std::shared_ptr<Type<ValueT>>;
 }
 
 #endif

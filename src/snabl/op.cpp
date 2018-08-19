@@ -8,12 +8,15 @@ namespace snabl {
 
 	namespace ops {
 		const OpType<Begin> Begin::type("Begin");
+		const OpType<Drop> Drop::type("Drop");
 		const OpType<End> End::type("End");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<Push> Push::type("Push");
 
 		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
+		Drop::Drop() { }
+		
 		End::End() { }
 
 		Funcall::Funcall(const AFuncPtr &func): func(func) { }

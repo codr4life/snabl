@@ -60,6 +60,11 @@ namespace snabl {
 			Begin(const ScopePtr &parent);
 		};
 
+		struct Drop: public OpImp {
+			static const OpType<Drop> type;
+			Drop();
+		};
+		
 		struct End: public OpImp {
 			static const OpType<End> type;
 			End();

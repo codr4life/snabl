@@ -15,7 +15,7 @@ namespace snabl {
 		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
 		bin(*this),
 		main(begin(nullptr)),
-		_pos(home_pos) { push_lib(&home); }
+		_pos(home_pos) { push_lib(home); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
 
@@ -112,20 +112,23 @@ namespace snabl {
 	}
 
 	void Env::run(const std::string &in) {
-		auto start_pc = bin.ops().size();
+		size_t start_pc = bin.ops().size();
 		compile(in);
 		bin.run(start_pc);
 	}
 
-	void Env::push_lib(Lib *lib) {
-		_libs.push_back(lib);
+	void Env::push_lib(Lib &lib) {
+		_libs.push_back(&lib);
 	}
 	
-	Lib *Env::lib() { return _libs.back(); }
-
-	Lib *Env::pop_lib() {
+	Lib &Env::lib() {
 		if (_libs.empty()) { throw Error("No libs"); }
-		Lib *l(_libs.back());
+		return *_libs.back();
+	}
+
+	Lib &Env::pop_lib() {
+		if (_libs.empty()) { throw Error("No libs"); }
+		Lib &l(*_libs.back());
 		_libs.pop_back();
 		return l;
 	}

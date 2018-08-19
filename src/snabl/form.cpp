@@ -6,18 +6,33 @@ namespace snabl {
 		const IdType Id::type;
 		const LiteralType Literal::type;
 
-		Id::Id(const Sym &id): id(id) { }
+		Id::Id(const Sym &sym): sym(sym) { }
 
 		void IdType::compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
 												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const {
-			auto f((in++)->as<Id>());
-			func = out.env.lib()->get_func(f.id);
+			auto &id((in++)->as<Id>().sym);
+			auto &lib(out.env.lib());
+			auto m(lib.get_macro(id));
+			
+			if (m) {
+				m->call(in, end, func, fimp, out);
+			} else {
+				auto f(lib.get_func(id));
+				if (!f) { throw new Error("Unknown id"); }
+				
+				if (f->nargs) {
+					if (func) { throw new Error("Extra func"); }
+					func = f;
+				} else {
+					out.emplace_back(ops::Funcall::type, f);
+				}
+			}
 		}
 
 		void IdType::dump(const Form &form, std::ostream &out) {
-			out << form.as<Id>().id.name();
+			out << form.as<Id>().sym.name();
 		}
 
 		Literal::Literal(const Box &value): value(value) { }

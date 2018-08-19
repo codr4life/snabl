@@ -5,6 +5,7 @@
 
 #include "snabl/error.hpp"
 #include "snabl/func.hpp"
+#include "snabl/macro.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/type.hpp"
 
@@ -19,6 +20,8 @@ namespace snabl {
 		Lib(Env &env, const Sym &id);
 		~Lib();
 		
+		MacroPtr add_macro(const Sym &id, const Macro::Imp &imp);
+
 		template <typename TypeT, typename... ArgsT>
 		std::shared_ptr<TypeT> add_type(ArgsT &&... args);
 
@@ -31,8 +34,10 @@ namespace snabl {
 																	 const typename Func<NARGS, NRETS>::Rets &rets,
 																	 ImpT &&... imp);
 
+		MacroPtr get_macro(const Sym &id);
 		AFuncPtr get_func(const Sym &id);
 	private:
+		std::unordered_map<Sym, MacroPtr> _macros;
 		std::unordered_map<Sym, ATypePtr> _types;
 		std::unordered_map<Sym, AFuncPtr> _funcs;
 	};

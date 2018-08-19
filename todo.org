@@ -1,8 +1,12 @@
-* add macro support
-** process all passed in tokens
+* add  dump_stack fn
+** dump row, col & stack to stderr
+* add parent_types vararg to Type/AType/add_type
+** add any/num types
 * add Sexpr support
 ** add Sexpr form
 *** eval separately
+* add swap macro
+* add let: macro
 * add set/del places
 ** add [] indexing support
 *** parse as func '[]' and call with args
@@ -20,6 +24,8 @@
 ** eval rest separately on each comma
 * finish fib support
 * add repl(env, in, out) fn
+* add use: macro
+* move +/drop to abc lib
 ** eval snabl code
 * add ops PushCall PopCall
 * exec funcs/macros without args immediately
@@ -31,7 +37,6 @@
 * add jump op
 ** ssize_t nops
 ** update pc
-* add drop/swap/reset ops
 * add set/get_var ops
 * add env.push/pop_scope
 ** update stack_begin in push

@@ -9,6 +9,15 @@ using namespace snabl;
 
 int main() {
 	Env env;
+
+	env.home.add_macro(env.get_sym("drop"),
+										 [](Forms::const_iterator &in,
+												const Forms::const_iterator &end,
+												AFuncPtr &func, AFimpPtr &fimp,
+												Bin &out) {
+											 in++;
+											 out.emplace_back(ops::Drop::type);			
+											 });
 	
 	env.home.add_fimp<2, 1>(env.get_sym("+"),
 		{env.int_type, env.int_type},
@@ -23,9 +32,11 @@ int main() {
 			env.push_stack(env.int_type, x+y);
 		});
 
-	env.run("1 + 2");
+	env.run("42");
+	env.run("1 + 3");
+	env.run("3 5 drop 7 +");
 	
-	//"func: fib(Int)(Int) (let: n) ($n < 2) if_else 1 {(fib, $n --) + (fib, $n - 2)}";
+	//"func: fib(Int)(Int) (let: n) if_else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	//env.bin.compile(add_int);
 	
 	auto s(env.begin(env.scope()));
