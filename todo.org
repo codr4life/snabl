@@ -4,6 +4,10 @@
 * add Sexpr support
 ** add Sexpr form
 *** eval separately
+* add set/del places
+** store as optional std::function Box::_set/del
+** take as constructor params
+** change push to forward constructor args
 * add , support
 ** eval rest separately on each comma
 * finish fib support

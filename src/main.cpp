@@ -25,7 +25,7 @@ int main() {
 
 	env.run("1 + 2");
 	
-	//"func: fib(Int)(Int) (let: n) ($n < 2) if-else 1 {(fib, $n --) + (fib, $n - 2)}";
+	//"func: fib(Int)(Int) (let: n) ($n < 2) if_else 1 {(fib, $n --) + (fib, $n - 2)}";
 	//env.bin.compile(add_int);
 	
 	auto s(env.begin(env.scope()));
