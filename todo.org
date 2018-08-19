@@ -1,5 +1,3 @@
-* fix memory leak
-** clear func imps in Lib destructor
 * add macro support
 ** process all passed in tokens
 * add Sexpr support

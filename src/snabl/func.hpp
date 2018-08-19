@@ -18,6 +18,7 @@ namespace snabl {
 		const int nargs, nrets;
 		
 		virtual AFimpPtr get_best_fimp() const=0;
+		virtual void clear()=0;
 	protected:
 		AFunc(Lib &lib, const Sym &id, int nargs, int nrets);
 	};
@@ -36,6 +37,7 @@ namespace snabl {
 		
 		Func(Lib &lib, const Sym &id);
 		AFimpPtr get_best_fimp() const override;
+		void clear() override;
 	private:
 		std::unordered_map<Sym, FimpPtr<NARGS, NRETS>> _fimps;
 	};
@@ -80,6 +82,9 @@ namespace snabl {
 		if (!best_fimp) { throw Error("Func not applicable"); }
 		return best_fimp;
 	}
+
+	template <int NARGS, int NRETS>
+	void Func<NARGS, NRETS>::clear() { _fimps.clear(); }
 }
 
 #endif

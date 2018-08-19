@@ -17,7 +17,8 @@ namespace snabl {
 		const Sym id;
 		
 		Lib(Env &env, const Sym &id);
-
+		~Lib();
+		
 		template <typename TypeT, typename... ArgsT>
 		std::shared_ptr<TypeT> add_type(ArgsT &&... args);
 
