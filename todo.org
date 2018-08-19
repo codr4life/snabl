@@ -1,11 +1,13 @@
 * add macro support
 ** name arity macros xxx:
 *** process all passed in tokens
-* add group support
-** add Group form
+* add Sexpr support
+** add Sexpr form
 *** eval separately
 * add , support
 ** eval rest separately on each comma
+* add repl(env, in, out) fn
+** eval snabl code
 * add ops PushCall PopCall
 * exec funcs/macros without args immediately
 ** otherwise at end of expr or ,
@@ -20,8 +22,6 @@
 * add set/get_var ops
 * add env.push/pop_scope
 ** update stack_begin in push
-* add arg
-** use union to differentiate between cases
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
@@ -32,3 +32,10 @@
 ** generate harness with env
 ** add OpType.emit_cpp fn
 *** generate code to emit op on env bin
+* add fimp lookup
+** add lib.fimps/add_fimp
+*** call from func when fimp is added
+*** use instead of add_func
+** adapt id-parse to handle <..>
+** call get_fimp instead of get_func if id contains '<'
+
