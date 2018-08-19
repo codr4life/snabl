@@ -5,9 +5,14 @@
 ** add Sexpr form
 *** eval separately
 * add set/del places
-** store as optional std::function Box::_set/del
-** take as constructor params
-** change push to forward constructor args
+** add Eval enum
+*** enum class Eval {Get/Set/Del}
+*** add Fimp.eval
+**** print after name at:del<Str Int>
+*** add Bin._eval
+**** add set:/del: macros that modify the next func/var
+***** add Set/Del ops
+***** check that Set/Del is followed by Funcall/GetVar
 * add , support
 ** eval rest separately on each comma
 * finish fib support

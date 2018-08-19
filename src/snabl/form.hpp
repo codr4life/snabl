@@ -55,11 +55,8 @@ namespace snabl {
 	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }
 
 	namespace forms {
-		struct Id: public FormImp {
-			const Sym id;
-			Id(const Sym &id);
-		};
-
+		struct Id;
+		
 		class IdType: public FormType<Id> {
 		public:
 			void compile(Forms::const_iterator &in,
@@ -70,13 +67,14 @@ namespace snabl {
 			void dump(const Form &form, std::ostream &out) override;
 		};
 
-		extern const IdType id_type;
-
-		struct Literal: public FormImp {			
-			Box value;
-			Literal(const Box &value);
+		struct Id: public FormImp {
+			static const IdType type;
+			const Sym id;
+			Id(const Sym &id);
 		};
 
+		struct Literal;
+		
 		class LiteralType: public FormType<Literal> {
 		public:
 			void compile(Forms::const_iterator &in,
@@ -87,7 +85,11 @@ namespace snabl {
 			void dump(const Form &form, std::ostream &out) override;
 		};
 
-		extern const LiteralType literal_type;
+		struct Literal: public FormImp {			
+			static const LiteralType type;
+			Box value;
+			Literal(const Box &value);
+		};
 	}
 }
 

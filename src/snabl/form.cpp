@@ -3,8 +3,8 @@
 
 namespace snabl {
 	namespace forms {
-		const IdType id_type;
-		const LiteralType literal_type;
+		const IdType Id::type;
+		const LiteralType Literal::type;
 
 		Id::Id(const Sym &id): id(id) { }
 
