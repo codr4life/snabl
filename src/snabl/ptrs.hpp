@@ -13,6 +13,9 @@ namespace snabl {
 	template <typename ValueT>
 	using TypePtr = std::shared_ptr<Type<ValueT>>;
 
+	class Trait;
+	using TraitPtr = std::shared_ptr<Trait>;
+	
 	class Scope;	
 	using ScopePtr = std::shared_ptr<Scope>;
 

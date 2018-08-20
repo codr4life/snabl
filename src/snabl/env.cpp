@@ -10,8 +10,10 @@ namespace snabl {
 	Env::Env():
 		_type_tag(1),
 		home(*this, get_sym("home")),
-		float_type(home.add_type<FloatType>(get_sym("Float"))),
-		int_type(home.add_type<IntType>(get_sym("Int"))),
+		a_type(home.add_type<Trait>(get_sym("A"))),
+		num_type(home.add_type<Trait>(get_sym("Num"), {a_type})),
+		float_type(home.add_type<FloatType>(get_sym("Float"), {num_type})),
+		int_type(home.add_type<IntType>(get_sym("Int"), {num_type})),
 		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
 		bin(*this),
 		main(begin(nullptr)),

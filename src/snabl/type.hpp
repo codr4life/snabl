@@ -35,6 +35,11 @@ namespace snabl {
 
 	template <typename ValueT>
 	Type<ValueT>::Type(Lib &lib, const Sym &id): AType(lib, id) { }
+
+	class Trait: public Type<std::nullptr_t> {
+	public:
+		Trait(Lib &lib, const Sym &id);
+	};
 }
 
 #endif

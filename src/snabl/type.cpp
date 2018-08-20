@@ -27,4 +27,6 @@ namespace snabl {
 	void AType::dump(const Box &value, std::ostream &out) {
 		out << id.name() << "(n/a)";
 	}
+
+	Trait::Trait(Lib &lib, const Sym &id): Type<std::nullptr_t>(lib, id) { }
 }

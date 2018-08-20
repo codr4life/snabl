@@ -30,6 +30,7 @@ namespace snabl {
 		static const Pos home_pos;
 
 		Lib home;
+		const TraitPtr a_type, num_type;
 		const TypePtr<Float> float_type;
 		const TypePtr<Int> int_type;
 		std::unordered_set<char> separators;

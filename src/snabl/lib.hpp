@@ -23,7 +23,9 @@ namespace snabl {
 		MacroPtr add_macro(const Sym &id, const Macro::Imp &imp);
 
 		template <typename TypeT, typename... ArgsT>
-		std::shared_ptr<TypeT> add_type(ArgsT &&... args);
+		std::shared_ptr<TypeT> add_type(const Sym &id,
+																		std::initializer_list<ATypePtr> parent_types={},
+																		ArgsT &&... args);
 
 		template <int NARGS, int NRETS>
 		FuncPtr<NARGS, NRETS> add_func(const Sym &id);
@@ -43,9 +45,14 @@ namespace snabl {
 	};
 
 	template <typename TypeT, typename... ArgsT>
-	std::shared_ptr<TypeT> Lib::add_type(ArgsT &&... args) {
-		auto t(std::make_shared<TypeT>(*this, std::forward<ArgsT>(args)...));
+	std::shared_ptr<TypeT> Lib::add_type(const Sym &id,
+																			 std::initializer_list<ATypePtr> parent_types,
+																			 ArgsT &&... args) {
+		auto t(std::make_shared<TypeT>(*this,
+																	 id,
+																	 std::forward<ArgsT>(args)...));
 		_types.emplace(t->id, t);
+		for (auto &pt: parent_types) { AType::derive(t, pt); }
 		return t;
 	}
 
