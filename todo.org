@@ -1,14 +1,12 @@
-* add Sexpr support
-** add Sexpr form
-*** eval separately
-* add , support
-** parse rest as Sexpr
+* add (..) support
+** parse as Sexpr
 * add let: macro
 * add swap macro
 * add type.eqval/equid
 ** default implementation throw
 ** implement for all typess
 * add =/== funcs
+** call eqval/equid by default
 * add test=/== funcs
 * add load func
 * add run mode

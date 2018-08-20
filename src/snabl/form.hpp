@@ -21,7 +21,7 @@ namespace snabl {
 												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const=0;
 		
-		virtual void dump(const Form &form, std::ostream &out)=0;
+		virtual void dump(const Form &form, std::ostream &out) const=0;
 	};
 
 	template <typename ImpT>
@@ -70,7 +70,7 @@ namespace snabl {
 									 AFuncPtr &func, AFimpPtr &fimp,
 									 Bin &out) const override;
 			
-			void dump(const Form &form, std::ostream &out) override;
+			void dump(const Form &form, std::ostream &out) const override;
 		};
 
 		struct Id: public FormImp {
@@ -88,13 +88,31 @@ namespace snabl {
 									 AFuncPtr &func, AFimpPtr &fimp,
 									 Bin &out) const override;
 			
-			void dump(const Form &form, std::ostream &out) override;
+			void dump(const Form &form, std::ostream &out) const override;
 		};
 
 		struct Literal: public FormImp {			
 			static const LiteralType type;
 			Box value;
 			Literal(const Box &value);
+		};
+
+		struct Sexpr;
+		
+		class SexprType: public FormType<Sexpr> {
+		public:
+			void compile(Forms::const_iterator &in,
+									 const Forms::const_iterator &end,
+									 AFuncPtr &func, AFimpPtr &fimp,
+									 Bin &out) const override;
+			
+			void dump(const Form &form, std::ostream &out) const override;
+		};
+
+		struct Sexpr: public FormImp {			
+			static const SexprType type;
+			const Forms body;
+			Sexpr(Forms &&body);
 		};
 	}
 }

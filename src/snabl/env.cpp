@@ -14,7 +14,7 @@ namespace snabl {
 		num_type(home.add_type<Trait>(get_sym("Num"), {a_type})),
 		float_type(home.add_type<FloatType>(get_sym("Float"), {num_type})),
 		int_type(home.add_type<IntType>(get_sym("Int"), {num_type})),
-		separators({' ', '\t', '\n', '+', '-', '*', '/'}),
+		separators({' ', '\t', '\n', ',', '(', ')'}),
 		bin(*this),
 		main(begin(nullptr)),
 		_pos(home_pos) { push_lib(home); }
@@ -48,6 +48,10 @@ namespace snabl {
 			case '\n':
 				_pos.row++;
 				_pos.col = home_pos.col;
+				break;
+			case ',':
+				_pos.col++;
+				parse_rest(in, out);
 				break;
 			default:
 				if (isdigit(c)) {
@@ -109,7 +113,14 @@ namespace snabl {
 										 ? Box(float_type, std::stold(buf.str()))
 										 : Box(int_type, std::stoll(buf.str())));
 	}
-	
+
+	void Env::parse_rest(std::istream &in, Forms &out) {
+		auto start_pos(_pos);
+		Forms body;
+		parse(in, start_pos, body);
+		out.emplace_back(forms::Sexpr::type, start_pos, std::move(body));
+	}
+
 	void Env::compile(const std::string &in) {
 		Forms forms;
 		parse(in, forms);
