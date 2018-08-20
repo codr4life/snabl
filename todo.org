@@ -1,5 +1,3 @@
-* add parent_types vararg to Type/AType/add_type
-** add any/num types
 * add Sexpr support
 ** add Sexpr form
 *** eval separately
