@@ -32,14 +32,19 @@ namespace snabl {
 
 	void Env::parse(const std::string &in, Forms &out) {
 		std::istringstream s(in);
-		parse(s, home_pos, out);		
+		parse(s, home_pos, 0, out);		
 	}
 	
-	void Env::parse(std::istream &in, Pos start_pos, Forms &out) {
+	bool Env::parse(std::istream &in, Pos start_pos, char end, Forms &out) {
 		_pos = start_pos;
 		char c;
 		
 		while (in.get(c)) {
+			if (c == end) {
+				_pos.col++;
+				return true;
+			}
+			
 			switch(c) {
 			case ' ':
 			case '\t':
@@ -51,7 +56,11 @@ namespace snabl {
 				break;
 			case ',':
 				_pos.col++;
-				parse_rest(in, out);
+				parse_rest(in, 0, out);
+				break;
+			case '(':
+				_pos.col++;
+				parse_rest(in, ')', out);
 				break;
 			default:
 				bool is_num = isdigit(c);
@@ -76,6 +85,8 @@ namespace snabl {
 				}
 			}
 		}
+
+		return false;
 	}
 	
 	void Env::parse_id(std::istream &in, Forms &out) {
@@ -125,10 +136,10 @@ namespace snabl {
 										 : Box(int_type, std::stoll(buf.str())));
 	}
 
-	void Env::parse_rest(std::istream &in, Forms &out) {
+	void Env::parse_rest(std::istream &in, char end, Forms &out) {
 		auto start_pos(_pos);
 		Forms body;
-		parse(in, start_pos, body);
+		parse(in, start_pos, end, body);
 		out.emplace_back(forms::Sexpr::type, start_pos, std::move(body));
 	}
 

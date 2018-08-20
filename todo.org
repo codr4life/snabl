@@ -1,6 +1,5 @@
-* add (..) support
-** parse as Sexpr
 * add let: macro
+* add if-else: macro
 * add swap macro
 * add type.eqval/equid
 ** default implementation throw

@@ -42,7 +42,7 @@ namespace snabl {
 		Sym get_sym(const std::string &name);
 		
 		void parse(const std::string &in, Forms &out);
-		void parse(std::istream &in, Pos start_pos, Forms &out);
+		bool parse(std::istream &in, Pos start_pos, char end, Forms &out);
 		
 		void compile(const std::string &in);
 		void run(const std::string &in);
@@ -72,7 +72,7 @@ namespace snabl {
 		
 		void parse_id(std::istream &in, Forms &out);
 		void parse_num(std::istream &in, Forms &out);
-		void parse_rest(std::istream &in, Forms &out);
+		void parse_rest(std::istream &in, char end, Forms &out);
 	};
 
 	template <typename ValueT>

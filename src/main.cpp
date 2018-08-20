@@ -59,11 +59,13 @@ int main() {
 	env.run("1 +, 3 * 2");
 	assert(s->pop_stack().as<Int>() == Int(7));
 
+	env.run("1 + (3 * 2)");
+	assert(s->pop_stack().as<Int>() == Int(7));
+
 	env.run("1 3 5 drop +");
 	assert(s->pop_stack().as<Int>() == Int(4));
 	
-	//"func: fib(Int)(Int) (let: n) if_else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
-	//env.bin.compile(add_int);
+	//"func: fib(Int)(Int) (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	
 	auto foo(env.get_sym("foo"));
 	env.main->set_var(foo, env.int_type, Int(42));
