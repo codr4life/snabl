@@ -50,6 +50,9 @@ int main() {
 	env.run("42");
 	assert(s->pop_stack().as<Int>() == Int(42));
 
+	env.run("-3.14");
+	assert(s->pop_stack().as<Float>() == Float(-3.14));
+
 	env.run("1 + 3");
 	assert(s->pop_stack().as<Int>() == Int(4));
 

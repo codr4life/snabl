@@ -54,7 +54,18 @@ namespace snabl {
 				parse_rest(in, out);
 				break;
 			default:
-				if (isdigit(c)) {
+				bool is_num = isdigit(c);
+
+				if (c == '-') {
+					char nc;
+					
+					if (in.get(nc)) {
+						in.putback(nc);
+						is_num |= isdigit(nc);
+					}
+				}
+				
+				if (is_num) {
 					in.putback(c);
 					parse_num(in, out);
 				} else if (isgraph(c)) {
@@ -97,7 +108,7 @@ namespace snabl {
 		char c;
 		
 		while (in.get(c)) {
-			if (isdigit(c) || c == '.') {
+			if (isdigit(c) || c == '-' || c == '.') {
 				buf << c;
 				_pos.col++;
 				is_float |= c == '.';
