@@ -1,7 +1,7 @@
 ![Logo](logo.png?raw=true)
 
 ### Features
-The following is a list of what could be considered Snabl's defining features.
+The following is a list of what could be considered defining features.
 
 #### Mixfix
 Snabl allows reordering functions/operators and arguments within expressions. Expressions may be further divided using ```,``` which evaluates the rest of the expression separately, or enclosed in ```()``` which evaluates the enclosed expression separately.
@@ -15,32 +15,32 @@ Snabl supports dispatching functions on multiple arguments, as opposed to only t
 ```
 ```
 
-#### Gradually Typed
+#### Gradually Types
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
 ```
 ```
 
 #### Closures
-Named and anonymous functions capture their defining environment.
+Snabl captures the defining environment for named and anonymous functions.
 
 ```
 ```
 
-#### Reference Counted
+#### Reference Counting
 Snabl uses reference counting instead of garbage collection, which often means more predictable performance and resource usage.
 
 ```
 ```
 
-#### Integrated
-Snabl integrates deeply into C++ and the STL.
+#### Integration
+Snabl integrates deeply into C++ and the STL and is relatively trivial to embed.
 
 ```
 ```
 
-#### Independent
-Besides a decent C++17 compiler and CMake, Snabl comes without dependencies.
+#### Portability
+Besides a decent C++17 compiler and CMake, Snabl has no dependencies.
 
 ```
 ```
