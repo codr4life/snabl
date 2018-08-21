@@ -1,25 +1,31 @@
-* add if-else: macro
-* add swap macro
+* add type list support
+** <Int Str>
+** add TypeList form
+*** consume in Id compile
+*** throw error if unused
 * add type.eqval/equid
 ** default implementation throw
 ** implement for all typess
 * add =/== funcs
 ** call eqval/equid by default
 * add test=/== funcs
+** use in tests
+* add if-else: macro
+* add func: macro
+** add optional parent_scope
+*** use as parent for begin
+* finish fib
+* add repl(env, in, out) fn
+* add swap macro
 * add load func
 * add run mode
 * add [] indexing support
 ** parse as func '[]' and call with args
-* finish fib support
-* add repl(env, in, out) fn
+
 * add use: macro
 * move +/drop to abc lib
 ** eval snabl code
 * add ops PushCall PopCall
-* exec funcs/macros without args immediately
-** otherwise at end of expr or ,
-* add optional func.parent_scope
-** use as parent for begin
 * precompile fimps
 ** compile rest on demand
 * add jump op
@@ -51,8 +57,6 @@
 ** add lib.fimps/add_fimp
 *** call from func when fimp is added
 *** use instead of add_func
-** adapt id-parse to handle <..>
-** call get_fimp instead of get_func if id contains '<'
 * add sqlite plugin
 * add wxwidgets plugin
 * add proxygen plugin

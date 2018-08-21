@@ -1,4 +1,5 @@
 #include <cassert>
+#include <experimental/tuple>
 
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
@@ -70,7 +71,7 @@ int main() {
 	assert(s->pop_stack().as<Int>() == Int(42));
 
 	env.run("-3.14");
-	assert(s->pop_stack().as<Float>() == Float(-3.14));
+	assert(Int(s->pop_stack().as<Float>()*100) == Int(-314));
 
 	env.run("1 + 3");
 	assert(s->pop_stack().as<Int>() == Int(4));

@@ -1,9 +1,9 @@
 #include "snabl/bin.hpp"
 #include "snabl/env.hpp"
 
-#define SNABL_DISPATCH()																		\
-	if (_pc == _ops.end()) { return; }												\
-	goto *op_labels[_pc->type.label_offs];										\
+#define SNABL_DISPATCH()												\
+	if (_pc == _ops.end()) { return; }						\
+	goto *op_labels[_pc->type.label_offs];				\
 
 namespace snabl {
 	BinFimp::BinFimp(size_t begin, size_t end):
