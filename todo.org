@@ -1,5 +1,6 @@
 * add type list support
 ** <Int Str>
+** trigger parse from parse_id
 ** add TypeList form
 *** consume in Id compile
 *** throw error if unused
@@ -18,7 +19,7 @@
 * add repl(env, in, out) fn
 * add swap macro
 * add load func
-* add run mode
+** call when called with args
 * add [] indexing support
 ** parse as func '[]' and call with args
 
@@ -49,14 +50,10 @@
 * add code generation
 ** generate function
 *** take env param
-** snabl compile/build
-** generate harness with env
-** add OpType.emit_cpp fn
-*** generate code to emit op on env bin
 * add fimp lookup
 ** add lib.fimps/add_fimp
 *** call from func when fimp is added
 *** use instead of add_func
 * add sqlite plugin
-* add wxwidgets plugin
 * add proxygen plugin
+* add wxwidgets plugin

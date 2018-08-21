@@ -2,6 +2,7 @@
 
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
+#include "snabl/fmt.hpp"
 #include "snabl/func.hpp"
 #include "snabl/type.hpp"
 
@@ -10,6 +11,8 @@ using namespace snabl;
 int main() {
 	Env env;
 
+	std::cout << fmt("%0 %1 %2", "foo", std::string("bar"), 42) << std::endl;
+	
 	env.home.add_macro(env.get_sym("drop"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
