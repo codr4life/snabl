@@ -57,7 +57,6 @@ namespace snabl {
 
 		AFuncPtr afunc() const override;
 		ssize_t score() const override;
-		ssize_t score(const ATypePtr stack[]) const;
 	};
 
 	template <int NARGS, int NRETS>
