@@ -15,13 +15,12 @@ namespace snabl {
 	template <typename ArgT>
 	std::string fmt_arg(const ArgT &x) { return std::to_string(x); }
 
-	void _fmt(std::string &spec, size_t i);
+	void _fmt(std::string &spec, int i);
 
 	template <typename Arg1, typename...ArgsT>
-	void _fmt(std::string &spec, size_t i, const Arg1 &arg1, ArgsT &&... args) {
-		std::string id("%");
-		id.push_back('0'+i);
-		std::string arg(fmt_arg(arg1));
+	void _fmt(std::string &spec, int i, const Arg1 &arg1, ArgsT &&... args) {
+		const std::string id {'%', static_cast<char>('0'+i)};
+		const std::string arg(fmt_arg(arg1));
 		bool found = false;
 		size_t j(0);
 

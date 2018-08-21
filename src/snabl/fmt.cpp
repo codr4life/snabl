@@ -5,5 +5,5 @@ namespace snabl {
 	
 	std::string fmt_arg(const std::string &x) { return x; }
 
-	void _fmt(std::string &spec, size_t i) { }
+	void _fmt(std::string &spec, int i) { }
 }
