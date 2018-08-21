@@ -2,8 +2,11 @@
 ** <Int Str>
 ** trigger parse from parse_id
 ** add TypeList form
-*** consume in Id compile
-*** throw error if unused
+** consume in Id compile
+*** score types for fimps to find best match
+*** specialize type values
+**** allow skipping arg with _
+** throw error if unused
 * add type.bool fn
 * add support for type args
 ** T0-TN
