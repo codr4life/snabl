@@ -4,6 +4,23 @@
 ** add TypeList form
 *** consume in Id compile
 *** throw error if unused
+* add type.bool fn
+* add support for type args
+** T0-TN
+** create on demand when referenced
+** resolve in on func def
+* add generics
+** add type.args
+** add type.specialize fn
+* add < fn
+** add Cmp<Any> type
+** use <Cmp<Any> T0>
+* add if-else: macro
+* add func: macro
+** optional parent_scope
+*** use as parent for begin
+* finish fib
+* add repl(env, in, out) fn
 * add type.eqval/equid
 ** default implementation throw
 ** implement for all typess
@@ -11,12 +28,7 @@
 ** call eqval/equid by default
 * add test=/== funcs
 ** use in tests
-* add if-else: macro
-* add func: macro
-** add optional parent_scope
-*** use as parent for begin
-* finish fib
-* add repl(env, in, out) fn
+
 * add swap macro
 * add load func
 ** call when called with args
@@ -38,7 +50,6 @@
 * add recall op
 ** jump immediately
 ** remember scope iter and truncate before jump
-* add generics
 ** add Type._args
 *** deque of ATypePtrs
 ** add Type.specialize(type, ...)
@@ -54,6 +65,8 @@
 ** add lib.fimps/add_fimp
 *** call from func when fimp is added
 *** use instead of add_func
+* add undef fn for types/funcs/fimps
+** remove from lib recursively until found
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin
