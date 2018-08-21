@@ -13,9 +13,19 @@ namespace snabl {
 		return *env.pop_stack();
 	}
 
-	Box const* Scope::get_var(const Sym &key) {
-		auto found(_vars.find(key));
+	Box const* Scope::get_var(const Sym &id) {
+		auto found(_vars.find(id));
 		if (found != _vars.end()) { return &found->second; }
-		return parent ? parent->get_var(key) : nullptr;
+		return parent ? parent->get_var(id) : nullptr;
+	}
+
+	void Scope::put_var(const Sym &id, const Box &value) {
+		auto found(_vars.find(id));
+
+		if (found != _vars.end()) {
+			found->second = value;
+		} else {
+			_vars.emplace(std::make_pair(id, value)).first->second;
+		}
 	}
 }

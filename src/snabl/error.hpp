@@ -5,9 +5,16 @@
 #include <string>
 
 namespace snabl {
+	struct Pos;
+	
 	class Error: public std::runtime_error {
 	public:
     Error(const std::string &msg);
+	};
+
+	class SyntaxError: public Error {
+	public:
+    SyntaxError(const Pos &pos, const std::string &msg);
 	};
 }
 

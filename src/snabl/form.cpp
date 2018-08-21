@@ -15,21 +15,29 @@ namespace snabl {
 												 Bin &out) const {
 			auto &op(*in);
 			auto &id(op.as<Id>().sym);
-			auto &lib(out.env.lib());
-			auto m(lib.get_macro(id));
-			
-			if (m) {
-				m->call(in, end, func, fimp, out);
-			} else {
+
+			if (id.name().front() == '@') {
 				in++;
-				auto f(lib.get_func(id));
-				if (!f) { throw Error("Unknown id"); }
+				out.emplace_back(ops::GetVar::type,
+												 op.pos,
+												 out.env.get_sym(id.name().substr(1)));
+			} else {
+				auto &lib(out.env.lib());
+				auto m(lib.get_macro(id));
 				
-				if (f->nargs) {
-					if (func) { throw Error("Extra func"); }
-					func = f;
+				if (m) {
+					m->call(in, end, func, fimp, out);
 				} else {
-					out.emplace_back(ops::Funcall::type, op.pos, f);
+					in++;
+					auto f(lib.get_func(id));
+					if (!f) { throw Error("Unknown id"); }
+					
+					if (f->nargs) {
+						if (func) { throw Error("Extra func"); }
+						func = f;
+					} else {
+						out.emplace_back(ops::Funcall::type, op.pos, f);
+					}
 				}
 			}
 		}

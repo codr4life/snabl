@@ -85,11 +85,23 @@ namespace snabl {
 			Funcall(const AFimpPtr &fimp);
 		};
 
+		struct GetVar: public OpImp {
+			static const OpType<GetVar> type;
+			const Sym id;
+			GetVar(const Sym &id);
+		};
+
 		struct Push: public OpImp {
 			static const OpType<Push> type;
 			
 			Box value;
 			Push(const Box &value);
+		};
+
+		struct PutVar: public OpImp {
+			static const OpType<PutVar> type;
+			const Sym id;
+			PutVar(const Sym &id);
 		};
 	}
 }

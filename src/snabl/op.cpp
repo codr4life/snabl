@@ -11,7 +11,9 @@ namespace snabl {
 		const OpType<Drop> Drop::type("Drop");
 		const OpType<End> End::type("End");
 		const OpType<Funcall> Funcall::type("Funcall");
+		const OpType<GetVar> GetVar::type("GetVar");
 		const OpType<Push> Push::type("Push");
+		const OpType<PutVar> PutVar::type("PutVar");
 
 		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
@@ -23,6 +25,10 @@ namespace snabl {
 		
 		Funcall::Funcall(const AFimpPtr &fimp): func(fimp->afunc()), fimp(fimp) { }
 
+		GetVar::GetVar(const Sym &id): id(id) { }
+
 		Push::Push(const Box &value): value(value) { }
+
+		PutVar::PutVar(const Sym &id): id(id) { }
 	}
 }

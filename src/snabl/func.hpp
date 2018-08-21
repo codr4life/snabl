@@ -79,7 +79,7 @@ namespace snabl {
 			}
 		}
 
-		if (!best_fimp) { throw Error("Func not applicable"); }
+		if (!best_fimp) { throw Error("Func not applicable: " + id.name()); }
 		return best_fimp;
 	}
 

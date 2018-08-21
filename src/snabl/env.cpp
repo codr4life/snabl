@@ -60,7 +60,7 @@ namespace snabl {
 				break;
 			case '(':
 				_pos.col++;
-				parse_rest(in, ')', out);
+				parse_sexpr(in, out);
 				break;
 			default:
 				bool is_num = isdigit(c);
@@ -136,13 +136,19 @@ namespace snabl {
 										 : Box(int_type, std::stoll(buf.str())));
 	}
 
-	void Env::parse_rest(std::istream &in, char end, Forms &out) {
+	bool Env::parse_rest(std::istream &in, char end, Forms &out) {
 		auto start_pos(_pos);
 		Forms body;
-		parse(in, start_pos, end, body);
+		if (!parse(in, start_pos, end, body) && end) { return false; }
 		out.emplace_back(forms::Sexpr::type, start_pos, std::move(body));
+		return true;
 	}
 
+	void Env::parse_sexpr(std::istream &in, Forms &out) {
+		auto start_pos(_pos);
+		if (!parse_rest(in, ')', out)) { throw SyntaxError(start_pos, "Open sexpr"); }
+	}
+	
 	void Env::compile(const std::string &in) {
 		Forms forms;
 		parse(in, forms);

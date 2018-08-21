@@ -72,7 +72,8 @@ namespace snabl {
 		
 		void parse_id(std::istream &in, Forms &out);
 		void parse_num(std::istream &in, Forms &out);
-		void parse_rest(std::istream &in, char end, Forms &out);
+		bool parse_rest(std::istream &in, char end, Forms &out);
+		void parse_sexpr(std::istream &in, Forms &out);
 	};
 
 	template <typename ValueT>

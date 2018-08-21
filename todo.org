@@ -1,4 +1,3 @@
-* add let: macro
 * add if-else: macro
 * add swap macro
 * add type.eqval/equid
@@ -9,21 +8,9 @@
 * add test=/== funcs
 * add load func
 * add run mode
-* add set/del places
-** add [] indexing support
-*** parse as func '[]' and call with args
-** enum class AFimp::Mode {Get/Set/Del}
-*** add AFimp.mode
-**** print after name at:del<Str Int>
-*** add set: macro
-**** ('foo'[1] set: ..)
-**** check/modify previous op during compilation
-*** add del macro
-**** ('foo'[1] del)
-**** check/modify previous op during compilation
+* add [] indexing support
+** parse as func '[]' and call with args
 * finish fib support
-* add  dump_stack fn
-** dump row, col & stack to stderr
 * add repl(env, in, out) fn
 * add use: macro
 * move +/drop to abc lib

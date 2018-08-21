@@ -18,6 +18,25 @@ int main() {
 											 auto &form(*in++);
 											 out.emplace_back(ops::Drop::type, form.pos);			
 										 });
+
+	env.home.add_macro(env.get_sym("let:"),
+										 [](Forms::const_iterator &in,
+												const Forms::const_iterator &end,
+												AFuncPtr &func, AFimpPtr &fimp,
+												Bin &out) {
+											 auto &form(*in++);
+											 auto &p(*in++);
+
+											 if (&p.type != &forms::Id::type) {
+												 throw SyntaxError(p.pos, "Invalid let: place");
+											 }
+												 
+											 (*in).type.compile(in, end, func, fimp, out);
+											 out.emplace_back(ops::PutVar::type,
+																				form.pos,
+																				p.as<forms::Id>().sym);
+										 });
+
 	
 	env.home.add_fimp<2, 1>(env.get_sym("+"),
 		{env.int_type, env.int_type},
@@ -64,11 +83,14 @@ int main() {
 
 	env.run("1 3 5 drop +");
 	assert(s->pop_stack().as<Int>() == Int(4));
+
+	env.run("(let: foo 42) @foo");
+	assert(s->pop_stack().as<Int>() == Int(42));
 	
-	//"func: fib(Int)(Int) (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
+	//"func: fib<Int> Int (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	
 	auto foo(env.get_sym("foo"));
-	env.main->set_var(foo, env.int_type, Int(42));
+	env.main->put_var(foo, Box(env.int_type, Int(42)));
 	assert(s->get_var(foo)->as<Int>() == Int(42));
 	env.end();
 

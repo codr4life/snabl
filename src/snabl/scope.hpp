@@ -19,30 +19,12 @@ namespace snabl {
 		
 		size_t stack_offs() const;
 		Box pop_stack();
-		Box const* get_var(const Sym &key);
-		
-		template <typename ValueT>
-		const Box &set_var(const Sym &key,
-											 const TypePtr<ValueT> &type,
-											 const ValueT &value);
+		Box const* get_var(const Sym &id);
+		void put_var(const Sym &id, const Box &value);
 	private:
 		std::unordered_map<Sym, Box> _vars;
 		size_t _stack_offs;
 	};
-
-	template <typename ValueT>
-	const Box &Scope::set_var(const Sym &key,
-														const TypePtr<ValueT> &type,
-														const ValueT &value) {
-		auto found(_vars.find(key));
-
-		if (found != _vars.end()) {
-			found->second = Box(type, value);
-			return found->second;
-		}
-
-		return _vars.emplace(std::make_pair(key, Box(type, value))).first->second;
-	}
 }
 
 #endif
