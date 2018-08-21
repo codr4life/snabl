@@ -100,6 +100,8 @@ namespace snabl {
 
 	template <int NARGS, int NRETS>
 	ssize_t Fimp<NARGS, NRETS>::score() const {
+		if (!NARGS) { return true; }
+		
 		auto &env(func->lib.env);
 		auto &stack(env.stack());
 		if (stack.size() < env.scope()->stack_offs()+NARGS) { return -1; }
