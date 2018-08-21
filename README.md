@@ -10,7 +10,7 @@ Snabl allows reordering functions/operators and arguments within expressions. Ex
 ```
 
 #### Multiple Dispatched
-Snabl supports dispatching functions on multiple arguments, as opposed to only the type of ```this``` in most languages. Each function name may have multiple implementations with the same number of arguments/results but different types.
+Snabl supports dispatching functions on multiple arguments, as opposed to only the type of ```this``` in most languages. Each function name may have multiple implementations with the same number of arguments as long as they have different types.
 
 ```
 ```

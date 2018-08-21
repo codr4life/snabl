@@ -4,13 +4,6 @@
 ** add TypeList form
 *** consume in Id compile
 *** throw error if unused
-* add separate link phase
-** OpType.link
-*** call from eval
-*** keep track of Bin._link_offs
-** add Funcall.func_id/optional<fimp_id>
-*** change constructor to take Sym, optional<Sym>
-*** move lookup to link phase
 * add type.bool fn
 * add support for type args
 ** T0-TN
