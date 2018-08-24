@@ -11,10 +11,11 @@ namespace snabl {
 		_type_tag(1),
 		home(*this, get_sym("home")),
 		a_type(home.add_type<Trait>(get_sym("A"))),
+		no_type(home.add_type<Trait>(get_sym("_"))),
 		num_type(home.add_type<Trait>(get_sym("Num"), {a_type})),
 		float_type(home.add_type<FloatType>(get_sym("Float"), {num_type})),
 		int_type(home.add_type<IntType>(get_sym("Int"), {num_type})),
-		separators({' ', '\t', '\n', ',', '(', ')'}),
+		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
 		bin(*this),
 		main(begin(nullptr)),
 		_pos(home_pos) { push_lib(home); }
@@ -102,7 +103,6 @@ namespace snabl {
 				buf << c;
 				_pos.col++;
 			} else {
-				in.putback(c);
 				break;
 			}
 
@@ -110,6 +110,12 @@ namespace snabl {
 		}
 
 		out.emplace_back(forms::Id::type, start_pos, get_sym(buf.str()));
+
+		if (c == '<') {
+			parse_type_list(in, out);
+		} else if (c) {
+			in.putback(c);
+		}
 	}
 
 	void Env::parse_num(std::istream &in, Forms &out) {
@@ -147,6 +153,17 @@ namespace snabl {
 	void Env::parse_sexpr(std::istream &in, Forms &out) {
 		auto start_pos(_pos);
 		if (!parse_rest(in, ')', out)) { throw SyntaxError(start_pos, "Open sexpr"); }
+	}
+
+	void Env::parse_type_list(std::istream &in, Forms &out) {
+		auto start_pos(_pos);
+		Forms body;
+
+		if (!parse(in, start_pos, '>', body)) {
+			throw SyntaxError(start_pos, "Open type list");
+		}
+
+		out.emplace_back(forms::TypeList::type, start_pos, body);
 	}
 	
 	void Env::compile(const std::string &in) {

@@ -89,7 +89,10 @@ int main() {
 
 	env.run("(let: foo 42) @foo");
 	assert(s->pop_stack().as<Int>() == Int(42));
-	
+
+	env.run("1 +<_ Int> 3");
+	assert(s->pop_stack().as<Int>() == Int(4));
+
 	//"func: fib<Int> Int (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	
 	auto foo(env.get_sym("foo"));

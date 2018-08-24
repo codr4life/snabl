@@ -7,6 +7,7 @@
 #include "snabl/box.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
+#include "snabl/stack.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -18,7 +19,8 @@ namespace snabl {
 		const Sym id;
 		const int nargs, nrets;
 		
-		virtual AFimpPtr get_best_fimp() const=0;
+		virtual AFimpPtr get_fimp() const=0;
+		virtual AFimpPtr get_best_fimp(const Stack &stack) const=0;
 		virtual void clear()=0;
 	protected:
 		AFunc(Lib &lib, const Sym &id, int nargs, int nrets);
@@ -37,7 +39,8 @@ namespace snabl {
 																					ImpT &&... imp);
 		
 		Func(Lib &lib, const Sym &id);
-		AFimpPtr get_best_fimp() const override;
+		AFimpPtr get_fimp() const override;
+		AFimpPtr get_best_fimp(const Stack &stack) const override;
 		void clear() override;
 	private:
 		std::unordered_map<Sym, FimpPtr<NARGS, NRETS>> _fimps;
@@ -65,13 +68,19 @@ namespace snabl {
 	}
 
 	template <int NARGS, int NRETS>
-	AFimpPtr Func<NARGS, NRETS>::get_best_fimp() const {
+	AFimpPtr Func<NARGS, NRETS>::get_fimp() const {
+		if (_fimps.size() != 1) { throw Error("Too many fimps"); }
+		return _fimps.begin()->second;
+	}
+	
+	template <int NARGS, int NRETS>
+	AFimpPtr Func<NARGS, NRETS>::get_best_fimp(const Stack &stack) const {
 		ssize_t best_score(-1);
 		AFimpPtr best_fimp;
 		
 		for (auto &fp: _fimps) {
 			auto &f(fp.second);
-			ssize_t fs(f->score());
+			ssize_t fs(f->score(stack));
 			if (!fs) { return f; }
 			
 			if (fs != -1 && (best_score == -1 || fs < best_score)) {

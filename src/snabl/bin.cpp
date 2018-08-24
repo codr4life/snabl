@@ -29,7 +29,7 @@ namespace snabl {
 		}
 
 		auto pos(forms.begin()->pos);
-		
+
 		if (fimp) {
 			emplace_back(ops::Funcall::type, pos, fimp);
 		} else if (func) {
@@ -66,9 +66,9 @@ namespace snabl {
 			if (!fimp && op.prev_fimp) { fimp = op.prev_fimp; }
 			
 			if (fimp) {
-				if (fimp->score() == -1) { fimp = nullptr; }
+				if (fimp->score(env.stack()) == -1) { fimp = nullptr; }
 			} else {
-				fimp = op.func->get_best_fimp();
+				fimp = op.func->get_best_fimp(env.stack());
 			}
 			
 			if (!fimp) { throw Error("Func not applicable: " + fimp->afunc()->id.name()); }

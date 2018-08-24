@@ -1,11 +1,3 @@
-* add type list support
-** <Int Str>
-** trigger parse from parse_id
-** add TypeList form
-** consume in Id compile
-*** score types for fimps to find best match
-*** specialize type values
-**** allow skipping arg with _
 * add type.bool fn
 * add support for type args
 ** add type.args

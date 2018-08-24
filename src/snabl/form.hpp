@@ -1,9 +1,13 @@
 #ifndef SNABL_FORM_HPP
 #define SNABL_FORM_HPP
 
+#include <iostream>
+
 #include <deque>
+#include <vector>
 
 #include "snabl/box.hpp"
+#include "snabl/fmt.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/sym.hpp"
@@ -17,6 +21,10 @@ namespace snabl {
 
 	class AFormType {
 	public:
+		const std::string id;
+
+		AFormType(const std::string &id);
+
 		virtual void compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
 												 AFuncPtr &func, AFimpPtr &fimp,
@@ -26,8 +34,14 @@ namespace snabl {
 	};
 
 	template <typename ImpT>
-	class FormType: public AFormType { };
+	class FormType: public AFormType {
+	protected:
+		FormType(const std::string &id);
+	};
 
+	template <typename ImpT>
+	FormType<ImpT>::FormType(const std::string &id): AFormType(id) { }
+	
 	struct FormImp { };
 	
 	class Form {
@@ -59,13 +73,21 @@ namespace snabl {
 		_imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
-	ImpT &Form::as() const { return *static_cast<ImpT *>(_imp.get()); }
+	ImpT &Form::as() const {
+		if (&ImpT::type != &type) {
+			throw Error(fmt("Wrong type: %0 (%1)", ImpT::type.id, type.id));
+		}
+		
+		return *static_cast<ImpT *>(_imp.get());
+	}
 
 	namespace forms {
 		struct Id;
 		
 		class IdType: public FormType<Id> {
 		public:
+			IdType();
+			
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
 									 AFuncPtr &func, AFimpPtr &fimp,
@@ -84,6 +106,8 @@ namespace snabl {
 		
 		class LiteralType: public FormType<Literal> {
 		public:
+			LiteralType();
+
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
 									 AFuncPtr &func, AFimpPtr &fimp,
@@ -102,6 +126,8 @@ namespace snabl {
 		
 		class SexprType: public FormType<Sexpr> {
 		public:
+			SexprType();
+
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
 									 AFuncPtr &func, AFimpPtr &fimp,
@@ -114,6 +140,26 @@ namespace snabl {
 			static const SexprType type;
 			const Forms body;
 			Sexpr(Forms &&body);
+		};
+
+		struct TypeList;
+		
+		class TypeListType: public FormType<TypeList> {
+		public:
+			TypeListType();
+
+			void compile(Forms::const_iterator &in,
+									 const Forms::const_iterator &end,
+									 AFuncPtr &func, AFimpPtr &fimp,
+									 Bin &out) const override;
+			
+			void dump(const Form &form, std::ostream &out) const override;
+		};
+
+		struct TypeList: public FormImp {			
+			static const TypeListType type;
+			std::vector<Sym> ids;
+			TypeList(const Forms &body);
 		};
 	}
 }

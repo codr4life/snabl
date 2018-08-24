@@ -37,6 +37,7 @@ namespace snabl {
 																	 ImpT &&... imp);
 
 		MacroPtr get_macro(const Sym &id);
+		ATypePtr get_type(const Sym &id);
 		AFuncPtr get_func(const Sym &id);
 	private:
 		std::unordered_map<Sym, MacroPtr> _macros;

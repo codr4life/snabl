@@ -30,7 +30,7 @@ namespace snabl {
 		static const Pos home_pos;
 
 		Lib home;
-		const TraitPtr a_type, num_type;
+		const TraitPtr a_type, no_type, num_type;
 		const TypePtr<Float> float_type;
 		const TypePtr<Int> int_type;
 		std::unordered_set<char> separators;
@@ -74,6 +74,7 @@ namespace snabl {
 		void parse_num(std::istream &in, Forms &out);
 		bool parse_rest(std::istream &in, char end, Forms &out);
 		void parse_sexpr(std::istream &in, Forms &out);
+		void parse_type_list(std::istream &in, Forms &out);
 	};
 
 	template <typename ValueT>

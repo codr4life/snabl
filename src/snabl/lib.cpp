@@ -20,6 +20,11 @@ namespace snabl {
 		return (found == _macros.end()) ? nullptr : found->second;
 	}
 
+	ATypePtr Lib::get_type(const Sym &id) {
+		auto found(_types.find(id));
+		return (found == _types.end()) ? nullptr : found->second;
+	}
+	
 	AFuncPtr Lib::get_func(const Sym &id) {
 		auto found(_funcs.find(id));
 		return (found == _funcs.end()) ? nullptr : found->second;
