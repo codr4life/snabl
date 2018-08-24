@@ -8,12 +8,10 @@
 **** allow skipping arg with _
 * add type.bool fn
 * add support for type args
-** T0-TN
-** create on demand when referenced
-** resolve in on func def
-* add generics
 ** add type.args
 ** add type.specialize fn
+** T0-TN
+*** create on demand when referenced
 * add < fn
 ** add Cmp<Any> type
 ** use <Cmp<Any> T0>
