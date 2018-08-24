@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "snabl/box.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/sym.hpp"
@@ -26,8 +27,8 @@ namespace snabl {
 	template <int NARGS, int NRETS>
 	class Func: public AFunc {
 	public:
-		using Args = std::array<ATypePtr, NARGS>;
-		using Rets = std::array<ATypePtr, NRETS>;
+		using Args = std::array<Box, NARGS>;
+		using Rets = std::array<Box, NRETS>;
 		
 		template <typename... ImpT>
 		static FimpPtr<NARGS, NRETS> add_fimp(const FuncPtr<NARGS, NRETS> &func,

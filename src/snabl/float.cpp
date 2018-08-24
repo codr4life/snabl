@@ -6,7 +6,7 @@
 namespace snabl {
 	FloatType::FloatType(Lib &lib, const Sym &id): Type<Float>(lib, id) { }
 
-	void FloatType::dump(const Box &value, std::ostream &out) {
+	void FloatType::dump(const Box &value, std::ostream &out) const {
 		out << value.as<Float>();
 	}
 }

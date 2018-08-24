@@ -6,11 +6,6 @@
 *** score types for fimps to find best match
 *** specialize type values
 **** allow skipping arg with _
-** add static Box.undef(type) fn
-*** add bool Box.is_undef field
-*** adapt dump
-*** use to convert type list
-** throw error if unused
 * add type.bool fn
 * add support for type args
 ** T0-TN

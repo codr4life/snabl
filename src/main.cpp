@@ -42,8 +42,8 @@ int main() {
 
 	
 	env.home.add_fimp<2, 1>(env.get_sym("+"),
-		{env.int_type, env.int_type},
-		{env.int_type},
+		{Box(env.int_type), Box(env.int_type)},
+		{Box(env.int_type)},
 		[](Call &call) {
 			Env &env(call.scope->env);
 			
@@ -55,8 +55,8 @@ int main() {
 		});
 
 	env.home.add_fimp<2, 1>(env.get_sym("*"),
-		{env.int_type, env.int_type},
-		{env.int_type},
+		{Box(env.int_type), Box(env.int_type)},
+		{Box(env.int_type)},
 		[](Call &call) {
 			Env &env(call.scope->env);
 			

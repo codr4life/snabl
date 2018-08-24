@@ -6,6 +6,7 @@
 
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
+#include "snabl/sym.hpp"
 
 namespace snabl {
 	class Env;

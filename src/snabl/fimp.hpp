@@ -73,7 +73,11 @@ namespace snabl {
 				sep = ' ';
 			}
 
-			buf << a->id.name();
+			if (a.is_undef()) {
+				buf << a.type()->id.name();
+			} else {
+				a.write(buf);
+			}
 		}
 
 		buf << '>';
@@ -110,9 +114,16 @@ namespace snabl {
 		size_t score(0);
 		
 		for (; j != args.end(); i++, j++) {
-			auto &it(i->type()), &jt(*j);
 			if (i == stack.end()) { return -1; }
-			if (!it->isa(jt)) { return -1; }
+			auto &iv(*i), &jv(*j);
+			auto &it(iv.type()), &jt(jv.type());
+			
+			if (jv.is_undef()) {
+				if (!it->isa(jt)) { return -1; }
+			} else {
+				if (!iv.is_eqval(jv)) { return -1; }
+			}
+			
 			score += std::abs(it->tag-jt->tag);
 		}
 

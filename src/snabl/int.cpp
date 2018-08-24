@@ -6,7 +6,7 @@
 namespace snabl {
 	IntType::IntType(Lib &lib, const Sym &id): Type<Int>(lib, id) { }
 
-	void IntType::dump(const Box &value, std::ostream &out) {
+	void IntType::dump(const Box &value, std::ostream &out) const {
 		out << value.as<Int>();
 	}
 }

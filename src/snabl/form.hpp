@@ -6,6 +6,7 @@
 #include "snabl/box.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
+#include "snabl/sym.hpp"
 
 namespace snabl {
 	class Bin;
