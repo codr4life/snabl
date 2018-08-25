@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "snabl/cmp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/sym.hpp"
 
@@ -22,6 +23,7 @@ namespace snabl {
 
 		virtual bool is_equid(const Box &lhs, const Box &rhs) const=0;
 		virtual bool is_eqval(const Box &lhs, const Box &rhs) const=0;
+		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		
 		virtual void dump(const Box &value, std::ostream &out) const;
 		virtual void write(const Box &value, std::ostream &out) const;
@@ -39,6 +41,7 @@ namespace snabl {
 
 		bool is_equid(const Box &lhs, const Box &rhs) const override;
 		bool is_eqval(const Box &lhs, const Box &rhs) const override;
+		virtual Cmp cmp(const Box &lhs, const Box &rhs) const override;
 	};
 
 	template <typename ValueT>
@@ -54,6 +57,11 @@ namespace snabl {
 		return lhs.as<ValueT>() == rhs.as<ValueT>();
 	}
 	
+	template <typename ValueT>
+	Cmp Type<ValueT>::cmp(const Box &lhs, const Box &rhs) const {
+		return snabl::cmp(lhs.as<ValueT>(), rhs.as<ValueT>());
+	}
+
 	class Trait: public Type<std::nullptr_t> {
 	public:
 		Trait(Lib &lib, const Sym &id);

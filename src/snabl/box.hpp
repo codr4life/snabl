@@ -1,6 +1,7 @@
 #ifndef SNABL_BOX_HPP
 #define SNABL_BOX_HPP
 
+#include "snabl/cmp.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std/any.hpp"
@@ -22,7 +23,7 @@ namespace snabl {
 
 		bool is_equid(const Box &rhs) const;
 		bool is_eqval(const Box &rhs) const;
-
+		Cmp cmp(const Box &rhs) const;
 		void dump(std::ostream &out) const;
 		void write(std::ostream &out) const;
 	private:

@@ -1,8 +1,3 @@
-* add < fn
-** add Cmp type
-** <Cmp Cmp>
-** add type.cmp
-*** compare type tags if different types
 * add if-else: macro
 * add func: macro
 ** optional parent_scope

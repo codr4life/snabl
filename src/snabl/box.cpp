@@ -17,7 +17,13 @@ namespace snabl {
 		if (rhs.type() != _type) { return false; }
 		return _type->is_eqval(*this, rhs);
 	}
-	
+
+	Cmp Box::cmp(const Box &rhs) const {
+		auto rt(rhs.type());
+		if (rt != _type) { return snabl::cmp(_type->tag, rt->tag); }
+		return _type->cmp(*this, rhs);
+	}
+
 	void Box::dump(std::ostream &out) const { _type->dump(*this, out); }
 
 	void Box::write(std::ostream &out) const { _type->write(*this, out); }
