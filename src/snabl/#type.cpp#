@@ -11,12 +11,13 @@ namespace snabl {
 		}
 		
 		child->_parent_types[parent->tag] = parent;
-		for (auto &c: child->_child_types) { derive(c, parent); }
-		parent->_child_types.insert(child);
 
 		for (auto &p: parent->_parent_types) {
 			if (p) { derive(child, p); }
 		}
+
+		for (auto &c: child->_child_types) { derive(c, parent); }
+		parent->_child_types.insert(child);
 	}
 
 	AType::AType(Lib &lib, const Sym &id):

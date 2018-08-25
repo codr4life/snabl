@@ -8,9 +8,15 @@ namespace snabl {
 
 	bool Box::is_undef() const { return _is_undef; }
 
-	bool Box::is_equid(const Box &rhs) const { return _type->is_equid(*this, rhs); }
+	bool Box::is_equid(const Box &rhs) const {
+		if (rhs.type() != _type) { return false; }
+		return _type->is_equid(*this, rhs);
+	}
 
-	bool Box::is_eqval(const Box &rhs) const { return _type->is_eqval(*this, rhs); }
+	bool Box::is_eqval(const Box &rhs) const {
+		if (rhs.type() != _type) { return false; }
+		return _type->is_eqval(*this, rhs);
+	}
 	
 	void Box::dump(std::ostream &out) const { _type->dump(*this, out); }
 

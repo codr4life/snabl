@@ -3,7 +3,7 @@
 ** add type.args
 ** add type.specialize fn
 ** T0-TN
-*** create on demand when referenced
+*** create on demand in home lib when referenced
 * add < fn
 ** add Cmp<Any> type
 ** use <Cmp<Any> T0>
@@ -16,11 +16,8 @@
 * add type.eqval/equid
 ** default implementation throw
 ** implement for all typess
-* add =/== funcs
-** call eqval/equid by default
 * add test=/== funcs
 ** use in tests
-
 * add swap macro
 * add load func
 ** call when called with args

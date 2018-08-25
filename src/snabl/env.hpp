@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "snabl/bin.hpp"
+#include "snabl/bool.hpp"
 #include "snabl/call.hpp"
 #include "snabl/float.hpp"
 #include "snabl/int.hpp"
@@ -30,7 +31,8 @@ namespace snabl {
 		static const Pos home_pos;
 
 		Lib home;
-		const TraitPtr a_type, no_type, num_type;
+		const TraitPtr maybe_type, a_type, no_type, num_type;
+		const TypePtr<bool> bool_type;
 		const TypePtr<Float> float_type;
 		const TypePtr<Int> int_type;
 		std::unordered_set<char> separators;

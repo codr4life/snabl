@@ -66,6 +66,32 @@ int main() {
 			
 			env.push_stack(env.int_type, x*y);
 		});
+
+	env.home.add_fimp<2, 1>(env.get_sym("="),
+		{Box(env.maybe_type), Box(env.maybe_type)},
+		{Box(env.bool_type)},
+		[](Call &call) {
+			Env &env(call.scope->env);
+			
+			Box
+				y(call.scope->pop_stack()),
+				x(call.scope->pop_stack());
+			
+			env.push_stack(env.bool_type, x.is_eqval(y));
+		});
+
+	env.home.add_fimp<2, 1>(env.get_sym("=="),
+		{Box(env.maybe_type), Box(env.maybe_type)},
+		{Box(env.bool_type)},
+		[](Call &call) {
+			Env &env(call.scope->env);
+			
+			Box
+				y(call.scope->pop_stack()),
+				x(call.scope->pop_stack());
+			
+			env.push_stack(env.bool_type, x.is_equid(y));
+		});
 	
 	auto s(env.begin(env.scope()));
 
@@ -83,6 +109,12 @@ int main() {
 
 	env.run("1 + (3 * 2)");
 	assert(s->pop_stack().as<Int>() == Int(7));
+
+	env.run("1 = 1");
+	assert(s->pop_stack().as<bool>());
+
+	env.run("1 == 1");
+	assert(s->pop_stack().as<bool>());
 
 	env.run("1 3 5 drop +");
 	assert(s->pop_stack().as<Int>() == Int(4));
