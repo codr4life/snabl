@@ -4,9 +4,6 @@
 *** use as parent for begin
 * finish fib
 * add repl(env, in, out) fn
-* add type.eqval/equid
-** default implementation throw
-** implement for all typess
 * add test=/== funcs
 ** use in tests
 * add swap macro
@@ -29,7 +26,7 @@
 * add jump op
 ** ssize_t nops
 ** update pc
-* add set/get_var ops
+* add put/get_var ops
 * add env.push/pop_scope
 ** update stack_begin in push
 * add recall op
@@ -43,15 +40,10 @@
 *** override to create new instance
 ** add Sink<T>
 *** add push fn
-* add code generation
-** generate function
-*** take env param
 * add fimp lookup
 ** add lib.fimps/add_fimp
 *** call from func when fimp is added
 *** use instead of add_func
-* add undef fn for types/funcs/fimps
-** remove from lib recursively until found
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin
