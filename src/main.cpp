@@ -11,8 +11,6 @@ using namespace snabl;
 int main() {
 	Env env;
 
-	std::cout << fmt("%0 %1 %2", "foo", std::string("bar"), 42) << std::endl;
-	
 	env.home.add_macro(env.get_sym("drop!"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
@@ -151,10 +149,6 @@ int main() {
 
 	//"func: fib<Int> Int (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	
-	auto foo(env.get_sym("foo"));
-	env.main->put_var(foo, Box(env.int_type, Int(42)));
-	assert(s->get_var(foo)->as<Int>() == Int(42));
 	env.end();
-
 	return 0;
 }
