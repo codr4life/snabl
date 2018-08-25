@@ -13,7 +13,7 @@ int main() {
 
 	std::cout << fmt("%0 %1 %2", "foo", std::string("bar"), 42) << std::endl;
 	
-	env.home.add_macro(env.get_sym("drop"),
+	env.home.add_macro(env.get_sym("drop!"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
 												AFuncPtr &func, AFimpPtr &fimp,
@@ -140,7 +140,7 @@ int main() {
 	env.run("1 == 1");
 	assert(s->pop_stack().as<bool>());
 
-	env.run("1 3 5 drop +");
+	env.run("1 3 5 drop! +");
 	assert(s->pop_stack().as<Int>() == Int(4));
 
 	env.run("(let: foo 42) @foo");
