@@ -111,9 +111,8 @@ namespace snabl {
 		auto i(std::next(stack.begin(), stack.size()-NARGS));
 		auto j(args.begin());
 		size_t score(0);
-		
+
 		for (; j != args.end(); i++, j++) {
-			if (i == stack.end()) { return -1; }
 			auto &iv(*i), &jv(*j);
 			auto it(iv.type()), jt(jv.type());
 			if (it == env.no_type) { continue; }
@@ -121,7 +120,7 @@ namespace snabl {
 			if (jv.is_undef()) {
 				if (!it->isa(jt)) { return -1; }
 			} else {
-				if (!iv.is_eqval(jv)) { return -1; }
+				if (iv.is_undef() || !iv.is_eqval(jv)) { return -1; }
 			}
 			
 			score += std::abs(it->tag-jt->tag);

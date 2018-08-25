@@ -1,12 +1,8 @@
-* add type.bool fn
-* add support for type args
-** add type.args
-** add type.specialize fn
-** T0-TN
-*** create on demand in home lib when referenced
 * add < fn
-** add Cmp<Any> type
-** use <Cmp<Any> T0>
+** add Cmp type
+** <Cmp Cmp>
+** add type.cmp
+*** compare type tags if different types
 * add if-else: macro
 * add func: macro
 ** optional parent_scope
@@ -21,6 +17,11 @@
 * add swap macro
 * add load func
 ** call when called with args
+* add support for type args
+** add type.args
+** add type.specialize fn
+** T0-TN
+*** create on demand in home lib when referenced
 * add [] indexing support
 ** parse as func '[]' and call with args
 

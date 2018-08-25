@@ -41,6 +41,24 @@ int main() {
 										 });
 
 	
+	env.home.add_fimp<1, 1>(env.get_sym("int"),
+		{Box(env.float_type)},
+		{Box(env.int_type)},
+		[](Call &call) {
+			Env &env(call.scope->env);
+			const Float v(call.scope->pop_stack().as<Float>());
+			env.push_stack(env.int_type, Int(v));
+		});
+
+	env.home.add_fimp<1, 1>(env.get_sym("float"),
+		{Box(env.int_type)},
+		{Box(env.float_type)},
+		[](Call &call) {
+			Env &env(call.scope->env);
+			const Int v(call.scope->pop_stack().as<Int>());
+			env.push_stack(env.float_type, Float(v));
+		});
+
 	env.home.add_fimp<2, 1>(env.get_sym("+"),
 		{Box(env.int_type), Box(env.int_type)},
 		{Box(env.int_type)},
@@ -100,6 +118,12 @@ int main() {
 
 	env.run("-3.14");
 	assert(Int(s->pop_stack().as<Float>()*100) == Int(-314));
+
+	env.run("3.14 int");
+	assert(s->pop_stack().as<Int>() == Int(3));
+
+	env.run("42 float");
+	assert(s->pop_stack().as<Float>() == Float(42));
 
 	env.run("1 + 3");
 	assert(s->pop_stack().as<Int>() == Int(4));
