@@ -19,7 +19,7 @@ namespace snabl {
 		int_type(home.add_type<IntType>(get_sym("Int"), {num_type})),
 		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
 		bin(*this),
-		main(begin(nullptr)),
+		main(begin()),
 		_pos(home_pos) { push_lib(home); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
@@ -196,8 +196,8 @@ namespace snabl {
 		return l;
 	}
 
-	ScopePtr Env::begin(const ScopePtr &parent) {
-		auto s(std::make_shared<Scope>(*this, parent));
+	ScopePtr Env::begin() {
+		auto s(std::make_shared<Scope>(*this));
 		_scopes.push_back(s);
 		return s;
 	}

@@ -42,7 +42,9 @@ namespace snabl {
 	template <typename ImpT>
 	FormType<ImpT>::FormType(const std::string &id): AFormType(id) { }
 	
-	struct FormImp { };
+	struct FormImp {
+		virtual ~FormImp() { }
+	};
 	
 	class Form {
 	public:
@@ -55,6 +57,7 @@ namespace snabl {
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
 		Form(const FormType<ImpT> &type, const Pos &pos, ArgT1 &&arg1, ArgsT &&... args);
 
+		virtual ~Form() { }
 		template <typename ImpT>
 		ImpT &as() const;
 	private:

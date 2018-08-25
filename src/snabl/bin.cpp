@@ -48,7 +48,7 @@ namespace snabl {
 
 		SNABL_DISPATCH();
 	op_begin:
-		env.begin(_pc->as<ops::Begin>().parent);
+		env.begin();
 		_pc++;
 		SNABL_DISPATCH();
 	op_drop:

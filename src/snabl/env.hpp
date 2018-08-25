@@ -53,7 +53,7 @@ namespace snabl {
 		Lib &lib();
 		Lib &pop_lib();
 
-		ScopePtr begin(const ScopePtr &parent=nullptr);
+		ScopePtr begin();
 		ScopePtr scope();
 		ScopePtr end();
 

@@ -25,7 +25,9 @@ namespace snabl {
 	template <typename ImpT>
 	OpType<ImpT>::OpType(const std::string &id): AOpType(id) { }
 
-	struct OpImp { };
+	struct OpImp {
+		virtual ~OpImp() { }
+	};
 	
 	class Op {
 	public:
@@ -37,6 +39,8 @@ namespace snabl {
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
 		Op(const OpType<ImpT> &type, const Pos &pos, ArgT1 &&arg1, ArgsT &&... args);
+
+		virtual ~Op() { }
 
 		template <typename ImpT>
 		ImpT &as() const;
@@ -61,8 +65,7 @@ namespace snabl {
 	namespace ops {
 		struct Begin: public OpImp {
 			static const OpType<Begin> type;
-			ScopePtr parent;
-			Begin(const ScopePtr &parent);
+			Begin();
 		};
 
 		struct Drop: public OpImp {

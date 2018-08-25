@@ -121,8 +121,8 @@ int main() {
 			
 			env.push_stack(env.int_type, x*y);
 		});
-	
-	auto s(env.begin(env.scope()));
+
+	auto s(env.begin());
 
 	env.run("42");
 	assert(s->pop_stack().as<Int>() == Int(42));

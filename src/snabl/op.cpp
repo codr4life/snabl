@@ -15,7 +15,7 @@ namespace snabl {
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
 
-		Begin::Begin(const ScopePtr &parent): parent(parent) { }
+		Begin::Begin() { }
 
 		Drop::Drop() { }
 		

@@ -3,8 +3,8 @@
 #include "snabl/scope.hpp"
 
 namespace snabl {
-	Scope::Scope(Env &env, const ScopePtr &parent):
-		env(env), parent(parent), _stack_offs(env.stack().size()) { }
+	Scope::Scope(Env &env):
+		env(env), _stack_offs(env.stack().size()) { }
 
 	size_t Scope::stack_offs() const { return _stack_offs; }
 	
@@ -16,7 +16,7 @@ namespace snabl {
 	Box const* Scope::get_var(const Sym &id) {
 		auto found(_vars.find(id));
 		if (found != _vars.end()) { return &found->second; }
-		return parent ? parent->get_var(id) : nullptr;
+		return nullptr;
 	}
 
 	void Scope::put_var(const Sym &id, const Box &value) {

@@ -14,9 +14,8 @@ namespace snabl {
 	class Scope {
 	public:
 		Env &env;
-		const ScopePtr parent;
 		
-		Scope(Env &env, const ScopePtr &parent);
+		Scope(Env &env);
 		
 		size_t stack_offs() const;
 		Box pop_stack();
