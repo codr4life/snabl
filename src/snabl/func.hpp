@@ -8,6 +8,7 @@
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
+#include "snabl/std/optional.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -75,17 +76,20 @@ namespace snabl {
 	
 	template <int NARGS, int NRETS>
 	AFimpPtr Func<NARGS, NRETS>::get_best_fimp(const Stack &stack) const {
-		ssize_t best_score(-1);
+		std::optional<std::size_t> best_score;
 		AFimpPtr best_fimp;
 		
 		for (auto &fp: _fimps) {
 			auto &f(fp.second);
-			ssize_t fs(f->score(stack));
-			if (!fs) { return f; }
+			auto fs(f->score(stack));
 			
-			if (fs != -1 && (best_score == -1 || fs < best_score)) {
-				best_score = fs;
-				best_fimp = f;
+			if (fs) {
+				if (*fs == 0) { return f; }
+			
+				if (!best_score || fs < best_score) {
+					best_score = fs;
+					best_fimp = f;
+				}
 			}
 		}
 

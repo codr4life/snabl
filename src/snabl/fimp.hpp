@@ -25,7 +25,7 @@ namespace snabl {
 		
 		static void call(const AFimpPtr &fimp);
 		virtual AFuncPtr afunc() const=0;
-		virtual ssize_t score(const Stack &stack) const=0;
+		virtual std::optional<std::size_t> score(const Stack &stack) const=0;
 		virtual void dump(std::ostream &out) const;
 	protected:
 		AFimp(const Sym &id, Imp imp);
@@ -57,7 +57,7 @@ namespace snabl {
 				 Forms &&forms);
 
 		AFuncPtr afunc() const override;
-		ssize_t score(const Stack &stack) const override;
+		std::optional<std::size_t> score(const Stack &stack) const override;
 	};
 
 	template <int NARGS, int NRETS>
@@ -104,13 +104,13 @@ namespace snabl {
 	AFuncPtr Fimp<NARGS, NRETS>::afunc() const { return func; }
 
 	template <int NARGS, int NRETS>
-	ssize_t Fimp<NARGS, NRETS>::score(const Stack &stack) const {
+	std::optional<std::size_t> Fimp<NARGS, NRETS>::score(const Stack &stack) const {
 		if (!NARGS) { return 0; }
-		if (stack.size() < NARGS) { return -1; }
+		if (stack.size() < NARGS) { return std::nullopt; }
 		auto &env(func->lib.env);
 		auto i(std::next(stack.begin(), stack.size()-NARGS));
 		auto j(args.begin());
-		size_t score(0);
+		std::size_t score(0);
 
 		for (; j != args.end(); i++, j++) {
 			auto &iv(*i), &jv(*j);
@@ -118,9 +118,9 @@ namespace snabl {
 			if (it == env.no_type) { continue; }
 
 			if (jv.is_undef()) {
-				if (!it->isa(jt)) { return -1; }
+				if (!it->isa(jt)) { return std::nullopt; }
 			} else {
-				if (iv.is_undef() || !iv.is_eqval(jv)) { return -1; }
+				if (iv.is_undef() || !iv.is_eqval(jv)) { return std::nullopt; }
 			}
 			
 			score += std::abs(it->tag-jt->tag);
