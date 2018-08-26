@@ -1,6 +1,5 @@
-* rename op vars in form.cpp
 * add env.push/pop_scope
-** update stack_begin in push
+** update stack_offs in push
 * switch to global vars
 ** move Scope.vars to Env
 ** add vector<pair<Sym, Box>> vars to Scope

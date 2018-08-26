@@ -20,13 +20,13 @@ namespace snabl {
 												 const Forms::const_iterator &end,
 												 AFuncPtr &func, AFimpPtr &fimp,
 												 Bin &out) const {
-			auto &op(*in);
-			auto &id(op.as<Id>().sym);
+			auto &form(*in);
+			auto &id(form.as<Id>().sym);
 
 			if (id.name().front() == '@') {
 				in++;
 				out.emplace_back(ops::GetVar::type,
-												 op.pos,
+												 form.pos,
 												 out.env.get_sym(id.name().substr(1)));
 			} else {
 				auto &env(out.env);
@@ -57,7 +57,7 @@ namespace snabl {
 							fimp = fn->get_best_fimp(args);
 						}
 					} else {
-						out.emplace_back(ops::Funcall::type, op.pos, fn->get_fimp());
+						out.emplace_back(ops::Funcall::type, form.pos, fn->get_fimp());
 					}
 				}
 			}
@@ -79,9 +79,8 @@ namespace snabl {
 															const Forms::const_iterator &end,
 															AFuncPtr &func, AFimpPtr &fimp,
 															Bin &out) const {
-			auto &op(*in++);
-			auto &f(op.as<Literal>());
-			out.emplace_back(ops::Push::type, op.pos, f.value);			
+			auto &form(*in++);
+			out.emplace_back(ops::Push::type, form.pos, form.as<Literal>().value);			
 		}
 
 		Sexpr::Sexpr(Forms &&body): body(std::move(body)) { }
@@ -90,10 +89,10 @@ namespace snabl {
 		
 		void SexprType::dump(const Form &form, std::ostream &out) const {
 			out << '(';
-			auto &op(form.as<Sexpr>());
+			auto &sexpr(form.as<Sexpr>());
 			char sep(0);
 
-			for (auto &f: op.body) {
+			for (auto &f: sexpr.body) {
 				if (sep) { out << sep; }
 				f.type.dump(f, out);
 				sep = ' ';
@@ -106,8 +105,8 @@ namespace snabl {
 														const Forms::const_iterator &end,
 														AFuncPtr &func, AFimpPtr &fimp,
 														Bin &out) const {
-			auto &op((*in++).as<Sexpr>());
-			out.compile(op.body);
+			auto &sexpr((*in++).as<Sexpr>());
+			out.compile(sexpr.body);
 		}
 
 		TypeList::TypeList(const Forms &body) {
@@ -119,10 +118,10 @@ namespace snabl {
 
 		void TypeListType::dump(const Form &form, std::ostream &out) const {
 			out << '<';
-			auto &op(form.as<TypeList>());
+			auto &list(form.as<TypeList>());
 			char sep(0);
 
-			for (auto &id: op.ids) {
+			for (auto &id: list.ids) {
 				if (sep) { out << sep; }
 				out << id.name();
 				sep = ' ';
