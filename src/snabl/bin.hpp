@@ -14,8 +14,8 @@ namespace snabl {
 	using Ops = std::deque<Op>;
 
 	struct BinFimp {
-		const size_t begin, end;
-		BinFimp(size_t begin, size_t end);
+		const std::size_t begin, end;
+		BinFimp(std::size_t begin, std::size_t end);
 	};
 	
 	class Bin {
@@ -32,7 +32,7 @@ namespace snabl {
 								 const Forms::const_iterator &end);
 		void compile(const Forms &forms);
 		
-		void run(size_t offs=0);
+		void run(std::size_t offs=0);
 	private:
 		std::unordered_map<AFimpPtr, BinFimp> _fimps;
 		Ops::iterator _pc;

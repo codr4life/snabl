@@ -22,7 +22,7 @@ namespace snabl {
 		main(begin()),
 		_pos(home_pos) { push_lib(home); }
 
-	size_t Env::next_type_tag() { return _type_tag++; }
+	std::size_t Env::next_type_tag() { return _type_tag++; }
 
 	Sym Env::get_sym(const std::string &name) {
 		auto found(_syms.find(name));
@@ -175,7 +175,7 @@ namespace snabl {
 	}
 
 	void Env::run(const std::string &in) {
-		size_t start_pc = bin.ops().size();
+		std::size_t start_pc = bin.ops().size();
 		compile(in);
 		bin.run(start_pc);
 	}
@@ -213,7 +213,8 @@ namespace snabl {
 		return s;
 	}
 
-	Call &Env::push_call(const TargetPtr &target, ssize_t return_pc) {
+	Call &Env::push_call(const TargetPtr &target,
+											 std::optional<std::size_t> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}

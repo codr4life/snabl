@@ -21,7 +21,7 @@ namespace snabl {
 		const std::string id {'%', static_cast<char>('0'+i)};
 		const std::string arg(fmt_arg(arg1));
 		bool found(false);
-		size_t j(0);
+		std::size_t j(0);
 
 		while ((j = spec.find(id, j)) != std::string::npos) {
 			spec.replace(j, id.size(), arg);

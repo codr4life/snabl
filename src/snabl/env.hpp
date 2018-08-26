@@ -24,7 +24,7 @@ namespace snabl {
 	class Env {
 	private:
 		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
-		size_t _type_tag;
+		std::size_t _type_tag;
 		std::vector<ScopePtr> _scopes;
 		Stack _stack;
 		std::unordered_map<Sym, Box> _vars;
@@ -41,7 +41,7 @@ namespace snabl {
 		const ScopePtr main;
 		
 		Env();
-		size_t next_type_tag();
+		std::size_t next_type_tag();
 		Sym get_sym(const std::string &name);
 		
 		void parse(const std::string &in, Forms &out);
@@ -58,7 +58,7 @@ namespace snabl {
 		ScopePtr scope();
 		ScopePtr end();
 
-		Call &push_call(const TargetPtr &target, ssize_t return_pc);
+		Call &push_call(const TargetPtr &target, std::optional<std::size_t> return_pc);
 		Call *peek_call();
 		void pop_call();
 		
