@@ -9,14 +9,7 @@ namespace snabl {
 	
 	Env::Env():
 		_type_tag(1),
-		home(*this, get_sym("home")),
-		maybe_type(home.add_type<Trait>(get_sym("Maybe"))),
-		a_type(home.add_type<Trait>(get_sym("A"), {maybe_type})),
-		no_type(home.add_type<Trait>(get_sym("_"))),		
-		num_type(home.add_type<Trait>(get_sym("Num"), {a_type})),
-		bool_type(home.add_type<BoolType>(get_sym("Bool"), {a_type})),
-		float_type(home.add_type<FloatType>(get_sym("Float"), {num_type})),
-		int_type(home.add_type<IntType>(get_sym("Int"), {num_type})),
+		home(*this),
 		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
 		bin(*this),
 		main(begin()),

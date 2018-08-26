@@ -12,6 +12,7 @@
 #include "snabl/float.hpp"
 #include "snabl/int.hpp"
 #include "snabl/lib.hpp"
+#include "snabl/libs/home.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
@@ -31,11 +32,13 @@ namespace snabl {
 	public:
 		static const Pos home_pos;
 
-		Lib home;
-		const TraitPtr maybe_type, a_type, no_type, num_type;
-		const TypePtr<bool> bool_type;
-		const TypePtr<Float> float_type;
-		const TypePtr<Int> int_type;
+		TraitPtr maybe_type, a_type, no_type, num_type;
+		TypePtr<bool> bool_type;
+		TypePtr<Float> float_type;
+		TypePtr<Int> int_type;
+
+		libs::Home home;
+
 		std::unordered_set<char> separators;
 		Bin bin;
 		const ScopePtr main;

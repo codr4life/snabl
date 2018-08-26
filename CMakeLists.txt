@@ -13,7 +13,7 @@ target_include_directories(libsnabl PUBLIC src/)
 
 set_target_properties(libsnabl PROPERTIES PREFIX "")
 
-add_executable(snabl ${sources} src/main.cpp)
+add_executable(snabl ${sources} src/tests.cpp src/main.cpp)
 target_include_directories(snabl PUBLIC src/)
 
 file(GLOB headers src/snabel/*.hpp)
