@@ -9,6 +9,7 @@
 namespace snabl {
 	void fmt_tests() {
 		assert(fmt("%0 %1 %2", "foo", "bar", 42) == "foo bar 42");
+		assert(fmt("%0 %0", "") == " ");
 	}
 
 	void lang_tests() {

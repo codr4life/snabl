@@ -1,6 +1,8 @@
 #ifndef SNABL_FMT_HPP
 #define SNABL_FMT_HPP
 
+#include <iostream>
+
 #include <string>
 #include <utility>
 
@@ -25,7 +27,7 @@ namespace snabl {
 
 		while ((j = spec.find(id, j)) != std::string::npos) {
 			spec.replace(j, id.size(), arg);
-			j += arg.size()-id.size();
+			j += arg.size();
 			found = true;
 		}
 
