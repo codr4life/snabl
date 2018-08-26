@@ -1,3 +1,4 @@
+* drop const Sym/Pos refs
 * add func: macro
 * finish fib
 * add recall op
