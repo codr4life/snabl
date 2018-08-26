@@ -35,10 +35,10 @@ namespace snabl {
 		const Pos pos;
 		
 		template <typename ImpT>
-		Op(const OpType<ImpT> &type, const Pos &pos);
+		Op(const OpType<ImpT> &type, Pos pos);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Op(const OpType<ImpT> &type, const Pos &pos, ArgT1 &&arg1, ArgsT &&... args);
+		Op(const OpType<ImpT> &type, Pos pos, ArgT1 &&arg1, ArgsT &&... args);
 
 		virtual ~Op() { }
 
@@ -49,11 +49,11 @@ namespace snabl {
 	};
 
 	template <typename ImpT>
-	Op::Op(const OpType<ImpT> &type, const Pos &pos): type(type), pos(pos) { }
+	Op::Op(const OpType<ImpT> &type, Pos pos): type(type), pos(pos) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
 	Op::Op(const OpType<ImpT> &type,
-				 const Pos &pos,
+				 Pos pos,
 				 ArgT1 &&arg1, ArgsT &&... args):
 		type(type),
 		pos(pos),

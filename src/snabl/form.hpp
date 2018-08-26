@@ -52,10 +52,10 @@ namespace snabl {
 		const Pos pos;
 		
 		template <typename ImpT>
-		Form(const FormType<ImpT> &type, const Pos &pos);
+		Form(const FormType<ImpT> &type, Pos pos);
 
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Form(const FormType<ImpT> &type, const Pos &pos, ArgT1 &&arg1, ArgsT &&... args);
+		Form(const FormType<ImpT> &type, Pos pos, ArgT1 &&arg1, ArgsT &&... args);
 
 		virtual ~Form() { }
 		template <typename ImpT>
@@ -65,11 +65,11 @@ namespace snabl {
 	};
 	
 	template <typename ImpT>
-	Form::Form(const FormType<ImpT> &type, const Pos &pos): type(type), pos(pos) { }
+	Form::Form(const FormType<ImpT> &type, Pos pos): type(type), pos(pos) { }
 
 	template <typename ImpT, typename ArgT1, typename... ArgsT>
 	Form::Form(const FormType<ImpT> &type,
-						 const Pos &pos,
+						 Pos pos,
 						 ArgT1 &&arg1, ArgsT &&... args):
 		type(type),
 		pos(pos),

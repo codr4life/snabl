@@ -14,7 +14,7 @@ namespace snabl {
 
 	class SyntaxError: public Error {
 	public:
-    SyntaxError(const Pos &pos, const std::string &msg);
+    SyntaxError(Pos pos, const std::string &msg);
 	};
 }
 
