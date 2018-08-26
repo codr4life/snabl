@@ -65,14 +65,16 @@ int main() {
 												Bin &out) {
 											 auto &form(*in++);
 											 out.compile(in++, in+1);
-											 auto &else_op(out.emplace_back(ops::Else::type, form.pos, 0));
+											 auto &else_skip(out.emplace_back(ops::Else::type,
+																												form.pos,
+																												0));
 											 size_t start_pc(out.ops().size());								
 											 out.compile(in++, in+1);
-											 auto &skip_op(out.emplace_back(ops::Skip::type, form.pos, 0));
-											 else_op.as<ops::Else>().nops = out.ops().size()-start_pc;
+											 auto &if_skip(out.emplace_back(ops::Skip::type, form.pos, 0));
+											 else_skip.as<ops::Else>().nops = out.ops().size()-start_pc;
 											 start_pc = out.ops().size();
 											 out.compile(in++, in+1);
-											 skip_op.as<ops::Skip>().nops = out.ops().size()-start_pc;
+											 if_skip.as<ops::Skip>().nops = out.ops().size()-start_pc;
 										 });	
 	
 	env.home.add_fimp<2, 1>(env.get_sym("="),
