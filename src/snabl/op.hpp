@@ -9,11 +9,11 @@ namespace snabl {
 	class AOpType {
 	public:
 		const std::string id;
-		const size_t label_offs;
+		const std::size_t label_offs;
 
 		AOpType(const std::string &id);
 	private:
-		static size_t next_label_offs;
+		static std::size_t next_label_offs;
 	};
 
 	template <typename ImpT>
@@ -75,9 +75,9 @@ namespace snabl {
 
 		struct Else: public OpImp {
 			static const OpType<Else> type;
-			size_t nops;
+			std::size_t nops;
 			
-			Else(size_t nops);
+			Else(std::size_t nops);
 		};
 		
 		struct End: public OpImp {
@@ -116,9 +116,9 @@ namespace snabl {
 
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
-			size_t nops;
+			std::size_t nops;
 			
-			Skip(size_t nops);
+			Skip(std::size_t nops);
 		};
 	}
 }

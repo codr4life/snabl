@@ -6,7 +6,7 @@
 	goto *op_labels[_pc->type.label_offs];				\
 
 namespace snabl {
-	BinFimp::BinFimp(size_t begin, size_t end):
+	BinFimp::BinFimp(std::size_t begin, std::size_t end):
 		begin(begin), end(end) { }
 	
 	Bin::Bin(Env &env): env(env) { }
@@ -42,7 +42,7 @@ namespace snabl {
 		compile(forms.begin(), forms.end());
 	}
 
-	void Bin::run(size_t offs) {
+	void Bin::run(std::size_t offs) {
 		_pc = _ops.begin();
 		if (offs) { std::advance(_pc, offs); }
 		

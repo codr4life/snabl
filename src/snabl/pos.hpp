@@ -5,8 +5,8 @@
 
 namespace snabl {
 	struct Pos {
-		Pos(size_t row, size_t col): row(row), col(col) { } 
-		size_t row, col;
+		Pos(std::size_t row, std::size_t col): row(row), col(col) { } 
+		std::size_t row, col;
 	};
 }
 

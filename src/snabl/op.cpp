@@ -1,7 +1,7 @@
 #include "snabl/op.hpp"
 
 namespace snabl {
-	size_t AOpType::next_label_offs(0);
+	std::size_t AOpType::next_label_offs(0);
 
 	AOpType::AOpType(const std::string &id):
 		id(id), label_offs(next_label_offs++) { }
@@ -21,7 +21,7 @@ namespace snabl {
 
 		Drop::Drop() { }
 		
-		Else::Else(size_t nops): nops(nops) { }
+		Else::Else(std::size_t nops): nops(nops) { }
 
 		End::End() { }
 
@@ -35,6 +35,6 @@ namespace snabl {
 
 		PutVar::PutVar(const Sym &id): id(id) { }
 
-		Skip::Skip(size_t nops): nops(nops) { }
+		Skip::Skip(std::size_t nops): nops(nops) { }
 	}
 }

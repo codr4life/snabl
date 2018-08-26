@@ -10,7 +10,7 @@ namespace snabl {
 	class SymImp {
 	public:
 		const std::string name;
-		const size_t hash;
+		const std::size_t hash;
 		
 		SymImp(const std::string &name);
 	};
@@ -35,7 +35,7 @@ namespace snabl {
 namespace std {
 	template<>
 	struct hash<snabl::Sym> {
-		size_t operator ()(const snabl::Sym &x) const { return x._imp->hash; }
+		std::size_t operator ()(const snabl::Sym &x) const { return x._imp->hash; }
 	};
 }
 

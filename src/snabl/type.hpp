@@ -15,7 +15,7 @@ namespace snabl {
 	class AType {
 	public:
 		Lib &lib;
-		const size_t tag;
+		const std::size_t tag;
 		const Sym id;
 
 		static void derive(const ATypePtr &child, const ATypePtr &parent);
