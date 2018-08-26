@@ -1,9 +1,7 @@
-* add env.push/pop_scope
-** update stack_offs in push
 * switch to global vars
 ** move Scope.vars to Env
 ** add vector<pair<Sym, Box>> vars to Scope
-*** revert on pop
+*** revert in destructor
 * add func: macro
 * finish fib
 * add recall op
