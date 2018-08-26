@@ -38,3 +38,6 @@ Besides a decent C++17 compiler and CMake, Snabl has no dependencies.
 
 ```
 ```
+
+### License
+MIT
