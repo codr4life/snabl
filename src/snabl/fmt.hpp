@@ -33,9 +33,9 @@ namespace snabl {
 	}
 	
 	template <typename...ArgsT>
-	std::string fmt(std::string spec, ArgsT &&... args) {
+	std::string &&fmt(std::string spec, ArgsT &&... args) {
 		_fmt(spec, 0, std::forward<ArgsT>(args)...);
-		return spec;
+		return std::move(spec);
 	}
 }
 
