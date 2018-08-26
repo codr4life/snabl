@@ -35,10 +35,9 @@ namespace snabl {
 	}
 	
 	template <typename...ArgsT>
-	std::string fmt(const std::string &spec, ArgsT &&... args) {
-		std::string out(spec);
-		_fmt(out, 0, std::forward<ArgsT>(args)...);
-		return out;
+	std::string fmt(std::string spec, ArgsT &&... args) {
+		_fmt(spec, 0, std::forward<ArgsT>(args)...);
+		return spec;
 	}
 }
 
