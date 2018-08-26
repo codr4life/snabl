@@ -11,6 +11,26 @@ using namespace snabl;
 int main() {
 	Env env;
 
+	env.home.add_macro(env.get_sym("t"),
+										 [](Forms::const_iterator &in,
+												const Forms::const_iterator &end,
+												AFuncPtr &func, AFimpPtr &fimp,
+												Bin &out) {
+											 out.emplace_back(ops::Push::type,
+																				(in++)->pos,
+																				Box(out.env.bool_type, true));			
+										 });
+
+	env.home.add_macro(env.get_sym("f"),
+										 [](Forms::const_iterator &in,
+												const Forms::const_iterator &end,
+												AFuncPtr &func, AFimpPtr &fimp,
+												Bin &out) {
+											 out.emplace_back(ops::Push::type,
+																				(in++)->pos,
+																				Box(out.env.bool_type, false));			
+										 });
+
 	env.home.add_macro(env.get_sym("drop"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
@@ -143,6 +163,12 @@ int main() {
 	env.run("42");
 	assert(s->pop_stack().as<Int>() == Int(42));
 
+	env.run("t");
+	assert(s->pop_stack().as<bool>());
+
+	env.run("f");
+	assert(!s->pop_stack().as<bool>());
+
 	env.run("1 = 1");
 	assert(s->pop_stack().as<bool>());
 
@@ -182,8 +208,8 @@ int main() {
 	env.run("if: (1 < 3) 5 7");
 	assert(s->pop_stack().as<Int>() == Int(5));
 
-	//env.run("if: (3 < 1) 5 7");
-	//assert(s->pop_stack().as<Int>() == Int(7));
+	env.run("if: (3 < 1) 5 7");
+	assert(s->pop_stack().as<Int>() == Int(7));
 
 	//"func: fib<Int> Int (let: n) if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	

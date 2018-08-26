@@ -1,6 +1,4 @@
-* add t/f macros
 * rename op vars in form.cpp
-* ---
 * add env.push/pop_scope
 ** update stack_begin in push
 * switch to global vars
