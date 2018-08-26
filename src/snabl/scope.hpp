@@ -1,8 +1,8 @@
 #ifndef SNABL_SCOPE_HPP
 #define SNABL_SCOPE_HPP
 
+#include <map>
 #include <memory>
-#include <unordered_map>
 
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
@@ -16,13 +16,13 @@ namespace snabl {
 		Env &env;
 		
 		Scope(Env &env);
+		~Scope();
 		
 		size_t stack_offs() const;
 		Box pop_stack();
-		Box const* get_var(const Sym &id);
 		void put_var(const Sym &id, const Box &value);
 	private:
-		std::unordered_map<Sym, Box> _vars;
+		std::map<Sym, Box> _put_vars;
 		size_t _stack_offs;
 	};
 }

@@ -1,7 +1,3 @@
-* switch to global vars
-** move Scope.vars to Env
-** add vector<pair<Sym, Box>> vars to Scope
-*** revert in destructor
 * add func: macro
 * finish fib
 * add recall op

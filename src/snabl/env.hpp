@@ -27,6 +27,7 @@ namespace snabl {
 		size_t _type_tag;
 		std::vector<ScopePtr> _scopes;
 		Stack _stack;
+		std::unordered_map<Sym, Box> _vars;
 	public:
 		static const Pos home_pos;
 
@@ -65,8 +66,10 @@ namespace snabl {
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
 		void push_stack(const Box &value);
 		std::optional<Box> pop_stack();
-		
 		const Stack &stack();
+
+		Box const* get_var(const Sym &id);
+		std::optional<Box> put_var(const Sym &id, const Box &value);
 	private:
 		Pos _pos;
 		std::vector<Lib *> _libs;

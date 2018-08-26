@@ -91,7 +91,7 @@ namespace snabl {
 		}
 	op_getvar: {
 			auto &op(_pc->as<ops::GetVar>());		
-			auto v(env.scope()->get_var(op.id));
+			auto v(env.get_var(op.id));
 			if (!v) { throw Error("Unknown var"); }
 			env.push_stack(*v);
 			_pc++;

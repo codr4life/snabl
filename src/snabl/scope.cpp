@@ -6,6 +6,10 @@ namespace snabl {
 	Scope::Scope(Env &env):
 		env(env), _stack_offs(env.stack().size()) { }
 
+	Scope::~Scope() {
+		for (auto &v: _put_vars) { env.put_var(v.first, v.second); }
+	}
+	
 	size_t Scope::stack_offs() const { return _stack_offs; }
 	
 	Box Scope::pop_stack() {
@@ -13,19 +17,10 @@ namespace snabl {
 		return *env.pop_stack();
 	}
 
-	Box const* Scope::get_var(const Sym &id) {
-		auto found(_vars.find(id));
-		if (found != _vars.end()) { return &found->second; }
-		return nullptr;
-	}
-
 	void Scope::put_var(const Sym &id, const Box &value) {
-		auto found(_vars.find(id));
-
-		if (found != _vars.end()) {
-			found->second = value;
-		} else {
-			_vars.emplace(std::make_pair(id, value)).first->second;
-		}
+		auto found(_put_vars.find(id));
+		if (found != _put_vars.end()) { throw Error("Duplicate var: " + id.name()); }
+		auto prev(env.put_var(id, value));
+		if (prev) { _put_vars.emplace(std::make_pair(id, value)); }
 	}
 }

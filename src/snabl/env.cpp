@@ -232,4 +232,24 @@ namespace snabl {
 	}
 
 	const Stack &Env::stack() { return _stack; }
+
+	Box const* Env::get_var(const Sym &id) {
+		auto found(_vars.find(id));
+		if (found != _vars.end()) { return &found->second; }
+		return nullptr;
+	}
+
+	std::optional<Box> Env::put_var(const Sym &id, const Box &value) {
+		auto found(_vars.find(id));
+		std::optional<Box> prev;
+		
+		if (found != _vars.end()) {
+			prev = found->second;
+			found->second = value;
+		} else {
+			_vars.emplace(std::make_pair(id, value)).first->second;
+		}
+
+		return prev;
+	}
 }
