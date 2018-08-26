@@ -28,7 +28,10 @@ namespace snabl {
 		template <typename ImpT, typename... ArgsT>
 		Op &emplace_back(const OpType<ImpT> &type, ArgsT &&... args);
 		
+		void compile(const Forms::const_iterator &begin,
+								 const Forms::const_iterator &end);
 		void compile(const Forms &forms);
+		
 		void run(size_t offs=0);
 	private:
 		std::unordered_map<AFimpPtr, BinFimp> _fimps;

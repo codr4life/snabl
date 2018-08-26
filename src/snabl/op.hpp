@@ -72,6 +72,13 @@ namespace snabl {
 			static const OpType<Drop> type;
 			Drop();
 		};
+
+		struct Else: public OpImp {
+			static const OpType<Else> type;
+			size_t nops;
+			
+			Else(size_t nops);
+		};
 		
 		struct End: public OpImp {
 			static const OpType<End> type;
@@ -105,6 +112,13 @@ namespace snabl {
 			static const OpType<PutVar> type;
 			const Sym id;
 			PutVar(const Sym &id);
+		};
+
+		struct Skip: public OpImp {
+			static const OpType<Skip> type;
+			size_t nops;
+			
+			Skip(size_t nops);
 		};
 	}
 }

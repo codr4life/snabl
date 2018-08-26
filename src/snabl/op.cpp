@@ -9,16 +9,20 @@ namespace snabl {
 	namespace ops {
 		const OpType<Begin> Begin::type("Begin");
 		const OpType<Drop> Drop::type("Drop");
+		const OpType<Else> Else::type("Else");
 		const OpType<End> End::type("End");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<GetVar> GetVar::type("GetVar");
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
+		const OpType<Skip> Skip::type("Skip");
 
 		Begin::Begin() { }
 
 		Drop::Drop() { }
 		
+		Else::Else(size_t nops): nops(nops) { }
+
 		End::End() { }
 
 		Funcall::Funcall(const AFuncPtr &func): func(func) { }
@@ -30,5 +34,7 @@ namespace snabl {
 		Push::Push(const Box &value): value(value) { }
 
 		PutVar::PutVar(const Sym &id): id(id) { }
+
+		Skip::Skip(size_t nops): nops(nops) { }
 	}
 }

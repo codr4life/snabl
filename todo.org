@@ -1,8 +1,16 @@
-* add if-else: macro
+* add t/f macros
+* rename op vars in form.cpp
+* ---
+* add env.push/pop_scope
+** update stack_begin in push
+* switch to global vars
+** move Scope.vars to Env
+** add vector<pair<Sym, Box>> vars to Scope
+*** revert on pop
 * add func: macro
-** optional parent_scope
-*** use as parent for begin
 * finish fib
+* add recall op
+** jump immediately
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
@@ -18,28 +26,21 @@
 ** parse as func '[]' and call with args
 
 * add use: macro
-* move +/drop to abc lib
-** eval snabl code
-* add ops PushCall PopCall
 * precompile fimps
 ** compile rest on demand
 * add jump op
 ** ssize_t nops
 ** update pc
 * add put/get_var ops
-* add env.push/pop_scope
-** update stack_begin in push
-* add recall op
-** jump immediately
-** remember scope iter and truncate before jump
+* add generics
 ** add Type._args
 *** deque of ATypePtrs
 ** add Type.specialize(type, ...)
 *** check types
 ** add virtual protected Type.specialize()
 *** override to create new instance
-** add Sink<T>
-*** add push fn
+* add Sink<T>
+** add push fn
 * add fimp lookup
 ** add lib.fimps/add_fimp
 *** call from func when fimp is added

@@ -11,7 +11,7 @@ using namespace snabl;
 int main() {
 	Env env;
 
-	env.home.add_macro(env.get_sym("drop!"),
+	env.home.add_macro(env.get_sym("drop"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
 												AFuncPtr &func, AFimpPtr &fimp,
@@ -38,6 +38,22 @@ int main() {
 																				p.as<forms::Id>().sym);
 										 });
 
+	env.home.add_macro(env.get_sym("if:"),
+										 [](Forms::const_iterator &in,
+												const Forms::const_iterator &end,
+												AFuncPtr &func, AFimpPtr &fimp,
+												Bin &out) {
+											 auto &form(*in++);
+											 out.compile(in++, in+1);
+											 auto &else_op(out.emplace_back(ops::Else::type, form.pos, 0));
+											 size_t start_pc(out.ops().size());								
+											 out.compile(in++, in+1);
+											 auto &skip_op(out.emplace_back(ops::Skip::type, form.pos, 0));
+											 else_op.as<ops::Else>().nops = out.ops().size()-start_pc;
+											 start_pc = out.ops().size();
+											 out.compile(in++, in+1);
+											 skip_op.as<ops::Skip>().nops = out.ops().size()-start_pc;
+										 });	
 	
 	env.home.add_fimp<2, 1>(env.get_sym("="),
 		{Box(env.maybe_type), Box(env.maybe_type)},
@@ -74,7 +90,7 @@ int main() {
 			Box
 				y(call.scope->pop_stack()),
 				x(call.scope->pop_stack());
-			
+
 			env.push_stack(env.bool_type, x.cmp(y) == Cmp::LT);
 		});
 	
@@ -154,7 +170,7 @@ int main() {
 	env.run("1 + (3 * 2)");
 	assert(s->pop_stack().as<Int>() == Int(7));
 
-	env.run("1 3 5 drop! +");
+	env.run("1 3 5 drop +");
 	assert(s->pop_stack().as<Int>() == Int(4));
 
 	env.run("(let: foo 42) @foo");
@@ -163,7 +179,13 @@ int main() {
 	env.run("1 +<_ Int> 3");
 	assert(s->pop_stack().as<Int>() == Int(4));
 
-	//"func: fib<Int> Int (let: n) if-else: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
+	env.run("if: (1 < 3) 5 7");
+	assert(s->pop_stack().as<Int>() == Int(5));
+
+	//env.run("if: (3 < 1) 5 7");
+	//assert(s->pop_stack().as<Int>() == Int(7));
+
+	//"func: fib<Int> Int (let: n) if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	
 	env.end();
 	return 0;

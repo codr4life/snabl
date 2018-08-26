@@ -20,15 +20,16 @@ namespace snabl {
 			: std::make_optional(found->second);
 	}
 
-	void Bin::compile(const Forms &forms) {
+	void Bin::compile(const Forms::const_iterator &begin,
+										const Forms::const_iterator &end) {
 		AFuncPtr func;
 		AFimpPtr fimp;
 
-		for (auto i(forms.begin()); i != forms.end();) {
-			i->type.compile(i, forms.end(), func, fimp, *this);
+		for (auto i(begin); i != end;) {
+			i->type.compile(i, end, func, fimp, *this);
 		}
 
-		auto pos(forms.begin()->pos);
+		auto pos(begin->pos);
 
 		if (fimp) {
 			emplace_back(ops::Funcall::type, pos, fimp);
@@ -36,14 +37,18 @@ namespace snabl {
 			emplace_back(ops::Funcall::type, pos, func);
 		}
 	}
-	
+
+	void Bin::compile(const Forms &forms) {
+		compile(forms.begin(), forms.end());
+	}
+
 	void Bin::run(size_t offs) {
 		_pc = _ops.begin();
 		if (offs) { std::advance(_pc, offs); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_drop, &&op_end, &&op_funcall, &&op_getvar, &&op_push,
-			&&op_putvar,
+			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_funcall, &&op_getvar,
+			&&op_push, &&op_putvar, &&op_skip
 		};
 
 		SNABL_DISPATCH();
@@ -55,6 +60,13 @@ namespace snabl {
 		env.pop_stack();
 		_pc++;
 		SNABL_DISPATCH();
+	op_else: {
+			auto &op(_pc->as<ops::Else>());
+			auto v(env.scope()->pop_stack());
+			if (!v.as<bool>()) { _pc += op.nops; }
+			_pc++;
+			SNABL_DISPATCH();
+		}
 	op_end:
 		env.end();
 		_pc++;
@@ -97,5 +109,8 @@ namespace snabl {
 			_pc++;
 			SNABL_DISPATCH();
 		}
+	op_skip:
+		_pc += _pc->as<ops::Skip>().nops+1;
+		SNABL_DISPATCH();
 	}
 }

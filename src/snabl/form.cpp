@@ -31,16 +31,14 @@ namespace snabl {
 			} else {
 				auto &env(out.env);
 				auto &lib(env.lib());
-				auto lc(id.name().back());
+				auto m(lib.get_macro(id));
 				
-				if (lc == ':' || lc == '!') {
-					auto m(lib.get_macro(id));
-					if (!m) { throw Error("Unknown macro: " + id.name()); }					
+				if (m) {
 					m->call(in, end, func, fimp, out);
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
-					if (!fn) { throw Error("Unknown func: " + id.name()); }
+					if (!fn) { throw Error("Unknown id: " + id.name()); }
 					
 					if (fn->nargs) {
 						if (func) { throw Error("Extra func"); }
