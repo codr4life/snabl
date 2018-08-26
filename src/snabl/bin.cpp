@@ -57,7 +57,7 @@ namespace snabl {
 		_pc++;
 		SNABL_DISPATCH();
 	op_drop:
-		env.pop_stack();
+		env.scope()->pop_stack();
 		_pc++;
 		SNABL_DISPATCH();
 	op_else: {

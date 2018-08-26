@@ -224,7 +224,7 @@ namespace snabl {
 	
 	void Env::push_stack(const Box &value) { _stack.push_back(value); }
 
-	std::optional<Box> Env::pop_stack() {
+	std::optional<Box> Env::unsafe_pop_stack() {
 		if (_stack.empty()) { return std::nullopt; }
 		Box v(_stack.back());
 		_stack.pop_back();
@@ -239,7 +239,7 @@ namespace snabl {
 		return nullptr;
 	}
 
-	std::optional<Box> Env::put_var(const Sym &id, const Box &value) {
+	std::optional<Box> Env::unsafe_put_var(const Sym &id, const Box &value) {
 		auto found(_vars.find(id));
 		std::optional<Box> prev;
 		

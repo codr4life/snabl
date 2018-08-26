@@ -65,11 +65,11 @@ namespace snabl {
 		template <typename ValueT>
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
 		void push_stack(const Box &value);
-		std::optional<Box> pop_stack();
+		std::optional<Box> unsafe_pop_stack();
 		const Stack &stack();
 
 		Box const* get_var(const Sym &id);
-		std::optional<Box> put_var(const Sym &id, const Box &value);
+		std::optional<Box> unsafe_put_var(const Sym &id, const Box &value);
 	private:
 		Pos _pos;
 		std::vector<Lib *> _libs;
