@@ -214,7 +214,7 @@ int main() {
 	assert(s->pop_stack().as<Int>() == Int(7));
 
 	//"func: fib<Int> Int (let: n) if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
-	
+
 	env.end();
 	return 0;
 }
