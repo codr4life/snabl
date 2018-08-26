@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "snabl/error.hpp"
+#include "snabl/std/string_view.hpp"
 
 namespace snabl {
 	std::string fmt_arg(const char *x);	
@@ -19,7 +20,7 @@ namespace snabl {
 	void _fmt(std::string &spec, int i, const Arg1 &arg1, ArgsT &&... args) {
 		const std::string id {'%', static_cast<char>('0'+i)};
 		const std::string arg(fmt_arg(arg1));
-		bool found = false;
+		bool found(false);
 		size_t j(0);
 
 		while ((j = spec.find(id, j)) != std::string::npos) {
@@ -33,9 +34,10 @@ namespace snabl {
 	}
 	
 	template <typename...ArgsT>
-	std::string &&fmt(std::string spec, ArgsT &&... args) {
-		_fmt(spec, 0, std::forward<ArgsT>(args)...);
-		return std::move(spec);
+	std::string fmt(const std::string_view &spec, ArgsT &&... args) {
+		std::string out(spec);
+		_fmt(out, 0, std::forward<ArgsT>(args)...);
+		return out;
 	}
 }
 

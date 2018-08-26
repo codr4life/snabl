@@ -11,6 +11,8 @@ using namespace snabl;
 int main() {
 	Env env;
 
+	std::cout << fmt("%0 %1 %2", "foo", "bar", 42) << std::endl;
+	
 	env.home.add_macro(env.get_sym("t"),
 										 [](Forms::const_iterator &in,
 												const Forms::const_iterator &end,
