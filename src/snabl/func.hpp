@@ -24,7 +24,7 @@ namespace snabl {
 		virtual AFimpPtr get_best_fimp(const Stack &stack) const=0;
 		virtual void clear()=0;
 	protected:
-		AFunc(Lib &lib, const Sym &id, int nargs, int nrets);
+		AFunc(Lib &lib, Sym id, int nargs, int nrets);
 	};
 
 	template <int NARGS, int NRETS>
@@ -39,7 +39,7 @@ namespace snabl {
 																					const Rets &rets,
 																					ImpT &&... imp);
 		
-		Func(Lib &lib, const Sym &id);
+		Func(Lib &lib, Sym id);
 		AFimpPtr get_fimp() const override;
 		AFimpPtr get_best_fimp(const Stack &stack) const override;
 		void clear() override;
@@ -48,7 +48,7 @@ namespace snabl {
 	};
 
 	template <int NARGS, int NRETS>
-	Func<NARGS, NRETS>::Func(Lib &lib, const Sym &id): AFunc(lib, id, NARGS, NRETS) { }
+	Func<NARGS, NRETS>::Func(Lib &lib, Sym id): AFunc(lib, id, NARGS, NRETS) { }
 
 	template <int NARGS, int NRETS>
 	template <typename... ImpT>

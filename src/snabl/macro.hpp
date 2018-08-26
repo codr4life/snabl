@@ -17,7 +17,7 @@ namespace snabl {
 		Lib &lib;
 		const Sym id;
 
-		Macro(Lib &lib, const Sym &id, const Imp &imp);
+		Macro(Lib &lib, Sym id, const Imp &imp);
 		
 		void call(Forms::const_iterator &in,
 							const Forms::const_iterator &end,

@@ -29,11 +29,11 @@ namespace snabl {
 		
 		Funcall::Funcall(const AFimpPtr &fimp): func(fimp->afunc()), fimp(fimp) { }
 
-		GetVar::GetVar(const Sym &id): id(id) { }
+		GetVar::GetVar(Sym id): id(id) { }
 
 		Push::Push(const Box &value): value(value) { }
 
-		PutVar::PutVar(const Sym &id): id(id) { }
+		PutVar::PutVar(Sym id): id(id) { }
 
 		Skip::Skip(std::size_t nops): nops(nops) { }
 	}

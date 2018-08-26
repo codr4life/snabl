@@ -12,7 +12,7 @@ namespace snabl {
 		const SexprType Sexpr::type;
 		const TypeListType TypeList::type;
 
-		Id::Id(const Sym &sym): sym(sym) { }
+		Id::Id(Sym sym): sym(sym) { }
 
 		IdType::IdType(): FormType<Id>("Id") { }
 		
@@ -48,7 +48,7 @@ namespace snabl {
 							auto &ids((in++)->as<TypeList>().ids);
 							Stack args;
 							std::transform(ids.begin(), ids.end(), std::back_inserter(args),
-														 [&lib](const Sym &id) {
+														 [&lib](Sym id) {
 															 auto t(lib.get_type(id));
 															 if (!t) { throw Error("Unknown type: " + id.name()); }
 															 return Box(t);

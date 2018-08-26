@@ -17,28 +17,28 @@ namespace snabl {
 		Env &env;
 		const Sym id;
 		
-		Lib(Env &env, const Sym &id);
+		Lib(Env &env, Sym id);
 		~Lib();
 		
-		MacroPtr add_macro(const Sym &id, const Macro::Imp &imp);
+		MacroPtr add_macro(Sym id, const Macro::Imp &imp);
 
 		template <typename TypeT, typename... ArgsT>
-		std::shared_ptr<TypeT> add_type(const Sym &id,
+		std::shared_ptr<TypeT> add_type(Sym id,
 																		std::initializer_list<ATypePtr> parent_types={},
 																		ArgsT &&... args);
 
 		template <int NARGS, int NRETS>
-		FuncPtr<NARGS, NRETS> add_func(const Sym &id);
+		FuncPtr<NARGS, NRETS> add_func(Sym id);
 
 		template <int NARGS, int NRETS, typename... ImpT>
-		FimpPtr<NARGS, NRETS> add_fimp(const Sym &id,
+		FimpPtr<NARGS, NRETS> add_fimp(Sym id,
 																	 const typename Func<NARGS, NRETS>::Args &args,
 																	 const typename Func<NARGS, NRETS>::Rets &rets,
 																	 ImpT &&... imp);
 
-		MacroPtr get_macro(const Sym &id);
-		ATypePtr get_type(const Sym &id);
-		AFuncPtr get_func(const Sym &id);
+		MacroPtr get_macro(Sym id);
+		ATypePtr get_type(Sym id);
+		AFuncPtr get_func(Sym id);
 	private:
 		std::unordered_map<Sym, MacroPtr> _macros;
 		std::unordered_map<Sym, ATypePtr> _types;
@@ -46,7 +46,7 @@ namespace snabl {
 	};
 
 	template <typename TypeT, typename... ArgsT>
-	std::shared_ptr<TypeT> Lib::add_type(const Sym &id,
+	std::shared_ptr<TypeT> Lib::add_type(Sym id,
 																			 std::initializer_list<ATypePtr> parent_types,
 																			 ArgsT &&... args) {
 		auto t(std::make_shared<TypeT>(*this,
@@ -58,7 +58,7 @@ namespace snabl {
 	}
 
 	template <int NARGS, int NRETS>
-	FuncPtr<NARGS, NRETS> Lib::add_func(const Sym &id) {
+	FuncPtr<NARGS, NRETS> Lib::add_func(Sym id) {
 		auto found(_funcs.find(id));
 		
 		if (found != _funcs.end()) {
@@ -77,7 +77,7 @@ namespace snabl {
 	}
 
 	template <int NARGS, int NRETS, typename... ImpT>
-	FimpPtr<NARGS, NRETS> Lib::add_fimp(const Sym &id,
+	FimpPtr<NARGS, NRETS> Lib::add_fimp(Sym id,
 																			const typename Func<NARGS, NRETS>::Args &args,
 																			const typename Func<NARGS, NRETS>::Rets &rets,
 																			ImpT &&... imp) {

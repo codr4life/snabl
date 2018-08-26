@@ -71,8 +71,8 @@ namespace snabl {
 		std::optional<Box> unsafe_pop_stack();
 		const Stack &stack();
 
-		Box const* get_var(const Sym &id);
-		std::optional<Box> unsafe_put_var(const Sym &id, const Box &value);
+		Box const* get_var(Sym id);
+		std::optional<Box> unsafe_put_var(Sym id, const Box &value);
 	private:
 		Pos _pos;
 		std::vector<Lib *> _libs;

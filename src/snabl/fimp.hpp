@@ -28,8 +28,8 @@ namespace snabl {
 		virtual std::optional<std::size_t> score(const Stack &stack) const=0;
 		virtual void dump(std::ostream &out) const;
 	protected:
-		AFimp(const Sym &id, Imp imp);
-		AFimp(const Sym &id, Forms &&forms);
+		AFimp(Sym id, Imp imp);
+		AFimp(Sym id, Forms &&forms);
 	private:
 		const std::optional<Imp> _imp;
 	};

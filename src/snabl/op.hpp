@@ -98,7 +98,7 @@ namespace snabl {
 		struct GetVar: public OpImp {
 			static const OpType<GetVar> type;
 			const Sym id;
-			GetVar(const Sym &id);
+			GetVar(Sym id);
 		};
 
 		struct Push: public OpImp {
@@ -111,7 +111,7 @@ namespace snabl {
 		struct PutVar: public OpImp {
 			static const OpType<PutVar> type;
 			const Sym id;
-			PutVar(const Sym &id);
+			PutVar(Sym id);
 		};
 
 		struct Skip: public OpImp {

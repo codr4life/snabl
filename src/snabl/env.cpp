@@ -227,13 +227,13 @@ namespace snabl {
 
 	const Stack &Env::stack() { return _stack; }
 
-	Box const* Env::get_var(const Sym &id) {
+	Box const* Env::get_var(Sym id) {
 		auto found(_vars.find(id));
 		if (found != _vars.end()) { return &found->second; }
 		return nullptr;
 	}
 
-	std::optional<Box> Env::unsafe_put_var(const Sym &id, const Box &value) {
+	std::optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
 		auto found(_vars.find(id));
 		std::optional<Box> prev;
 		

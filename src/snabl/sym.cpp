@@ -8,9 +8,9 @@ namespace snabl {
 	
 	const std::string &Sym::name() const { return _imp->name; }
 
-	bool operator ==(const Sym &x, const Sym &y) { return x._imp == y._imp; }
+	bool operator ==(Sym x, Sym y) { return x._imp == y._imp; }
 
-	bool operator !=(const Sym &x, const Sym &y) { return x._imp != y._imp; }
+	bool operator !=(Sym x, Sym y) { return x._imp != y._imp; }
 
-	bool operator <(const Sym &x, const Sym &y) { return x._imp < y._imp; }
+	bool operator <(Sym x, Sym y) { return x._imp < y._imp; }
 }

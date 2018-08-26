@@ -18,9 +18,9 @@ namespace snabl {
 	class Sym {
 	public:
 		friend std::hash<Sym>;
-		friend bool operator ==(const Sym &x, const Sym &y);
-		friend bool operator !=(const Sym &x, const Sym &y);
-		friend bool operator <(const Sym &x, const Sym &y);
+		friend bool operator ==(Sym x, Sym y);
+		friend bool operator !=(Sym x, Sym y);
+		friend bool operator <(Sym x, Sym y);
 		
 		Sym(const SymImp *imp);
 		const std::string &name() const;
@@ -28,8 +28,8 @@ namespace snabl {
 		const SymImp *_imp;
 	};
 
-	bool operator ==(const Sym &x, const Sym &y);
-	bool operator !=(const Sym &x, const Sym &y);
+	bool operator ==(Sym x, Sym y);
+	bool operator !=(Sym x, Sym y);
 }
 
 namespace std {

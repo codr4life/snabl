@@ -8,7 +8,7 @@ namespace snabl {
 	
 	class IntType: public Type<Int> {
 	public:
-		IntType(Lib &lib, const Sym &id);
+		IntType(Lib &lib, Sym id);
 		void dump(const Box &value, std::ostream &out) const override;
 	};
 }

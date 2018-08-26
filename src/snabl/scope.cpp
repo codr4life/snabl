@@ -17,7 +17,7 @@ namespace snabl {
 		return *env.unsafe_pop_stack();
 	}
 
-	void Scope::put_var(const Sym &id, const Box &value) {
+	void Scope::put_var(Sym id, const Box &value) {
 		auto found(_put_vars.find(id));
 		if (found != _put_vars.end()) { throw Error("Duplicate var: " + id.name()); }
 		auto prev(env.unsafe_put_var(id, value));

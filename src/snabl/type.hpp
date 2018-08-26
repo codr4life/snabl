@@ -28,7 +28,7 @@ namespace snabl {
 		virtual void dump(const Box &value, std::ostream &out) const;
 		virtual void write(const Box &value, std::ostream &out) const;
 	protected:
-		AType(Lib &lib, const Sym &id);
+		AType(Lib &lib, Sym id);
 	private:
 		std::vector<ATypePtr> _parent_types;
 		std::unordered_set<ATypePtr> _child_types;
@@ -37,7 +37,7 @@ namespace snabl {
 	template <typename ValueT>
 	class Type: public AType {
 	public:
-		Type(Lib &lib, const Sym &id);
+		Type(Lib &lib, Sym id);
 
 		bool is_equid(const Box &lhs, const Box &rhs) const override;
 		bool is_eqval(const Box &lhs, const Box &rhs) const override;
@@ -45,7 +45,7 @@ namespace snabl {
 	};
 
 	template <typename ValueT>
-	Type<ValueT>::Type(Lib &lib, const Sym &id): AType(lib, id) { }
+	Type<ValueT>::Type(Lib &lib, Sym id): AType(lib, id) { }
 
 	template <typename ValueT>
 	bool Type<ValueT>::is_equid(const Box &lhs, const Box &rhs) const {
@@ -64,7 +64,7 @@ namespace snabl {
 
 	class Trait: public Type<std::nullptr_t> {
 	public:
-		Trait(Lib &lib, const Sym &id);
+		Trait(Lib &lib, Sym id);
 	};
 }
 

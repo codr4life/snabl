@@ -20,7 +20,7 @@ namespace snabl {
 		
 		std::size_t stack_offs() const;
 		Box pop_stack();
-		void put_var(const Sym &id, const Box &value);
+		void put_var(Sym id, const Box &value);
 	private:
 		std::map<Sym, Box> _put_vars;
 		std::size_t _stack_offs;

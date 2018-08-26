@@ -19,7 +19,7 @@ namespace snabl {
 		}
 	}
 
-	AType::AType(Lib &lib, const Sym &id):
+	AType::AType(Lib &lib, Sym id):
 		lib(lib), tag(lib.env.next_type_tag()), id(id) { }
 	
 	bool AType::isa(const ATypePtr &parent) const {
@@ -34,5 +34,5 @@ namespace snabl {
 
 	void AType::write(const Box &value, std::ostream &out) const { dump(value, out); }
 
-	Trait::Trait(Lib &lib, const Sym &id): Type<std::nullptr_t>(lib, id) { }
+	Trait::Trait(Lib &lib, Sym id): Type<std::nullptr_t>(lib, id) { }
 }
