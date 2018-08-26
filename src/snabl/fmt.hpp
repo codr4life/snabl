@@ -1,8 +1,6 @@
 #ifndef SNABL_FMT_HPP
 #define SNABL_FMT_HPP
 
-#include <iostream>
-
 #include <string>
 #include <utility>
 
