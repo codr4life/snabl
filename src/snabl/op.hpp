@@ -89,7 +89,7 @@ namespace snabl {
 			static const OpType<Fimp> type;
 			
 			const FimpPtr ptr;
-			Fimp(FimpPtr ptr);
+			Fimp(const FimpPtr &ptr);
 		};
 
 		struct Funcall: public OpImp {
@@ -99,8 +99,8 @@ namespace snabl {
 			const FimpPtr fimp;
 			FimpPtr prev_fimp;
 			
-			Funcall(FuncPtr func);
-			Funcall(FimpPtr fimp);
+			Funcall(const FuncPtr &func);
+			Funcall(const FimpPtr &fimp);
 		};
 		
 		struct GetVar: public OpImp {

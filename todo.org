@@ -2,7 +2,6 @@
 ** parse args/rets and pass to add_fimp
 * fix funcall fimp memory leak
 * drop iter refs
-* drop ptr refs
 * finish fib
 * add recall op
 ** jump immediately
