@@ -19,7 +19,7 @@ namespace snabl {
 			} else {
 				out << spec.substr(i, j-i);
 				std::size_t len(0);
-				auto arg(std::stoul(std::string(spec.substr(j+1)), &len));
+				const auto arg(std::stoul(std::string(spec.substr(j+1)), &len));
 
 				if (arg >= args.size()) {
 					throw Error("Invalid fmt arg: " + std::to_string(arg));

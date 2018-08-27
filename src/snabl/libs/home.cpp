@@ -83,14 +83,42 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
+									auto &lib(out.env.lib());
 									auto &form(*in++);
 									auto &id((in++)->as<forms::Id>());
-									in++;
-									in++;
+
+									auto &args_form(*in++);
+									std::vector<Box> args;
 									
-									auto fi = out.env.lib().add_fimp(id.sym,
-																									 {}, {},
-																									 in, end);
+									if (&args_form.type == &forms::TypeList::type) {
+										auto &ids(args_form.as<forms::TypeList>().ids);
+
+										for (const auto id: ids) {
+											const auto t(lib.get_type(id));
+											if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+											args.emplace_back(t);
+										}
+									} else {
+										throw SyntaxError(args_form.pos,
+																			fmt("Invalid func args: %0",
+																					{args_form.type.id}));
+									}
+
+									auto &rets_form(*in++);
+									std::vector<ATypePtr> rets;
+									
+									if (&rets_form.type == &forms::Id::type) {
+										auto id(rets_form.as<forms::Id>().sym);
+										const auto t(lib.get_type(id));
+										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+										rets.push_back(t);
+									} else {
+										throw SyntaxError(rets_form.pos,
+																			fmt("Invalid func rets: %0",
+																					{rets_form.type.id}));
+									}
+									
+									auto fi = out.env.lib().add_fimp(id.sym, args, rets, in, end);
 									in = end;
 									out.emplace_back(ops::Fimp::type, form.pos, fi);
 								});

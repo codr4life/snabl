@@ -30,6 +30,9 @@ namespace snabl {
 
 	bool operator ==(Sym x, Sym y);
 	bool operator !=(Sym x, Sym y);
+	bool operator <(Sym x, Sym y);
+	
+	std::string fmt_arg(const Sym &x);
 }
 
 namespace std {
