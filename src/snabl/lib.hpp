@@ -27,22 +27,21 @@ namespace snabl {
 																		std::initializer_list<ATypePtr> parent_types={},
 																		ArgsT &&... args);
 
-		template <int NARGS, int NRETS>
-		FuncPtr<NARGS, NRETS> add_func(Sym id);
+		FuncPtr add_func(Sym id, std::size_t nargs, std::size_t nrets);
 
-		template <int NARGS, int NRETS, typename... ImpT>
-		FimpPtr<NARGS, NRETS> add_fimp(Sym id,
-																	 const typename Func<NARGS, NRETS>::Args &args,
-																	 const typename Func<NARGS, NRETS>::Rets &rets,
-																	 ImpT &&... imp);
+		template <typename... ImpT>
+		FimpPtr add_fimp(Sym id,
+										 const Fimp::Args &args,
+										 const Fimp::Rets &rets,
+										 ImpT &&... imp);
 
 		MacroPtr get_macro(Sym id);
 		ATypePtr get_type(Sym id);
-		AFuncPtr get_func(Sym id);
+		FuncPtr get_func(Sym id);
 	private:
 		std::unordered_map<Sym, MacroPtr> _macros;
 		std::unordered_map<Sym, ATypePtr> _types;
-		std::unordered_map<Sym, AFuncPtr> _funcs;
+		std::unordered_map<Sym, FuncPtr> _funcs;
 	};
 
 	template <typename TypeT, typename... ArgsT>
@@ -57,32 +56,13 @@ namespace snabl {
 		return t;
 	}
 
-	template <int NARGS, int NRETS>
-	FuncPtr<NARGS, NRETS> Lib::add_func(Sym id) {
-		auto found(_funcs.find(id));
-		
-		if (found != _funcs.end()) {
-			auto f(found->second);
-
-			if (f->nargs != NARGS || f->nrets != NRETS) {
-				throw Error("Wrong nr of args");
-			}
-			
-			return std::static_pointer_cast<Func<NARGS, NRETS>>(f);
-		}
-		
-		auto f(std::make_shared<Func<NARGS, NRETS>>(*this, id));
-		_funcs.emplace(f->id, f);
-		return f;
-	}
-
-	template <int NARGS, int NRETS, typename... ImpT>
-	FimpPtr<NARGS, NRETS> Lib::add_fimp(Sym id,
-																			const typename Func<NARGS, NRETS>::Args &args,
-																			const typename Func<NARGS, NRETS>::Rets &rets,
-																			ImpT &&... imp) {
-		auto f(add_func<NARGS, NRETS>(id));
-		return Func<NARGS, NRETS>::add_fimp(f, args, rets, imp...);
+	template <typename... ImpT>
+	FimpPtr Lib::add_fimp(Sym id,
+												const Fimp::Args &args,
+												const Fimp::Rets &rets,
+												ImpT &&... imp) {
+		auto fn(add_func(id, args.size(), rets.size()));
+		return Func::add_fimp(fn, args, rets, imp...);
 	}
 }
 

@@ -13,7 +13,7 @@ namespace snabl {
 
 	const Ops &Bin::ops() const { return _ops; }
 
-	std::optional<BinFimp> Bin::get_fimp(const AFimpPtr &ptr) {
+	std::optional<BinFimp> Bin::get_fimp(const FimpPtr &ptr) {
 		auto found = _fimps.find(ptr);
 		return (found == _fimps.end())
 			? std::nullopt
@@ -22,8 +22,8 @@ namespace snabl {
 
 	void Bin::compile(const Forms::const_iterator &begin,
 										const Forms::const_iterator &end) {
-		AFuncPtr func;
-		AFimpPtr fimp;
+		FuncPtr func;
+		FimpPtr fimp;
 
 		for (auto i(begin); i != end;) {
 			i->type.compile(i, end, func, fimp, *this);
@@ -47,8 +47,8 @@ namespace snabl {
 		if (offs) { std::advance(_pc, offs); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_funcall, &&op_getvar,
-			&&op_push, &&op_putvar, &&op_skip
+			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_fimp, &&op_funcall,
+			&&op_getvar, &&op_push, &&op_putvar, &&op_skip
 		};
 
 		SNABL_DISPATCH();
@@ -71,6 +71,9 @@ namespace snabl {
 		env.end();
 		_pc++;
 		SNABL_DISPATCH();
+	op_fimp:
+		_pc++;
+		SNABL_DISPATCH();		
 	op_funcall: {
 			auto &op(_pc->as<ops::Funcall>());
 			auto &fimp(op.fimp);
@@ -83,9 +86,9 @@ namespace snabl {
 				fimp = op.func->get_best_fimp(env.stack());
 			}
 			
-			if (!fimp) { throw Error("Func not applicable: " + fimp->afunc()->id.name()); }
+			if (!fimp) { throw Error("Func not applicable: " + fimp->func->id.name()); }
 			if (!op.fimp) { op.prev_fimp = fimp; }
-			AFimp::call(fimp);
+			Fimp::call(fimp);
 			_pc++;
 			SNABL_DISPATCH();
 		}

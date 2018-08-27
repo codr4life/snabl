@@ -23,7 +23,7 @@ namespace snabl {
 		Env &env;
 		Bin(Env &env);
 		const Ops &ops() const;
-		std::optional<BinFimp> get_fimp(const AFimpPtr &ptr);
+		std::optional<BinFimp> get_fimp(const FimpPtr &ptr);
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emplace_back(const OpType<ImpT> &type, ArgsT &&... args);
@@ -34,7 +34,7 @@ namespace snabl {
 		
 		void run(std::size_t offs=0);
 	private:
-		std::unordered_map<AFimpPtr, BinFimp> _fimps;
+		std::unordered_map<FimpPtr, BinFimp> _fimps;
 		Ops::iterator _pc;
 		Ops _ops;
 	};

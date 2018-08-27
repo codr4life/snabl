@@ -6,6 +6,13 @@
 namespace snabl {
 	AFormType::AFormType(const std::string &id): id(id) { }
 
+	FormImp::~FormImp() { }
+
+	Form::Form(const Form &source):
+		type(source.type),
+		pos(source.pos),
+		_imp(source._imp->clone()) { }
+
 	namespace forms {
 		const IdType Id::type;
 		const LiteralType Literal::type;
@@ -14,11 +21,13 @@ namespace snabl {
 
 		Id::Id(Sym sym): sym(sym) { }
 
+		FormImp *Id::clone() const { return new Id(sym); }
+
 		IdType::IdType(): FormType<Id>("Id") { }
 		
 		void IdType::compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
-												 AFuncPtr &func, AFimpPtr &fimp,
+												 FuncPtr &func, FimpPtr &fimp,
 												 Bin &out) const {
 			auto &form(*in);
 			auto &id(form.as<Id>().sym);
@@ -68,7 +77,9 @@ namespace snabl {
 		}
 
 		Literal::Literal(const Box &value): value(value) { }
-		
+
+		FormImp *Literal::clone() const { return new Literal(value); }
+
 		LiteralType::LiteralType(): FormType<Literal>("Literal") { }
 
 		void LiteralType::dump(const Form &form, std::ostream &out) const {
@@ -77,13 +88,15 @@ namespace snabl {
 
 		void LiteralType::compile(Forms::const_iterator &in,
 															const Forms::const_iterator &end,
-															AFuncPtr &func, AFimpPtr &fimp,
+															FuncPtr &func, FimpPtr &fimp,
 															Bin &out) const {
 			auto &form(*in++);
 			out.emplace_back(ops::Push::type, form.pos, form.as<Literal>().value);			
 		}
 
-		Sexpr::Sexpr(Forms &&body): body(std::move(body)) { }
+		Sexpr::Sexpr(const Forms &body): body(body) { }
+
+		FormImp *Sexpr::clone() const { return new Sexpr(body); }
 
 		SexprType::SexprType(): FormType<Sexpr>("Sexpr") { }
 		
@@ -103,7 +116,7 @@ namespace snabl {
 
 		void SexprType::compile(Forms::const_iterator &in,
 														const Forms::const_iterator &end,
-														AFuncPtr &func, AFimpPtr &fimp,
+														FuncPtr &func, FimpPtr &fimp,
 														Bin &out) const {
 			auto &sexpr((*in++).as<Sexpr>());
 			out.compile(sexpr.body);
@@ -114,6 +127,10 @@ namespace snabl {
 										 [](const Form &f) -> Sym { return f.as<Id>().sym; });
 		}
 
+		TypeList::TypeList(const Ids &ids): ids(ids) { }
+
+		FormImp *TypeList::clone() const { return new TypeList(ids); }
+		
 		TypeListType::TypeListType(): FormType<TypeList>("TypeList") { }
 
 		void TypeListType::dump(const Form &form, std::ostream &out) const {
@@ -132,7 +149,7 @@ namespace snabl {
 
 		void TypeListType::compile(Forms::const_iterator &in,
 														const Forms::const_iterator &end,
-														AFuncPtr &func, AFimpPtr &fimp,
+														FuncPtr &func, FimpPtr &fimp,
 														Bin &out) const {
 			throw Error("Stray type list");
 		}

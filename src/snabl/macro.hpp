@@ -11,7 +11,7 @@ namespace snabl {
 	public:
 		using Imp = std::function<void (Forms::const_iterator &in,
 																		const Forms::const_iterator &end,
-																		AFuncPtr &func, AFimpPtr &fimp,
+																		FuncPtr &func, FimpPtr &fimp,
 																		Bin &out)>;
 		
 		Lib &lib;
@@ -21,7 +21,7 @@ namespace snabl {
 		
 		void call(Forms::const_iterator &in,
 							const Forms::const_iterator &end,
-							AFuncPtr &func, AFimpPtr &fimp,
+							FuncPtr &func, FimpPtr &fimp,
 							Bin &out);
 	private:
 		const Imp _imp;

@@ -27,7 +27,7 @@ namespace snabl {
 
 		virtual void compile(Forms::const_iterator &in,
 												 const Forms::const_iterator &end,
-												 AFuncPtr &func, AFimpPtr &fimp,
+												 FuncPtr &func, FimpPtr &fimp,
 												 Bin &out) const=0;
 		
 		virtual void dump(const Form &form, std::ostream &out) const=0;
@@ -43,7 +43,8 @@ namespace snabl {
 	FormType<ImpT>::FormType(const std::string &id): AFormType(id) { }
 	
 	struct FormImp {
-		virtual ~FormImp() { }
+		virtual ~FormImp();
+		virtual FormImp *clone() const=0;
 	};
 	
 	class Form {
@@ -57,6 +58,8 @@ namespace snabl {
 		template <typename ImpT, typename ArgT1, typename... ArgsT>
 		Form(const FormType<ImpT> &type, Pos pos, ArgT1 &&arg1, ArgsT &&... args);
 
+		Form(const Form &source);
+		
 		virtual ~Form() { }
 		template <typename ImpT>
 		ImpT &as() const;
@@ -93,7 +96,7 @@ namespace snabl {
 			
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) const override;
@@ -103,6 +106,7 @@ namespace snabl {
 			static const IdType type;
 			const Sym sym;
 			Id(Sym sym);
+			FormImp *clone() const override;
 		};
 
 		struct Literal;
@@ -113,7 +117,7 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) const override;
@@ -123,6 +127,7 @@ namespace snabl {
 			static const LiteralType type;
 			Box value;
 			Literal(const Box &value);
+			FormImp *clone() const override;
 		};
 
 		struct Sexpr;
@@ -133,7 +138,7 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) const override;
@@ -142,7 +147,8 @@ namespace snabl {
 		struct Sexpr: public FormImp {			
 			static const SexprType type;
 			const Forms body;
-			Sexpr(Forms &&body);
+			Sexpr(const Forms &body);
+			FormImp *clone() const override;
 		};
 
 		struct TypeList;
@@ -153,16 +159,21 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
 			void dump(const Form &form, std::ostream &out) const override;
 		};
 
-		struct TypeList: public FormImp {			
+		struct TypeList: public FormImp {
+			using Ids = std::vector<Sym>;
+				
 			static const TypeListType type;
-			std::vector<Sym> ids;
+			Ids ids;
+			
 			TypeList(const Forms &body);
+			TypeList(const Ids &ids);
+			FormImp *clone() const override;
 		};
 	}
 }

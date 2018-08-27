@@ -15,7 +15,7 @@ namespace snabl {
 			add_macro(env.get_sym("t"),
 								[](Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									out.emplace_back(ops::Push::type,
 																	 (in++)->pos,
@@ -25,7 +25,7 @@ namespace snabl {
 			add_macro(env.get_sym("f"),
 								[](Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									out.emplace_back(ops::Push::type,
 																	 (in++)->pos,
@@ -35,7 +35,7 @@ namespace snabl {
 			add_macro(env.get_sym("drop"),
 								[](Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
 									out.emplace_back(ops::Drop::type, form.pos);			
@@ -44,7 +44,7 @@ namespace snabl {
 			add_macro(env.get_sym("let:"),
 								[](Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
 									auto &p(*in++);
@@ -62,7 +62,7 @@ namespace snabl {
 			add_macro(env.get_sym("if:"),
 								[](Forms::const_iterator &in,
 									 const Forms::const_iterator &end,
-									 AFuncPtr &func, AFimpPtr &fimp,
+									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
 									out.compile(in++, in+1);
@@ -77,10 +77,27 @@ namespace snabl {
 									out.compile(in++, in+1);
 									if_skip.as<ops::Skip>().nops = out.ops().size()-start_pc;
 								});	
-	
-			add_fimp<2, 1>(env.get_sym("="),
+
+			add_macro(env.get_sym("func:"),
+								[](Forms::const_iterator &in,
+									 const Forms::const_iterator &end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Bin &out) {
+									auto &form(*in++);
+									auto &id((in++)->as<forms::Id>());
+									in++;
+									in++;
+									
+									auto fi = out.env.lib().add_fimp(id.sym,
+																									 {}, {},
+																									 in, end);
+									in = end;
+									out.emplace_back(ops::Fimp::type, form.pos, fi);
+								});
+
+			add_fimp(env.get_sym("="),
 				{Box(env.maybe_type), Box(env.maybe_type)},
-				{Box(env.bool_type)},
+				{env.bool_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 			
@@ -91,9 +108,9 @@ namespace snabl {
 					env.push_stack(env.bool_type, x.is_eqval(y));
 				});
 
-			add_fimp<2, 1>(env.get_sym("=="),
+			add_fimp(env.get_sym("=="),
 				{Box(env.maybe_type), Box(env.maybe_type)},
-				{Box(env.bool_type)},
+				{env.bool_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 			
@@ -104,9 +121,9 @@ namespace snabl {
 					env.push_stack(env.bool_type, x.is_equid(y));
 				});
 
-			add_fimp<2, 1>(env.get_sym("<"),
+			add_fimp(env.get_sym("<"),
 				{Box(env.a_type), Box(env.a_type)},
-				{Box(env.bool_type)},
+				{env.bool_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 			
@@ -117,27 +134,27 @@ namespace snabl {
 					env.push_stack(env.bool_type, x.cmp(y) == Cmp::LT);
 				});
 	
-			add_fimp<1, 1>(env.get_sym("int"),
+			add_fimp(env.get_sym("int"),
 				{Box(env.float_type)},
-				{Box(env.int_type)},
+				{env.int_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 					const Float v(call.scope->pop_stack().as<Float>());
 					env.push_stack(env.int_type, Int(v));
 				});
 
-			add_fimp<1, 1>(env.get_sym("float"),
+			add_fimp(env.get_sym("float"),
 				{Box(env.int_type)},
-				{Box(env.float_type)},
+				{env.float_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 					const Int v(call.scope->pop_stack().as<Int>());
 					env.push_stack(env.float_type, Float(v));
 				});
 
-			add_fimp<2, 1>(env.get_sym("+"),
+			add_fimp(env.get_sym("+"),
 				{Box(env.int_type), Box(env.int_type)},
-				{Box(env.int_type)},
+				{env.int_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 			
@@ -148,9 +165,9 @@ namespace snabl {
 					env.push_stack(env.int_type, x+y);
 				});
 
-			add_fimp<2, 1>(env.get_sym("*"),
+			add_fimp(env.get_sym("*"),
 				{Box(env.int_type), Box(env.int_type)},
-				{Box(env.int_type)},
+				{env.int_type},
 				[](Call &call) {
 					Env &env(call.scope->env);
 			

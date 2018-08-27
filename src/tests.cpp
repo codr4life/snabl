@@ -11,6 +11,7 @@ namespace snabl {
 		assert(fmt("%0 %1 %2", "foo", "bar", 42) == "foo bar 42");
 		assert(fmt("%0 %%1 %1", "foo", "bar") == "foo %1 bar");
 		assert(fmt("%0 %0", "") == " ");
+		assert(fmt("%%0") == "%%0");
 	}
 
 	void lang_tests() {
@@ -70,6 +71,9 @@ namespace snabl {
 		env.run("if: (3 < 1) 5 7");
 		assert(s->pop_stack().as<Int>() == Int(7));
 
+		//env.run("(func: foo1<A> A * 2) 21 foo1");
+		//assert(s->pop_stack().as<Int>() == Int(42));
+		
 		//"func: fib<Int> Int (let: n) if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
 	}
 

@@ -22,23 +22,11 @@ namespace snabl {
 	class Macro;
 	using MacroPtr = std::shared_ptr<Macro>;
 	
-	class AFimp;
-	using AFimpPtr = std::shared_ptr<AFimp>;
-
-	template <int NARGS, int NRETS>
 	class Fimp;
-	
-	template <int NARGS, int NRETS>
-	using FimpPtr = std::shared_ptr<Fimp<NARGS, NRETS>>;
+	using FimpPtr = std::shared_ptr<Fimp>;
 
-	class AFunc;
-	using AFuncPtr = std::shared_ptr<AFunc>;
-
-	template <int NARGS, int NRETS> 
 	class Func;
-	
-	template <int NARGS, int NRETS> 
-	using FuncPtr = std::shared_ptr<Func<NARGS, NRETS>>;
+	using FuncPtr = std::shared_ptr<Func>;
 }
 
 #endif

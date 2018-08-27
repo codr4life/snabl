@@ -11,6 +11,7 @@ namespace snabl {
 		const OpType<Drop> Drop::type("Drop");
 		const OpType<Else> Else::type("Else");
 		const OpType<End> End::type("End");
+		const OpType<Fimp> Fimp::type("Fimp");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<GetVar> GetVar::type("GetVar");
 		const OpType<Push> Push::type("Push");
@@ -24,10 +25,12 @@ namespace snabl {
 		Else::Else(std::size_t nops): nops(nops) { }
 
 		End::End() { }
-
-		Funcall::Funcall(const AFuncPtr &func): func(func) { }
 		
-		Funcall::Funcall(const AFimpPtr &fimp): func(fimp->afunc()), fimp(fimp) { }
+		Fimp::Fimp(FimpPtr ptr): ptr(ptr) { }
+
+		Funcall::Funcall(const FuncPtr &func): func(func) { }
+		
+		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
 		GetVar::GetVar(Sym id): id(id) { }
 

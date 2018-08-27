@@ -3,14 +3,37 @@
 #include "snabl/lib.hpp"
 
 namespace snabl {
-	void AFimp::call(const AFimpPtr &fimp) {
-		auto &env(fimp->afunc()->lib.env);
+	Sym Fimp::get_id(const FuncPtr &func, const Args &args) {
+		std::stringstream buf;
+		buf << func->id.name() << '<';
+		char sep = 0;
+
+		for (auto &a: args) {
+			if (sep) {
+				buf << sep;
+			} else {
+				sep = ' ';
+			}
+
+			if (a.is_undef()) {
+				buf << a.type()->id.name();
+			} else {
+				a.write(buf);
+			}
+		}
+
+		buf << '>';
+		return func->lib.env.get_sym(buf.str());
+	}
+
+	void Fimp::call(const FimpPtr &fimp) {
+		auto &env(fimp->func->lib.env);
 						 
 		if (fimp->_imp) {
 			auto stack_offs(env.stack().size());
 			auto &call(env.push_call(fimp, -1));
 			(*fimp->_imp)(call);
-			auto func(fimp->afunc());
+			auto func(fimp->func);
 			
 			if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
 				throw Error("Invalid stack after funcall");
@@ -20,10 +43,39 @@ namespace snabl {
 		}
 	}
 
-	AFimp::AFimp(Sym id, Imp imp): id(id), _imp(imp) { }
-	
-	AFimp::AFimp(Sym id, Forms &&forms):
-		id(id), forms(std::move(forms)) { }
-	
-	void AFimp::dump(std::ostream &out) const { out << id.name(); }
+	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
+		id(get_id(func, args)), func(func), args(args), rets(rets), _imp(imp) { }
+
+	Fimp::Fimp(const FuncPtr &func,
+						 const Args &args, const Rets &rets,
+						 Forms::const_iterator begin,
+						 Forms::const_iterator end):
+		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end) { }
+
+	std::optional<std::size_t> Fimp::score(const Stack &stack) const {
+		if (!func->nargs) { return 0; }
+		if (stack.size() < func->nargs) { return std::nullopt; }
+		auto &env(func->lib.env);
+		auto i(std::next(stack.begin(), stack.size()-func->nargs));
+		auto j(args.begin());
+		std::size_t score(0);
+
+		for (; j != args.end(); i++, j++) {
+			auto &iv(*i), &jv(*j);
+			auto it(iv.type()), jt(jv.type());
+			if (it == env.no_type) { continue; }
+
+			if (jv.is_undef()) {
+				if (!it->isa(jt)) { return std::nullopt; }
+			} else {
+				if (iv.is_undef() || !iv.is_eqval(jv)) { return std::nullopt; }
+			}
+			
+			score += std::abs(it->tag-jt->tag);
+		}
+
+		return score;
+	}
+
+	void Fimp::dump(std::ostream &out) const { out << id.name(); }
 }
