@@ -16,6 +16,7 @@ namespace snabl {
 	struct fmt_conv {
 		template <typename T>
 		fmt_conv(T&& val);
+		
 		const std::string as_str;
 	};
 

@@ -1,5 +1,8 @@
 * finish func: macro
 ** parse args/rets and pass to add_fimp
+** add inlining of fimp on first use
+*** update bin
+** add fimp scope to generated code
 * fix funcall fimp memory leak
 ** store in optional?
 * drop iter refs
