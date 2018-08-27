@@ -99,7 +99,7 @@ namespace snabl {
 
 		struct Literal: public FormImp {			
 			static const FormType<Literal> type;
-			Box value;
+			const Box value;
 			Literal(const Box &value);
 			FormImp *clone() const override;
 			void dump(std::ostream &out) const override;

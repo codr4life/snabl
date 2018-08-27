@@ -76,7 +76,7 @@ namespace snabl {
 		SNABL_DISPATCH();		
 	op_funcall: {
 			auto &op(_pc->as<ops::Funcall>());
-			auto &fimp(op.fimp);
+			FimpPtr fimp(op.fimp);
 			
 			if (!fimp && op.prev_fimp) { fimp = op.prev_fimp; }
 			

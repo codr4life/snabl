@@ -28,9 +28,9 @@ namespace snabl {
 		
 		Fimp::Fimp(FimpPtr ptr): ptr(ptr) { }
 
-		Funcall::Funcall(const FuncPtr &func): func(func) { }
+		Funcall::Funcall(FuncPtr func): func(func) { }
 		
-		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
+		Funcall::Funcall(FimpPtr fimp): func(fimp->func), fimp(fimp) { }
 
 		GetVar::GetVar(Sym id): id(id) { }
 
