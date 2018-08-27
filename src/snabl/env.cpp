@@ -21,7 +21,7 @@ namespace snabl {
 		auto found(_syms.find(name));
 
 		return Sym((found == _syms.end())
-							 ? _syms.insert(std::make_pair(name, std::make_unique<SymImp>(name)))
+							 ? _syms.emplace(name, std::make_unique<SymImp>(name))
 							 .first->second.get()
 							 : found->second.get());
 	}

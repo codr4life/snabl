@@ -96,87 +96,87 @@ namespace snabl {
 								});
 
 			add_fimp(env.get_sym("="),
-				{Box(env.maybe_type), Box(env.maybe_type)},
-				{env.bool_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
+							 {Box(env.maybe_type), Box(env.maybe_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
 			
-					Box
-						y(call.scope->pop_stack()),
-						x(call.scope->pop_stack());
+								 Box
+									 y(call.scope->pop_stack()),
+									 x(call.scope->pop_stack());
 			
-					env.push_stack(env.bool_type, x.is_eqval(y));
-				});
+								 env.push_stack(env.bool_type, x.is_eqval(y));
+							 });
 
 			add_fimp(env.get_sym("=="),
-				{Box(env.maybe_type), Box(env.maybe_type)},
-				{env.bool_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
+							 {Box(env.maybe_type), Box(env.maybe_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
 			
-					Box
-						y(call.scope->pop_stack()),
-						x(call.scope->pop_stack());
+								 Box
+									 y(call.scope->pop_stack()),
+									 x(call.scope->pop_stack());
 			
-					env.push_stack(env.bool_type, x.is_equid(y));
-				});
+								 env.push_stack(env.bool_type, x.is_equid(y));
+							 });
 
 			add_fimp(env.get_sym("<"),
-				{Box(env.a_type), Box(env.a_type)},
-				{env.bool_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
+							 {Box(env.a_type), Box(env.a_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
 			
-					Box
-						y(call.scope->pop_stack()),
-						x(call.scope->pop_stack());
+								 Box
+									 y(call.scope->pop_stack()),
+									 x(call.scope->pop_stack());
 
-					env.push_stack(env.bool_type, x.cmp(y) == Cmp::LT);
-				});
+								 env.push_stack(env.bool_type, x.cmp(y) == Cmp::LT);
+							 });
 	
 			add_fimp(env.get_sym("int"),
-				{Box(env.float_type)},
-				{env.int_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
-					const Float v(call.scope->pop_stack().as<Float>());
-					env.push_stack(env.int_type, Int(v));
-				});
+							 {Box(env.float_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 const Float v(call.scope->pop_stack().as<Float>());
+								 env.push_stack(env.int_type, Int(v));
+							 });
 
 			add_fimp(env.get_sym("float"),
-				{Box(env.int_type)},
-				{env.float_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
-					const Int v(call.scope->pop_stack().as<Int>());
-					env.push_stack(env.float_type, Float(v));
-				});
+							 {Box(env.int_type)},
+							 {env.float_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 const Int v(call.scope->pop_stack().as<Int>());
+								 env.push_stack(env.float_type, Float(v));
+							 });
 
 			add_fimp(env.get_sym("+"),
-				{Box(env.int_type), Box(env.int_type)},
-				{env.int_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
+							 {Box(env.int_type), Box(env.int_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
 			
-					Int
-						y(call.scope->pop_stack().as<Int>()),
-						x(call.scope->pop_stack().as<Int>());
+								 Int
+									 y(call.scope->pop_stack().as<Int>()),
+									 x(call.scope->pop_stack().as<Int>());
 			
-					env.push_stack(env.int_type, x+y);
-				});
+								 env.push_stack(env.int_type, x+y);
+							 });
 
 			add_fimp(env.get_sym("*"),
-				{Box(env.int_type), Box(env.int_type)},
-				{env.int_type},
-				[](Call &call) {
-					Env &env(call.scope->env);
+							 {Box(env.int_type), Box(env.int_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
 			
-					Int
-						y(call.scope->pop_stack().as<Int>()),
-						x(call.scope->pop_stack().as<Int>());
+								 Int
+									 y(call.scope->pop_stack().as<Int>()),
+									 x(call.scope->pop_stack().as<Int>());
 			
-					env.push_stack(env.int_type, x*y);
-				});
+								 env.push_stack(env.int_type, x*y);
+							 });
 		}
 	}
 }
