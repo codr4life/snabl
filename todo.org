@@ -2,10 +2,13 @@
 ** add inlining of fimp on first use
 *** update bin
 ** add fimp scope to generated code
+** add return op
+* finish fib
 * fix funcall fimp memory leak
 ** store in optional?
 * drop iter refs
-* finish fib
+* rename Target to CallTarget
+** move to call.hpp
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
