@@ -84,8 +84,8 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &lib(out.env.lib());
-									auto &form(*in++);
-									auto &id((in++)->as<forms::Id>());
+									const auto &form(*in++);
+									const auto &id((in++)->as<forms::Id>());
 
 									auto &args_form(*in++);
 									std::vector<Box> args;
@@ -108,7 +108,7 @@ namespace snabl {
 									std::vector<ATypePtr> rets;
 									
 									if (&rets_form.type == &forms::Id::type) {
-										auto id(rets_form.as<forms::Id>().sym);
+										const auto id(rets_form.as<forms::Id>().sym);
 										const auto t(lib.get_type(id));
 										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
 										rets.push_back(t);
