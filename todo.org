@@ -1,8 +1,6 @@
 * finish func: macro
 ** parse args/rets and pass to add_fimp
-* convert Fimp::call to instance method
-** switch ops::Funcall to use raw pointers
-** switch env._calls to use raw pointers
+* fix funcall fimp memory leak
 * drop iter refs
 * drop ptr refs
 * finish fib
