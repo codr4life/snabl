@@ -10,7 +10,7 @@
 #include "snabl/fmt.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
-#include "snabl/std/string_view.hpp"
+#include "snabl/stdx/string_view.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -22,16 +22,16 @@ namespace snabl {
 
 	struct AFormType {
 		const std::string id;
-		AFormType(std::string_view id);		
+		AFormType(stdx::string_view id);		
 	};
 
 	template <typename ImpT>
 	struct FormType: public AFormType {
-		FormType(std::string_view id);
+		FormType(stdx::string_view id);
 	};
 
 	template <typename ImpT>
-	FormType<ImpT>::FormType(std::string_view id): AFormType(id) { }
+	FormType<ImpT>::FormType(stdx::string_view id): AFormType(id) { }
 	
 	struct FormImp {
 		virtual ~FormImp();

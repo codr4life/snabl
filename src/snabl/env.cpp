@@ -207,7 +207,7 @@ namespace snabl {
 	}
 
 	Call &Env::push_call(const TargetPtr &target,
-											 std::optional<std::size_t> return_pc) {
+											 stdx::optional<std::size_t> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}
@@ -218,8 +218,8 @@ namespace snabl {
 	
 	void Env::push_stack(const Box &value) { _stack.push_back(value); }
 
-	std::optional<Box> Env::unsafe_pop_stack() {
-		if (_stack.empty()) { return std::nullopt; }
+	stdx::optional<Box> Env::unsafe_pop_stack() {
+		if (_stack.empty()) { return stdx::nullopt; }
 		Box v(_stack.back());
 		_stack.pop_back();
 		return v;
@@ -233,9 +233,9 @@ namespace snabl {
 		return nullptr;
 	}
 
-	std::optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
+	stdx::optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
 		auto found(_vars.find(id));
-		std::optional<Box> prev;
+		stdx::optional<Box> prev;
 		
 		if (found != _vars.end()) {
 			prev = found->second;

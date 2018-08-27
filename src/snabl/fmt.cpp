@@ -23,7 +23,7 @@ namespace snabl {
 		if (!found) { throw "Unused fmt arg"; }
 	}
 
-	std::string fmt(std::string_view spec, std::initializer_list<fmt_conv> args) {
+	std::string fmt(stdx::string_view spec, std::initializer_list<fmt_conv> args) {
 		std::string out(spec);
 		int i(0);
 

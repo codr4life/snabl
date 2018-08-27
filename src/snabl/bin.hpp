@@ -6,7 +6,7 @@
 
 #include "snabl/fimp.hpp"
 #include "snabl/op.hpp"
-#include "snabl/std/optional.hpp"
+#include "snabl/stdx/optional.hpp"
 
 namespace snabl {
 	class Env;
@@ -23,7 +23,7 @@ namespace snabl {
 		Env &env;
 		Bin(Env &env);
 		const Ops &ops() const;
-		std::optional<BinFimp> get_fimp(const FimpPtr &ptr);
+		stdx::optional<BinFimp> get_fimp(const FimpPtr &ptr);
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emplace_back(const OpType<ImpT> &type, ArgsT &&... args);

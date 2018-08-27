@@ -4,7 +4,7 @@
 #include "snabl/cmp.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
-#include "snabl/std/any.hpp"
+#include "snabl/stdx/any.hpp"
 
 namespace snabl {
 	class Box {
@@ -28,7 +28,7 @@ namespace snabl {
 		void write(std::ostream &out) const;
 	private:
 		ATypePtr _type;
-		std::any _value;
+		stdx::any _value;
 	  bool _is_undef;
 	};
 
@@ -39,7 +39,7 @@ namespace snabl {
 	template <typename ValueT>
 	ValueT Box::as() const {
 		if (_is_undef) { throw Error("Deref of undef value"); }
-		return std::any_cast<ValueT>(_value);
+		return stdx::any_cast<ValueT>(_value);
 	}
 }
 

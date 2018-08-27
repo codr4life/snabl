@@ -10,7 +10,7 @@ namespace snabl {
 	}
 
 	FimpPtr Func::get_best_fimp(const Stack &stack) const {
-		std::optional<std::size_t> best_score;
+		stdx::optional<std::size_t> best_score;
 		FimpPtr best_fimp;
 		
 		for (auto &fp: _fimps) {

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "snabl/error.hpp"
-#include "snabl/std/string_view.hpp"
+#include "snabl/stdx/string_view.hpp"
 
 namespace snabl {	
 	std::string fmt2_arg(const char* x);
@@ -23,7 +23,7 @@ namespace snabl {
 	template<class T>
 	fmt2_conv::fmt2_conv(T&& val): as_str(fmt2_arg(val)) { }
 	
-	std::string fmt2(std::string_view spec, std::initializer_list<fmt2_conv> args);
+	std::string fmt2(stdx::string_view spec, std::initializer_list<fmt2_conv> args);
 }
 
 #endif

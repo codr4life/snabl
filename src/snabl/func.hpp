@@ -7,7 +7,7 @@
 #include "snabl/fimp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
-#include "snabl/std/optional.hpp"
+#include "snabl/stdx/optional.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {

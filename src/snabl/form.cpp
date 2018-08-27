@@ -4,7 +4,7 @@
 #include "snabl/form.hpp"
 
 namespace snabl {
-	AFormType::AFormType(std::string_view id): id(id) { }
+	AFormType::AFormType(stdx::string_view id): id(id) { }
 
 	FormImp::~FormImp() { }
 

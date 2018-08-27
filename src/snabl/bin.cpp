@@ -13,11 +13,11 @@ namespace snabl {
 
 	const Ops &Bin::ops() const { return _ops; }
 
-	std::optional<BinFimp> Bin::get_fimp(const FimpPtr &ptr) {
+	stdx::optional<BinFimp> Bin::get_fimp(const FimpPtr &ptr) {
 		auto found = _fimps.find(ptr);
 		return (found == _fimps.end())
-			? std::nullopt
-			: std::make_optional(found->second);
+			? stdx::nullopt
+			: stdx::make_optional(found->second);
 	}
 
 	void Bin::compile(const Forms::const_iterator &begin,

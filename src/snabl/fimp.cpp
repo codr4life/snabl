@@ -52,9 +52,9 @@ namespace snabl {
 						 Forms::const_iterator end):
 		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end) { }
 
-	std::optional<std::size_t> Fimp::score(const Stack &stack) const {
+	stdx::optional<std::size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }
-		if (stack.size() < func->nargs) { return std::nullopt; }
+		if (stack.size() < func->nargs) { return stdx::nullopt; }
 		auto &env(func->lib.env);
 		auto i(std::next(stack.begin(), stack.size()-func->nargs));
 		auto j(args.begin());
@@ -66,9 +66,9 @@ namespace snabl {
 			if (it == env.no_type) { continue; }
 
 			if (jv.is_undef()) {
-				if (!it->isa(jt)) { return std::nullopt; }
+				if (!it->isa(jt)) { return stdx::nullopt; }
 			} else {
-				if (iv.is_undef() || !iv.is_eqval(jv)) { return std::nullopt; }
+				if (iv.is_undef() || !iv.is_eqval(jv)) { return stdx::nullopt; }
 			}
 			
 			score += std::abs(it->tag-jt->tag);

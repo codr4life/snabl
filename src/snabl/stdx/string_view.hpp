@@ -3,8 +3,10 @@
 
 #include <experimental/string_view>
 
-namespace std {
-	using experimental::string_view;
+namespace snabl {
+	namespace stdx {
+		using std::experimental::string_view;
+	}
 }
 
 #endif

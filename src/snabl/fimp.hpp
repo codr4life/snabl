@@ -10,7 +10,7 @@
 
 #include "snabl/form.hpp"
 #include "snabl/ptrs.hpp"
-#include "snabl/std/optional.hpp"
+#include "snabl/stdx/optional.hpp"
 #include "snabl/stack.hpp"
 #include "snabl/target.hpp"
 
@@ -40,10 +40,10 @@ namespace snabl {
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 
-		std::optional<std::size_t> score(const Stack &stack) const;
+		stdx::optional<std::size_t> score(const Stack &stack) const;
 		void dump(std::ostream &out) const override;
 	private:
-		const std::optional<Imp> _imp;
+		const stdx::optional<Imp> _imp;
 	};
 }
 

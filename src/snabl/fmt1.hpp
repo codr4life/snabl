@@ -4,7 +4,7 @@
 #include <string>
 
 #include "snabl/error.hpp"
-#include "snabl/std/string_view.hpp"
+#include "snabl/stdx/string_view.hpp"
 
 namespace snabl {
 	std::string fmt1_arg(const char *x);	
@@ -38,7 +38,7 @@ namespace snabl {
 	}
 	
 	template <typename...ArgsT>
-	std::string fmt1(std::string_view spec, ArgsT &&... args) {
+	std::string fmt1(stdx::string_view spec, ArgsT &&... args) {
 		std::string out(spec);
 		_fmt1(out, 0, std::forward<ArgsT>(args)...);
 		return out;
