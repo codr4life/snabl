@@ -10,6 +10,7 @@
 #include "snabl/fmt.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
+#include "snabl/std/string_view.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -19,38 +20,35 @@ namespace snabl {
 
 	using Forms = std::deque<Form>;
 
-	class AFormType {
-	public:
+	struct AFormType {
 		const std::string id;
+		AFormType(std::string_view id);		
+	};
 
-		AFormType(const std::string &id);
+	template <typename ImpT>
+	struct FormType: public AFormType {
+		FormType(std::string_view id);
+	};
+
+	template <typename ImpT>
+	FormType<ImpT>::FormType(std::string_view id): AFormType(id) { }
+	
+	struct FormImp {
+		virtual ~FormImp();
+		virtual FormImp *clone() const=0;
+		virtual void dump(std::ostream &out) const=0;
 
 		virtual void compile(Forms::const_iterator &in,
 												 Forms::const_iterator end,
 												 FuncPtr &func, FimpPtr &fimp,
 												 Bin &out) const=0;
-		
-		virtual void dump(const Form &form, std::ostream &out) const=0;
-	};
-
-	template <typename ImpT>
-	class FormType: public AFormType {
-	protected:
-		FormType(const std::string &id);
-	};
-
-	template <typename ImpT>
-	FormType<ImpT>::FormType(const std::string &id): AFormType(id) { }
-	
-	struct FormImp {
-		virtual ~FormImp();
-		virtual FormImp *clone() const=0;
 	};
 	
 	class Form {
 	public:
 		const AFormType &type;
 		const Pos pos;
+		const std::unique_ptr<FormImp> imp;
 		
 		template <typename ImpT>
 		Form(const FormType<ImpT> &type, Pos pos);
@@ -63,8 +61,6 @@ namespace snabl {
 		virtual ~Form() { }
 		template <typename ImpT>
 		ImpT &as() const;
-	private:
-		std::unique_ptr<FormImp> _imp;
 	};
 	
 	template <typename ImpT>
@@ -76,7 +72,7 @@ namespace snabl {
 						 ArgT1 &&arg1, ArgsT &&... args):
 		type(type),
 		pos(pos),
-		_imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
+		imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const {
@@ -84,96 +80,64 @@ namespace snabl {
 			throw Error(fmt("Wrong type: %0 (%1)", ImpT::type.id, type.id));
 		}
 		
-		return *static_cast<ImpT *>(_imp.get());
+		return *static_cast<ImpT *>(imp.get());
 	}
 
 	namespace forms {
-		struct Id;
-		
-		class IdType: public FormType<Id> {
-		public:
-			IdType();
-			
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) const override;
-			
-			void dump(const Form &form, std::ostream &out) const override;
-		};
-
 		struct Id: public FormImp {
-			static const IdType type;
+			static const FormType<Id> type;
 			const Sym sym;
 			Id(Sym sym);
 			FormImp *clone() const override;
-		};
-
-		struct Literal;
-		
-		class LiteralType: public FormType<Literal> {
-		public:
-			LiteralType();
+			void dump(std::ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
-			
-			void dump(const Form &form, std::ostream &out) const override;
 		};
 
 		struct Literal: public FormImp {			
-			static const LiteralType type;
+			static const FormType<Literal> type;
 			Box value;
 			Literal(const Box &value);
 			FormImp *clone() const override;
-		};
-
-		struct Sexpr;
-		
-		class SexprType: public FormType<Sexpr> {
-		public:
-			SexprType();
+			void dump(std::ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
-			
-			void dump(const Form &form, std::ostream &out) const override;
 		};
 
 		struct Sexpr: public FormImp {			
-			static const SexprType type;
+			static const FormType<Sexpr> type;
 			const Forms body;
 			Sexpr(const Forms &body);
 			FormImp *clone() const override;
-		};
-
-		struct TypeList;
-		
-		class TypeListType: public FormType<TypeList> {
-		public:
-			TypeListType();
+			void dump(std::ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
-			
-			void dump(const Form &form, std::ostream &out) const override;
 		};
 
 		struct TypeList: public FormImp {
 			using Ids = std::vector<Sym>;
 				
-			static const TypeListType type;
+			static const FormType<TypeList> type;
 			Ids ids;
 			
 			TypeList(const Forms &body);
 			TypeList(const Ids &ids);
 			FormImp *clone() const override;
+			void dump(std::ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Bin &out) const override;			
 		};
 	}
 }

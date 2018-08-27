@@ -53,7 +53,7 @@ namespace snabl {
 										throw SyntaxError(p.pos, "Invalid let: place");
 									}
 												 
-									(*in).type.compile(in, end, func, fimp, out);
+									in->imp->compile(in, end, func, fimp, out);
 									out.emplace_back(ops::PutVar::type,
 																	 form.pos,
 																	 p.as<forms::Id>().sym);

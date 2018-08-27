@@ -26,7 +26,7 @@ namespace snabl {
 		FimpPtr fimp;
 
 		for (auto i(begin); i != end;) {
-			i->type.compile(i, end, func, fimp, *this);
+			i->imp->compile(i, end, func, fimp, *this); 
 		}
 
 		auto pos(begin->pos);
