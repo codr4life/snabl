@@ -14,7 +14,7 @@ namespace snabl {
 	
 			add_macro(env.get_sym("t"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									out.emplace_back(ops::Push::type,
@@ -24,7 +24,7 @@ namespace snabl {
 
 			add_macro(env.get_sym("f"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									out.emplace_back(ops::Push::type,
@@ -34,7 +34,7 @@ namespace snabl {
 
 			add_macro(env.get_sym("drop"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
@@ -43,7 +43,7 @@ namespace snabl {
 
 			add_macro(env.get_sym("let:"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
@@ -61,7 +61,7 @@ namespace snabl {
 
 			add_macro(env.get_sym("if:"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);
@@ -80,7 +80,7 @@ namespace snabl {
 
 			add_macro(env.get_sym("func:"),
 								[](Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) {
 									auto &form(*in++);

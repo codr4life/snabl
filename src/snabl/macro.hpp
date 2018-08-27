@@ -10,7 +10,7 @@ namespace snabl {
 	class Macro {
 	public:
 		using Imp = std::function<void (Forms::const_iterator &in,
-																		const Forms::const_iterator &end,
+																		Forms::const_iterator end,
 																		FuncPtr &func, FimpPtr &fimp,
 																		Bin &out)>;
 		
@@ -20,7 +20,7 @@ namespace snabl {
 		Macro(Lib &lib, Sym id, const Imp &imp);
 		
 		void call(Forms::const_iterator &in,
-							const Forms::const_iterator &end,
+							Forms::const_iterator end,
 							FuncPtr &func, FimpPtr &fimp,
 							Bin &out);
 	private:
