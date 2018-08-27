@@ -20,7 +20,7 @@ namespace snabl {
 			}
 		}
 
-		if (!found) { throw "Unused fmt arg"; }
+		if (!found) { throw Error("Unused fmt arg"); }
 	}
 
 	std::string fmt(stdx::string_view spec, std::initializer_list<fmt_conv> args) {
