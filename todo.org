@@ -17,6 +17,8 @@
 ** add type.specialize fn
 ** T0-TN
 *** create on demand in home lib when referenced
+* add support for parsing ? as Maybe
+** A? -> Maybe<A>
 * add [] indexing support
 ** parse as func '[]' and call with args
 
