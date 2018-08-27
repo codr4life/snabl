@@ -77,7 +77,7 @@ namespace snabl {
 	template <typename ImpT>
 	ImpT &Form::as() const {
 		if (&ImpT::type != &type) {
-			throw Error(fmt("Wrong type: %0 (%1)", ImpT::type.id, type.id));
+			throw Error(fmt("Wrong type: %0 (%1)", {ImpT::type.id, type.id}));
 		}
 		
 		return *static_cast<ImpT *>(imp.get());
