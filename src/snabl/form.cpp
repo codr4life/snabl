@@ -26,7 +26,7 @@ namespace snabl {
 		IdType::IdType(): FormType<Id>("Id") { }
 		
 		void IdType::compile(Forms::const_iterator &in,
-												 const Forms::const_iterator &end,
+												 Forms::const_iterator end,
 												 FuncPtr &func, FimpPtr &fimp,
 												 Bin &out) const {
 			auto &form(*in);
@@ -87,7 +87,7 @@ namespace snabl {
 		}		
 
 		void LiteralType::compile(Forms::const_iterator &in,
-															const Forms::const_iterator &end,
+															Forms::const_iterator end,
 															FuncPtr &func, FimpPtr &fimp,
 															Bin &out) const {
 			auto &form(*in++);
@@ -115,7 +115,7 @@ namespace snabl {
 		}		
 
 		void SexprType::compile(Forms::const_iterator &in,
-														const Forms::const_iterator &end,
+														Forms::const_iterator end,
 														FuncPtr &func, FimpPtr &fimp,
 														Bin &out) const {
 			auto &sexpr((*in++).as<Sexpr>());
@@ -148,9 +148,9 @@ namespace snabl {
 		}		
 
 		void TypeListType::compile(Forms::const_iterator &in,
-														const Forms::const_iterator &end,
-														FuncPtr &func, FimpPtr &fimp,
-														Bin &out) const {
+															 Forms::const_iterator end,
+															 FuncPtr &func, FimpPtr &fimp,
+															 Bin &out) const {
 			throw Error("Stray type list");
 		}
 	}

@@ -26,7 +26,7 @@ namespace snabl {
 		AFormType(const std::string &id);
 
 		virtual void compile(Forms::const_iterator &in,
-												 const Forms::const_iterator &end,
+												 Forms::const_iterator end,
 												 FuncPtr &func, FimpPtr &fimp,
 												 Bin &out) const=0;
 		
@@ -95,7 +95,7 @@ namespace snabl {
 			IdType();
 			
 			void compile(Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
@@ -116,7 +116,7 @@ namespace snabl {
 			LiteralType();
 
 			void compile(Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
@@ -137,7 +137,7 @@ namespace snabl {
 			SexprType();
 
 			void compile(Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
@@ -158,7 +158,7 @@ namespace snabl {
 			TypeListType();
 
 			void compile(Forms::const_iterator &in,
-									 const Forms::const_iterator &end,
+									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Bin &out) const override;
 			
