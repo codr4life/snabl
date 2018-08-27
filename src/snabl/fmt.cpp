@@ -1,37 +1,34 @@
+#include <sstream>
+
 #include "snabl/fmt.hpp"
 
 namespace snabl {
 	std::string fmt_arg(const char* x) { return std::string(x); }
 	std::string fmt_arg(const std::string &x) { return x; }
 
-	static void _fmt(std::string &spec, std::size_t i, const fmt_conv &arg1) {
-		const std::string id {'%', static_cast<char>('0'+i)};
-		bool found(false);
-		std::size_t j(0);
-
-		while ((j = spec.find(id, j)) != std::string::npos) {
-			if (j > 0 && spec[j-1] == '%') {
-				spec.erase(j, 1);
-				j += id.size();
+	std::string fmt(stdx::string_view spec, const std::vector<fmt_conv> &args) {
+		std::stringstream out;
+		std::size_t i(0), j;
+		
+		while ((j = spec.find('%', i)) != stdx::string_view::npos) {
+			if (j < spec.length()-1 && spec[j+1] == '%') {
+				j++;
+				out << spec.substr(i, j-i);
+				i = j+1;
 			} else {
-				spec.replace(j, id.size(), arg1.as_str);
-				j += arg1.as_str.size();
-				found = true;
+				out << spec.substr(i, j-i);
+				std::size_t len(0), arg(std::stoul(std::string(spec.substr(j+1)), &len));
+
+				if (arg >= args.size()) {
+					throw Error("Invalid fmt arg: " + std::to_string(arg));
+				}
+
+				out << args[arg].as_str;
+				i = j+len+1;
 			}
 		}
 
-		if (!found) { throw Error("Unused fmt arg"); }
-	}
-
-	std::string fmt(stdx::string_view spec, std::initializer_list<fmt_conv> args) {
-		std::string out(spec);
-		int i(0);
-
-		for (const auto &a : args){
-			_fmt(out, i, a);
-			i++;
-		}
-	
-		return out;
+		if (i < spec.length()) { out << spec.substr(i); }
+		return out.str();
 	}
 }
