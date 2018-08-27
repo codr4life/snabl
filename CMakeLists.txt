@@ -19,5 +19,11 @@ target_include_directories(snabl PUBLIC src/)
 file(GLOB headers src/snabl/*.hpp)
 install(FILES ${headers} DESTINATION include/snabl)
 
+file(GLOB headers src/snabl/libs/*.hpp)
+install(FILES ${headers} DESTINATION include/snabl/libs)
+
+file(GLOB headers src/snabl/stdx/*.hpp)
+install(FILES ${headers} DESTINATION include/snabl/stdx)
+
 install(FILES build/libsnabl.a DESTINATION lib)
-install(FILES build/snabl DESTINATION bin)
+install(FILES build/snabl DESTINATION bin PERMISSIONS WORLD_EXECUTE)

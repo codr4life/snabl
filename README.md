@@ -22,7 +22,7 @@ Snabl allows but doesn't require specifying types of function arguments and vari
 ```
 
 #### Reference Counting
-Snabl uses reference counting instead of garbage collection, which often means more predictable performance and resource usage.
+Snabl uses reference counting instead of garbage collection, which means more predictable performance and resource usage.
 
 ```
 ```
@@ -37,6 +37,13 @@ Snabl integrates deeply into C++ and the STL and is relatively trivial to embed.
 Besides a decent C++17 compiler and CMake, Snabl has no dependencies.
 
 ```
+$ git clone https://github.com/codr4life/snabl.git
+$ cd snabl
+$ mkdir build
+$ cd build
+$ cmake ..
+$ sudo make install
+$ snabl
 ```
 
 ### License

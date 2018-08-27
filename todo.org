@@ -1,6 +1,7 @@
 * finish func: macro
 ** add inlining of fimp on first use
 *** update bin
+*** add skip
 ** add fimp scope to generated code
 ** add return op
 * finish fib
@@ -22,6 +23,8 @@
 ** add type.specialize fn
 ** T0-TN
 *** create on demand in home lib when referenced
+* add List type
+** use std::shared_ptr<Deque>
 * add support for parsing ? as Maybe
 ** A? -> Maybe<A>
 * add [] indexing support

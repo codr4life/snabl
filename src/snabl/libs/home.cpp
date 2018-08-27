@@ -118,9 +118,9 @@ namespace snabl {
 																					{rets_form.type.id}));
 									}
 									
-									auto fi = out.env.lib().add_fimp(id.sym, args, rets, in, end);
-									in = end;
+									auto fi = lib.add_fimp(id.sym, args, rets, in, end);
 									out.emplace_back(ops::Fimp::type, form.pos, fi);
+									in = end;
 								});
 
 			add_fimp(env.get_sym("="),
