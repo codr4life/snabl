@@ -1,19 +1,17 @@
 * finish fib
 * add bench fn
 ** compare fib perf with wren
-* fix funcall fimp memory leak
-** store in optional?
+* debug memory leaks
 * drop iter refs
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
-* add fimp closures
-** scan forms for var refs
-*** store in fimp
-*** store vars in BinFimp from ops::Fimp
-**** put on func entry
+* add lambdas
+** scan forms for external var refs
+*** store vars in Lambda
+**** put on entry
 * add swap macro
 * add load func
 ** call when called with args
