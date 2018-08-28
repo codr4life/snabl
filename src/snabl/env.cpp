@@ -15,8 +15,8 @@ namespace snabl {
 		_type_tag(1),
 		home(*this),
 		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
-		main(begin()),
-		_pos(home_pos) { push_lib(home); }
+		main(begin_scope()),
+		_pos(home_pos) { begin_lib(home); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
 
@@ -206,7 +206,7 @@ namespace snabl {
 
 		SNABL_DISPATCH();
 	op_begin:
-		begin();
+		begin_scope();
 		pc++;
 		SNABL_DISPATCH();
 	op_drop:
@@ -221,7 +221,7 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_end:
-		end();
+		end_scope();
 		pc++;
 		SNABL_DISPATCH();
 	op_fimp:
@@ -266,7 +266,7 @@ namespace snabl {
 	op_return: {
 			const auto fn(pc->as<ops::Return>().fimp->func);
 			const auto call(pop_call());
-			end();
+			end_scope();
 			if (_stack.size() < fn->nrets) { throw Error("Nothing to return"); }
 			pc = *call.return_pc;
 			SNABL_DISPATCH();
@@ -276,7 +276,7 @@ namespace snabl {
 		SNABL_DISPATCH();
 	}
 
-	void Env::push_lib(Lib &lib) {
+	void Env::begin_lib(Lib &lib) {
 		_libs.push_back(&lib);
 	}
 	
@@ -285,14 +285,14 @@ namespace snabl {
 		return *_libs.back();
 	}
 
-	Lib &Env::pop_lib() {
+	Lib &Env::end_lib() {
 		if (_libs.empty()) { throw Error("No libs"); }
 		Lib &l(*_libs.back());
 		_libs.pop_back();
 		return l;
 	}
 
-	ScopePtr Env::begin() {
+	ScopePtr Env::begin_scope() {
 		auto s(make_shared<Scope>(*this));
 		_scopes.push_back(s);
 		return s;
@@ -303,7 +303,7 @@ namespace snabl {
 		return _scopes.back();
 	}
 
-	ScopePtr Env::end() {
+	ScopePtr Env::end_scope() {
 		auto s(_scopes.back());
 		_scopes.pop_back();
 		return s;

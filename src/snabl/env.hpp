@@ -63,13 +63,13 @@ namespace snabl {
 		void run(string_view in);
 		void run(optional<PC> end_pc=nullopt);
 
-		void push_lib(Lib &lib);
+		void begin_lib(Lib &lib);
 		Lib &lib();
-		Lib &pop_lib();
+		Lib &end_lib();
 
-		ScopePtr begin();
+		ScopePtr begin_scope();
 		ScopePtr scope();
-		ScopePtr end();
+		ScopePtr end_scope();
 
 		Call &push_call(const CallTargetPtr &target,
 										optional<PC> return_pc=nullopt);
