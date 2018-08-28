@@ -61,7 +61,7 @@ namespace snabl {
 		ScopePtr scope();
 		ScopePtr end();
 
-		Call &push_call(const TargetPtr &target,
+		Call &push_call(const CallTargetPtr &target,
 										optional<PC> return_pc=nullopt);
 		Call *peek_call();
 		Call pop_call();

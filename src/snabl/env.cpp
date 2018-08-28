@@ -206,7 +206,7 @@ namespace snabl {
 		return s;
 	}
 
-	Call &Env::push_call(const TargetPtr &target,
+	Call &Env::push_call(const CallTargetPtr &target,
 											 optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();

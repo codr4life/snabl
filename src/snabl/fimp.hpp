@@ -9,16 +9,16 @@
 #include <sstream>
 
 #include "snabl/bin.hpp"
+#include "snabl/call.hpp"
 #include "snabl/form.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
 #include "snabl/stack.hpp"
-#include "snabl/target.hpp"
 
 namespace snabl {
 	class Call;
 
-	class Fimp: public Target {
+	class Fimp: public CallTarget {
 	public:
 		using Args = vector<Box>;
 		using Rets = vector<ATypePtr>;					
