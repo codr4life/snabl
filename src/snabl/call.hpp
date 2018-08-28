@@ -5,7 +5,6 @@
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
 #include "snabl/scope.hpp"
-#include "snabl/target.hpp"
 
 namespace snabl {
 	class CallTarget {

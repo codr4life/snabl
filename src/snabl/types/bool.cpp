@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "snabl/box.hpp"
-#include "snabl/bool.hpp"
+#include "snabl/types/bool.hpp"
 
 namespace snabl {
 	BoolType::BoolType(Lib &lib, Sym id): Type<bool>(lib, id) { }

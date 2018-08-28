@@ -1,5 +1,5 @@
 * finish func: macro
-** extract fimp.check_rets() from call()
+** check stack in return op
 ** move Bin into Env
 *** move Ops to op.hpp
 *** rename emplace_back to push_op
@@ -11,8 +11,6 @@
 * fix funcall fimp memory leak
 ** store in optional?
 * drop iter refs
-* rename Target to CallTarget
-** move to call.hpp
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
@@ -39,25 +37,10 @@
 ** parse as func '[]' and call with args
 
 * add use: macro
-* precompile fimps
-** compile rest on demand
-* add jump op
-** ssize_t nops
-** update pc
-* add put/get_var ops
-* add generics
-** add Type._args
-*** deque of ATypePtrs
-** add Type.specialize(type, ...)
-*** check types
-** add virtual protected Type.specialize()
-*** override to create new instance
+* add lib: macro
+** pull in all defs from current lib
 * add Sink<T>
 ** add push fn
-* add fimp lookup
-** add lib.fimps/add_fimp
-*** call from func when fimp is added
-*** use instead of add_func
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin

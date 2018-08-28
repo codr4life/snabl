@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "snabl/box.hpp"
-#include "snabl/float.hpp"
+#include "snabl/types/float.hpp"
 
 namespace snabl {
 	FloatType::FloatType(Lib &lib, Sym id): Type<Float>(lib, id) { }

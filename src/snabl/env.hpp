@@ -6,10 +6,7 @@
 #include <unordered_set>
 
 #include "snabl/bin.hpp"
-#include "snabl/bool.hpp"
 #include "snabl/call.hpp"
-#include "snabl/float.hpp"
-#include "snabl/int.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/pos.hpp"
@@ -17,6 +14,9 @@
 #include "snabl/stack.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
+#include "snabl/types/bool.hpp"
+#include "snabl/types/float.hpp"
+#include "snabl/types/int.hpp"
 
 namespace snabl {
 	template <typename ValueT>

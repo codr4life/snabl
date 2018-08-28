@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "snabl/box.hpp"
-#include "snabl/int.hpp"
+#include "snabl/types/int.hpp"
 
 namespace snabl {
 	IntType::IntType(Lib &lib, Sym id): Type<Int>(lib, id) { }

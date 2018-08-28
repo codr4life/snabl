@@ -22,5 +22,8 @@ install(FILES ${headers} DESTINATION include/snabl)
 file(GLOB headers src/snabl/libs/*.hpp)
 install(FILES ${headers} DESTINATION include/snabl/libs)
 
+file(GLOB headers src/snabl/types/*.hpp)
+install(FILES ${headers} DESTINATION include/snabl/types)
+
 install(FILES build/libsnabl.a DESTINATION lib)
 install(FILES build/snabl DESTINATION bin PERMISSIONS WORLD_EXECUTE)
