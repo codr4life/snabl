@@ -19,24 +19,24 @@ namespace snabl {
 		const FormType<Sexpr> Sexpr::type("Sexpr");
 		const FormType<TypeList> TypeList::type("TypeList");
 
-		Id::Id(Sym sym): sym(sym) { }
+		Id::Id(Sym id): id(id) { }
 
-		FormImp *Id::clone() const { return new Id(sym); }
+		FormImp *Id::clone() const { return new Id(id); }
 
-		void Id::dump(std::ostream &out) const { out << sym.name(); }
+		void Id::dump(std::ostream &out) const { out << id.name(); }
 		
 		void Id::compile(Forms::const_iterator &in,
 										 Forms::const_iterator end,
 										 FuncPtr &func, FimpPtr &fimp,
 										 Bin &out) const {
 			auto &form(*in);
-			auto &id(form.as<Id>().sym);
+			auto &id(form.as<Id>().id);
 
 			if (id.name().front() == '@') {
 				in++;
 				out.emplace_back(ops::GetVar::type,
 												 form.pos,
-												 out.env.get_sym(id.name().substr(1)));
+												 out.env.sym(id.name().substr(1)));
 			} else {
 				auto &env(out.env);
 				auto &lib(env.lib());
@@ -115,7 +115,7 @@ namespace snabl {
 		
 		TypeList::TypeList(const Forms &body) {
 			std::transform(body.begin(), body.end(), std::back_inserter(ids),
-										 [](const Form &f) -> Sym { return f.as<Id>().sym; });
+										 [](const Form &f) -> Sym { return f.as<Id>().id; });
 		}
 
 		TypeList::TypeList(const Ids &ids): ids(ids) { }

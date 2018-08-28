@@ -45,7 +45,7 @@ namespace snabl {
 		
 		Env();
 		std::size_t next_type_tag();
-		Sym get_sym(const std::string &name);
+		Sym sym(const std::string &name);
 		
 		void parse(const std::string &in, Forms &out);
 		bool parse(std::istream &in, Pos start_pos, char end, Forms &out);

@@ -17,7 +17,7 @@ namespace snabl {
 
 	std::size_t Env::next_type_tag() { return _type_tag++; }
 
-	Sym Env::get_sym(const std::string &name) {
+	Sym Env::sym(const std::string &name) {
 		auto found(_syms.find(name));
 
 		return Sym((found == _syms.end())
@@ -104,7 +104,7 @@ namespace snabl {
 			prev_sep = c_sep;
 		}
 
-		out.emplace_back(forms::Id::type, start_pos, get_sym(buf.str()));
+		out.emplace_back(forms::Id::type, start_pos, sym(buf.str()));
 
 		if (c == '<') {
 			parse_type_list(in, out);

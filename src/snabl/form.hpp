@@ -86,8 +86,9 @@ namespace snabl {
 	namespace forms {
 		struct Id: public FormImp {
 			static const FormType<Id> type;
-			const Sym sym;
-			Id(Sym sym);
+			const Sym id;
+			
+			Id(Sym id);
 			FormImp *clone() const override;
 			void dump(std::ostream &out) const override;
 

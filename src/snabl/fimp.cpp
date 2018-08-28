@@ -23,7 +23,7 @@ namespace snabl {
 		}
 
 		buf << '>';
-		return func->lib.env.get_sym(buf.str());
+		return func->lib.env.sym(buf.str());
 	}
 
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
