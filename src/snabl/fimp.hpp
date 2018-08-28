@@ -8,7 +8,6 @@
 #include <memory>
 #include <sstream>
 
-#include "snabl/bin.hpp"
 #include "snabl/call.hpp"
 #include "snabl/form.hpp"
 #include "snabl/ptrs.hpp"

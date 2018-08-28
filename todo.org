@@ -1,8 +1,3 @@
-* move Bin into Env
-** move Ops to op.hpp
-** rename emplace_back to push_op
-** remove start_pc param from run
-*** use pc field instead
 * finish fib
 * add bench fn
 ** compare fib perf with wren

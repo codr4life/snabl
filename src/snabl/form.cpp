@@ -28,22 +28,19 @@ namespace snabl {
 		void Id::compile(Forms::const_iterator &in,
 										 Forms::const_iterator end,
 										 FuncPtr &func, FimpPtr &fimp,
-										 Bin &out) const {
+										 Env &env) const {
 			auto &form(*in);
 			auto &id(form.as<Id>().id);
 
 			if (id.name().front() == '@') {
 				in++;
-				out.emplace_back(ops::GetVar::type,
-												 form.pos,
-												 out.env.sym(id.name().substr(1)));
+				env.emit(ops::GetVar::type, form.pos, env.sym(id.name().substr(1)));
 			} else {
-				auto &env(out.env);
 				auto &lib(env.lib());
 				auto m(lib.get_macro(id));
 				
 				if (m) {
-					m->call(in, end, func, fimp, out);
+					m->call(in, end, func, fimp, env);
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
@@ -68,7 +65,7 @@ namespace snabl {
 					} else {
 						auto fi(fn->get_fimp());
 						Fimp::compile(fi, form.pos);
-						out.emplace_back(ops::Funcall::type, form.pos, fi);
+						env.emit(ops::Funcall::type, form.pos, fi);
 					}
 				}
 			}
@@ -83,9 +80,9 @@ namespace snabl {
 		void Literal::compile(Forms::const_iterator &in,
 													Forms::const_iterator end,
 													FuncPtr &func, FimpPtr &fimp,
-													Bin &out) const {
+													Env &env) const {
 			auto &form(*in++);
-			out.emplace_back(ops::Push::type, form.pos, form.as<Literal>().value);			
+			env.emit(ops::Push::type, form.pos, form.as<Literal>().value);			
 		}
 		
 		Sexpr::Sexpr(const Forms &body): body(body) { }
@@ -108,9 +105,9 @@ namespace snabl {
 		void Sexpr::compile(Forms::const_iterator &in,
 												Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
-												Bin &out) const {
+												Env &env) const {
 			auto &sexpr((*in++).as<Sexpr>());
-			out.compile(sexpr.body);
+			env.compile(sexpr.body);
 		}
 		
 		TypeList::TypeList(const Forms &body) {
@@ -138,7 +135,7 @@ namespace snabl {
 		void TypeList::compile(Forms::const_iterator &in,
 													 Forms::const_iterator end,
 													 FuncPtr &func, FimpPtr &fimp,
-													 Bin &out) const {
+													 Env &env) const {
 			throw Error("Stray type list");
 		}		
 	}

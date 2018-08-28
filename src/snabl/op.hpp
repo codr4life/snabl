@@ -49,7 +49,7 @@ namespace snabl {
 	private:
 		unique_ptr<OpImp> _imp;
 	};
-
+	
 	template <typename ImpT>
 	Op::Op(const OpType<ImpT> &type, Pos pos): type(type), pos(pos) { }
 
@@ -63,7 +63,10 @@ namespace snabl {
 
 	template <typename ImpT>
 	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }
-	
+
+	using Ops = deque<Op>;
+	using PC = Ops::iterator;
+
 	namespace ops {
 		struct Begin: public OpImp {
 			static const OpType<Begin> type;

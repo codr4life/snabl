@@ -1,7 +1,7 @@
 #ifndef SNABL_CALL_HPP
 #define SNABL_CALL_HPP
 
-#include "snabl/bin.hpp"
+#include "snabl/op.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
 #include "snabl/scope.hpp"

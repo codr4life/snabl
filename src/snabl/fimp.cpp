@@ -27,22 +27,21 @@ namespace snabl {
 	}
 
 	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
-		auto &bin(fimp->func->lib.env.bin);
+		auto &env(fimp->func->lib.env);
 		if (fimp->_start_pc) { return false; }
-		auto &skip(bin.emplace_back(ops::Skip::type, pos, 0).as<ops::Skip>());
-		fimp->_start_pc = bin.ops.end();
-		const auto pc_backup(bin.pc);
-		bin.emplace_back(ops::Begin::type, pos);
-		bin.compile(fimp->forms);
-		bin.emplace_back(ops::Return::type, pos, fimp);
-		bin.pc = pc_backup;
-		fimp->_nops = skip.nops = bin.ops.end()-*fimp->_start_pc;
+		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
+		fimp->_start_pc = env.ops.end();
+		const auto pc_backup(env.pc);
+		env.emit(ops::Begin::type, pos);
+		env.compile(fimp->forms);
+		env.emit(ops::Return::type, pos, fimp);
+		env.pc = pc_backup;
+		fimp->_nops = skip.nops = env.ops.end()-*fimp->_start_pc;
 		return true;
 	}
 
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
-		auto &bin(env.bin);
 		auto &call(env.push_call(fimp));
 
 		if (fimp->imp) {
@@ -59,8 +58,8 @@ namespace snabl {
 		}
 
 		compile(fimp, pos);
-		env.push_call(fimp, bin.pc+1);
-		bin.pc = *fimp->_start_pc;
+		env.push_call(fimp, env.pc+1);
+		env.pc = *fimp->_start_pc;
 		return false;
 	}
 

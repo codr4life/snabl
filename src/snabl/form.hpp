@@ -12,7 +12,6 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class Bin;
 	class Env;
 	class Form;
 
@@ -39,7 +38,7 @@ namespace snabl {
 		virtual void compile(Forms::const_iterator &in,
 												 Forms::const_iterator end,
 												 FuncPtr &func, FimpPtr &fimp,
-												 Bin &out) const=0;
+												 Env &env) const=0;
 	};
 	
 	class Form {
@@ -93,7 +92,7 @@ namespace snabl {
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) const override;
+									 Env &env) const override;
 		};
 
 		struct Literal: public FormImp {			
@@ -106,7 +105,7 @@ namespace snabl {
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) const override;
+									 Env &env) const override;
 		};
 
 		struct Sexpr: public FormImp {			
@@ -119,7 +118,7 @@ namespace snabl {
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) const override;
+									 Env &env) const override;
 		};
 
 		struct TypeList: public FormImp {
@@ -136,7 +135,7 @@ namespace snabl {
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) const override;			
+									 Env &env) const override;			
 		};
 	}
 }

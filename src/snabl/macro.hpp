@@ -13,7 +13,7 @@ namespace snabl {
 		using Imp = function<void (Forms::const_iterator &in,
 															 Forms::const_iterator end,
 															 FuncPtr &func, FimpPtr &fimp,
-															 Bin &out)>;
+															 Env &env)>;
 		
 		Lib &lib;
 		const Sym id;
@@ -23,7 +23,7 @@ namespace snabl {
 		void call(Forms::const_iterator &in,
 							Forms::const_iterator end,
 							FuncPtr &func, FimpPtr &fimp,
-							Bin &out);
+							Env &env);
 	private:
 		const Imp _imp;
 	};

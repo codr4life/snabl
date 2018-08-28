@@ -17,36 +17,36 @@ namespace snabl {
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
-									out.emplace_back(ops::Push::type,
-																	 (in++)->pos,
-																	 Box(out.env.bool_type, true));			
+									 Env &env) {
+									env.emit(ops::Push::type,
+													 (in++)->pos,
+													 Box(env.bool_type, true));			
 								});
 
 			add_macro(env.sym("f"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
-									out.emplace_back(ops::Push::type,
-																	 (in++)->pos,
-																	 Box(out.env.bool_type, false));			
+									 Env &env) {
+									env.emit(ops::Push::type,
+													 (in++)->pos,
+													 Box(env.bool_type, false));			
 								});
 
 			add_macro(env.sym("drop"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
+									 Env &env) {
 									auto &form(*in++);
-									out.emplace_back(ops::Drop::type, form.pos);			
+									env.emit(ops::Drop::type, form.pos);			
 								});
 
 			add_macro(env.sym("let:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
+									 Env &env) {
 									auto &form(*in++);
 									auto &p(*in++);
 
@@ -54,37 +54,33 @@ namespace snabl {
 										throw SyntaxError(p.pos, "Invalid let: place");
 									}
 												 
-									in->imp->compile(in, end, func, fimp, out);
-									out.emplace_back(ops::PutVar::type,
-																	 form.pos,
-																	 p.as<forms::Id>().id);
+									in->imp->compile(in, end, func, fimp, env);
+									env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
 								});
 
 			add_macro(env.sym("if:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
+									 Env &env) {
 									auto &form(*in++);
-									out.compile(in++, in+1);
-									auto &else_skip(out.emplace_back(ops::Else::type,
-																									 form.pos,
-																									 0));
-									size_t start_pc(out.ops.size());								
-									out.compile(in++, in+1);
-									auto &if_skip(out.emplace_back(ops::Skip::type, form.pos, 0));
-									else_skip.as<ops::Else>().nops = out.ops.size()-start_pc;
-									start_pc = out.ops.size();
-									out.compile(in++, in+1);
-									if_skip.as<ops::Skip>().nops = out.ops.size()-start_pc;
+									env.compile(in++, in+1);
+									auto &else_skip(env.emit(ops::Else::type, form.pos, 0));
+									size_t start_pc(env.ops.size());								
+									env.compile(in++, in+1);
+									auto &if_skip(env.emit(ops::Skip::type, form.pos, 0));
+									else_skip.as<ops::Else>().nops = env.ops.size()-start_pc;
+									start_pc = env.ops.size();
+									env.compile(in++, in+1);
+									if_skip.as<ops::Skip>().nops = env.ops.size()-start_pc;
 								});	
 
 			add_macro(env.sym("func:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
-									auto &lib(out.env.lib());
+									 Env &env) {
+									auto &lib(env.lib());
 									const auto &form(*in++);
 									const auto &id_form((in++)->as<forms::Id>());
 
@@ -120,7 +116,7 @@ namespace snabl {
 									}
 									
 									auto fi = lib.add_fimp(id_form.id, args, rets, in, end);
-									out.emplace_back(ops::Fimp::type, form.pos, fi);
+									env.emit(ops::Fimp::type, form.pos, fi);
 									in = end;
 								});
 

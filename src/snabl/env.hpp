@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "snabl/bin.hpp"
 #include "snabl/call.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
@@ -38,21 +37,32 @@ namespace snabl {
 		TypePtr<Int> int_type;
 
 		libs::Home home;
-
 		unordered_set<char> separators;
-		Bin bin;
+
+		Ops ops;
+		PC pc;
+
 		const ScopePtr main;
 		
 		Env();
 		size_t next_type_tag();
 		Sym sym(const string &name);
 		
-		void parse(const string &in, Forms &out);
+		void parse(string_view in, Forms &out);
 		bool parse(istream &in, Pos start_pos, char end, Forms &out);
 		
-		void compile(const string &in);
-		void run(const string &in);
+		template <typename ImpT, typename... ArgsT>
+		Op &emit(const OpType<ImpT> &type, ArgsT &&... args);
+
+		void compile(string_view in);
+		void compile(const Forms &forms);		
+
+		void compile(const Forms::const_iterator &begin,
+								 const Forms::const_iterator &end);
 		
+		void run(string_view in);
+		void run(optional<PC> end_pc=nullopt);
+
 		void push_lib(Lib &lib);
 		Lib &lib();
 		Lib &pop_lib();
@@ -86,6 +96,12 @@ namespace snabl {
 		void parse_type_list(istream &in, Forms &out);
 	};
 
+	template <typename ImpT, typename... ArgsT>
+	Op &Env::emit(const OpType<ImpT> &type, ArgsT &&... args) {
+		ops.emplace_back(type, args...);
+		return ops.back();
+	}
+	
 	template <typename ValueT>
 	void Env::push_stack(const TypePtr<ValueT> &type, const ValueT &value) {
 		_stack.emplace_back(type, value);

@@ -4,6 +4,10 @@
 
 #include "snabl/env.hpp"
 
+#define SNABL_DISPATCH()												\
+	if (pc == end_pc) { return; }									\
+	goto *op_labels[pc->type.label_offs];					\
+
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
 	
@@ -11,7 +15,6 @@ namespace snabl {
 		_type_tag(1),
 		home(*this),
 		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
-		bin(*this),
 		main(begin()),
 		_pos(home_pos) { push_lib(home); }
 
@@ -26,11 +29,6 @@ namespace snabl {
 							 : found->second.get());
 	}
 
-	void Env::parse(const string &in, Forms &out) {
-		istringstream s(in);
-		parse(s, home_pos, 0, out);		
-	}
-	
 	bool Env::parse(istream &in, Pos start_pos, char end, Forms &out) {
 		_pos = start_pos;
 		char c;
@@ -84,6 +82,12 @@ namespace snabl {
 
 		return false;
 	}
+
+	void Env::parse(string_view in, Forms &out) {
+		const string s(in);
+		istringstream ss(s);
+		parse(ss, home_pos, 0, out);		
+	}	
 	
 	void Env::parse_id(istream &in, Forms &out) {
 		auto start_pos(_pos);
@@ -161,16 +165,115 @@ namespace snabl {
 		out.emplace_back(forms::TypeList::type, start_pos, body);
 	}
 	
-	void Env::compile(const string &in) {
+	void Env::compile(string_view in) {
 		Forms forms;
 		parse(in, forms);
-		bin.compile(forms);
+		compile(forms);
 	}
 
-	void Env::run(const string &in) {
-		size_t start_pc = bin.ops.size();
+	void Env::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
+
+	void Env::compile(const Forms::const_iterator &begin,
+										const Forms::const_iterator &end) {
+		FuncPtr func;
+		FimpPtr fimp;
+
+		for (auto i(begin); i != end;) { i->imp->compile(i, end, func, fimp, *this); }
+		const auto pos(begin->pos);
+
+		if (fimp) {
+			Fimp::compile(fimp, pos);
+			emit(ops::Funcall::type, pos, fimp);
+		} else if (func) {
+			emit(ops::Funcall::type, pos, func);
+		}
+	}
+
+	void Env::run(string_view in) {
+		auto offs(ops.size());
 		compile(in);
-		bin.run(start_pc);
+		pc = ops.begin()+offs;
+		run();
+	}
+
+	void Env::run(optional<PC> end_pc) {
+		if (!end_pc) { end_pc = ops.end(); }
+		
+		static void* op_labels[] = {
+			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_fimp, &&op_funcall,
+			&&op_getvar, &&op_push, &&op_putvar, &&op_return, &&op_skip
+		};
+
+		SNABL_DISPATCH();
+	op_begin:
+		begin();
+		pc++;
+		SNABL_DISPATCH();
+	op_drop:
+		pop_stack();
+		pc++;
+		SNABL_DISPATCH();
+	op_else: {
+			const auto &op(pc->as<ops::Else>());
+			const auto v(pop_stack());
+			if (!v.as<bool>()) { pc += op.nops; }
+			pc++;
+			SNABL_DISPATCH();
+		}
+	op_end:
+		end();
+		pc++;
+		SNABL_DISPATCH();
+	op_fimp:
+		pc++;
+		SNABL_DISPATCH();		
+	op_funcall: {
+			auto &op(pc->as<ops::Funcall>());
+			FimpPtr fimp(op.fimp);
+			
+			if (!fimp && op.prev_fimp) { fimp = op.prev_fimp; }
+			
+			if (fimp) {
+				if (!fimp->score(_stack)) { fimp = nullptr; }
+			} else {
+				fimp = op.func->get_best_fimp(_stack);
+			}
+			
+			if (!fimp) { throw Error(fmt("Func not applicable: %0", {fimp->func->id})); }
+			if (!op.fimp) { op.prev_fimp = fimp; }
+			if (Fimp::call(fimp, pc->pos)) { pc++; }
+			SNABL_DISPATCH();
+		}
+	op_getvar: {
+			const auto &op(pc->as<ops::GetVar>());		
+			auto v(get_var(op.id));
+			if (!v) { throw Error("Unknown var"); }
+			push_stack(*v);
+			pc++;
+			SNABL_DISPATCH();
+		}
+	op_push:
+		push_stack(pc->as<ops::Push>().value); 
+		pc++;
+		SNABL_DISPATCH();
+	op_putvar: {
+			const auto &op(pc->as<ops::PutVar>());
+			auto v(pop_stack());
+			scope()->put_var(op.id, v);
+			pc++;
+			SNABL_DISPATCH();
+		}
+	op_return: {
+			const auto fn(pc->as<ops::Return>().fimp->func);
+			const auto call(pop_call());
+			end();
+			if (_stack.size() < fn->nrets) { throw Error("Nothing to return"); }
+			pc = *call.return_pc;
+			SNABL_DISPATCH();
+		}
+	op_skip:
+		pc += pc->as<ops::Skip>().nops+1;
+		SNABL_DISPATCH();
 	}
 
 	void Env::push_lib(Lib &lib) {

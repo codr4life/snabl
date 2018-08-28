@@ -7,7 +7,7 @@ namespace snabl {
 	void Macro::call(Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Bin &out) {
-		_imp(in, end, func, fimp, out);
+									 Env &env) {
+		_imp(in, end, func, fimp, env);
 	}
 }
