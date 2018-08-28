@@ -2,16 +2,13 @@
 #define SNABL_FORM_HPP
 
 #include <iostream>
-
 #include <deque>
-#include <vector>
 
 #include "snabl/box.hpp"
 #include "snabl/fmt.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
-#include "snabl/std/string_view.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {

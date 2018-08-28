@@ -5,7 +5,6 @@
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
-#include "snabl/std/any.hpp"
 
 namespace snabl {
 	class Box {

@@ -1,10 +1,7 @@
 #ifndef SNABL_FMT_HPP
 #define SNABL_FMT_HPP
 
-#include <vector>
-
 #include "snabl/std.hpp"
-#include "snabl/std/string_view.hpp"
 
 namespace snabl {	
 	string fmt_arg(const char* x);

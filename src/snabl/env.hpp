@@ -4,7 +4,6 @@
 #include <deque>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 
 #include "snabl/bin.hpp"
 #include "snabl/bool.hpp"

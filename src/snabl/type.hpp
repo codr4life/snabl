@@ -2,7 +2,6 @@
 #define SNABL_TYPE_HPP
 
 #include <unordered_set>
-#include <vector>
 
 #include "snabl/cmp.hpp"
 #include "snabl/ptrs.hpp"

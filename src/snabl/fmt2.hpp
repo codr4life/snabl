@@ -3,7 +3,6 @@
 
 #include "snabl/error.hpp"
 #include "snabl/std.hpp"
-#include "snabl/std/string_view.hpp"
 
 namespace snabl {	
 	string fmt2_arg(const char* x);
