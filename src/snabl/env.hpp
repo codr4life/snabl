@@ -16,6 +16,7 @@
 #include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
+#include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -24,11 +25,11 @@ namespace snabl {
 	
 	class Env {
 	private:
-		std::unordered_map<std::string, std::unique_ptr<SymImp>> _syms;
-		std::size_t _type_tag;
-		std::vector<ScopePtr> _scopes;
+		unordered_map<string, unique_ptr<SymImp>> _syms;
+		size_t _type_tag;
+		vector<ScopePtr> _scopes;
 		Stack _stack;
-		std::unordered_map<Sym, Box> _vars;
+		unordered_map<Sym, Box> _vars;
 	public:
 		static const Pos home_pos;
 
@@ -39,19 +40,19 @@ namespace snabl {
 
 		libs::Home home;
 
-		std::unordered_set<char> separators;
+		unordered_set<char> separators;
 		Bin bin;
 		const ScopePtr main;
 		
 		Env();
-		std::size_t next_type_tag();
-		Sym sym(const std::string &name);
+		size_t next_type_tag();
+		Sym sym(const string &name);
 		
-		void parse(const std::string &in, Forms &out);
-		bool parse(std::istream &in, Pos start_pos, char end, Forms &out);
+		void parse(const string &in, Forms &out);
+		bool parse(istream &in, Pos start_pos, char end, Forms &out);
 		
-		void compile(const std::string &in);
-		void run(const std::string &in);
+		void compile(const string &in);
+		void run(const string &in);
 		
 		void push_lib(Lib &lib);
 		Lib &lib();
@@ -62,7 +63,7 @@ namespace snabl {
 		ScopePtr end();
 
 		Call &push_call(const TargetPtr &target,
-										stdx::optional<PC> return_pc=stdx::nullopt);
+										optional<PC> return_pc=nullopt);
 		Call *peek_call();
 		Call pop_call();
 		
@@ -73,17 +74,17 @@ namespace snabl {
 		const Stack &stack();
 
 		Box const* get_var(Sym id);
-		stdx::optional<Box> unsafe_put_var(Sym id, const Box &value);
+		optional<Box> unsafe_put_var(Sym id, const Box &value);
 	private:
 		Pos _pos;
-		std::vector<Lib *> _libs;
-		std::deque<Call> _calls;
+		vector<Lib *> _libs;
+		deque<Call> _calls;
 		
-		void parse_id(std::istream &in, Forms &out);
-		void parse_num(std::istream &in, Forms &out);
-		bool parse_rest(std::istream &in, char end, Forms &out);
-		void parse_sexpr(std::istream &in, Forms &out);
-		void parse_type_list(std::istream &in, Forms &out);
+		void parse_id(istream &in, Forms &out);
+		void parse_num(istream &in, Forms &out);
+		bool parse_rest(istream &in, char end, Forms &out);
+		void parse_sexpr(istream &in, Forms &out);
+		void parse_type_list(istream &in, Forms &out);
 	};
 
 	template <typename ValueT>

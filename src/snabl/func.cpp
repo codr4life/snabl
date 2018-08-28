@@ -1,7 +1,7 @@
 #include "snabl/func.hpp"
 
 namespace snabl {
-	Func::Func(Lib &lib, Sym id, std::size_t nargs, std::size_t nrets):
+	Func::Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
 		lib(lib), id(id), nargs(nargs), nrets(nrets) { }
 
 	FimpPtr Func::get_fimp() const {
@@ -10,7 +10,7 @@ namespace snabl {
 	}
 
 	FimpPtr Func::get_best_fimp(const Stack &stack) const {
-		stdx::optional<std::size_t> best_score;
+		optional<size_t> best_score;
 		FimpPtr best_fimp;
 		
 		for (auto &fp: _fimps) {

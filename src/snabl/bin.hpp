@@ -5,12 +5,12 @@
 #include <unordered_map>
 
 #include "snabl/op.hpp"
-#include "snabl/stdx/optional.hpp"
+#include "snabl/std.hpp"
 
 namespace snabl {
 	class Env;
 
-	using Ops = std::deque<Op>;
+	using Ops = deque<Op>;
 	using PC = Ops::iterator;
 	
 	class Bin {
@@ -28,7 +28,7 @@ namespace snabl {
 								 const Forms::const_iterator &end);
 		void compile(const Forms &forms);
 		
-		void run(std::size_t start_pc=0);
+		void run(size_t start_pc=0);
 	};
 
 	template <typename ImpT, typename... ArgsT>

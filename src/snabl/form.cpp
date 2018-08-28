@@ -4,7 +4,7 @@
 #include "snabl/form.hpp"
 
 namespace snabl {
-	AFormType::AFormType(stdx::string_view id): id(id) { }
+	AFormType::AFormType(string_view id): id(id) { }
 
 	FormImp::~FormImp() { }
 
@@ -23,7 +23,7 @@ namespace snabl {
 
 		FormImp *Id::clone() const { return new Id(id); }
 
-		void Id::dump(std::ostream &out) const { out << id.name(); }
+		void Id::dump(ostream &out) const { out << id.name(); }
 		
 		void Id::compile(Forms::const_iterator &in,
 										 Forms::const_iterator end,
@@ -56,12 +56,12 @@ namespace snabl {
 						if (in != end && &in->type == &TypeList::type) {
 							auto &ids((in++)->as<TypeList>().ids);
 							Stack args;
-							std::transform(ids.begin(), ids.end(), std::back_inserter(args),
-														 [&lib](Sym id) {
-															 auto t(lib.get_type(id));
-															 if (!t) { throw Error("Unknown type: " + id.name()); }
-															 return Box(t);
-														 });
+							transform(ids.begin(), ids.end(), back_inserter(args),
+												[&lib](Sym id) {
+													auto t(lib.get_type(id));
+													if (!t) { throw Error("Unknown type: " + id.name()); }
+													return Box(t);
+												});
 							
 							fimp = fn->get_best_fimp(args);
 						}
@@ -78,7 +78,7 @@ namespace snabl {
 
 		FormImp *Literal::clone() const { return new Literal(value); }
 
-		void Literal::dump(std::ostream &out) const { value.dump(out); }
+		void Literal::dump(ostream &out) const { value.dump(out); }
 
 		void Literal::compile(Forms::const_iterator &in,
 													Forms::const_iterator end,
@@ -92,7 +92,7 @@ namespace snabl {
 
 		FormImp *Sexpr::clone() const { return new Sexpr(body); }
 
-		void Sexpr::dump(std::ostream &out) const {
+		void Sexpr::dump(ostream &out) const {
 			out << '(';
 			char sep(0);
 
@@ -114,15 +114,15 @@ namespace snabl {
 		}
 		
 		TypeList::TypeList(const Forms &body) {
-			std::transform(body.begin(), body.end(), std::back_inserter(ids),
-										 [](const Form &f) -> Sym { return f.as<Id>().id; });
+			transform(body.begin(), body.end(), back_inserter(ids),
+								[](const Form &f) -> Sym { return f.as<Id>().id; });
 		}
 
 		TypeList::TypeList(const Ids &ids): ids(ids) { }
 
 		FormImp *TypeList::clone() const { return new TypeList(ids); }
 
-		void TypeList::dump(std::ostream &out) const {
+		void TypeList::dump(ostream &out) const {
 			out << '<';
 			char sep(0);
 

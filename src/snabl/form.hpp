@@ -10,7 +10,8 @@
 #include "snabl/fmt.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
-#include "snabl/stdx/string_view.hpp"
+#include "snabl/std.hpp"
+#include "snabl/std/string_view.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -18,25 +19,25 @@ namespace snabl {
 	class Env;
 	class Form;
 
-	using Forms = std::deque<Form>;
+	using Forms = deque<Form>;
 
 	struct AFormType {
-		const std::string id;
-		AFormType(stdx::string_view id);		
+		const string id;
+		AFormType(string_view id);		
 	};
 
 	template <typename ImpT>
 	struct FormType: public AFormType {
-		FormType(stdx::string_view id);
+		FormType(string_view id);
 	};
 
 	template <typename ImpT>
-	FormType<ImpT>::FormType(stdx::string_view id): AFormType(id) { }
+	FormType<ImpT>::FormType(string_view id): AFormType(id) { }
 	
 	struct FormImp {
 		virtual ~FormImp();
 		virtual FormImp *clone() const=0;
-		virtual void dump(std::ostream &out) const=0;
+		virtual void dump(ostream &out) const=0;
 
 		virtual void compile(Forms::const_iterator &in,
 												 Forms::const_iterator end,
@@ -48,7 +49,7 @@ namespace snabl {
 	public:
 		const AFormType &type;
 		const Pos pos;
-		const std::unique_ptr<FormImp> imp;
+		const unique_ptr<FormImp> imp;
 		
 		template <typename ImpT>
 		Form(const FormType<ImpT> &type, Pos pos);
@@ -72,7 +73,7 @@ namespace snabl {
 						 ArgT1 &&arg1, ArgsT &&... args):
 		type(type),
 		pos(pos),
-		imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
+		imp(new ImpT(forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const {
@@ -90,7 +91,7 @@ namespace snabl {
 			
 			Id(Sym id);
 			FormImp *clone() const override;
-			void dump(std::ostream &out) const override;
+			void dump(ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -103,7 +104,7 @@ namespace snabl {
 			const Box value;
 			Literal(const Box &value);
 			FormImp *clone() const override;
-			void dump(std::ostream &out) const override;
+			void dump(ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -116,7 +117,7 @@ namespace snabl {
 			const Forms body;
 			Sexpr(const Forms &body);
 			FormImp *clone() const override;
-			void dump(std::ostream &out) const override;
+			void dump(ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -125,7 +126,7 @@ namespace snabl {
 		};
 
 		struct TypeList: public FormImp {
-			using Ids = std::vector<Sym>;
+			using Ids = vector<Sym>;
 				
 			static const FormType<TypeList> type;
 			Ids ids;
@@ -133,7 +134,7 @@ namespace snabl {
 			TypeList(const Forms &body);
 			TypeList(const Ids &ids);
 			FormImp *clone() const override;
-			void dump(std::ostream &out) const override;
+			void dump(ostream &out) const override;
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,

@@ -6,6 +6,7 @@
 
 #include "snabl/cmp.hpp"
 #include "snabl/ptrs.hpp"
+#include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -15,7 +16,7 @@ namespace snabl {
 	class AType {
 	public:
 		Lib &lib;
-		const std::size_t tag;
+		const size_t tag;
 		const Sym id;
 
 		static void derive(const ATypePtr &child, const ATypePtr &parent);
@@ -25,13 +26,13 @@ namespace snabl {
 		virtual bool is_eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		
-		virtual void dump(const Box &value, std::ostream &out) const;
-		virtual void write(const Box &value, std::ostream &out) const;
+		virtual void dump(const Box &value, ostream &out) const;
+		virtual void write(const Box &value, ostream &out) const;
 	protected:
 		AType(Lib &lib, Sym id);
 	private:
-		std::vector<ATypePtr> _parent_types;
-		std::unordered_set<ATypePtr> _child_types;
+		vector<ATypePtr> _parent_types;
+		unordered_set<ATypePtr> _child_types;
 	};
 
 	template <typename ValueT>
@@ -62,7 +63,7 @@ namespace snabl {
 		return snabl::cmp(lhs.as<ValueT>(), rhs.as<ValueT>());
 	}
 
-	class Trait: public Type<std::nullptr_t> {
+	class Trait: public Type<nullptr_t> {
 	public:
 		Trait(Lib &lib, Sym id);
 	};

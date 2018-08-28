@@ -4,7 +4,7 @@
 
 namespace snabl {
 	Sym Fimp::get_id(const FuncPtr &func, const Args &args) {
-		std::stringstream buf;
+		stringstream buf;
 		buf << func->id.name() << '<';
 		char sep = 0;
 
@@ -52,14 +52,14 @@ namespace snabl {
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
 		id(get_id(func, args)), func(func), args(args), rets(rets), imp(imp),
-	  _start_pc(stdx::nullopt), _nops(0) { }
+	  _start_pc(nullopt), _nops(0) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
 		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end),
-		_start_pc(stdx::nullopt), _nops(0) { }
+		_start_pc(nullopt), _nops(0) { }
 
 	bool Fimp::compile(Pos pos) {
 		auto &bin(func->lib.env.bin);
@@ -75,13 +75,13 @@ namespace snabl {
 		return true;
 	}
 
-	stdx::optional<std::size_t> Fimp::score(const Stack &stack) const {
+	optional<size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }
-		if (stack.size() < func->nargs) { return stdx::nullopt; }
+		if (stack.size() < func->nargs) { return nullopt; }
 		auto &env(func->lib.env);
-		auto i(std::next(stack.begin(), stack.size()-func->nargs));
+		auto i(next(stack.begin(), stack.size()-func->nargs));
 		auto j(args.begin());
-		std::size_t score(0);
+		size_t score(0);
 
 		for (; j != args.end(); i++, j++) {
 			auto &iv(*i), &jv(*j);
@@ -89,16 +89,16 @@ namespace snabl {
 			if (it == env.no_type) { continue; }
 
 			if (jv.is_undef()) {
-				if (!it->isa(jt)) { return stdx::nullopt; }
+				if (!it->isa(jt)) { return nullopt; }
 			} else {
-				if (iv.is_undef() || !iv.is_eqval(jv)) { return stdx::nullopt; }
+				if (iv.is_undef() || !iv.is_eqval(jv)) { return nullopt; }
 			}
 			
-			score += std::abs(it->tag-jt->tag);
+			score += abs(it->tag-jt->tag);
 		}
 
 		return score;
 	}
 
-	void Fimp::dump(std::ostream &out) const { out << id.name(); }
+	void Fimp::dump(ostream &out) const { out << id.name(); }
 }

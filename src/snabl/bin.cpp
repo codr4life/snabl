@@ -3,7 +3,7 @@
 
 #define SNABL_DISPATCH()												\
 	if (pc == ops.end()) { return; }							\
-	goto *op_labels[pc->type.label_offs];				\
+	goto *op_labels[pc->type.label_offs];					\
 
 namespace snabl {
 	Bin::Bin(Env &env): env(env) { }
@@ -26,7 +26,7 @@ namespace snabl {
 
 	void Bin::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
 
-	void Bin::run(std::size_t start_pc) {
+	void Bin::run(size_t start_pc) {
 		pc = ops.begin()+start_pc;
 		
 		static void* op_labels[] = {

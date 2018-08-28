@@ -6,6 +6,7 @@
 
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
+#include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -20,7 +21,7 @@ namespace snabl {
 
 		void put_var(Sym id, const Box &value);
 	private:
-		std::map<Sym, Box> _put_vars;
+		map<Sym, Box> _put_vars;
 	};
 }
 

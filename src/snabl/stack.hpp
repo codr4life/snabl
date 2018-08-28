@@ -3,10 +3,11 @@
 
 #include <vector>
 
+#include "snabl/std.hpp"
 #include "snabl/box.hpp"
 
 namespace snabl {
-	using Stack = std::vector<Box>;
+	using Stack = vector<Box>;
 }
 
 #endif

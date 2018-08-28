@@ -4,7 +4,8 @@
 #include "snabl/cmp.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
-#include "snabl/stdx/any.hpp"
+#include "snabl/std.hpp"
+#include "snabl/std/any.hpp"
 
 namespace snabl {
 	class Box {
@@ -24,11 +25,11 @@ namespace snabl {
 		bool is_equid(const Box &rhs) const;
 		bool is_eqval(const Box &rhs) const;
 		Cmp cmp(const Box &rhs) const;
-		void dump(std::ostream &out) const;
-		void write(std::ostream &out) const;
+		void dump(ostream &out) const;
+		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
-		stdx::any _value;
+		any _value;
 	  bool _is_undef;
 	};
 
@@ -39,7 +40,7 @@ namespace snabl {
 	template <typename ValueT>
 	ValueT Box::as() const {
 		if (_is_undef) { throw Error("Deref of undef value"); }
-		return stdx::any_cast<ValueT>(_value);
+		return any_cast<ValueT>(_value);
 	}
 }
 

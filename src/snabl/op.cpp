@@ -2,9 +2,9 @@
 #include "snabl/op.hpp"
 
 namespace snabl {
-	std::size_t AOpType::next_label_offs(0);
+	size_t AOpType::next_label_offs(0);
 
-	AOpType::AOpType(const std::string &id):
+	AOpType::AOpType(const string &id):
 		id(id), label_offs(next_label_offs++) { }
 
 	namespace ops {
@@ -24,7 +24,7 @@ namespace snabl {
 
 		Drop::Drop() { }
 		
-		Else::Else(std::size_t nops): nops(nops) { }
+		Else::Else(size_t nops): nops(nops) { }
 
 		End::End() { }
 		
@@ -42,6 +42,6 @@ namespace snabl {
 
 		Return::Return() { }
 
-		Skip::Skip(std::size_t nops): nops(nops) { }
+		Skip::Skip(size_t nops): nops(nops) { }
 	}
 }

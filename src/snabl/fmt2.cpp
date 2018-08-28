@@ -1,15 +1,15 @@
 #include "snabl/fmt2.hpp"
 
 namespace snabl {
-	std::string fmt2_arg(const char* x) { return std::string(x); }
-	std::string fmt2_arg(const std::string &x) { return x; }
+	string fmt2_arg(const char* x) { return string(x); }
+	string fmt2_arg(const string &x) { return x; }
 
-	static void _fmt2(std::string &spec, std::size_t i, const fmt2_conv &arg1) {
-		const std::string id {'%', static_cast<char>('0'+i)};
+	static void _fmt2(string &spec, size_t i, const fmt2_conv &arg1) {
+		const string id {'%', static_cast<char>('0'+i)};
 		bool found(false);
-		std::size_t j(0);
+		size_t j(0);
 
-		while ((j = spec.find(id, j)) != std::string::npos) {
+		while ((j = spec.find(id, j)) != string::npos) {
 			if (j > 0 && spec[j-1] == '%') {
 				spec.erase(j, 1);
 				j += id.size();
@@ -23,8 +23,8 @@ namespace snabl {
 		if (!found) { throw Error("Unused fmt2 arg"); }
 	}
 
-	std::string fmt2(stdx::string_view spec, std::initializer_list<fmt2_conv> args) {
-		std::string out(spec);
+	string fmt2(string_view spec, initializer_list<fmt2_conv> args) {
+		string out(spec);
 		int i(0);
 
 		for (const auto &a : args){

@@ -28,11 +28,11 @@ namespace snabl {
 			(_parent_types.size() > parent->tag && _parent_types[parent->tag]);
 	}
 	
-	void AType::dump(const Box &value, std::ostream &out) const {
+	void AType::dump(const Box &value, ostream &out) const {
 		out << id.name() << "(n/a)";
 	}
 
-	void AType::write(const Box &value, std::ostream &out) const { dump(value, out); }
+	void AType::write(const Box &value, ostream &out) const { dump(value, out); }
 
-	Trait::Trait(Lib &lib, Sym id): Type<std::nullptr_t>(lib, id) { }
+	Trait::Trait(Lib &lib, Sym id): Type<nullptr_t>(lib, id) { }
 }

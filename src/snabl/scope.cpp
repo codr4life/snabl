@@ -14,6 +14,6 @@ namespace snabl {
 		auto found(_put_vars.find(id));
 		if (found != _put_vars.end()) { throw Error("Duplicate var: " + id.name()); }
 		auto prev(env.unsafe_put_var(id, value));
-		if (prev) { _put_vars.emplace(std::make_pair(id, value)); }
+		if (prev) { _put_vars.emplace(make_pair(id, value)); }
 	}
 }

@@ -15,23 +15,23 @@ namespace snabl {
 		main(begin()),
 		_pos(home_pos) { push_lib(home); }
 
-	std::size_t Env::next_type_tag() { return _type_tag++; }
+	size_t Env::next_type_tag() { return _type_tag++; }
 
-	Sym Env::sym(const std::string &name) {
+	Sym Env::sym(const string &name) {
 		auto found(_syms.find(name));
 
 		return Sym((found == _syms.end())
-							 ? _syms.emplace(name, std::make_unique<SymImp>(name))
+							 ? _syms.emplace(name, make_unique<SymImp>(name))
 							 .first->second.get()
 							 : found->second.get());
 	}
 
-	void Env::parse(const std::string &in, Forms &out) {
-		std::istringstream s(in);
+	void Env::parse(const string &in, Forms &out) {
+		istringstream s(in);
 		parse(s, home_pos, 0, out);		
 	}
 	
-	bool Env::parse(std::istream &in, Pos start_pos, char end, Forms &out) {
+	bool Env::parse(istream &in, Pos start_pos, char end, Forms &out) {
 		_pos = start_pos;
 		char c;
 		
@@ -85,9 +85,9 @@ namespace snabl {
 		return false;
 	}
 	
-	void Env::parse_id(std::istream &in, Forms &out) {
+	void Env::parse_id(istream &in, Forms &out) {
 		auto start_pos(_pos);
-		std::stringstream buf;
+		stringstream buf;
 		char c;
 		bool prev_sep(true);
 		
@@ -113,9 +113,9 @@ namespace snabl {
 		}
 	}
 
-	void Env::parse_num(std::istream &in, Forms &out) {
+	void Env::parse_num(istream &in, Forms &out) {
 		auto start_pos(_pos);
-		std::stringstream buf;
+		stringstream buf;
 		bool is_float(false);
 		char c;
 		
@@ -133,24 +133,24 @@ namespace snabl {
 		out.emplace_back(forms::Literal::type,
 										 start_pos,
 										 is_float
-										 ? Box(float_type, std::stold(buf.str()))
-										 : Box(int_type, std::stoll(buf.str())));
+										 ? Box(float_type, stold(buf.str()))
+										 : Box(int_type, stoll(buf.str())));
 	}
 
-	bool Env::parse_rest(std::istream &in, char end, Forms &out) {
+	bool Env::parse_rest(istream &in, char end, Forms &out) {
 		auto start_pos(_pos);
 		Forms body;
 		if (!parse(in, start_pos, end, body) && end) { return false; }
-		out.emplace_back(forms::Sexpr::type, start_pos, std::move(body));
+		out.emplace_back(forms::Sexpr::type, start_pos, move(body));
 		return true;
 	}
 
-	void Env::parse_sexpr(std::istream &in, Forms &out) {
+	void Env::parse_sexpr(istream &in, Forms &out) {
 		auto start_pos(_pos);
 		if (!parse_rest(in, ')', out)) { throw SyntaxError(start_pos, "Open sexpr"); }
 	}
 
-	void Env::parse_type_list(std::istream &in, Forms &out) {
+	void Env::parse_type_list(istream &in, Forms &out) {
 		auto start_pos(_pos);
 		Forms body;
 
@@ -161,14 +161,14 @@ namespace snabl {
 		out.emplace_back(forms::TypeList::type, start_pos, body);
 	}
 	
-	void Env::compile(const std::string &in) {
+	void Env::compile(const string &in) {
 		Forms forms;
 		parse(in, forms);
 		bin.compile(forms);
 	}
 
-	void Env::run(const std::string &in) {
-		std::size_t start_pc = bin.ops.size();
+	void Env::run(const string &in) {
+		size_t start_pc = bin.ops.size();
 		compile(in);
 		bin.run(start_pc);
 	}
@@ -190,7 +190,7 @@ namespace snabl {
 	}
 
 	ScopePtr Env::begin() {
-		auto s(std::make_shared<Scope>(*this));
+		auto s(make_shared<Scope>(*this));
 		_scopes.push_back(s);
 		return s;
 	}
@@ -207,7 +207,7 @@ namespace snabl {
 	}
 
 	Call &Env::push_call(const TargetPtr &target,
-											 stdx::optional<Ops::iterator> return_pc) {
+											 optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}
@@ -237,15 +237,15 @@ namespace snabl {
 		return nullptr;
 	}
 
-	stdx::optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
+	optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
 		auto found(_vars.find(id));
-		stdx::optional<Box> prev;
+		optional<Box> prev;
 		
 		if (found != _vars.end()) {
 			prev = found->second;
 			found->second = value;
 		} else {
-			_vars.emplace(std::make_pair(id, value)).first->second;
+			_vars.emplace(make_pair(id, value)).first->second;
 		}
 
 		return prev;

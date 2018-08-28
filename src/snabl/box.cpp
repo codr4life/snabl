@@ -24,7 +24,7 @@ namespace snabl {
 		return _type->cmp(*this, rhs);
 	}
 
-	void Box::dump(std::ostream &out) const { _type->dump(*this, out); }
+	void Box::dump(ostream &out) const { _type->dump(*this, out); }
 
-	void Box::write(std::ostream &out) const { _type->write(*this, out); }
+	void Box::write(ostream &out) const { _type->write(*this, out); }
 }

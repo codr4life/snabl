@@ -4,27 +4,28 @@
 #include "snabl/box.hpp"
 #include "snabl/form.hpp"
 #include "snabl/pos.hpp"
+#include "snabl/std.hpp"
 #include "snabl/scope.hpp"
 
 namespace snabl {
 	class AOpType {
 	public:
-		const std::string id;
-		const std::size_t label_offs;
+		const string id;
+		const size_t label_offs;
 
-		AOpType(const std::string &id);
+		AOpType(const string &id);
 	private:
-		static std::size_t next_label_offs;
+		static size_t next_label_offs;
 	};
 
 	template <typename ImpT>
 	class OpType: public AOpType {
 	public:
-		OpType(const std::string &id);
+		OpType(const string &id);
 	};
 
 	template <typename ImpT>
-	OpType<ImpT>::OpType(const std::string &id): AOpType(id) { }
+	OpType<ImpT>::OpType(const string &id): AOpType(id) { }
 
 	struct OpImp {
 		virtual ~OpImp() { }
@@ -46,7 +47,7 @@ namespace snabl {
 		template <typename ImpT>
 		ImpT &as() const;
 	private:
-		std::unique_ptr<OpImp> _imp;
+		unique_ptr<OpImp> _imp;
 	};
 
 	template <typename ImpT>
@@ -58,7 +59,7 @@ namespace snabl {
 				 ArgT1 &&arg1, ArgsT &&... args):
 		type(type),
 		pos(pos),
-		_imp(new ImpT(std::forward<ArgT1, ArgsT...>(arg1, args...))) { }
+		_imp(new ImpT(forward<ArgT1, ArgsT...>(arg1, args...))) { }
 
 	template <typename ImpT>
 	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }
@@ -76,9 +77,9 @@ namespace snabl {
 
 		struct Else: public OpImp {
 			static const OpType<Else> type;
-			std::size_t nops;
+			size_t nops;
 			
-			Else(std::size_t nops);
+			Else(size_t nops);
 		};
 		
 		struct End: public OpImp {
@@ -130,9 +131,9 @@ namespace snabl {
 		
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
-			std::size_t nops;
+			size_t nops;
 			
-			Skip(std::size_t nops);
+			Skip(size_t nops);
 		};
 	}
 }

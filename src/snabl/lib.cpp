@@ -10,12 +10,12 @@ namespace snabl {
 	MacroPtr Lib::add_macro(Sym id, const Macro::Imp &imp) {
 		auto found(_macros.find(id));
 		if (found != _macros.end()) { _macros.erase(found); }
-		auto m(std::make_shared<Macro>(*this, id, imp));
+		auto m(make_shared<Macro>(*this, id, imp));
 		_macros.emplace(m->id, m);
 		return m;
 	}
 
-	FuncPtr Lib::add_func(Sym id, std::size_t nargs, std::size_t nrets) {
+	FuncPtr Lib::add_func(Sym id, size_t nargs, size_t nrets) {
 		auto found(_funcs.find(id));
 		
 		if (found != _funcs.end()) {
@@ -26,7 +26,7 @@ namespace snabl {
 			return f;
 		}
 		
-		auto f(std::make_shared<Func>(*this, id, nargs, nrets));
+		auto f(make_shared<Func>(*this, id, nargs, nrets));
 		_funcs.emplace(f->id, f);
 		return f;
 	}

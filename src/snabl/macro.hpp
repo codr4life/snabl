@@ -2,6 +2,7 @@
 #define SNABL_MACRO_HPP
 
 #include "snabl/form.hpp"
+#include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 
 namespace snabl {
@@ -9,10 +10,10 @@ namespace snabl {
 	
 	class Macro {
 	public:
-		using Imp = std::function<void (Forms::const_iterator &in,
-																		Forms::const_iterator end,
-																		FuncPtr &func, FimpPtr &fimp,
-																		Bin &out)>;
+		using Imp = function<void (Forms::const_iterator &in,
+															 Forms::const_iterator end,
+															 FuncPtr &func, FimpPtr &fimp,
+															 Bin &out)>;
 		
 		Lib &lib;
 		const Sym id;

@@ -4,25 +4,25 @@
 #include "snabl/fmt.hpp"
 
 namespace snabl {
-	std::string fmt_arg(const char* x) { return std::string(x); }
-	std::string fmt_arg(const std::string &x) { return x; }
+	string fmt_arg(const char* x) { return string(x); }
+	string fmt_arg(const string &x) { return x; }
 
-	std::string fmt(stdx::string_view spec, const std::vector<fmt_conv> &args) {
-		std::stringstream out;
-		std::size_t i(0), j;
+	string fmt(string_view spec, const vector<fmt_conv> &args) {
+		stringstream out;
+		size_t i(0), j;
 		
-		while ((j = spec.find('%', i)) != stdx::string_view::npos) {
+		while ((j = spec.find('%', i)) != string_view::npos) {
 			if (j < spec.length()-1 && spec[j+1] == '%') {
 				j++;
 				out << spec.substr(i, j-i);
 				i = j+1;
 			} else {
 				out << spec.substr(i, j-i);
-				std::size_t len(0);
-				const auto arg(std::stoul(std::string(spec.substr(j+1)), &len));
+				size_t len(0);
+				const auto arg(stoul(string(spec.substr(j+1)), &len));
 
 				if (arg >= args.size()) {
-					throw Error("Invalid fmt arg: " + std::to_string(arg));
+					throw Error("Invalid fmt arg: " + to_string(arg));
 				}
 
 				out << args[arg].as_str;

@@ -2,19 +2,20 @@
 #define SNABL_ERROR_HPP
 
 #include <stdexcept>
-#include <string>
+
+#include "snabl/std.hpp"
 
 namespace snabl {
 	struct Pos;
 	
-	class Error: public std::runtime_error {
+	class Error: public runtime_error {
 	public:
-    Error(const std::string &msg);
+    Error(const string &msg);
 	};
 
 	class SyntaxError: public Error {
 	public:
-    SyntaxError(Pos pos, const std::string &msg);
+    SyntaxError(Pos pos, const string &msg);
 	};
 }
 
