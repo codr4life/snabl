@@ -61,14 +61,15 @@ namespace snabl {
 		ScopePtr scope();
 		ScopePtr end();
 
-		Call &push_call(const TargetPtr &target, stdx::optional<std::size_t> return_pc);
+		Call &push_call(const TargetPtr &target,
+										stdx::optional<Ops::iterator> return_pc=stdx::nullopt);
 		Call *peek_call();
-		void pop_call();
+		Call pop_call();
 		
 		template <typename ValueT>
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
 		void push_stack(const Box &value);
-		stdx::optional<Box> unsafe_pop_stack();
+		Box pop_stack();
 		const Stack &stack();
 
 		Box const* get_var(Sym id);

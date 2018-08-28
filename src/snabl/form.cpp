@@ -67,7 +67,7 @@ namespace snabl {
 						}
 					} else {
 						auto fi(fn->get_fimp());
-						fi->compile(out, form.pos);
+						fi->compile(form.pos);
 						out.emplace_back(ops::Funcall::type, form.pos, fi);
 					}
 				}

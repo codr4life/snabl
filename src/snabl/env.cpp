@@ -168,7 +168,7 @@ namespace snabl {
 	}
 
 	void Env::run(const std::string &in) {
-		std::size_t start_pc = bin.ops().size();
+		std::size_t start_pc = bin.ops.size();
 		compile(in);
 		bin.run(start_pc);
 	}
@@ -207,19 +207,23 @@ namespace snabl {
 	}
 
 	Call &Env::push_call(const TargetPtr &target,
-											 stdx::optional<std::size_t> return_pc) {
+											 stdx::optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}
 	
 	Call *Env::peek_call() { return _calls.empty() ? nullptr : &_calls.back(); }
 
-	void Env::pop_call() { _calls.pop_back(); }
+	Call Env::pop_call() {
+		auto c(_calls.back());
+		_calls.pop_back();
+		return c;
+	}
 	
 	void Env::push_stack(const Box &value) { _stack.push_back(value); }
 
-	stdx::optional<Box> Env::unsafe_pop_stack() {
-		if (_stack.empty()) { return stdx::nullopt; }
+	Box Env::pop_stack() {
+		if (_stack.empty()) { throw Error("Nothing to pop"); }
 		Box v(_stack.back());
 		_stack.pop_back();
 		return v;

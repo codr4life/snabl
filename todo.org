@@ -1,7 +1,9 @@
 * finish func: macro
-** add return op
-*** pop call and jump
-*** extract fimp.check_rets() from call()
+** extract fimp.check_rets() from call()
+** move Bin into Env
+*** move Ops to op.hpp
+*** add using PC = Ops::iterator and update code
+*** rename emplace_back to push_op
 * finish fib
 * add bench fn
 ** compare fib perf with wren

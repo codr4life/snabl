@@ -8,6 +8,7 @@
 #include <memory>
 #include <sstream>
 
+#include "snabl/bin.hpp"
 #include "snabl/form.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stdx/optional.hpp"
@@ -32,7 +33,7 @@ namespace snabl {
 		const stdx::optional<Imp> imp;
 
 		static Sym get_id(const FuncPtr &func, const Args &args);
-		static void call(const FimpPtr &fimp);
+		static bool call(const FimpPtr &fimp, Pos pos);
 
 		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
 		
@@ -41,13 +42,12 @@ namespace snabl {
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 
-		bool compile(Bin &bin, Pos pos);
-		std::size_t pc() const;
+		bool compile(Pos pos);
 		stdx::optional<std::size_t> score(const Stack &stack) const;
 		void dump(std::ostream &out) const override;
 	private:
-		bool _is_compiled;
-		std::size_t _pc, _nops;
+		stdx::optional<Ops::iterator> _start_pc;
+		std::size_t _nops;
 	};
 }
 

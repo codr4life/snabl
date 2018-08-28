@@ -1,3 +1,4 @@
+#include "snabl/fimp.hpp"
 #include "snabl/op.hpp"
 
 namespace snabl {
@@ -16,6 +17,7 @@ namespace snabl {
 		const OpType<GetVar> GetVar::type("GetVar");
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
+		const OpType<Return> Return::type("Return");
 		const OpType<Skip> Skip::type("Skip");
 
 		Begin::Begin() { }
@@ -37,6 +39,8 @@ namespace snabl {
 		Push::Push(const Box &value): value(value) { }
 
 		PutVar::PutVar(Sym id): id(id) { }
+
+		Return::Return() { }
 
 		Skip::Skip(std::size_t nops): nops(nops) { }
 	}

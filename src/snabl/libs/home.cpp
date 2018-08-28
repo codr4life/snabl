@@ -69,13 +69,13 @@ namespace snabl {
 									auto &else_skip(out.emplace_back(ops::Else::type,
 																									 form.pos,
 																									 0));
-									size_t start_pc(out.ops().size());								
+									size_t start_pc(out.ops.size());								
 									out.compile(in++, in+1);
 									auto &if_skip(out.emplace_back(ops::Skip::type, form.pos, 0));
-									else_skip.as<ops::Else>().nops = out.ops().size()-start_pc;
-									start_pc = out.ops().size();
+									else_skip.as<ops::Else>().nops = out.ops.size()-start_pc;
+									start_pc = out.ops.size();
 									out.compile(in++, in+1);
-									if_skip.as<ops::Skip>().nops = out.ops().size()-start_pc;
+									if_skip.as<ops::Skip>().nops = out.ops.size()-start_pc;
 								});	
 
 			add_macro(env.get_sym("func:"),
@@ -130,8 +130,8 @@ namespace snabl {
 								 Env &env(call.scope->env);
 			
 								 Box
-									 y(call.scope->pop_stack()),
-									 x(call.scope->pop_stack());
+									 y(env.pop_stack()),
+									 x(env.pop_stack());
 			
 								 env.push_stack(env.bool_type, x.is_eqval(y));
 							 });
@@ -143,8 +143,8 @@ namespace snabl {
 								 Env &env(call.scope->env);
 			
 								 Box
-									 y(call.scope->pop_stack()),
-									 x(call.scope->pop_stack());
+									 y(env.pop_stack()),
+									 x(env.pop_stack());
 			
 								 env.push_stack(env.bool_type, x.is_equid(y));
 							 });
@@ -156,8 +156,8 @@ namespace snabl {
 								 Env &env(call.scope->env);
 			
 								 Box
-									 y(call.scope->pop_stack()),
-									 x(call.scope->pop_stack());
+									 y(env.pop_stack()),
+									 x(env.pop_stack());
 
 								 env.push_stack(env.bool_type, x.cmp(y) == Cmp::LT);
 							 });
@@ -167,7 +167,7 @@ namespace snabl {
 							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope->env);
-								 const Float v(call.scope->pop_stack().as<Float>());
+								 const Float v(env.pop_stack().as<Float>());
 								 env.push_stack(env.int_type, Int(v));
 							 });
 
@@ -176,7 +176,7 @@ namespace snabl {
 							 {env.float_type},
 							 [](Call &call) {
 								 Env &env(call.scope->env);
-								 const Int v(call.scope->pop_stack().as<Int>());
+								 const Int v(env.pop_stack().as<Int>());
 								 env.push_stack(env.float_type, Float(v));
 							 });
 
@@ -187,8 +187,8 @@ namespace snabl {
 								 Env &env(call.scope->env);
 			
 								 Int
-									 y(call.scope->pop_stack().as<Int>()),
-									 x(call.scope->pop_stack().as<Int>());
+									 y(env.pop_stack().as<Int>()),
+									 x(env.pop_stack().as<Int>());
 			
 								 env.push_stack(env.int_type, x+y);
 							 });
@@ -200,8 +200,8 @@ namespace snabl {
 								 Env &env(call.scope->env);
 			
 								 Int
-									 y(call.scope->pop_stack().as<Int>()),
-									 x(call.scope->pop_stack().as<Int>());
+									 y(env.pop_stack().as<Int>()),
+									 x(env.pop_stack().as<Int>());
 			
 								 env.push_stack(env.int_type, x*y);
 							 });

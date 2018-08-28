@@ -2,7 +2,8 @@
 #define SNABL_OP_HPP
 
 #include "snabl/box.hpp"
-#include "snabl/fimp.hpp"
+#include "snabl/form.hpp"
+#include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
 
 namespace snabl {
@@ -122,6 +123,11 @@ namespace snabl {
 			PutVar(Sym id);
 		};
 
+		struct Return: public OpImp {
+			static const OpType<Return> type;
+			Return();
+		};
+		
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
 			std::size_t nops;

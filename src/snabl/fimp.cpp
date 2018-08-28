@@ -26,48 +26,55 @@ namespace snabl {
 		return func->lib.env.get_sym(buf.str());
 	}
 
-	void Fimp::call(const FimpPtr &fimp) {
-		auto &env(fimp->func->lib.env);						 
-		if (!fimp->imp) { throw Error(fmt("Missing imp: %0", {fimp->id})); }
-		auto stack_offs(env.stack().size());
-		auto &call(env.push_call(fimp, -1));
-		(*fimp->imp)(call);
-		auto func(fimp->func);
+	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
+		auto &env(fimp->func->lib.env);
+		auto &bin(env.bin);
+		auto &call(env.push_call(fimp));
+
+		if (fimp->imp) {
+			auto stack_offs(env.stack().size());
+			(*fimp->imp)(call);
+			auto func(fimp->func);
 		
-		if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
-			throw Error("Invalid stack after funcall");
+			if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
+				throw Error("Invalid stack after funcall");
+			}
+		
+			env.pop_call();
+			return true;
 		}
-		
-		env.pop_call();
+
+		fimp->compile(pos);
+		env.push_call(fimp, bin.pc+1);
+		bin.pc = *fimp->_start_pc;
+		return false;
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
 		id(get_id(func, args)), func(func), args(args), rets(rets), imp(imp),
-		_is_compiled(false), _pc(0), _nops(0) { }
+	  _start_pc(stdx::nullopt), _nops(0) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
 		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end),
-		_is_compiled(false), _pc(0), _nops(0) { }
+		_start_pc(stdx::nullopt), _nops(0) { }
 
-	bool Fimp::compile(Bin &bin, Pos pos) {
-		if (_is_compiled) { return false; }
+	bool Fimp::compile(Pos pos) {
+		auto &bin(func->lib.env.bin);
+		if (_start_pc) { return false; }
 		auto &skip(bin.emplace_back(ops::Skip::type, pos, 0).as<ops::Skip>());
-		_pc = bin.ops().size();
-		const auto pc_backup(bin.pc());
+		_start_pc = bin.ops.end();
+		const auto pc_backup(bin.pc);
 		bin.emplace_back(ops::Begin::type, pos);
 		bin.compile(forms);
-		bin.emplace_back(ops::End::type, pos);
-		bin.set_pc(pc_backup);
-		_nops = skip.nops = bin.ops().size()-_pc;
-		_is_compiled = true;
+		bin.emplace_back(ops::Return::type, pos);
+		bin.pc = pc_backup;
+		_nops = skip.nops = bin.ops.end()-*_start_pc;
 		return true;
 	}
 
-	std::size_t Fimp::pc() const { return _pc; }
-	
 	stdx::optional<std::size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }
 		if (stack.size() < func->nargs) { return stdx::nullopt; }

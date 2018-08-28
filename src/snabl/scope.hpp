@@ -17,13 +17,10 @@ namespace snabl {
 		
 		Scope(Env &env);
 		~Scope();
-		
-		std::size_t stack_offs() const;
-		Box pop_stack();
+
 		void put_var(Sym id, const Box &value);
 	private:
 		std::map<Sym, Box> _put_vars;
-		std::size_t _stack_offs;
 	};
 }
 
