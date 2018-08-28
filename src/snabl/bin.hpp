@@ -11,12 +11,13 @@ namespace snabl {
 	class Env;
 
 	using Ops = std::deque<Op>;
-
+	using PC = Ops::iterator;
+	
 	class Bin {
 	public:
 		Env &env;
 		Ops ops;
-		Ops::iterator pc;
+		PC pc;
 
 		Bin(Env &env);
 

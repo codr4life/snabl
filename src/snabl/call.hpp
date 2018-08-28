@@ -11,11 +11,11 @@ namespace snabl {
 	public:
 		const TargetPtr target;
 		const ScopePtr scope;
-		const stdx::optional<Ops::iterator> return_pc;
+		const stdx::optional<PC> return_pc;
 		
 		Call(const TargetPtr &target,
 				 const ScopePtr &scope,
-				 stdx::optional<Ops::iterator> return_pc=stdx::nullopt);
+				 stdx::optional<PC> return_pc=stdx::nullopt);
 	};
 }
 

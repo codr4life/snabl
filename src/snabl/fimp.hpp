@@ -46,7 +46,7 @@ namespace snabl {
 		stdx::optional<std::size_t> score(const Stack &stack) const;
 		void dump(std::ostream &out) const override;
 	private:
-		stdx::optional<Ops::iterator> _start_pc;
+		stdx::optional<PC> _start_pc;
 		std::size_t _nops;
 	};
 }

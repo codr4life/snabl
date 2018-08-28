@@ -62,7 +62,7 @@ namespace snabl {
 		ScopePtr end();
 
 		Call &push_call(const TargetPtr &target,
-										stdx::optional<Ops::iterator> return_pc=stdx::nullopt);
+										stdx::optional<PC> return_pc=stdx::nullopt);
 		Call *peek_call();
 		Call pop_call();
 		

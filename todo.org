@@ -2,7 +2,6 @@
 ** extract fimp.check_rets() from call()
 ** move Bin into Env
 *** move Ops to op.hpp
-*** add using PC = Ops::iterator and update code
 *** rename emplace_back to push_op
 ** remove start_pc param from run
 *** use pc field instead
