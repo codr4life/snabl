@@ -17,7 +17,7 @@ namespace snabl {
 		const auto pos(begin->pos);
 
 		if (fimp) {
-			fimp->compile(pos);
+			Fimp::compile(fimp, pos);
 			emplace_back(ops::Funcall::type, pos, fimp);
 		} else if (func) {
 			emplace_back(ops::Funcall::type, pos, func);
@@ -94,8 +94,10 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_return: {
+			const auto fn(pc->as<ops::Return>().fimp->func);
 			const auto call(env.pop_call());
 			env.end();
+			if (env.stack().size() < fn->nrets) { throw Error("Nothing to return"); }
 			pc = *call.return_pc;
 			SNABL_DISPATCH();
 		}

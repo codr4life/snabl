@@ -40,7 +40,7 @@ namespace snabl {
 
 		PutVar::PutVar(Sym id): id(id) { }
 
-		Return::Return() { }
+		Return::Return(const FimpPtr &fimp): fimp(fimp) { }
 
 		Skip::Skip(size_t nops): nops(nops) { }
 	}

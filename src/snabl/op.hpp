@@ -78,7 +78,6 @@ namespace snabl {
 		struct Else: public OpImp {
 			static const OpType<Else> type;
 			size_t nops;
-			
 			Else(size_t nops);
 		};
 		
@@ -89,18 +88,15 @@ namespace snabl {
 
 		struct Fimp: public OpImp {
 			static const OpType<Fimp> type;
-			
 			const FimpPtr ptr;
 			Fimp(const FimpPtr &ptr);
 		};
 
 		struct Funcall: public OpImp {
 			static const OpType<Funcall> type;
-			
 			const FuncPtr func;
 			const FimpPtr fimp;
 			FimpPtr prev_fimp;
-			
 			Funcall(const FuncPtr &func);
 			Funcall(const FimpPtr &fimp);
 		};
@@ -112,8 +108,7 @@ namespace snabl {
 		};
 
 		struct Push: public OpImp {
-			static const OpType<Push> type;
-			
+			static const OpType<Push> type;			
 			const Box value;
 			Push(const Box &value);
 		};
@@ -126,13 +121,13 @@ namespace snabl {
 
 		struct Return: public OpImp {
 			static const OpType<Return> type;
-			Return();
+			const FimpPtr fimp;			
+			Return(const FimpPtr &fimp);
 		};
 		
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
-			size_t nops;
-			
+			size_t nops;			
 			Skip(size_t nops);
 		};
 	}

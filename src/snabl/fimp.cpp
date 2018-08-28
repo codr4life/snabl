@@ -26,6 +26,20 @@ namespace snabl {
 		return func->lib.env.sym(buf.str());
 	}
 
+	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
+		auto &bin(fimp->func->lib.env.bin);
+		if (fimp->_start_pc) { return false; }
+		auto &skip(bin.emplace_back(ops::Skip::type, pos, 0).as<ops::Skip>());
+		fimp->_start_pc = bin.ops.end();
+		const auto pc_backup(bin.pc);
+		bin.emplace_back(ops::Begin::type, pos);
+		bin.compile(fimp->forms);
+		bin.emplace_back(ops::Return::type, pos, fimp);
+		bin.pc = pc_backup;
+		fimp->_nops = skip.nops = bin.ops.end()-*fimp->_start_pc;
+		return true;
+	}
+
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
 		auto &bin(env.bin);
@@ -37,14 +51,14 @@ namespace snabl {
 			auto func(fimp->func);
 		
 			if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
-				throw Error("Invalid stack after funcall");
+				throw Error("Nothing to return");
 			}
 		
 			env.pop_call();
 			return true;
 		}
 
-		fimp->compile(pos);
+		compile(fimp, pos);
 		env.push_call(fimp, bin.pc+1);
 		bin.pc = *fimp->_start_pc;
 		return false;
@@ -60,20 +74,6 @@ namespace snabl {
 						 Forms::const_iterator end):
 		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end),
 		_start_pc(nullopt), _nops(0) { }
-
-	bool Fimp::compile(Pos pos) {
-		auto &bin(func->lib.env.bin);
-		if (_start_pc) { return false; }
-		auto &skip(bin.emplace_back(ops::Skip::type, pos, 0).as<ops::Skip>());
-		_start_pc = bin.ops.end();
-		const auto pc_backup(bin.pc);
-		bin.emplace_back(ops::Begin::type, pos);
-		bin.compile(forms);
-		bin.emplace_back(ops::Return::type, pos);
-		bin.pc = pc_backup;
-		_nops = skip.nops = bin.ops.end()-*_start_pc;
-		return true;
-	}
 
 	optional<size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }

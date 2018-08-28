@@ -1,8 +1,6 @@
-* finish func: macro
-** check stack in return op
-** move Bin into Env
-*** move Ops to op.hpp
-*** rename emplace_back to push_op
+* move Bin into Env
+** move Ops to op.hpp
+** rename emplace_back to push_op
 ** remove start_pc param from run
 *** use pc field instead
 * finish fib
