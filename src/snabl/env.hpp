@@ -76,9 +76,10 @@ namespace snabl {
 		Call end_call();
 		
 		template <typename ValueT>
-		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);
-		void push_stack(const Box &value);
-		Box pop_stack();
+		void push(const TypePtr<ValueT> &type, const ValueT &value);
+
+		void push(const Box &value);
+		Box pop();
 		const Stack &stack();
 
 		Box const* get_var(Sym id);
@@ -102,7 +103,7 @@ namespace snabl {
 	}
 	
 	template <typename ValueT>
-	void Env::push_stack(const TypePtr<ValueT> &type, const ValueT &value) {
+	void Env::push(const TypePtr<ValueT> &type, const ValueT &value) {
 		_stack.emplace_back(type, value);
 	}
 }

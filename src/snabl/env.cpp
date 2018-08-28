@@ -210,12 +210,12 @@ namespace snabl {
 		pc++;
 		SNABL_DISPATCH();
 	op_drop:
-		pop_stack();
+		pop();
 		pc++;
 		SNABL_DISPATCH();
 	op_else: {
 			const auto &op(pc->as<ops::Else>());
-			const auto v(pop_stack());
+			const auto v(pop());
 			if (!v.as<bool>()) { pc += op.nops; }
 			pc++;
 			SNABL_DISPATCH();
@@ -248,17 +248,17 @@ namespace snabl {
 			const auto &op(pc->as<ops::GetVar>());		
 			auto v(get_var(op.id));
 			if (!v) { throw Error("Unknown var"); }
-			push_stack(*v);
+			push(*v);
 			pc++;
 			SNABL_DISPATCH();
 		}
 	op_push:
-		push_stack(pc->as<ops::Push>().value); 
+		push(pc->as<ops::Push>().value); 
 		pc++;
 		SNABL_DISPATCH();
 	op_putvar: {
 			const auto &op(pc->as<ops::PutVar>());
-			auto v(pop_stack());
+			auto v(pop());
 			scope()->put_var(op.id, v);
 			pc++;
 			SNABL_DISPATCH();
@@ -323,9 +323,9 @@ namespace snabl {
 		return c;
 	}
 	
-	void Env::push_stack(const Box &value) { _stack.push_back(value); }
+	void Env::push(const Box &value) { _stack.push_back(value); }
 
-	Box Env::pop_stack() {
+	Box Env::pop() {
 		if (_stack.empty()) { throw Error("Nothing to pop"); }
 		Box v(_stack.back());
 		_stack.pop_back();
