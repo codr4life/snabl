@@ -6,41 +6,31 @@
 	goto *op_labels[_pc->type.label_offs];				\
 
 namespace snabl {
-	BinFimp::BinFimp(std::size_t begin, std::size_t end):
-		begin(begin), end(end) { }
-	
 	Bin::Bin(Env &env): env(env) { }
 
 	const Ops &Bin::ops() const { return _ops; }
 
-	stdx::optional<BinFimp> Bin::get_fimp(const FimpPtr &ptr) {
-		auto found = _fimps.find(ptr);
-		return (found == _fimps.end())
-			? stdx::nullopt
-			: stdx::make_optional(found->second);
-	}
+	std::size_t Bin::pc() const { return _pc-_ops.begin(); }
+
+	void Bin::set_pc(std::size_t pc) { _pc = _ops.begin()+pc; }
 
 	void Bin::compile(const Forms::const_iterator &begin,
 										const Forms::const_iterator &end) {
 		FuncPtr func;
 		FimpPtr fimp;
 
-		for (auto i(begin); i != end;) {
-			i->imp->compile(i, end, func, fimp, *this); 
-		}
-
+		for (auto i(begin); i != end;) { i->imp->compile(i, end, func, fimp, *this); }
 		auto pos(begin->pos);
 
 		if (fimp) {
+			fimp->compile(*this, pos);
 			emplace_back(ops::Funcall::type, pos, fimp);
 		} else if (func) {
 			emplace_back(ops::Funcall::type, pos, func);
 		}
 	}
 
-	void Bin::compile(const Forms &forms) {
-		compile(forms.begin(), forms.end());
-	}
+	void Bin::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
 
 	void Bin::run(std::size_t offs) {
 		_pc = _ops.begin();
@@ -86,9 +76,17 @@ namespace snabl {
 				fimp = op.func->get_best_fimp(env.stack());
 			}
 			
-			if (!fimp) { throw Error("Func not applicable: " + fimp->func->id.name()); }
+			if (!fimp) { throw Error(fmt("Func not applicable: %0", {fimp->func->id})); }
 			if (!op.fimp) { op.prev_fimp = fimp; }
-			Fimp::call(fimp);
+
+			if (fimp->imp) {
+				Fimp::call(fimp);
+			} else {
+				fimp->compile(*this, _pc->pos);
+				env.push_call(fimp, pc());
+				set_pc(fimp->pc());
+			}
+						
 			_pc++;
 			SNABL_DISPATCH();
 		}

@@ -29,6 +29,7 @@ namespace snabl {
 		const Args args;
 		const Rets rets;
 		const Forms forms;
+		const stdx::optional<Imp> imp;
 
 		static Sym get_id(const FuncPtr &func, const Args &args);
 		static void call(const FimpPtr &fimp);
@@ -40,10 +41,13 @@ namespace snabl {
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 
+		bool compile(Bin &bin, Pos pos);
+		std::size_t pc() const;
 		stdx::optional<std::size_t> score(const Stack &stack) const;
 		void dump(std::ostream &out) const override;
 	private:
-		const stdx::optional<Imp> _imp;
+		bool _is_compiled;
+		std::size_t _pc, _nops;
 	};
 }
 

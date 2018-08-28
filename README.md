@@ -24,9 +24,6 @@ Snabl allows but doesn't require specifying types of function arguments and vari
 #### Reference Counting
 Snabl uses reference counting instead of garbage collection, which means more predictable performance and resource usage.
 
-```
-```
-
 #### Integration
 Snabl integrates deeply into C++ and the STL and is relatively trivial to embed.
 

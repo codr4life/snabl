@@ -1,10 +1,10 @@
 * finish func: macro
-** add inlining of fimp on first use
-*** update bin
-*** add skip
-** add fimp scope to generated code
 ** add return op
+*** pop call and jump
+*** extract fimp.check_rets() from call()
 * finish fib
+* add bench fn
+** compare fib perf with wren
 * fix funcall fimp memory leak
 ** store in optional?
 * drop iter refs
@@ -15,6 +15,11 @@
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
+* add fimp closures
+** scan forms for var refs
+*** store in fimp
+*** store vars in BinFimp from ops::Fimp
+**** put on func entry
 * add swap macro
 * add load func
 ** call when called with args

@@ -13,28 +13,24 @@ namespace snabl {
 
 	using Ops = std::deque<Op>;
 
-	struct BinFimp {
-		const std::size_t begin, end;
-		BinFimp(std::size_t begin, std::size_t end);
-	};
-	
 	class Bin {
 	public:
 		Env &env;
 		Bin(Env &env);
-		const Ops &ops() const;
-		stdx::optional<BinFimp> get_fimp(const FimpPtr &ptr);
 
+		const Ops &ops() const;
+		std::size_t pc() const;
+		void set_pc(std::size_t pc);
+		
 		template <typename ImpT, typename... ArgsT>
 		Op &emplace_back(const OpType<ImpT> &type, ArgsT &&... args);
-		
+
 		void compile(const Forms::const_iterator &begin,
 								 const Forms::const_iterator &end);
 		void compile(const Forms &forms);
 		
 		void run(std::size_t offs=0);
 	private:
-		std::unordered_map<FimpPtr, BinFimp> _fimps;
 		Ops::iterator _pc;
 		Ops _ops;
 	};

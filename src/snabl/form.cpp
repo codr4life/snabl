@@ -66,7 +66,9 @@ namespace snabl {
 							fimp = fn->get_best_fimp(args);
 						}
 					} else {
-						out.emplace_back(ops::Funcall::type, form.pos, fn->get_fimp());
+						auto fi(fn->get_fimp());
+						fi->compile(out, form.pos);
+						out.emplace_back(ops::Funcall::type, form.pos, fi);
 					}
 				}
 			}
