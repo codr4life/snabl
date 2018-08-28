@@ -42,7 +42,7 @@ namespace snabl {
 
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
-		auto &call(env.push_call(fimp));
+		auto &call(env.begin_call(fimp));
 
 		if (fimp->imp) {
 			auto stack_offs(env.stack().size());
@@ -53,12 +53,12 @@ namespace snabl {
 				throw Error("Nothing to return");
 			}
 		
-			env.pop_call();
+			env.end_call();
 			return true;
 		}
 
 		compile(fimp, pos);
-		env.push_call(fimp, env.pc+1);
+		env.begin_call(fimp, env.pc+1);
 		env.pc = *fimp->_start_pc;
 		return false;
 	}

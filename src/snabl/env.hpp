@@ -71,10 +71,9 @@ namespace snabl {
 		ScopePtr scope();
 		ScopePtr end_scope();
 
-		Call &push_call(const CallTargetPtr &target,
-										optional<PC> return_pc=nullopt);
-		Call *peek_call();
-		Call pop_call();
+		Call &begin_call(const CallTargetPtr &target, optional<PC> return_pc=nullopt);
+		Call *call();
+		Call end_call();
 		
 		template <typename ValueT>
 		void push_stack(const TypePtr<ValueT> &type, const ValueT &value);

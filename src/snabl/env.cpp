@@ -265,7 +265,7 @@ namespace snabl {
 		}
 	op_return: {
 			const auto fn(pc->as<ops::Return>().fimp->func);
-			const auto call(pop_call());
+			const auto call(end_call());
 			end_scope();
 			if (_stack.size() < fn->nrets) { throw Error("Nothing to return"); }
 			pc = *call.return_pc;
@@ -309,15 +309,15 @@ namespace snabl {
 		return s;
 	}
 
-	Call &Env::push_call(const CallTargetPtr &target,
+	Call &Env::begin_call(const CallTargetPtr &target,
 											 optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}
 	
-	Call *Env::peek_call() { return _calls.empty() ? nullptr : &_calls.back(); }
+	Call *Env::call() { return _calls.empty() ? nullptr : &_calls.back(); }
 
-	Call Env::pop_call() {
+	Call Env::end_call() {
 		auto c(_calls.back());
 		_calls.pop_back();
 		return c;
