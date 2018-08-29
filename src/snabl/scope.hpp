@@ -17,11 +17,11 @@ namespace snabl {
 		Env &env;
 		
 		Scope(Env &env);
-		~Scope();
 
 		void put_var(Sym id, const optional<Box> &value);
+		optional<Box> get_var(Sym id) const;
 	private:
-		map<Sym, optional<Box>> _put_vars;
+		map<Sym, Box> _vars;
 	};
 }
 

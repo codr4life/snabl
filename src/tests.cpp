@@ -19,7 +19,6 @@ namespace snabl {
 
 		Env env;
 
-		/*
 		env.run("42");
 		assert(env.pop().as<Int>() == Int(42));
 
@@ -76,13 +75,12 @@ namespace snabl {
 		
 		env.run("(1 +, 5 - 2)");
 		assert(env.pop().as<Int>() == Int(4));
-		*/
 		
 		env.run("func: fib<Int> Int\n"
 						"  (let: n)\n"
 						"  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)");
 		
-		env.run("fib 10");
+		env.run("fib 20");
 		cout << env.pop().as<Int>() << endl;
 	}
 

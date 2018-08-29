@@ -5,28 +5,26 @@
 namespace snabl {
 	Scope::Scope(Env &env): env(env) { }
 
-	Scope::~Scope() {
-		for (auto &v: _put_vars) {
-			env.unsafe_put_var(v.first, v.second);
-		}
+	optional<Box> Scope::get_var(Sym id) const {
+		const auto found(_vars.find(id));
+		return (found == _vars.end()) ? nullopt : make_optional(found->second);
 	}
-	
+
 	void Scope::put_var(Sym id, const optional<Box> &value) {
-		auto found(_put_vars.find(id));
-		bool erased(false);
-		
-		if (found != _put_vars.end()) {
+		auto found(_vars.find(id));
+
+		if (found == _vars.end()) {
+			if (value) {
+				_vars.emplace(make_pair(id, *value)).first->second;
+			} else {
+				throw Error("Missing var: " + id.name());				
+			}
+		} else {
 			if (value) {
 				throw Error("Duplicate var: " + id.name());
 			} else {
-				_put_vars.erase(found);
-				erased = true;
+				_vars.erase(found);
 			}
-		}
-		
-		auto prev(env.unsafe_put_var(id, value));
-		if (prev && !erased) {
-			_put_vars.emplace(make_pair(id, *prev));
 		}
 	}
 }

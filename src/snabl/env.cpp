@@ -2,12 +2,9 @@
 
 #include "snabl/env.hpp"
 
-#define SNABL_DISPATCH()													\
-	if (pc == *end_pc) { return; }									\
-	dump_stack(cout);																\
-	pc->dump(cout);																	\
-	goto *op_labels[pc->type.label_offs];						\
-
+#define SNABL_DISPATCH()												\
+	if (pc == *end_pc) { return; }								\
+	goto *op_labels[pc->type.label_offs];					\
 
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
@@ -247,7 +244,7 @@ namespace snabl {
 		}
 	op_getvar: {
 			const auto &op(pc->as<ops::GetVar>());		
-			auto v(get_var(op.id));
+			auto v(scope()->get_var(op.id));
 			if (!v) { throw Error("Unknown var"); }
 			push(*v);
 			pc++;
@@ -312,7 +309,7 @@ namespace snabl {
 	}
 
 	Call &Env::begin_call(const CallTargetPtr &target,
-											 optional<Ops::iterator> return_pc) {
+												optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}
@@ -348,30 +345,5 @@ namespace snabl {
 		}
 
 		out << ']' << endl;
-	}
-
-	Box const* Env::get_var(Sym id) {
-		auto found(_vars.find(id));
-		if (found != _vars.end()) { return &found->second; }
-		return nullptr;
-	}
-
-	optional<Box> Env::unsafe_put_var(Sym id, const optional<Box> &value) {
-		auto found(_vars.find(id));
-		optional<Box> prev;
-		
-		if (found == _vars.end()) {
-			_vars.emplace(make_pair(id, *value)).first->second;
-		} else {
-			prev = found->second;
-
-			if (value) {
-				found->second = *value;
-			} else {
-				_vars.erase(found);
-			}
-		} 
-
-		return prev;
 	}
 }
