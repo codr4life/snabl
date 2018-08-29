@@ -50,8 +50,7 @@ namespace snabl {
 				break;
 			case ',':
 				_pos.col++;
-				parse_rest(in, 0, out);
-				break;
+				return parse_rest(in, end, out);
 			case '(':
 				_pos.col++;
 				parse_sexpr(in, out);

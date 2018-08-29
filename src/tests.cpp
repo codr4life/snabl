@@ -72,8 +72,13 @@ namespace snabl {
 
 		env.run("(func: foo1<A> A * 2) 21 foo1");
 		assert(env.pop().as<Int>() == Int(42));
-		
-		//"func: fib<Int> Int (let: n) if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)";
+
+		env.run("(1 +, 3)");
+		assert(env.pop().as<Int>() == Int(4));
+
+		env.run("func: fib<Int> Int\n"
+						"  (let: n)\n"
+						"  if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)");
 	}
 
 	void all_tests() {

@@ -1,7 +1,9 @@
-* finish fib
 * add bench fn
 ** compare fib perf with wren
 * debug memory leaks
+* add add_box_macro
+** use for t/f
+** add nil macro
 * drop iter refs
 * add recall op
 ** jump immediately
