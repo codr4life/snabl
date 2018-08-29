@@ -1,8 +1,6 @@
 #ifndef SNABL_TYPE_HPP
 #define SNABL_TYPE_HPP
 
-#include <unordered_set>
-
 #include "snabl/cmp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"

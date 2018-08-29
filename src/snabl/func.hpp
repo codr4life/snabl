@@ -1,9 +1,6 @@
 #ifndef SNABL_FUNC_HPP
 #define SNABL_FUNC_HPP
 
-#include <memory>
-#include <unordered_map>
-
 #include "snabl/fimp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"

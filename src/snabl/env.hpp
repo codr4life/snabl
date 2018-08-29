@@ -1,10 +1,6 @@
 #ifndef SNABL_ENV_HPP
 #define SNABL_ENV_HPP
 
-#include <deque>
-#include <unordered_map>
-#include <unordered_set>
-
 #include "snabl/call.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"

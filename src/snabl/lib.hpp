@@ -1,8 +1,6 @@
 #ifndef SNABL_LIB_HPP
 #define SNABL_LIB_HPP
 
-#include <unordered_map>
-
 #include "snabl/error.hpp"
 #include "snabl/func.hpp"
 #include "snabl/macro.hpp"

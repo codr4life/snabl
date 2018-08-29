@@ -1,8 +1,6 @@
 #ifndef SNABL_SYM_HPP
 #define SNABL_SYM_HPP
 
-#include <memory>
-
 #include "snabl/std.hpp"
 
 namespace snabl {

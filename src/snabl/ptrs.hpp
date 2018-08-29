@@ -1,8 +1,6 @@
 #ifndef SNABL_PTRS_HPP
 #define SNABL_PTRS_HPP
 
-#include <memory>
-
 #include "snabl/std.hpp"
 
 namespace snabl {

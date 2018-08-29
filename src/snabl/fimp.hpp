@@ -1,12 +1,6 @@
 #ifndef SNABL_FIMP_HPP
 #define SNABL_FIMP_HPP
 
-#include <iostream>
-
-#include <array>
-#include <cmath>
-#include <memory>
-
 #include "snabl/call.hpp"
 #include "snabl/form.hpp"
 #include "snabl/ptrs.hpp"
