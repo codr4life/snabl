@@ -53,10 +53,9 @@ namespace snabl {
 									if (&p.type != &forms::Id::type) {
 										throw SyntaxError(p.pos, "Invalid let: place");
 									}
-												 
-									env.compile(in, end);
+									
+									if (in != end) { env.compile(in++, in+1); }
 									env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
-									in = end;
 								});
 
 			add_macro(env.sym("if:"),
