@@ -78,7 +78,10 @@ namespace snabl {
 
 		env.run("func: fib<Int> Int\n"
 						"  (let: n)\n"
-						"  if: ($n < 2) 1, (fib, $n --) + (fib, $n - 2)");
+						"  if: (@n < 2) 1, (fib, @n - 1) + (fib, @n - 2)");
+
+		//env.run("fib 50");
+		//cout << env.pop().as<Int>() << endl;
 	}
 
 	void all_tests() {

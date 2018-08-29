@@ -4,9 +4,9 @@
 
 #include "snabl/env.hpp"
 
-#define SNABL_DISPATCH()												\
-	if (pc == end_pc) { return; }									\
-	goto *op_labels[pc->type.label_offs];					\
+#define SNABL_DISPATCH()													\
+	if (pc == *end_pc) { return; }									\
+	goto *op_labels[pc->type.label_offs];						\
 
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
@@ -181,7 +181,7 @@ namespace snabl {
 		const auto pos(begin->pos);
 
 		if (fimp) {
-			Fimp::compile(fimp, pos);
+			if (!fimp->imp) { Fimp::compile(fimp, pos); }
 			emit(ops::Funcall::type, pos, fimp);
 		} else if (func) {
 			emit(ops::Funcall::type, pos, func);
@@ -238,7 +238,7 @@ namespace snabl {
 				fimp = op.func->get_best_fimp(_stack);
 			}
 			
-			if (!fimp) { throw Error(fmt("Func not applicable: %0", {fimp->func->id})); }
+			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
 			if (!op.fimp) { op.prev_fimp = fimp; }
 			if (Fimp::call(fimp, pc->pos)) { pc++; }
 			SNABL_DISPATCH();

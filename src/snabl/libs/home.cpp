@@ -54,7 +54,7 @@ namespace snabl {
 										throw SyntaxError(p.pos, "Invalid let: place");
 									}
 												 
-									in->imp->compile(in, end, func, fimp, env);
+									env.compile(in, end);
 									env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
 								});
 
@@ -174,6 +174,15 @@ namespace snabl {
 								 env.push(env.int_type, x+y);
 							 });
 
+			add_fimp(env.sym("-"),
+							 {Box(env.int_type), Box(env.int_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
+								 env.push(env.int_type, x-y);
+							 });
+			
 			add_fimp(env.sym("*"),
 							 {Box(env.int_type), Box(env.int_type)},
 							 {env.int_type},
