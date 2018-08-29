@@ -5,6 +5,7 @@
 #include <experimental/optional>
 #include <experimental/string_view>
 
+#include <sstream>
 #include <string>
 #include <vector>
 

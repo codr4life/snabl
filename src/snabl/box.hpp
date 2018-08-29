@@ -25,6 +25,7 @@ namespace snabl {
 		bool is_eqval(const Box &rhs) const;
 		Cmp cmp(const Box &rhs) const;
 		void dump(ostream &out) const;
+		void print(ostream &out) const;
 		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
@@ -41,6 +42,8 @@ namespace snabl {
 		if (_is_undef) { throw Error("Deref of undef value"); }
 		return any_cast<ValueT>(_value);
 	}
+
+	string fmt_arg(const Box &x);
 }
 
 #endif

@@ -1,12 +1,13 @@
 #include <ctype.h>
 
-#include <sstream>
-
 #include "snabl/env.hpp"
 
 #define SNABL_DISPATCH()													\
 	if (pc == *end_pc) { return; }									\
+	dump_stack(cout);																\
+	pc->dump(cout);																	\
 	goto *op_labels[pc->type.label_offs];						\
+
 
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
@@ -191,7 +192,7 @@ namespace snabl {
 	void Env::run(string_view in) {
 		auto offs(ops.size());
 		compile(in);
-		pc = ops.begin()+offs;
+		pc = ops.begin()+offs;		
 		run();
 	}
 
@@ -239,6 +240,7 @@ namespace snabl {
 			}
 			
 			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
+
 			if (!op.fimp) { op.prev_fimp = fimp; }
 			if (Fimp::call(fimp, pc->pos)) { pc++; }
 			SNABL_DISPATCH();
@@ -263,10 +265,11 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_return: {
-			const auto fn(pc->as<ops::Return>().fimp->func);
 			const auto call(end_call());
+			const auto fn(dynamic_pointer_cast<Fimp>(call.target)->func);
 			end_scope();
 			if (_stack.size() < fn->nrets) { throw Error("Nothing to return"); }
+			if (!call.return_pc) { throw Error("Missing return pc"); }
 			pc = *call.return_pc;
 			SNABL_DISPATCH();
 		}
@@ -317,6 +320,7 @@ namespace snabl {
 	Call *Env::call() { return _calls.empty() ? nullptr : &_calls.back(); }
 
 	Call Env::end_call() {
+		if (_calls.empty()) { throw Error("No active calls"); }
 		auto c(_calls.back());
 		_calls.pop_back();
 		return c;
@@ -333,22 +337,40 @@ namespace snabl {
 
 	const Stack &Env::stack() { return _stack; }
 
+	void Env::dump_stack(std::ostream &out) const {
+		out << '[';
+		char sep(0);
+		
+		for (auto &v: _stack) {
+			if (sep) { out << sep; }
+			v.dump(out);
+			sep = ' ';
+		}
+
+		out << ']' << endl;
+	}
+
 	Box const* Env::get_var(Sym id) {
 		auto found(_vars.find(id));
 		if (found != _vars.end()) { return &found->second; }
 		return nullptr;
 	}
 
-	optional<Box> Env::unsafe_put_var(Sym id, const Box &value) {
+	optional<Box> Env::unsafe_put_var(Sym id, const optional<Box> &value) {
 		auto found(_vars.find(id));
 		optional<Box> prev;
 		
-		if (found != _vars.end()) {
-			prev = found->second;
-			found->second = value;
+		if (found == _vars.end()) {
+			_vars.emplace(make_pair(id, *value)).first->second;
 		} else {
-			_vars.emplace(make_pair(id, value)).first->second;
-		}
+			prev = found->second;
+
+			if (value) {
+				found->second = *value;
+			} else {
+				_vars.erase(found);
+			}
+		} 
 
 		return prev;
 	}

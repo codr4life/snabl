@@ -33,17 +33,17 @@ namespace snabl {
 		env.emit(ops::Begin::type, pos);
 		fimp->_start_pc = env.ops.end()-1;
 		env.compile(fimp->forms);
-		env.emit(ops::Return::type, pos, fimp);
+		env.emit(ops::Return::type, pos);
 		fimp->_nops = skip.nops = env.ops.end()-*fimp->_start_pc;
 		return true;
 	}
 
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
-		auto &call(env.begin_call(fimp));
 
 		if (fimp->imp) {
 			auto stack_offs(env.stack().size());
+			auto &call(env.begin_call(fimp));
 			(*fimp->imp)(call);
 			auto func(fimp->func);
 		

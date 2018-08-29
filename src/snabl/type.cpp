@@ -32,7 +32,9 @@ namespace snabl {
 		out << id.name() << "(n/a)";
 	}
 
-	void AType::write(const Box &value, ostream &out) const { dump(value, out); }
+	void AType::print(const Box &value, ostream &out) const { dump(value, out); }
+
+	void AType::write(const Box &value, ostream &out) const { print(value, out); }
 
 	Trait::Trait(Lib &lib, Sym id): Type<nullptr_t>(lib, id) { }
 }

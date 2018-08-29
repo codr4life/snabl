@@ -1,3 +1,13 @@
+* debug fib
+** add op dump fn like forms
+** fix put_var
+*** store opt<box> in scope
+*** change put_var to take opt and erase if null
+* switch macros to mixfix
+** preprocess before compile
+*** erase macro token and run macro on remaining forms until no macros
+** change let: to only consume two forms
+** remove ':' from names
 * add bench fn
 ** compare fib perf with wren
 * debug memory leaks

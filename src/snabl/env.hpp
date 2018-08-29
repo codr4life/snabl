@@ -81,9 +81,10 @@ namespace snabl {
 		void push(const Box &value);
 		Box pop();
 		const Stack &stack();
+		void dump_stack(std::ostream &out) const;
 
 		Box const* get_var(Sym id);
-		optional<Box> unsafe_put_var(Sym id, const Box &value);
+		optional<Box> unsafe_put_var(Sym id, const optional<Box> &value);
 	private:
 		Pos _pos;
 		vector<Lib *> _libs;

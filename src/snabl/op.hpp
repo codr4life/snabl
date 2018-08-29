@@ -29,6 +29,7 @@ namespace snabl {
 
 	struct OpImp {
 		virtual ~OpImp() { }
+		virtual void dump(ostream &out) const { };
 	};
 	
 	class Op {
@@ -46,6 +47,7 @@ namespace snabl {
 
 		template <typename ImpT>
 		ImpT &as() const;
+		void dump(ostream &out) const;
 	private:
 		unique_ptr<OpImp> _imp;
 	};
@@ -82,6 +84,7 @@ namespace snabl {
 			static const OpType<Else> type;
 			size_t nops;
 			Else(size_t nops);
+			void dump(ostream &out) const override;
 		};
 		
 		struct End: public OpImp {
@@ -93,6 +96,7 @@ namespace snabl {
 			static const OpType<Fimp> type;
 			const FimpPtr ptr;
 			Fimp(const FimpPtr &ptr);
+			void dump(ostream &out) const override;
 		};
 
 		struct Funcall: public OpImp {
@@ -102,36 +106,40 @@ namespace snabl {
 			FimpPtr prev_fimp;
 			Funcall(const FuncPtr &func);
 			Funcall(const FimpPtr &fimp);
+			void dump(ostream &out) const override;
 		};
 		
 		struct GetVar: public OpImp {
 			static const OpType<GetVar> type;
 			const Sym id;
 			GetVar(Sym id);
+			void dump(ostream &out) const override;
 		};
 
 		struct Push: public OpImp {
 			static const OpType<Push> type;			
 			const Box value;
 			Push(const Box &value);
+			void dump(ostream &out) const override;
 		};
 
 		struct PutVar: public OpImp {
 			static const OpType<PutVar> type;
 			const Sym id;
 			PutVar(Sym id);
+			void dump(ostream &out) const override;
 		};
 
 		struct Return: public OpImp {
 			static const OpType<Return> type;
-			const FimpPtr fimp;			
-			Return(const FimpPtr &fimp);
+			Return();
 		};
 		
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
 			size_t nops;			
 			Skip(size_t nops);
+			void dump(ostream &out) const override;
 		};
 	}
 }

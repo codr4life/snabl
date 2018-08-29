@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "snabl/error.hpp"
 #include "snabl/fmt.hpp"
 

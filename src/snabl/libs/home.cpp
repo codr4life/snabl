@@ -56,6 +56,7 @@ namespace snabl {
 												 
 									env.compile(in, end);
 									env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
+									in = end;
 								});
 
 			add_macro(env.sym("if:"),
@@ -190,6 +191,15 @@ namespace snabl {
 								 Env &env(call.scope->env);
 								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
 								 env.push(env.int_type, x*y);
+							 });
+
+			add_fimp(env.sym("dump"),
+							 {Box(env.maybe_type)},
+							 {},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.pop().dump(cout);
+								 cout << endl;
 							 });
 		}
 	}

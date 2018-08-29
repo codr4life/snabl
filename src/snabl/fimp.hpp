@@ -6,7 +6,6 @@
 #include <array>
 #include <cmath>
 #include <memory>
-#include <sstream>
 
 #include "snabl/call.hpp"
 #include "snabl/form.hpp"

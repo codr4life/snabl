@@ -26,5 +26,13 @@ namespace snabl {
 
 	void Box::dump(ostream &out) const { _type->dump(*this, out); }
 
+	void Box::print(ostream &out) const { _type->print(*this, out); }
+
 	void Box::write(ostream &out) const { _type->write(*this, out); }
+
+	string fmt_arg(const Box &x) {
+		stringstream s;
+		x.print(s);
+		return s.str();
+	}
 }

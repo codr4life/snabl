@@ -26,6 +26,7 @@ namespace snabl {
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		
 		virtual void dump(const Box &value, ostream &out) const;
+		virtual void print(const Box &value, ostream &out) const;
 		virtual void write(const Box &value, ostream &out) const;
 	protected:
 		AType(Lib &lib, Sym id);
