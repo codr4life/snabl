@@ -72,7 +72,9 @@ namespace snabl {
 	namespace ops {
 		struct Begin: public OpImp {
 			static const OpType<Begin> type;
-			Begin();
+			const ScopePtr parent;
+			
+			Begin(const ScopePtr &parent=nullptr);
 		};
 
 		struct Drop: public OpImp {

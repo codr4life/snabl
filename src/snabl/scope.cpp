@@ -3,11 +3,12 @@
 #include "snabl/scope.hpp"
 
 namespace snabl {
-	Scope::Scope(Env &env): env(env) { }
+	Scope::Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
 
 	optional<Box> Scope::get_var(Sym id) const {
 		const auto found(_vars.find(id));
-		return (found == _vars.end()) ? nullopt : make_optional(found->second);
+		if (found != _vars.end()) { return make_optional(found->second); }
+		return parent ? parent->get_var(id) : nullopt;
 	}
 
 	void Scope::put_var(Sym id, const optional<Box> &val) {

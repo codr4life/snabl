@@ -27,7 +27,7 @@ namespace snabl {
 		const OpType<Return> Return::type("Return");
 		const OpType<Skip> Skip::type("Skip");
 
-		Begin::Begin() { }
+		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
 		Drop::Drop() { }
 		
