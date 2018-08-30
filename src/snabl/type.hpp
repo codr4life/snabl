@@ -1,6 +1,7 @@
 #ifndef SNABL_TYPE_HPP
 #define SNABL_TYPE_HPP
 
+#include "snabl/box.hpp"
 #include "snabl/cmp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"

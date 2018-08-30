@@ -1,6 +1,7 @@
 #include "snabl/env.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/std.hpp"
+#include "snabl/timer.hpp"
 
 namespace snabl {
 	namespace libs {
@@ -12,6 +13,7 @@ namespace snabl {
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
+			env.time_type = add_type<TimeType>(env.sym("Time"), {env.a_type});
 			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.a_type});
 			
 			add_macro(env.sym("t"), env.bool_type, true);			
@@ -196,8 +198,50 @@ namespace snabl {
 							 {Box(env.maybe_type)}, {},
 							 [](Call &call) {
 								 Env &env(call.scope->env);
-								 env.pop().dump(cout);
-								 cout << endl;
+								 env.pop().dump(cerr);
+								 cerr << endl;
+							 });
+
+			add_fimp(env.sym("ns"),
+							 {Box(env.int_type)}, {env.time_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.time_type, env.pop().as<Int>());
+							 });			
+
+			add_fimp(env.sym("ms"),
+							 {Box(env.int_type)}, {env.time_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.time_type, Time::ms(env.pop().as<Int>()));
+							 });			
+
+			add_fimp(env.sym("ms"),
+							 {Box(env.time_type)}, {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.int_type, env.pop().as<Time>().as_ms());
+							 });			
+			
+			add_fimp(env.sym("sleep"),
+							 {Box(env.time_type)}, {},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 const Time time(env.pop().as<Time>());
+								 this_thread::sleep_for(nanoseconds(time.ns));
+							 });
+
+			add_fimp(env.sym("bench"),
+							 {Box(env.int_type), Box(env.a_type)}, {env.time_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 const Box target(env.pop());
+								 const Int reps(env.pop().as<Int>());
+								 target.call(true);
+								 
+								 Timer t;
+								 for (Int i(0); i < reps; i++) { target.call(true); }
+								 env.push(env.time_type, t.ns());
 							 });
 		}
 	}

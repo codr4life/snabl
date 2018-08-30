@@ -13,6 +13,7 @@
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
 #include "snabl/types/lambda.hpp"
+#include "snabl/types/time.hpp"
 
 namespace snabl {
 	template <typename ValT>
@@ -34,6 +35,7 @@ namespace snabl {
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
 		TypePtr<Lambda> lambda_type;
+		TypePtr<Time> time_type;
 		
 		libs::Home home;
 		unordered_set<char> separators;

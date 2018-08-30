@@ -1,6 +1,5 @@
-* add bench fn
-** add support for loading from file/arg
-** add fib.sb
+* add support for loading from file/arg
+** add fib.sl
 ** add bench.py && fib.py
 * add nil
 ** do nothing on call
