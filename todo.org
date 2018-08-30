@@ -31,7 +31,6 @@
 ** pull in all defs from current lib
 * add Sink<T>
 ** add push fn
-* debug memory leaks
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin
