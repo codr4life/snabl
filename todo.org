@@ -1,14 +1,6 @@
-* switch macros to mixfix
-** preprocess before compile
-*** erase macro token and run macro on remaining forms until no macros
-** change let: to only consume two forms
-** remove ':' from names
-* add bench fn
-** compare fib perf with wren
-* debug memory leaks
 * add add_box_macro
 ** use for t/f
-** add nil macro
+* debug memory leaks
 * drop iter refs
 * add recall op
 ** jump immediately
@@ -29,6 +21,8 @@
 *** create on demand in home lib when referenced
 * add List type
 ** use std::shared_ptr<Deque>
+* add support for func/fimp refs with &
+** add func/fimp type
 * add support for parsing ? as Maybe
 ** A? -> Maybe<A>
 * add [] indexing support

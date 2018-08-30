@@ -80,8 +80,8 @@ namespace snabl {
 						"  (let: n)\n"
 						"  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)");
 		
-		env.run("fib 20");
-		cout << env.pop().as<Int>() << endl;
+		env.run("fib 10");
+		assert(env.pop().as<Int>() == Int(55));
 	}
 
 	void all_tests() {
