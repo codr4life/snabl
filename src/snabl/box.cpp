@@ -2,7 +2,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	Box::Box(const ATypePtr &type): _type(type), _value(nullptr), _is_undef(true) { }
+	Box::Box(const ATypePtr &type): _type(type), _val(nullptr), _is_undef(true) { }
 
 	const ATypePtr &Box::type() const { return _type; }
 

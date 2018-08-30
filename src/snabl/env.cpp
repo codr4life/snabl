@@ -251,7 +251,7 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_push:
-		push(pc->as<ops::Push>().value); 
+		push(pc->as<ops::Push>().val); 
 		pc++;
 		SNABL_DISPATCH();
 	op_putvar: {
@@ -322,7 +322,7 @@ namespace snabl {
 		return c;
 	}
 	
-	void Env::push(const Box &value) { _stack.push_back(value); }
+	void Env::push(const Box &val) { _stack.push_back(val); }
 
 	Box Env::pop() {
 		if (_stack.empty()) { throw Error("Nothing to pop"); }

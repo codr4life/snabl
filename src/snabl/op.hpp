@@ -118,8 +118,8 @@ namespace snabl {
 
 		struct Push: public OpImp {
 			static const OpType<Push> type;			
-			const Box value;
-			Push(const Box &value);
+			const Box val;
+			Push(const Box &val);
 			void dump(ostream &out) const override;
 		};
 

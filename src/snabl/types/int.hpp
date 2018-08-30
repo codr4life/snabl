@@ -10,7 +10,7 @@ namespace snabl {
 	class IntType: public Type<Int> {
 	public:
 		IntType(Lib &lib, Sym id);
-		void dump(const Box &value, ostream &out) const override;
+		void dump(const Box &val, ostream &out) const override;
 	};
 }
 

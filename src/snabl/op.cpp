@@ -54,11 +54,11 @@ namespace snabl {
 
 		void GetVar::dump(ostream &out) const { out << ' ' << id.name(); }
 
-		Push::Push(const Box &value): value(value) { }
+		Push::Push(const Box &val): val(val) { }
 
 		void Push::dump(ostream &out) const {
 			out << ' ';
-			value.dump(out);
+			val.dump(out);
 		}
 
 		PutVar::PutVar(Sym id): id(id) { }

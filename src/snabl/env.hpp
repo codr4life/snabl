@@ -14,7 +14,7 @@
 #include "snabl/types/int.hpp"
 
 namespace snabl {
-	template <typename ValueT>
+	template <typename ValT>
 	class Type;
 	
 	class Env {
@@ -71,10 +71,10 @@ namespace snabl {
 		Call *call();
 		Call end_call();
 		
-		template <typename ValueT>
-		void push(const TypePtr<ValueT> &type, const ValueT &value);
+		template <typename ValT>
+		void push(const TypePtr<ValT> &type, const ValT &val);
 
-		void push(const Box &value);
+		void push(const Box &val);
 		Box pop();
 		const Stack &stack();
 		void dump_stack(std::ostream &out) const;
@@ -96,9 +96,9 @@ namespace snabl {
 		return ops.back();
 	}
 	
-	template <typename ValueT>
-	void Env::push(const TypePtr<ValueT> &type, const ValueT &value) {
-		_stack.emplace_back(type, value);
+	template <typename ValT>
+	void Env::push(const TypePtr<ValT> &type, const ValT &val) {
+		_stack.emplace_back(type, val);
 	}
 }
 

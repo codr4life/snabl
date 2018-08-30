@@ -71,18 +71,18 @@ namespace snabl {
 			}
 		}
 
-		Literal::Literal(const Box &value): value(value) { }
+		Literal::Literal(const Box &val): val(val) { }
 
-		FormImp *Literal::clone() const { return new Literal(value); }
+		FormImp *Literal::clone() const { return new Literal(val); }
 
-		void Literal::dump(ostream &out) const { value.dump(out); }
+		void Literal::dump(ostream &out) const { val.dump(out); }
 
 		void Literal::compile(Forms::const_iterator &in,
 													Forms::const_iterator end,
 													FuncPtr &func, FimpPtr &fimp,
 													Env &env) const {
 			auto &form(*in++);
-			env.emit(ops::Push::type, form.pos, form.as<Literal>().value);			
+			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);			
 		}
 		
 		Sexpr::Sexpr(const Forms &body): body(body) { }

@@ -11,11 +11,11 @@ namespace snabl {
 	public:
 		Box(const ATypePtr &type);
 
-		template <typename ValueT>
-		Box(const TypePtr<ValueT> &type, const ValueT &value);
+		template <typename ValT>
+		Box(const TypePtr<ValT> &type, const ValT &val);
 
-		template <typename ValueT>
-		ValueT as() const;
+		template <typename ValT>
+		ValT as() const;
 
 		const ATypePtr &type() const;
 
@@ -29,18 +29,18 @@ namespace snabl {
 		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
-		any _value;
+		any _val;
 	  bool _is_undef;
 	};
 
-	template <typename ValueT>
-	Box::Box(const TypePtr<ValueT> &type, const ValueT &value):
-	  _type(type), _value(value), _is_undef(false) { }
+	template <typename ValT>
+	Box::Box(const TypePtr<ValT> &type, const ValT &val):
+	  _type(type), _val(val), _is_undef(false) { }
 
-	template <typename ValueT>
-	ValueT Box::as() const {
-		if (_is_undef) { throw Error("Deref of undef value"); }
-		return any_cast<ValueT>(_value);
+	template <typename ValT>
+	ValT Box::as() const {
+		if (_is_undef) { throw Error("Deref of undef val"); }
+		return any_cast<ValT>(_val);
 	}
 
 	string fmt_arg(const Box &x);

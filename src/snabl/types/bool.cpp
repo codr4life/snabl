@@ -6,7 +6,7 @@
 namespace snabl {
 	BoolType::BoolType(Lib &lib, Sym id): Type<bool>(lib, id) { }
 
-	void BoolType::dump(const Box &value, ostream &out) const {
-		out << (value.as<bool>() ? 't' : 'f');
+	void BoolType::dump(const Box &val, ostream &out) const {
+		out << (val.as<bool>() ? 't' : 'f');
 	}
 }

@@ -10,17 +10,17 @@ namespace snabl {
 		return (found == _vars.end()) ? nullopt : make_optional(found->second);
 	}
 
-	void Scope::put_var(Sym id, const optional<Box> &value) {
+	void Scope::put_var(Sym id, const optional<Box> &val) {
 		auto found(_vars.find(id));
 
 		if (found == _vars.end()) {
-			if (value) {
-				_vars.emplace(make_pair(id, *value)).first->second;
+			if (val) {
+				_vars.emplace(make_pair(id, *val)).first->second;
 			} else {
 				throw Error("Missing var: " + id.name());				
 			}
 		} else {
-			if (value) {
+			if (val) {
 				throw Error("Duplicate var: " + id.name());
 			} else {
 				_vars.erase(found);

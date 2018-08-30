@@ -10,7 +10,7 @@ namespace snabl {
 	class FloatType: public Type<Float> {
 	public:
 		FloatType(Lib &lib, Sym id);
-		void dump(const Box &value, ostream &out) const override;
+		void dump(const Box &val, ostream &out) const override;
 	};
 }
 
