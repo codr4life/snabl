@@ -1,16 +1,14 @@
 * add add_box_macro
 ** use for t/f
-* debug memory leaks
-* drop iter refs
+* add lambdas
+** scan forms for external var refs
+*** store vars in Lambda
+**** put on entry
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
-* add lambdas
-** scan forms for external var refs
-*** store vars in Lambda
-**** put on entry
 * add swap macro
 * add load func
 ** call when called with args
@@ -33,6 +31,7 @@
 ** pull in all defs from current lib
 * add Sink<T>
 ** add push fn
+* debug memory leaks
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin

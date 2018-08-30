@@ -33,6 +33,14 @@ namespace snabl {
 													 Box(env.bool_type, false));			
 								});
 
+			add_macro(env.sym("_"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									in++;
+								});
+			
 			add_macro(env.sym("drop"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,

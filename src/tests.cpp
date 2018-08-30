@@ -77,7 +77,7 @@ namespace snabl {
 		assert(env.pop().as<Int>() == Int(4));
 		
 		env.run("func: fib<Int> Int\n"
-						"  (let: n)\n"
+						"  let: n _\n"
 						"  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)");
 		
 		env.run("fib 10");

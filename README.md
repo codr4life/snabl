@@ -2,7 +2,7 @@
 
 ```
 func: fib<Int> Int
-  (let: n)
+  let: n _
   if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)
 ```
 
