@@ -207,11 +207,9 @@ namespace snabl {
 		return *_libs.back();
 	}
 
-	Lib &Env::end_lib() {
+	void Env::end_lib() {
 		if (_libs.empty()) { throw Error("No libs"); }
-		Lib &l(*_libs.back());
 		_libs.pop_back();
-		return l;
 	}
 
 	const ScopePtr &Env::begin_scope(const ScopePtr &parent) {
@@ -224,7 +222,10 @@ namespace snabl {
 		return _scopes.back();
 	}
 
-	void Env::end_scope() { _scopes.pop_back(); }
+	void Env::end_scope() {
+		if (_scopes.empty()) { throw Error("No open scopes"); }
+		_scopes.pop_back();
+	}
 
 	Call &Env::begin_call(const any &target, optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);

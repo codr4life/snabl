@@ -66,7 +66,7 @@ namespace snabl {
 
 		void begin_lib(Lib &lib);
 		Lib &lib();
-		Lib &end_lib();
+		void end_lib();
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
 		const ScopePtr &scope();
