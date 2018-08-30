@@ -63,8 +63,8 @@ namespace snabl {
 		Lib &lib();
 		Lib &end_lib();
 
-		ScopePtr begin_scope();
-		ScopePtr scope();
+		const ScopePtr &begin_scope();
+		const ScopePtr &scope();
 		ScopePtr end_scope();
 
 		Call &begin_call(const CallTargetPtr &target, optional<PC> return_pc=nullopt);

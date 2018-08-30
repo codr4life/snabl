@@ -291,13 +291,12 @@ namespace snabl {
 		return l;
 	}
 
-	ScopePtr Env::begin_scope() {
-		auto s(make_shared<Scope>(*this));
-		_scopes.push_back(s);
-		return s;
+	const ScopePtr &Env::begin_scope() {
+		_scopes.push_back(make_shared<Scope>(*this));
+		return _scopes.back();
 	}
 
-	ScopePtr Env::scope() {
+	const ScopePtr &Env::scope() {
 		if (_scopes.empty()) { throw Error("No open scopes"); }
 		return _scopes.back();
 	}
