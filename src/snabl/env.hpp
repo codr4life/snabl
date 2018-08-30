@@ -70,7 +70,7 @@ namespace snabl {
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
 		const ScopePtr &scope();
-		ScopePtr end_scope();
+		void end_scope();
 
 		Call &begin_call(const any &target, optional<PC> return_pc=nullopt);
 		Call &call();

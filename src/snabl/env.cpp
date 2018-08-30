@@ -224,11 +224,7 @@ namespace snabl {
 		return _scopes.back();
 	}
 
-	ScopePtr Env::end_scope() {
-		auto s(_scopes.back());
-		_scopes.pop_back();
-		return s;
-	}
+	void Env::end_scope() { _scopes.pop_back(); }
 
 	Call &Env::begin_call(const any &target, optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
