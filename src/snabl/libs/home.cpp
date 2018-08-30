@@ -105,10 +105,9 @@ namespace snabl {
 																			fmt("Invalid func rets: %0",
 																					{rets_form.type.id}));
 									}
-									
-									auto fi = lib.add_fimp(id_form.id, args, rets, in, end);
+
+									auto fi = lib.add_fimp(id_form.id, args, rets, in++, in+1);
 									env.emit(ops::Fimp::type, form.pos, fi);
-									in = end;
 								});
 
 			add_fimp(env.sym("="),

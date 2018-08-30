@@ -55,6 +55,9 @@ namespace snabl {
 		env.run("1 + (3 * 2)");
 		assert(env.pop().as<Int>() == Int(7));
 
+		env.run("(1 +, 5 - 2)");
+		assert(env.pop().as<Int>() == Int(4));
+
 		env.run("1 3 5 drop +");
 		assert(env.pop().as<Int>() == Int(4));
 
@@ -70,13 +73,10 @@ namespace snabl {
 		env.run("if: (3 < 1) 5 7");
 		assert(env.pop().as<Int>() == Int(7));
 
-		env.run("(func: foo1<A> A * 2) 21 foo1");
+		env.run("func: foo1<A> A (* 2) 21 foo1");
 		assert(env.pop().as<Int>() == Int(42));
-
-		env.run("(1 +, 5 - 2)");
-		assert(env.pop().as<Int>() == Int(4));
 		
-		env.run("func: fib<Int> Int\n"
+		env.run("func: fib<Int> Int,\n"
 						"  let: n _\n"
 						"  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)");
 		
