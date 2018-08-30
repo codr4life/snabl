@@ -74,7 +74,7 @@ namespace snabl {
 
 		Call &begin_call(const any &target, optional<PC> return_pc=nullopt);
 		Call &call();
-		Call end_call();
+		void end_call();
 		
 		void begin_stack(size_t offs);
 		size_t end_stack();		

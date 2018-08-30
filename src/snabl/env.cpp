@@ -240,11 +240,9 @@ namespace snabl {
 		return _calls.back();
 	}
 
-	Call Env::end_call() {
+	void Env::end_call() {
 		if (_calls.empty()) { throw Error("No active calls"); }
-		auto c(_calls.back());
 		_calls.pop_back();
-		return c;
 	}
 
 	void Env::begin_stack(size_t offs) {
