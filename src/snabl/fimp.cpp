@@ -42,17 +42,18 @@ namespace snabl {
 
 	bool Fimp::call(const FimpPtr &fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
-
+		env.begin_stack(env.stack().size()-fimp->func->nargs);
+		
 		if (fimp->imp) {
-			auto stack_offs(env.stack().size());
 			auto &call(env.begin_call(fimp));
 			(*fimp->imp)(call);
 			auto func(fimp->func);
-		
-			if (env.stack().size() != stack_offs-func->nargs+func->nrets) {
-				throw Error("Nothing to return");
+			auto stack_offs(env.end_stack());
+			
+			if (env.stack().size() != stack_offs+func->nrets) {
+				throw Error("Invalid return stack");
 			}
-		
+
 			env.end_call();
 			return true;
 		}

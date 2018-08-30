@@ -23,6 +23,7 @@ namespace snabl {
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
+		vector<size_t> _stack_offs;
 		unordered_map<Sym, Box> _vars;
 	public:
 		static const Pos home_pos;
@@ -68,9 +69,12 @@ namespace snabl {
 		ScopePtr end_scope();
 
 		Call &begin_call(const CallTargetPtr &target, optional<PC> return_pc=nullopt);
-		Call *call();
+		Call &call();
 		Call end_call();
 		
+		void begin_stack(size_t offs);
+		size_t end_stack();		
+
 		template <typename ValT>
 		void push(const TypePtr<ValT> &type, const ValT &val);
 

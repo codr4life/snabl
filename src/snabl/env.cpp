@@ -262,12 +262,19 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_return: {
-			const auto call(end_call());
-			const auto fn(dynamic_pointer_cast<Fimp>(call.target)->func);
+			const auto &c(call());
+			const auto fn(dynamic_pointer_cast<Fimp>(c.target)->func);
 			end_scope();
-			if (_stack.size() < fn->nrets) { throw Error("Nothing to return"); }
-			if (!call.return_pc) { throw Error("Missing return pc"); }
-			pc = *call.return_pc;
+			auto stack_offs(end_stack());
+
+			if (_stack.size() != stack_offs+fn->nrets) {
+				throw Error("Invalid return stack");
+			}
+			
+			if (!c.return_pc) { throw Error("Missing return pc"); }
+			
+			end_call();
+			pc = *c.return_pc;
 			SNABL_DISPATCH();
 		}
 	op_skip:
@@ -313,7 +320,10 @@ namespace snabl {
 		return _calls.back();
 	}
 	
-	Call *Env::call() { return _calls.empty() ? nullptr : &_calls.back(); }
+	Call &Env::call() {
+		if (_calls.empty()) { throw Error("No calls"); }
+		return _calls.back();
+	}
 
 	Call Env::end_call() {
 		if (_calls.empty()) { throw Error("No active calls"); }
@@ -321,11 +331,27 @@ namespace snabl {
 		_calls.pop_back();
 		return c;
 	}
+
+	void Env::begin_stack(size_t offs) {
+		_stack_offs.push_back(_stack_offs.empty()
+													? offs
+													: max(offs, _stack_offs.back()));
+	}
+
+	size_t Env::end_stack() {
+		if (_stack_offs.empty()) { throw Error("No stacks"); }
+		auto offs(_stack_offs.back());
+		_stack_offs.pop_back();
+		return offs;
+	}
 	
 	void Env::push(const Box &val) { _stack.push_back(val); }
 
 	Box Env::pop() {
-		if (_stack.empty()) { throw Error("Nothing to pop"); }
+		if (_stack.empty() ||
+				(!_stack_offs.empty() &&
+				 _stack.size() <= _stack_offs.back())) { throw Error("Nothing to pop"); }
+				
 		Box v(_stack.back());
 		_stack.pop_back();
 		return v;
