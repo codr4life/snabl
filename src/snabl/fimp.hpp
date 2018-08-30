@@ -26,7 +26,7 @@ namespace snabl {
 
 		static Sym get_id(const FuncPtr &func, const Args &args);
 		static bool compile(const FimpPtr &fimp, Pos pos);
-		static bool call(const FimpPtr &fimp, Pos pos);
+		static void call(const FimpPtr &fimp, Pos pos);
 
 		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
 		
