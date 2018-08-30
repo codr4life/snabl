@@ -50,6 +50,7 @@ namespace snabl {
 		Sym sym(const string &name);
 		
 		void parse(string_view in, Forms &out);
+		void parse(istream &in, Forms &out);
 		bool parse(istream &in, Pos start_pos, char end, Forms &out);
 		
 		template <typename ImpT, typename... ArgsT>
@@ -57,11 +58,10 @@ namespace snabl {
 
 		void compile(string_view in);
 		void compile(const Forms &forms);		
-
-		void compile(const Forms::const_iterator &begin,
-								 const Forms::const_iterator &end);
+		void compile(Forms::const_iterator begin, Forms::const_iterator end);
 		
 		void run(string_view in);
+		void run(istream &in);
 		void run(optional<PC> end_pc=nullopt);
 
 		void begin_lib(Lib &lib);

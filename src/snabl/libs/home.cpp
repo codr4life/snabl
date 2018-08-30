@@ -202,6 +202,14 @@ namespace snabl {
 								 cerr << endl;
 							 });
 
+			add_fimp(env.sym("say"),
+							 {Box(env.maybe_type)}, {},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.pop().print(cout);
+								 cout << endl;
+							 });
+			
 			add_fimp(env.sym("ns"),
 							 {Box(env.int_type)}, {env.time_type},
 							 [](Call &call) {

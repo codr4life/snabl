@@ -87,7 +87,7 @@ namespace snabl {
 		assert(env.pop().as<Int>() == Int(55));
 
 		env.run("ms, bench 3 {sleep, 10ms}");
-		assert(env.pop().as<Int>() > Int(30));
+		assert(env.pop().as<Int>() > Int(15));
 	}
 
 	void all_tests() {

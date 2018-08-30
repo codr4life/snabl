@@ -1,6 +1,5 @@
-* add support for loading from file/arg
-** add fib.sl
-** add bench.py && fib.py
+* run fib2.sl
+** add dup/swap macros
 * add nil
 ** do nothing on call
 * extract Parser

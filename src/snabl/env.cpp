@@ -27,6 +27,16 @@ namespace snabl {
 							 : found->second.get());
 	}
 
+	void Env::parse(string_view in, Forms &out) {
+		const string s(in);
+		istringstream ss(s);
+		parse(ss, out);		
+	}	
+
+	void Env::parse(istream &in, Forms &out) {
+		parse(in, home_pos, 0, out);
+	}
+	
 	bool Env::parse(istream &in, Pos start_pos, char end, Forms &out) {
 		_pos = start_pos;
 		char c;
@@ -83,12 +93,6 @@ namespace snabl {
 
 		return false;
 	}
-
-	void Env::parse(string_view in, Forms &out) {
-		const string s(in);
-		istringstream ss(s);
-		parse(ss, home_pos, 0, out);		
-	}	
 	
 	void Env::parse_id(istream &in, Forms &out) {
 		auto start_pos(_pos);
@@ -177,8 +181,7 @@ namespace snabl {
 
 	void Env::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
 
-	void Env::compile(const Forms::const_iterator &begin,
-										const Forms::const_iterator &end) {
+	void Env::compile(Forms::const_iterator begin, Forms::const_iterator end) {
 		FuncPtr func;
 		FimpPtr fimp;
 
@@ -196,6 +199,15 @@ namespace snabl {
 	void Env::run(string_view in) {
 		auto offs(ops.size());
 		compile(in);
+		pc = ops.begin()+offs;		
+		run();
+	}
+
+	void Env::run(istream &in) {
+		Forms fs;
+		parse(in, fs);
+		auto offs(ops.size());
+		compile(fs.begin(), fs.end());
 		pc = ops.begin()+offs;		
 		run();
 	}
