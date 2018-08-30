@@ -1,5 +1,6 @@
 * add lambdas
-** add Lambda op to capture parent scope
+** add lambda type
+** capture parent scope, push lambda and skip in op
 ** create new scope with parent on call
 * add bench fn
 ** add support for loading from file/arg

@@ -29,7 +29,7 @@ namespace snabl {
 
 	struct OpImp {
 		virtual ~OpImp() { }
-		virtual void dump(ostream &out) const { };
+		virtual void dump(Env &env, ostream &out) const { };
 	};
 	
 	class Op {
@@ -37,31 +37,21 @@ namespace snabl {
 		const AOpType &type;
 		const Pos pos;
 		
-		template <typename ImpT>
-		Op(const OpType<ImpT> &type, Pos pos);
-
-		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Op(const OpType<ImpT> &type, Pos pos, ArgT1 &&arg1, ArgsT &&... args);
+		template <typename ImpT, typename... ArgsT>
+		Op(const OpType<ImpT> &type, Pos pos, ArgsT &&... args);
 
 		virtual ~Op() { }
 
 		template <typename ImpT>
 		ImpT &as() const;
-		void dump(ostream &out) const;
+		void dump(Env &env, ostream &out) const;
 	private:
 		unique_ptr<OpImp> _imp;
 	};
 	
-	template <typename ImpT>
-	Op::Op(const OpType<ImpT> &type, Pos pos): type(type), pos(pos) { }
-
-	template <typename ImpT, typename ArgT1, typename... ArgsT>
-	Op::Op(const OpType<ImpT> &type,
-				 Pos pos,
-				 ArgT1 &&arg1, ArgsT &&... args):
-		type(type),
-		pos(pos),
-		_imp(new ImpT(forward<ArgT1, ArgsT...>(arg1, args...))) { }
+	template <typename ImpT, typename... ArgsT>
+	Op::Op(const OpType<ImpT> &type, Pos pos, ArgsT &&... args):
+		type(type), pos(pos), _imp(new ImpT(forward<ArgsT>(args)...)) { }
 
 	template <typename ImpT>
 	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }
@@ -86,7 +76,7 @@ namespace snabl {
 			static const OpType<Else> type;
 			size_t nops;
 			Else(size_t nops);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 		
 		struct End: public OpImp {
@@ -98,7 +88,7 @@ namespace snabl {
 			static const OpType<Fimp> type;
 			const FimpPtr ptr;
 			Fimp(const FimpPtr &ptr);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 
 		struct Funcall: public OpImp {
@@ -108,28 +98,37 @@ namespace snabl {
 			FimpPtr prev_fimp;
 			Funcall(const FuncPtr &func);
 			Funcall(const FimpPtr &fimp);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 		
 		struct GetVar: public OpImp {
 			static const OpType<GetVar> type;
 			const Sym id;
 			GetVar(Sym id);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
+		};
+
+		struct Lambda: public OpImp {
+			static const OpType<Lambda> type;
+			const PC start_pc;
+			size_t nops;
+			
+			Lambda(PC start_pc);
+			void dump(Env &env, ostream &out) const override;
 		};
 
 		struct Push: public OpImp {
 			static const OpType<Push> type;			
 			const Box val;
 			Push(const Box &val);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 
 		struct PutVar: public OpImp {
 			static const OpType<PutVar> type;
 			const Sym id;
 			PutVar(Sym id);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 
 		struct Return: public OpImp {
@@ -141,7 +140,7 @@ namespace snabl {
 			static const OpType<Skip> type;
 			size_t nops;			
 			Skip(size_t nops);
-			void dump(ostream &out) const override;
+			void dump(Env &env, ostream &out) const override;
 		};
 	}
 }

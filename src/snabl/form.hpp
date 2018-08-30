@@ -44,11 +44,8 @@ namespace snabl {
 		const Pos pos;
 		const unique_ptr<FormImp> imp;
 		
-		template <typename ImpT>
-		Form(const FormType<ImpT> &type, Pos pos);
-
-		template <typename ImpT, typename ArgT1, typename... ArgsT>
-		Form(const FormType<ImpT> &type, Pos pos, ArgT1 &&arg1, ArgsT &&... args);
+		template <typename ImpT, typename... ArgsT>
+		Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args);
 
 		Form(const Form &source);
 		
@@ -57,16 +54,9 @@ namespace snabl {
 		ImpT &as() const;
 	};
 	
-	template <typename ImpT>
-	Form::Form(const FormType<ImpT> &type, Pos pos): type(type), pos(pos) { }
-
-	template <typename ImpT, typename ArgT1, typename... ArgsT>
-	Form::Form(const FormType<ImpT> &type,
-						 Pos pos,
-						 ArgT1 &&arg1, ArgsT &&... args):
-		type(type),
-		pos(pos),
-		imp(new ImpT(forward<ArgT1, ArgsT...>(arg1, args...))) { }
+	template <typename ImpT, typename... ArgsT>
+	Form::Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args):
+		type(type), pos(pos), imp(new ImpT(forward<ArgsT>(args)...)) { }
 
 	template <typename ImpT>
 	ImpT &Form::as() const {
@@ -74,7 +64,7 @@ namespace snabl {
 			throw Error(fmt("Wrong type: %0 (%1)", {ImpT::type.id, type.id}));
 		}
 		
-		return *static_cast<ImpT *>(imp.get());
+		return *dynamic_cast<ImpT *>(imp.get());
 	}
 
 	namespace forms {
@@ -83,6 +73,19 @@ namespace snabl {
 			const Sym id;
 			
 			Id(Sym id);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Lambda: public FormImp {			
+			static const FormType<Lambda> type;
+			const Forms body;
+			Lambda(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -108,7 +111,7 @@ namespace snabl {
 		struct Sexpr: public FormImp {			
 			static const FormType<Sexpr> type;
 			const Forms body;
-			Sexpr(const Forms &body);
+			Sexpr(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -124,7 +127,7 @@ namespace snabl {
 			static const FormType<TypeList> type;
 			Ids ids;
 			
-			TypeList(const Forms &body);
+			TypeList(Forms::const_iterator begin, Forms::const_iterator end);
 			TypeList(const Ids &ids);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;

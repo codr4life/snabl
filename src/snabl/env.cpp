@@ -142,7 +142,7 @@ namespace snabl {
 		auto start_pos(_pos);
 		Forms body;
 		if (!parse(in, start_pos, end, body) && end) { return false; }
-		out.emplace_back(forms::Sexpr::type, start_pos, move(body));
+		out.emplace_back(forms::Sexpr::type, start_pos, body.cbegin(), body.cend());
 		return true;
 	}
 
@@ -159,7 +159,7 @@ namespace snabl {
 			throw SyntaxError(start_pos, "Open type list");
 		}
 
-		out.emplace_back(forms::TypeList::type, start_pos, body);
+		out.emplace_back(forms::TypeList::type, start_pos, body.cbegin(), body.cend());
 	}
 	
 	void Env::compile(string_view in) {
@@ -198,7 +198,7 @@ namespace snabl {
 		
 		static void* op_labels[] = {
 			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_fimp, &&op_funcall,
-			&&op_getvar, &&op_push, &&op_putvar, &&op_return, &&op_skip
+			&&op_getvar, &&op_lambda, &&op_push, &&op_putvar, &&op_return, &&op_skip
 		};
 
 		SNABL_DISPATCH();
@@ -250,6 +250,9 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
+	op_lambda:
+		pc++;
+		SNABL_DISPATCH();
 	op_push:
 		push(pc->as<ops::Push>().val); 
 		pc++;

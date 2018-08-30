@@ -15,6 +15,7 @@ namespace snabl {
 
 	namespace forms {
 		const FormType<Id> Id::type("Id");
+		const FormType<Lambda> Lambda::type("Lambda");
 		const FormType<Literal> Literal::type("Literal");
 		const FormType<Sexpr> Sexpr::type("Sexpr");
 		const FormType<TypeList> TypeList::type("TypeList");
@@ -71,6 +72,38 @@ namespace snabl {
 			}
 		}
 
+		Lambda::Lambda(Forms::const_iterator begin, Forms::const_iterator end):
+			body(begin, end) { }
+
+		FormImp *Lambda::clone() const { return new Lambda(body.begin(), body.end()); }
+
+		void Lambda::dump(ostream &out) const {
+			out << '{';
+			char sep(0);
+
+			for (auto &f: body) {
+				if (sep) { out << sep; }
+				f.imp->dump(out);
+				sep = ' ';
+			}
+			
+			out << '}';
+		}		
+
+		void Lambda::compile(Forms::const_iterator &in,
+												 Forms::const_iterator end,
+												 FuncPtr &func, FimpPtr &fimp,
+												 Env &env) const {
+			auto &f(*in++);
+			auto &l(f.as<Lambda>());
+			
+			auto &op(env.emit(ops::Lambda::type,
+												f.pos,
+												env.ops.end()).as<ops::Lambda>());
+			env.compile(l.body);
+			op.nops = env.ops.end()-op.start_pc;
+		}
+		
 		Literal::Literal(const Box &val): val(val) { }
 
 		FormImp *Literal::clone() const { return new Literal(val); }
@@ -85,9 +118,10 @@ namespace snabl {
 			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);			
 		}
 		
-		Sexpr::Sexpr(const Forms &body): body(body) { }
+		Sexpr::Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
+			body(begin, end) { }
 
-		FormImp *Sexpr::clone() const { return new Sexpr(body); }
+		FormImp *Sexpr::clone() const { return new Sexpr(body.begin(), body.end()); }
 
 		void Sexpr::dump(ostream &out) const {
 			out << '(';
@@ -110,8 +144,8 @@ namespace snabl {
 			env.compile(sexpr.body);
 		}
 		
-		TypeList::TypeList(const Forms &body) {
-			transform(body.begin(), body.end(), back_inserter(ids),
+		TypeList::TypeList(Forms::const_iterator begin, Forms::const_iterator end) {
+			transform(begin, end, back_inserter(ids),
 								[](const Form &f) -> Sym { return f.as<Id>().id; });
 		}
 
