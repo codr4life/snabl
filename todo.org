@@ -1,21 +1,21 @@
 * add lambdas
 ** add Lambda op to capture parent scope
 ** create new scope with parent on call
+* add bench fn
+** add support for loading from file/arg
+** add fib.sb
+** add bench.py && fib.py
+* add repl(env, in, out) fn
+* add test=/== funcs
+** use in tests
+* add recall op
+** jump immediately
 * add lib: macro
 ** two args, id & body
 ** allow anonymous, _
 *** push anonymous libs in current scope
 *** add lib op which contains the actual lib
 *** use for local defs
-* add bench fn
-** add support for loading from file/arg
-** add fib.sb
-** add bench.py && fib.py
-* add recall op
-** jump immediately
-* add repl(env, in, out) fn
-* add test=/== funcs
-** use in tests
 * add swap macro
 * add load func
 ** call when called with args
