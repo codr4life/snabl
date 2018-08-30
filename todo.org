@@ -1,9 +1,9 @@
 * add add_box_macro
 ** use for t/f
 * add lambdas
-** scan forms for external var refs
-*** store vars in Lambda
-**** put on entry
+** add optional parent to Scope/Begin
+** add Lambda op to capture parent scope
+** create new scope with parent on call
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
@@ -17,7 +17,7 @@
 ** add type.specialize fn
 ** T0-TN
 *** create on demand in home lib when referenced
-* add List type
+* add Stack type
 ** use std::shared_ptr<Deque>
 * add support for func/fimp refs with &
 ** add func/fimp type
