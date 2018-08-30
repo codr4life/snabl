@@ -6,7 +6,7 @@
 ** create new scope with parent on call
 * add bench fn
 ** add support for loading from file/arg
-** add fib.cx
+** add fib.sb
 ** add bench.py && fib.py
 * add recall op
 ** jump immediately
