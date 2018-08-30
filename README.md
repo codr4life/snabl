@@ -1,5 +1,11 @@
 ![Logo](logo.png?raw=true)
 
+```
+func: fib<Int> Int
+  (let: n)
+	if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)
+```
+
 ### Features
 The following is a list of what could be considered defining features.
 
