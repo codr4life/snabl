@@ -61,6 +61,12 @@ namespace snabl {
 		env.run("1 3 5 drop +");
 		assert(env.pop().as<Int>() == Int(4));
 
+		env.run("21 dup +");
+		assert(env.pop().as<Int>() == Int(42));
+
+		env.run("1 3 swap -");
+		assert(env.pop().as<Int>() == Int(2));
+
 		env.run("(let: foo 42) @foo");
 		assert(env.pop().as<Int>() == Int(42));
 

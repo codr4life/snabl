@@ -22,6 +22,9 @@ namespace snabl {
 		template <typename ValT>
 		MacroPtr add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val);
 
+		template <typename ImpT, typename... ArgsT>
+		MacroPtr add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args);
+
 		MacroPtr add_macro(Sym id, const Macro::Imp &imp);
 
 		template <typename TypeT, typename... ArgsT>

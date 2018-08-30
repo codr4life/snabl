@@ -77,6 +77,11 @@ namespace snabl {
 			Drop();
 		};
 
+		struct Dup: public OpImp {
+			static const OpType<Dup> type;
+			Dup();
+		};
+
 		struct Else: public OpImp {
 			static const OpType<Else> type;
 			size_t nops;
@@ -151,6 +156,11 @@ namespace snabl {
 			size_t nops;			
 			Skip(size_t nops);
 			void dump(Env &env, ostream &out) const override;
+		};
+
+		struct Swap: public OpImp {
+			static const OpType<Swap> type;
+			Swap();
 		};
 	}
 }

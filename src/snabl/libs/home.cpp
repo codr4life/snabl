@@ -27,23 +27,10 @@ namespace snabl {
 									in++;
 								});
 			
-			add_macro(env.sym("drop"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-									env.emit(ops::Drop::type, form.pos);			
-								});
-
-			add_macro(env.sym("call"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-									env.emit(ops::Call::type, form.pos);			
-								});
+			add_macro(env.sym("call"), ops::Call::type);
+			add_macro(env.sym("drop"), ops::Drop::type);
+			add_macro(env.sym("dup"), ops::Dup::type);
+			add_macro(env.sym("swap"), ops::Swap::type);
 
 			add_macro(env.sym("let:"),
 								[](Forms::const_iterator &in,
@@ -229,7 +216,7 @@ namespace snabl {
 							 [](Call &call) {
 								 Env &env(call.scope->env);
 								 env.push(env.int_type, env.pop().as<Time>().as_ms());
-							 });			
+							 });
 			
 			add_fimp(env.sym("sleep"),
 							 {Box(env.time_type)}, {},

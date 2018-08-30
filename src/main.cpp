@@ -10,7 +10,9 @@ int main(int argc, const char *argv[]) {
 		snabl::all_tests();
 		//todo: start repl
 	} else {
-		ifstream f(argv[1]);
+		const string fn(argv[1]);
+		ifstream f(fn);
+		if (f.fail()) { throw Error(fmt("File not found: %0", {fn})); } 
 		env.run(f);
 	}
 	

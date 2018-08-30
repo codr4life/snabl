@@ -1,5 +1,4 @@
-* run fib2.sl
-** add dup/swap macros
+* fix fib2.sl
 * add nil
 ** do nothing on call
 * extract Parser

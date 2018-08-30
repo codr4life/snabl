@@ -132,6 +132,16 @@ namespace snabl {
 																Box(type, val));			
 										 });
 	}
+
+	template <typename ImpT, typename... ArgsT>
+	MacroPtr Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
+		return add_macro(id, [type, args...](Forms::const_iterator &in,
+																				 Forms::const_iterator end,
+																				 FuncPtr &func, FimpPtr &fimp,
+																				 Env &env) {
+											 env.emit(type, (in++)->pos, forward<ArgsT>(args)...);			
+										 });
+	}
 }
 
 #endif

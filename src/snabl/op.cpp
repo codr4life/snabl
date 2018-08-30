@@ -19,6 +19,7 @@ namespace snabl {
 		const OpType<Begin> Begin::type("Begin");
 		const OpType<Call> Call::type("Call");
 		const OpType<Drop> Drop::type("Drop");
+		const OpType<Dup> Dup::type("Dup");
 		const OpType<Else> Else::type("Else");
 		const OpType<End> End::type("End");
 		const OpType<Fimp> Fimp::type("Fimp");
@@ -30,13 +31,16 @@ namespace snabl {
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
 		const OpType<Skip> Skip::type("Skip");
+		const OpType<Swap> Swap::type("Swap");
 
 		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
 		Call::Call() { }
 
 		Drop::Drop() { }
-		
+
+		Dup::Dup() { }
+
 		Else::Else(size_t nops): nops(nops) { }
 
 		void Else::dump(Env &env, ostream &out) const { out << ' ' << nops; }
@@ -84,5 +88,7 @@ namespace snabl {
 		Skip::Skip(size_t nops): nops(nops) { }
 
 		void Skip::dump(Env &env, ostream &out) const { out << ' ' << nops; }
+
+		Swap::Swap() { }
 	}
 }
