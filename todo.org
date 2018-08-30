@@ -1,4 +1,3 @@
-* fix fib2.sl
 * add nil
 ** do nothing on call
 * extract Parser
