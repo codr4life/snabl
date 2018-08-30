@@ -100,6 +100,18 @@ namespace snabl {
 	void Env::push(const TypePtr<ValT> &type, const ValT &val) {
 		_stack.emplace_back(type, val);
 	}
+
+	template <typename ValT>
+	MacroPtr Lib::add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val) {
+		return add_macro(id, [type, val](Forms::const_iterator &in,
+																		 Forms::const_iterator end,
+																		 FuncPtr &func, FimpPtr &fimp,
+																		 Env &env) {
+											 env.emit(ops::Push::type,
+																(in++)->pos,
+																Box(type, val));			
+										 });
+	}
 }
 
 #endif

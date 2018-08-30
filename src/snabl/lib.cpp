@@ -14,7 +14,7 @@ namespace snabl {
 		_macros.emplace(m->id, m);
 		return m;
 	}
-
+	
 	FuncPtr Lib::add_func(Sym id, size_t nargs, size_t nrets) {
 		auto found(_funcs.find(id));
 		

@@ -18,7 +18,10 @@ namespace snabl {
 		
 		Lib(Env &env, Sym id);
 		~Lib();
-		
+
+		template <typename ValT>
+		MacroPtr add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val);
+
 		MacroPtr add_macro(Sym id, const Macro::Imp &imp);
 
 		template <typename TypeT, typename... ArgsT>

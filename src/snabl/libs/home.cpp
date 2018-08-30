@@ -13,25 +13,8 @@ namespace snabl {
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
 	
-			add_macro(env.sym("t"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									env.emit(ops::Push::type,
-													 (in++)->pos,
-													 Box(env.bool_type, true));			
-								});
-
-			add_macro(env.sym("f"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									env.emit(ops::Push::type,
-													 (in++)->pos,
-													 Box(env.bool_type, false));			
-								});
+			add_macro(env.sym("t"), env.bool_type, true);			
+			add_macro(env.sym("f"), env.bool_type, false);			
 
 			add_macro(env.sym("_"),
 								[](Forms::const_iterator &in,

@@ -1,6 +1,6 @@
-* add_val_macro
-** use for t/f
-* ---
+* add env.begin(size_t offs)/end_stack
+** call for fimps
+** check in pop()
 * add lambdas
 ** add optional parent to Scope/Begin
 ** add Lambda op to capture parent scope
