@@ -22,7 +22,7 @@ namespace snabl {
 		virtual bool is_equid(const Box &lhs, const Box &rhs) const=0;
 		virtual bool is_eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
-		
+		virtual void call(const Box &val, bool now) const; 
 		virtual void dump(const Box &val, ostream &out) const;
 		virtual void print(const Box &val, ostream &out) const;
 		virtual void write(const Box &val, ostream &out) const;
@@ -38,8 +38,8 @@ namespace snabl {
 	public:
 		Type(Lib &lib, Sym id);
 
-		bool is_equid(const Box &lhs, const Box &rhs) const override;
-		bool is_eqval(const Box &lhs, const Box &rhs) const override;
+		virtual bool is_equid(const Box &lhs, const Box &rhs) const override;
+		virtual bool is_eqval(const Box &lhs, const Box &rhs) const override;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const override;
 	};
 

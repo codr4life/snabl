@@ -67,6 +67,11 @@ namespace snabl {
 			Begin(const ScopePtr &parent=nullptr);
 		};
 
+		struct Call: public OpImp {
+			static const OpType<Call> type;
+			Call();
+		};
+
 		struct Drop: public OpImp {
 			static const OpType<Drop> type;
 			Drop();
@@ -91,6 +96,11 @@ namespace snabl {
 			void dump(Env &env, ostream &out) const override;
 		};
 
+		struct FimpRet: public OpImp {
+			static const OpType<FimpRet> type;
+			FimpRet();
+		};
+
 		struct Funcall: public OpImp {
 			static const OpType<Funcall> type;
 			const FuncPtr func;
@@ -110,11 +120,16 @@ namespace snabl {
 
 		struct Lambda: public OpImp {
 			static const OpType<Lambda> type;
-			const PC start_pc;
+			optional<PC> start_pc;
 			size_t nops;
 			
-			Lambda(PC start_pc);
+			Lambda();
 			void dump(Env &env, ostream &out) const override;
+		};
+
+		struct LambdaRet: public OpImp {
+			static const OpType<LambdaRet> type;
+			LambdaRet();
 		};
 
 		struct Push: public OpImp {
@@ -129,11 +144,6 @@ namespace snabl {
 			const Sym id;
 			PutVar(Sym id);
 			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct Return: public OpImp {
-			static const OpType<Return> type;
-			Return();
 		};
 		
 		struct Skip: public OpImp {

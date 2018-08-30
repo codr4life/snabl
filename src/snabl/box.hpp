@@ -24,6 +24,7 @@ namespace snabl {
 		bool is_equid(const Box &rhs) const;
 		bool is_eqval(const Box &rhs) const;
 		Cmp cmp(const Box &rhs) const;
+		void call(bool now) const;
 		void dump(ostream &out) const;
 		void print(ostream &out) const;
 		void write(ostream &out) const;

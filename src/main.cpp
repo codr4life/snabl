@@ -1,6 +1,6 @@
 #include "tests.hpp"
 
-int main() {
+int main() {	
 	snabl::all_tests();
 	return 0;
 }

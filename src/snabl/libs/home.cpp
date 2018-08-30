@@ -12,7 +12,8 @@ namespace snabl {
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
-	
+			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.a_type});
+			
 			add_macro(env.sym("t"), env.bool_type, true);			
 			add_macro(env.sym("f"), env.bool_type, false);			
 
@@ -31,6 +32,15 @@ namespace snabl {
 									 Env &env) {
 									auto &form(*in++);
 									env.emit(ops::Drop::type, form.pos);			
+								});
+
+			add_macro(env.sym("call"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									env.emit(ops::Call::type, form.pos);			
 								});
 
 			add_macro(env.sym("let:"),
@@ -183,8 +193,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("dump"),
-							 {Box(env.maybe_type)},
-							 {},
+							 {Box(env.maybe_type)}, {},
 							 [](Call &call) {
 								 Env &env(call.scope->env);
 								 env.pop().dump(cout);

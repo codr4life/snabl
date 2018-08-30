@@ -64,6 +64,9 @@ namespace snabl {
 		env.run("(let: foo 42) @foo");
 		assert(env.pop().as<Int>() == Int(42));
 
+		env.run("{@foo} call");
+		assert(env.pop().as<Int>() == Int(42));
+		
 		env.run("1 +<_ Int> 3");
 		assert(env.pop().as<Int>() == Int(4));
 
@@ -72,7 +75,7 @@ namespace snabl {
 
 		env.run("if: (3 < 1) 5 7");
 		assert(env.pop().as<Int>() == Int(7));
-
+		
 		env.run("func: foo1<A> A (* 2) 21 foo1");
 		assert(env.pop().as<Int>() == Int(42));
 		

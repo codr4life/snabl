@@ -96,12 +96,11 @@ namespace snabl {
 												 Env &env) const {
 			auto &f(*in++);
 			auto &l(f.as<Lambda>());
-			
-			auto &op(env.emit(ops::Lambda::type,
-												f.pos,
-												env.ops.end()).as<ops::Lambda>());
+			auto &op(env.emit(ops::Lambda::type, f.pos).as<ops::Lambda>());
+			op.start_pc = env.ops.end();
 			env.compile(l.body);
-			op.nops = env.ops.end()-op.start_pc;
+			env.emit(ops::LambdaRet::type, f.pos);
+			op.nops = env.ops.end()-*op.start_pc;
 		}
 		
 		Literal::Literal(const Box &val): val(val) { }

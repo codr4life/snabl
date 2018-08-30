@@ -1,11 +1,11 @@
-* add lambdas
-** add lambda type
-** capture parent scope, push lambda and skip in op
-** create new scope with parent on call
 * add bench fn
 ** add support for loading from file/arg
 ** add fib.sb
 ** add bench.py && fib.py
+* add nil
+** do nothing on call
+* extract Parser
+** pos & separators
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
@@ -37,6 +37,8 @@
 * add use: macro
 * add Sink<T>
 ** add push fn
+* add Push op type/val constructor
+** use in add_macro/grep
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin

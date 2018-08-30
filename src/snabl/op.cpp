@@ -17,19 +17,23 @@ namespace snabl {
 	
 	namespace ops {
 		const OpType<Begin> Begin::type("Begin");
+		const OpType<Call> Call::type("Call");
 		const OpType<Drop> Drop::type("Drop");
 		const OpType<Else> Else::type("Else");
 		const OpType<End> End::type("End");
 		const OpType<Fimp> Fimp::type("Fimp");
+		const OpType<FimpRet> FimpRet::type("FimpRet");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<GetVar> GetVar::type("GetVar");
 		const OpType<Lambda> Lambda::type("Lambda");
+		const OpType<LambdaRet> LambdaRet::type("LambdaRet");
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
-		const OpType<Return> Return::type("Return");
 		const OpType<Skip> Skip::type("Skip");
 
 		Begin::Begin(const ScopePtr &parent): parent(parent) { }
+
+		Call::Call() { }
 
 		Drop::Drop() { }
 		
@@ -42,6 +46,8 @@ namespace snabl {
 		Fimp::Fimp(const FimpPtr &ptr): ptr(ptr) { }
 
 		void Fimp::dump(Env &env, ostream &out) const { out << ' ' << ptr->id.name(); }
+
+		FimpRet::FimpRet() { }
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		
@@ -56,12 +62,14 @@ namespace snabl {
 
 		void GetVar::dump(Env &env, ostream &out) const { out << ' ' << id.name(); }
 
-		Lambda::Lambda(PC start_pc): start_pc(start_pc), nops(0) { }
+		Lambda::Lambda(): nops(0) { }
 
 		void Lambda::dump(Env &env, ostream &out) const {
-			out << ' ' << start_pc-env.ops.begin() << ':' << nops;
+			out << ' ' << *start_pc-env.ops.begin() << ':' << nops;
 		}
 		
+		LambdaRet::LambdaRet() { }
+
 		Push::Push(const Box &val): val(val) { }
 
 		void Push::dump(Env &env, ostream &out) const {
@@ -72,8 +80,6 @@ namespace snabl {
 		PutVar::PutVar(Sym id): id(id) { }
 
 		void PutVar::dump(Env &env, ostream &out) const { out << ' ' << id.name(); }
-
-		Return::Return() { }
 
 		Skip::Skip(size_t nops): nops(nops) { }
 

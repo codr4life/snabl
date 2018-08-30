@@ -12,6 +12,7 @@
 #include "snabl/types/bool.hpp"
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
+#include "snabl/types/lambda.hpp"
 
 namespace snabl {
 	template <typename ValT>
@@ -32,7 +33,8 @@ namespace snabl {
 		TypePtr<bool> bool_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
-
+		TypePtr<Lambda> lambda_type;
+		
 		libs::Home home;
 		unordered_set<char> separators;
 
@@ -64,19 +66,19 @@ namespace snabl {
 		Lib &lib();
 		Lib &end_lib();
 
-		const ScopePtr &begin_scope();
+		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
 		const ScopePtr &scope();
 		ScopePtr end_scope();
 
-		Call &begin_call(const CallTargetPtr &target, optional<PC> return_pc=nullopt);
+		Call &begin_call(const any &target, optional<PC> return_pc=nullopt);
 		Call &call();
 		Call end_call();
 		
 		void begin_stack(size_t offs);
 		size_t end_stack();		
 
-		template <typename ValT>
-		void push(const TypePtr<ValT> &type, const ValT &val);
+		template <typename ValT, typename... ArgsT>
+		void push(const TypePtr<ValT> &type, ArgsT &&...args);
 
 		void push(const Box &val);
 		Box pop();
@@ -87,22 +89,34 @@ namespace snabl {
 		vector<Lib *> _libs;
 		deque<Call> _calls;
 		
+		template <typename FormT>
+		bool parse_body(istream &in, char end, Forms &out);
+
 		void parse_id(istream &in, Forms &out);
+		void parse_lambda(istream &in, Forms &out);
 		void parse_num(istream &in, Forms &out);
-		bool parse_rest(istream &in, char end, Forms &out);
 		void parse_sexpr(istream &in, Forms &out);
 		void parse_type_list(istream &in, Forms &out);
 	};
 
+	template <typename FormT>
+	bool Env::parse_body(istream &in, char end, Forms &out) {
+		auto start_pos(_pos);
+		Forms body;
+		if (!parse(in, start_pos, end, body) && end) { return false; }
+		out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
+		return true;
+	}
+	
 	template <typename ImpT, typename... ArgsT>
 	Op &Env::emit(const OpType<ImpT> &type, ArgsT &&... args) {
 		ops.emplace_back(type, args...);
 		return ops.back();
 	}
 	
-	template <typename ValT>
-	void Env::push(const TypePtr<ValT> &type, const ValT &val) {
-		_stack.emplace_back(type, val);
+	template <typename ValT, typename... ArgsT>
+	void Env::push(const TypePtr<ValT> &type, ArgsT &&...args) {
+		_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
 	}
 
 	template <typename ValT>

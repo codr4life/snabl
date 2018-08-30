@@ -12,7 +12,7 @@ namespace snabl {
 	Env::Env():
 		_type_tag(1),
 		home(*this),
-		separators({' ', '\t', '\n', ',', '<', '>', '(', ')'}),
+		separators({' ', '\t', '\n', ',', '<', '>', '(', ')', '{', '}'}),
 		main(begin_scope()),
 		_pos(home_pos) { begin_lib(home); }
 
@@ -48,10 +48,14 @@ namespace snabl {
 				break;
 			case ',':
 				_pos.col++;
-				return parse_rest(in, end, out);
+				return parse_body<forms::Sexpr>(in, end, out);
 			case '(':
 				_pos.col++;
 				parse_sexpr(in, out);
+				break;
+			case '{':
+				_pos.col++;
+				parse_lambda(in, out);
 				break;
 			default:
 				bool is_num = isdigit(c);
@@ -114,6 +118,14 @@ namespace snabl {
 		}
 	}
 
+	void Env::parse_lambda(istream &in, Forms &out) {
+		auto start_pos(_pos);
+
+		if (!parse_body<forms::Lambda>(in, '}', out)) {
+			throw SyntaxError(start_pos, "Open lambda");
+		}
+	}
+
 	void Env::parse_num(istream &in, Forms &out) {
 		auto start_pos(_pos);
 		stringstream buf;
@@ -138,17 +150,12 @@ namespace snabl {
 										 : Box(int_type, stoll(buf.str())));
 	}
 
-	bool Env::parse_rest(istream &in, char end, Forms &out) {
-		auto start_pos(_pos);
-		Forms body;
-		if (!parse(in, start_pos, end, body) && end) { return false; }
-		out.emplace_back(forms::Sexpr::type, start_pos, body.cbegin(), body.cend());
-		return true;
-	}
-
 	void Env::parse_sexpr(istream &in, Forms &out) {
 		auto start_pos(_pos);
-		if (!parse_rest(in, ')', out)) { throw SyntaxError(start_pos, "Open sexpr"); }
+
+		if (!parse_body<forms::Sexpr>(in, ')', out)) {
+			throw SyntaxError(start_pos, "Open sexpr");
+		}
 	}
 
 	void Env::parse_type_list(istream &in, Forms &out) {
@@ -197,14 +204,19 @@ namespace snabl {
 		if (!end_pc) { end_pc = ops.end(); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_drop, &&op_else, &&op_end, &&op_fimp, &&op_funcall,
-			&&op_getvar, &&op_lambda, &&op_push, &&op_putvar, &&op_return, &&op_skip
+			&&op_begin, &&op_call, &&op_drop, &&op_else, &&op_end, &&op_fimp, &&op_fimpret,
+			&&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret, &&op_push, &&op_putvar,
+			&&op_skip
 		};
 
 		SNABL_DISPATCH();
 	op_begin:
-		begin_scope();
+		begin_scope(pc->as<ops::Begin>().parent);
 		pc++;
+		SNABL_DISPATCH();
+	op_call:
+		pc++;
+		pop().call(false);
 		SNABL_DISPATCH();
 	op_drop:
 		pop();
@@ -224,6 +236,22 @@ namespace snabl {
 	op_fimp:
 		pc++;
 		SNABL_DISPATCH();		
+	op_fimpret: {
+			const auto &c(call());
+			const auto fn(c.target<FimpPtr>()->func);
+			end_scope();
+			auto stack_offs(end_stack());
+
+			if (_stack.size() != stack_offs+fn->nrets) {
+				throw Error("Invalid return stack");
+			}
+			
+			if (!c.return_pc) { throw Error("Missing return pc"); }
+			
+			end_call();
+			pc = *c.return_pc;
+			SNABL_DISPATCH();
+		}
 	op_funcall: {
 			auto &op(pc->as<ops::Funcall>());
 			FimpPtr fimp(op.fimp);
@@ -237,9 +265,10 @@ namespace snabl {
 			}
 			
 			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
-
 			if (!op.fimp) { op.prev_fimp = fimp; }
-			if (Fimp::call(fimp, pc->pos)) { pc++; }
+			
+			pc++;
+			Fimp::call(fimp, pc->pos);
 			SNABL_DISPATCH();
 		}
 	op_getvar: {
@@ -250,9 +279,23 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
-	op_lambda:
-		pc++;
+	op_lambda: {
+		const auto &op(pc->as<ops::Lambda>());
+		push(lambda_type, scope(), *op.start_pc, op.nops);
+		pc += op.nops+1;
 		SNABL_DISPATCH();
+	}
+	op_lambdaret: {
+			const auto &c(call());
+			const auto l(c.target<Lambda>());
+			end_scope();
+			
+			if (!c.return_pc) { throw Error("Missing return pc"); }
+			
+			end_call();
+			pc = *c.return_pc;
+			SNABL_DISPATCH();
+		}
 	op_push:
 		push(pc->as<ops::Push>().val); 
 		pc++;
@@ -262,22 +305,6 @@ namespace snabl {
 			auto v(pop());
 			scope()->put_var(op.id, v);
 			pc++;
-			SNABL_DISPATCH();
-		}
-	op_return: {
-			const auto &c(call());
-			const auto fn(dynamic_pointer_cast<Fimp>(c.target)->func);
-			end_scope();
-			auto stack_offs(end_stack());
-
-			if (_stack.size() != stack_offs+fn->nrets) {
-				throw Error("Invalid return stack");
-			}
-			
-			if (!c.return_pc) { throw Error("Missing return pc"); }
-			
-			end_call();
-			pc = *c.return_pc;
 			SNABL_DISPATCH();
 		}
 	op_skip:
@@ -301,8 +328,8 @@ namespace snabl {
 		return l;
 	}
 
-	const ScopePtr &Env::begin_scope() {
-		_scopes.push_back(make_shared<Scope>(*this));
+	const ScopePtr &Env::begin_scope(const ScopePtr &parent) {
+		_scopes.push_back(make_shared<Scope>(*this, parent));
 		return _scopes.back();
 	}
 
@@ -317,8 +344,7 @@ namespace snabl {
 		return s;
 	}
 
-	Call &Env::begin_call(const CallTargetPtr &target,
-												optional<Ops::iterator> return_pc) {
+	Call &Env::begin_call(const any &target, optional<Ops::iterator> return_pc) {
 		_calls.emplace_back(target, scope(), return_pc);
 		return _calls.back();
 	}

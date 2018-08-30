@@ -32,10 +32,10 @@ namespace snabl {
 		auto &env(fimp->func->lib.env);
 		if (fimp->_start_pc) { return false; }
 		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
+		fimp->_start_pc = env.ops.end();
 		env.emit(ops::Begin::type, pos);
-		fimp->_start_pc = env.ops.end()-1;
 		env.compile(fimp->forms);
-		env.emit(ops::Return::type, pos);
+		env.emit(ops::FimpRet::type, pos);
 		fimp->_nops = skip.nops = env.ops.end()-*fimp->_start_pc;
 		return true;
 	}
@@ -59,7 +59,7 @@ namespace snabl {
 		}
 
 		compile(fimp, pos);
-		env.begin_call(fimp, env.pc+1);
+		env.begin_call(fimp, env.pc);
 		env.pc = *fimp->_start_pc;
 		return false;
 	}
@@ -99,6 +99,4 @@ namespace snabl {
 
 		return score;
 	}
-
-	void Fimp::dump(ostream &out) const { out << id.name(); }
 }

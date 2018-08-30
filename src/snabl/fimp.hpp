@@ -1,8 +1,8 @@
 #ifndef SNABL_FIMP_HPP
 #define SNABL_FIMP_HPP
 
-#include "snabl/call.hpp"
 #include "snabl/form.hpp"
+#include "snabl/op.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
 #include "snabl/stack.hpp"
@@ -10,7 +10,7 @@
 namespace snabl {
 	class Call;
 
-	class Fimp: public CallTarget {
+	class Fimp {
 	public:
 		using Args = vector<Box>;
 		using Rets = vector<ATypePtr>;					
@@ -36,7 +36,6 @@ namespace snabl {
 				 Forms::const_iterator end);
 
 		optional<size_t> score(const Stack &stack) const;
-		void dump(ostream &out) const override;
 	private:
 		optional<PC> _start_pc;
 		size_t _nops;

@@ -7,21 +7,26 @@
 #include "snabl/scope.hpp"
 
 namespace snabl {
-	class CallTarget {
-	public:
-		virtual void dump(ostream &out) const=0;
-	};
-
 	class Call {
 	public:
-		const CallTargetPtr target;
 		const ScopePtr scope;
 		const optional<PC> return_pc;
+
+		template <typename TargetT>
+		TargetT target() const;
 		
-		Call(const CallTargetPtr &target,
+		Call(const any &target,
 				 const ScopePtr &scope,
 				 optional<PC> return_pc=nullopt);
+	private:
+		const any _target;
 	};
+
+	template <typename TargetT>
+	TargetT Call::target() const {
+		return any_cast<TargetT>(_target);
+	}
+
 }
 
 #endif
