@@ -13,7 +13,7 @@ func: fib<Int> Int
 ```
 
 #### Multiple Dispatch
-Snabl supports dispatching functions on multiple arguments, as opposed to only the type of ```this``` in most languages. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
+Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
 
 #### Gradual Types
 Snabl allows but doesn't require specifying types of function arguments and variables.
