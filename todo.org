@@ -4,6 +4,10 @@
 ** add optional parent to Scope/Begin
 ** add Lambda op to capture parent scope
 ** create new scope with parent on call
+* add bench fn
+** add support for loading from file/arg
+** add fib.cx
+** add bench.py && fib.py
 * add recall op
 ** jump immediately
 * add repl(env, in, out) fn
