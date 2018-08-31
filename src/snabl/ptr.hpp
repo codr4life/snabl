@@ -10,14 +10,10 @@ namespace snabl {
 		size_t nrefs;
 
 		template <typename... ArgsT>
-		PtrImp(size_t nrefs, ArgsT &&... args);
+		PtrImp(size_t nrefs, ArgsT &&... args):
+			val(forward<ArgsT>(args)...), nrefs(nrefs) { }
 	};
 
-	template <typename T>
-	template <typename... ArgsT>
-	PtrImp<T>::PtrImp(size_t nrefs, ArgsT &&... args):
-		val(forward<ArgsT>(args)...), nrefs(nrefs) { }
-	
 	template <typename T, typename ImpT=T>
 	class Ptr {
 	public:
@@ -27,7 +23,10 @@ namespace snabl {
 		Ptr(const Ptr<T, ImpT> &src): Ptr<T, ImpT>(*src._imp) { }
 
 		template <typename U>
-		Ptr(const Ptr<U, ImpT> &src): Ptr<T, ImpT>(*src._imp) { }
+		Ptr(Ptr<U, ImpT> src): Ptr<T, ImpT>(*src._imp) { }
+
+		template <typename U>
+		Ptr(Ptr<U, ImpT> &&src): _imp(src._imp) { src._imp = nullptr; }
 
 		template <typename... ArgsT>
 		Ptr(size_t nrefs, ArgsT &&... args):
@@ -37,47 +36,47 @@ namespace snabl {
 			if (_imp) { decr(); }
 		}
 		
-		const Ptr<T, ImpT> &operator =(const Ptr<T, ImpT> &src) {
+		Ptr<T, ImpT> operator =(Ptr<T, ImpT> src) {
 			set(src._imp);
 			return *this;
 		}
 
 		template <typename U>
-		const Ptr<T, ImpT> &operator =(const Ptr<U, ImpT> &src) {
+		Ptr<T, ImpT> operator =(Ptr<U, ImpT> src) {
 			set(src._imp);
 			return *this;
 		}
 
-		const T &operator *() const {
-			if (!_imp) { throw Error("Dereferencing null ptr"); }
-			return _imp->val;
-		}
-		
-		T &operator *() {
-			if (!_imp) { throw Error("Dereferencing null ptr"); }
-			return _imp->val;
+		template <typename U>
+		Ptr<T, ImpT> &operator =(Ptr<U, ImpT> &&src) {
+			cout << "massign" << endl;
+			
+			if (_imp != src._imp) {
+				if (_imp) { decr(); }
+				_imp = src._imp;
+				src._imp = nullptr;
+			}
+			
+			return *this;
 		}
 
-		const T *operator ->() const {
-			if (!_imp) { throw Error("Accessing null ptr"); }
-			return &_imp->val;
-		}
+		const T &operator *() const { return _imp->val; }
 		
-		T *operator ->() {
-			if (!_imp) { throw Error("Accessing null ptr"); }
-			return &_imp->val;
-		}
+		T &operator *() { return _imp->val; }
+
+		const T *operator ->() const { return &_imp->val; }
+		
+		T *operator ->() { return &_imp->val; }
 
 		operator bool() const { return _imp; }
 		
-		void incr() {
-			if (!_imp) { throw Error("Incrementing null ptr"); }
-			_imp->nrefs++;
-		}
+		void incr() { _imp->nrefs++; }
 		
 		void decr() {
-			if (!_imp) { throw Error("Decrementing null ptr"); }
-			if (!(--_imp->nrefs)) { delete _imp; }
+			if (!(--_imp->nrefs)) {
+				delete _imp;
+				_imp = nullptr;
+			}
 		}
 		
 		size_t nrefs() const { return _imp ? _imp->nrefs : 0; }
@@ -86,10 +85,10 @@ namespace snabl {
 		Ptr<U, ImpT> cast() const { return Ptr<U, ImpT>(*_imp); }
 		
 		void set(PtrImp<ImpT> *src) {
-			if (_imp == src) { return; }
-			if (_imp) { decr(); }
-			_imp = src;
-			if (_imp) { incr(); }
+			if (_imp != src) {
+				if (_imp) { decr(); }
+				if ((_imp = src)) { incr(); }
+			}
 		}
 	private:
 		PtrImp<ImpT> *_imp;

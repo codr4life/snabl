@@ -14,7 +14,7 @@ namespace snabl {
 		const FimpPtr fimp;
 		const optional<PC> return_pc;
 
-		Call(ScopePtr scope, const FimpPtr &fimp, optional<PC> return_pc=nullopt);
+		Call(ScopePtr scope, FimpPtr fimp, optional<PC> return_pc=nullopt);
 		Call(ScopePtr scope, PC return_pc);
 	};
 }

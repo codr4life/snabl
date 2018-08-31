@@ -17,7 +17,7 @@ namespace snabl {
 		const size_t nargs, nrets;
 
 		template <typename... ImpT>
-		static FimpPtr add_fimp(const FuncPtr &func,
+		static FimpPtr add_fimp(FuncPtr func,
 														const Fimp::Args &args, const Fimp::Rets &rets,
 														ImpT &&... imp);
 		
@@ -30,18 +30,16 @@ namespace snabl {
 	};
 
 	template <typename... ImpT>
-	FimpPtr Func::add_fimp(const FuncPtr &func,
+	FimpPtr Func::add_fimp(FuncPtr func,
 												 const Fimp::Args &args, const Fimp::Rets &rets,
 												 ImpT &&... imp) {
 		auto id(Fimp::get_id(func, args));
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
-		auto f(make_shared<Fimp>(func,
-														 args, rets,
-														 forward<ImpT>(imp)...));
-		func->_fimps.emplace(id, f);
-		return f;
+		return func->_fimps.emplace(id,
+																FimpPtr(1, func, args, rets, forward<ImpT>(imp)...))
+			.first->second;
 	}
 }
 

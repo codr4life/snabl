@@ -232,7 +232,7 @@ namespace snabl {
 								 Env &env(call.scope->env);
 								 const Box target(env.pop());
 								 const Int reps(env.pop().as<Int>());
-								 target.call(true);
+								 for (int i(0); i < reps/2; i++) { target.call(true); }
 								 
 								 Timer t;
 								 for (Int i(0); i < reps; i++) { target.call(true); }

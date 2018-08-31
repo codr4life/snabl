@@ -5,7 +5,7 @@
 #include "snabl/lib.hpp"
 
 namespace snabl {
-	Sym Fimp::get_id(const FuncPtr &func, const Args &args) {
+	Sym Fimp::get_id(FuncPtr func, const Args &args) {
 		stringstream buf;
 		buf << func->id.name() << '<';
 		char sep = 0;
@@ -28,7 +28,7 @@ namespace snabl {
 		return func->lib.env.sym(buf.str());
 	}
 
-	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
+	bool Fimp::compile(FimpPtr fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
 		if (fimp->_start_pc) { return false; }
 		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
@@ -47,7 +47,7 @@ namespace snabl {
 		return true;
 	}
 
-	void Fimp::call(const FimpPtr &fimp, Pos pos) {
+	void Fimp::call(FimpPtr fimp, Pos pos) {
 		auto &env(fimp->func->lib.env);
 		env.begin_stack(env.stack().size()-fimp->func->nargs);
 		
@@ -69,11 +69,11 @@ namespace snabl {
 		}
 	}
 
-	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
+	Fimp::Fimp(FuncPtr func, const Args &args, const Rets &rets, Imp imp):
 		id(get_id(func, args)), func(func), args(args), rets(rets), imp(imp),
 	  _start_pc(nullopt), _nops(0) { }
 
-	Fimp::Fimp(const FuncPtr &func,
+	Fimp::Fimp(FuncPtr func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):

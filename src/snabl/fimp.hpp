@@ -24,13 +24,13 @@ namespace snabl {
 		const Forms forms;
 		const optional<Imp> imp;
 
-		static Sym get_id(const FuncPtr &func, const Args &args);
-		static bool compile(const FimpPtr &fimp, Pos pos);
-		static void call(const FimpPtr &fimp, Pos pos);
+		static Sym get_id(FuncPtr func, const Args &args);
+		static bool compile(FimpPtr fimp, Pos pos);
+		static void call(FimpPtr fimp, Pos pos);
 
-		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
+		Fimp(FuncPtr func, const Args &args, const Rets &rets, Imp imp);
 		
-		Fimp(const FuncPtr &func,
+		Fimp(FuncPtr func,
 				 const Args &args, const Rets &rets,
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);

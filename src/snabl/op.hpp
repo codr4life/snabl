@@ -106,8 +106,8 @@ namespace snabl {
 			const FuncPtr func;
 			const FimpPtr fimp;
 			FimpPtr prev_fimp;
-			Funcall(const FuncPtr &func);
-			Funcall(const FimpPtr &fimp);
+			Funcall(FuncPtr func);
+			Funcall(FimpPtr fimp);
 			void dump(Env &env, ostream &out) const override;
 		};
 		
