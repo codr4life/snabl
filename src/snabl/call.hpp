@@ -12,11 +12,10 @@ namespace snabl {
 	public:
 		const ScopePtr scope;
 		const FimpPtr fimp;
-		const optional<Lambda> lambda;
 		const optional<PC> return_pc;
 
 		Call(const ScopePtr &scope, const FimpPtr &fimp, optional<PC> return_pc=nullopt);
-		Call(const ScopePtr &scope, const Lambda &lambda, PC return_pc);
+		Call(const ScopePtr &scope, PC return_pc);
 	};
 }
 

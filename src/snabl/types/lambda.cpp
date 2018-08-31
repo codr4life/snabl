@@ -23,10 +23,9 @@ namespace snabl {
 		const Lambda l(val.as<Lambda>());
 		Env &env(lib.env);
 		auto scope(env.begin_scope(l.parent_scope));
-		auto ret_pc(env.pc);
-		env.begin_call(l, ret_pc);
+		auto &call(env.begin_call(env.pc));
 		env.pc = l.start_pc;
-		if (now) { env.run(ret_pc); }
+		if (now) { env.run(*call.return_pc); }
 	}
 
 	void LambdaType::dump(const Box &val, ostream &out) const {
