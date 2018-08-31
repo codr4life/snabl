@@ -1,3 +1,14 @@
+* add Ptr<T>
+** replaces shared_ptr
+** PtrImp<T> with size_t nrefs
+*** constructor with ArgsT... for init
+*** copy constructor & assignment operator
+*** self assign
+** operator*
+** operator->
+** operator()
+** cast method
+** make_ptr fn
 * only begin/end scopes if putvars in lambda like fimp
 * add nil
 ** do nothing on call
