@@ -95,37 +95,37 @@ namespace snabl {
 
 	template <typename T, typename ImpT>
 	const T &Ptr<T, ImpT>::operator *() const {
-		if (!_imp) { throw Error("Dereferencing nil ptr"); }
+		if (!_imp) { throw Error("Dereferencing null ptr"); }
 		return _imp->val;
 	}
 
 	template <typename T, typename ImpT>
 	T &Ptr<T, ImpT>::operator *() {
-		if (!_imp) { throw Error("Dereferencing nil ptr"); }
+		if (!_imp) { throw Error("Dereferencing null ptr"); }
 		return _imp->val;
 	}
 
 	template <typename T, typename ImpT>
 	const T *Ptr<T, ImpT>::operator ->() const {
-		if (!_imp) { throw Error("Accessing nil ptr"); }
+		if (!_imp) { throw Error("Accessing null ptr"); }
 		return &_imp->val;
 	}
 
 	template <typename T, typename ImpT>
 	T *Ptr<T, ImpT>::operator ->() {
-		if (!_imp) { throw Error("Accessing nil ptr"); }
+		if (!_imp) { throw Error("Accessing null ptr"); }
 		return &_imp->val;
 	}
 
 	template <typename T, typename ImpT>
 	void Ptr<T, ImpT>::incr() {
-		if (!_imp) { throw Error("Incrementing nil ptr"); }
+		if (!_imp) { throw Error("Incrementing null ptr"); }
 		_imp->nrefs++;
 	}
 
 	template <typename T, typename ImpT>
 	void Ptr<T, ImpT>::decr() {
-		if (!_imp) { throw Error("Decrementing nil ptr"); }
+		if (!_imp) { throw Error("Decrementing null ptr"); }
 		if (!(--_imp->nrefs)) { delete _imp; }
 	}
 
