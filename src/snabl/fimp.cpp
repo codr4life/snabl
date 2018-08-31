@@ -35,8 +35,15 @@ namespace snabl {
 		fimp->_start_pc = env.ops.end();
 		env.emit(ops::Begin::type, pos);
 		env.compile(fimp->forms);
-		env.emit(ops::FimpRet::type, pos);
+		
+		const bool has_vars(find_if(*fimp->_start_pc+1, env.ops.end(), [](const Op &op) {
+					return &op.type == &ops::PutVar::type;
+				}) != env.ops.end());
+
+		if (!has_vars) { (*fimp->_start_pc)++; }
+		env.emit(ops::FimpRet::type, pos, has_vars);
 		fimp->_nops = skip.nops = env.ops.end()-*fimp->_start_pc;
+		if (!has_vars) { skip.nops++; }
 		return true;
 	}
 

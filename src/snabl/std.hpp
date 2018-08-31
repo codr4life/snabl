@@ -5,6 +5,7 @@
 #include <experimental/optional>
 #include <experimental/string_view>
 
+#include <algorithm>
 #include <chrono>
 #include <deque>
 #include <fstream>

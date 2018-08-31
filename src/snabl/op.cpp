@@ -46,7 +46,7 @@ namespace snabl {
 
 		End::End() { }
 		
-		FimpRet::FimpRet() { }
+		FimpRet::FimpRet(bool end_scope): end_scope(end_scope) { }
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		

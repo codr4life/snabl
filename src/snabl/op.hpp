@@ -96,7 +96,9 @@ namespace snabl {
 
 		struct FimpRet: public OpImp {
 			static const OpType<FimpRet> type;
-			FimpRet();
+			const bool end_scope;
+			
+			FimpRet(bool end_scope);
 		};
 
 		struct Funcall: public OpImp {

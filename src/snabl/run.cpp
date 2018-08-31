@@ -59,9 +59,11 @@ namespace snabl {
 		pc++;
 		SNABL_DISPATCH();
 	op_fimpret: {
+			const auto &op(pc->as<ops::FimpRet>());
+			if (op.end_scope) { end_scope(); }
+
 			const auto &c(call());
 			const auto fn(c.fimp->func);
-			end_scope();
 			auto stack_offs(end_stack());
 
 			if (_stack.size() != stack_offs+fn->nrets) {
