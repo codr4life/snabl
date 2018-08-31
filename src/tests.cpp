@@ -134,6 +134,10 @@ namespace snabl {
 
 		foo->a = 7;
 		assert(bar->a == 7);
+
+		Ptr<Bar> baz(foo.cast<Bar>());
+		baz->b = 35;
+		assert(bar->b == 35);
 	}
 	
 	void ptr_tests() {

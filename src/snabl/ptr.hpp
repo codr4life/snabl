@@ -22,9 +22,7 @@ namespace snabl {
 	class Ptr {
 	public:
 		Ptr();
-
 		explicit Ptr(PtrImp<ImpT> &imp);
-
 		Ptr(const Ptr<T, ImpT> &src);
 
 		template <typename U>
