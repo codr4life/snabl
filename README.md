@@ -3,6 +3,12 @@
 ### Features
 The following is a list of what could be considered defining features.
 
+#### Multiple Dispatch
+Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
+
+#### Gradual Types
+Snabl allows but doesn't require specifying types of function arguments and variables.
+
 #### Mixfix
 Snabl allows reordering functions/operators and arguments within expressions. Expressions may be further divided using ```,``` which evaluates the rest of the expression separately, or enclosed in ```()``` which evaluates the enclosed expression and pushes the result.
 
@@ -21,12 +27,6 @@ func: fib<Int> Int (
   dup if: (< 2) _, (fib, dup - 1) swap + (fib, - 2)
 )
 ```
-
-#### Multiple Dispatch
-Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
-
-#### Gradual Types
-Snabl allows but doesn't require specifying types of function arguments and variables.
 
 #### Reference Counting
 Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.
