@@ -97,7 +97,7 @@ namespace snabl {
 		assert(env.pop().as<Int>() > Int(15));
 	}
 
-	void ptr_basic_tests() {
+	void ptr_tests() {
 		Ptr<int> foo(1, 42);
 		assert(foo.nrefs() == 1);
 		assert(*foo == 42);
@@ -125,26 +125,6 @@ namespace snabl {
 		}
 	}
 
-	struct Foo { int a; };
-	struct Bar: public Foo { int b; };
-
-	void ptr_cast_tests() {
-		Ptr<Bar> bar(1);
-		auto foo(bar.cast<Foo>());
-
-		foo->a = 7;
-		assert(bar->a == 7);
-
-		Ptr<Bar> baz(foo.cast<Bar>());
-		baz->b = 35;
-		assert(bar->b == 35);
-	}
-	
-	void ptr_tests() {
-		ptr_basic_tests();
-		ptr_cast_tests();
-	}
-	
 	void all_tests() {
 		fmt_tests();
 		lang_tests();

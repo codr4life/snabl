@@ -1,7 +1,3 @@
-* replace ATypePtr/TypePtr
-** grep refs
-* add move constructor
-* add slab allocation / free list
 * only begin/end scopes if putvars in lambda like fimp
 * add nil
 ** do nothing on call

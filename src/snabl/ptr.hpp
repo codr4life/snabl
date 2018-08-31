@@ -14,49 +14,23 @@ namespace snabl {
 			val(forward<ArgsT>(args)...), nrefs(nrefs) { }
 	};
 
-	template <typename T, typename ImpT=T>
+	template <typename T>
 	class Ptr {
 	public:
-		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
-		
-		explicit Ptr(PtrImp<ImpT> &imp): Ptr<T, ImpT>() { set(&imp); }
-		Ptr(const Ptr<T, ImpT> &src): Ptr<T, ImpT>(*src._imp) { }
-
-		template <typename U>
-		Ptr(Ptr<U, ImpT> src): Ptr<T, ImpT>(*src._imp) { }
-
-		template <typename U>
-		Ptr(Ptr<U, ImpT> &&src): _imp(src._imp) { src._imp = nullptr; }
+		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }		
+		explicit Ptr(PtrImp<T> &imp): Ptr<T>() { set(&imp); }
+		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
 
 		template <typename... ArgsT>
 		Ptr(size_t nrefs, ArgsT &&... args):
-			_imp(new PtrImp<ImpT>(nrefs, forward<ArgsT>(args)...)) { }
+			_imp(new PtrImp<T>(nrefs, forward<ArgsT>(args)...)) { }
 
 		~Ptr() {
 			if (_imp) { decr(); }
 		}
 		
-		Ptr<T, ImpT> operator =(Ptr<T, ImpT> src) {
+		Ptr<T> operator =(Ptr<T> src) {
 			set(src._imp);
-			return *this;
-		}
-
-		template <typename U>
-		Ptr<T, ImpT> operator =(Ptr<U, ImpT> src) {
-			set(src._imp);
-			return *this;
-		}
-
-		template <typename U>
-		Ptr<T, ImpT> &operator =(Ptr<U, ImpT> &&src) {
-			cout << "massign" << endl;
-			
-			if (_imp != src._imp) {
-				if (_imp) { decr(); }
-				_imp = src._imp;
-				src._imp = nullptr;
-			}
-			
 			return *this;
 		}
 
@@ -81,17 +55,14 @@ namespace snabl {
 		
 		size_t nrefs() const { return _imp ? _imp->nrefs : 0; }
 
-		template <typename U>
-		Ptr<U, ImpT> cast() const { return Ptr<U, ImpT>(*_imp); }
-		
-		void set(PtrImp<ImpT> *src) {
+		void set(PtrImp<T> *src) {
 			if (_imp != src) {
 				if (_imp) { decr(); }
 				if ((_imp = src)) { incr(); }
 			}
 		}
 	private:
-		PtrImp<ImpT> *_imp;
+		PtrImp<T> *_imp;
 	};
 }
 
