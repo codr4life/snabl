@@ -1,6 +1,7 @@
 #ifndef SNABL_PTRS_HPP
 #define SNABL_PTRS_HPP
 
+#include "snabl/ptr.hpp"
 #include "snabl/std.hpp"
 
 namespace snabl {
@@ -17,7 +18,7 @@ namespace snabl {
 	using TraitPtr = shared_ptr<Trait>;
 	
 	class Scope;	
-	using ScopePtr = shared_ptr<Scope>;
+	using ScopePtr = Ptr<Scope>;
 
 	class Macro;
 	using MacroPtr = shared_ptr<Macro>;

@@ -6,7 +6,7 @@
 #include "snabl/types/lambda.hpp"
 
 namespace snabl {
-	Lambda::Lambda(const ScopePtr &parent_scope, Ops::iterator start_pc, size_t nops):
+	Lambda::Lambda(ScopePtr parent_scope, Ops::iterator start_pc, size_t nops):
 		parent_scope(parent_scope), start_pc(start_pc), nops(nops) { }
 
 	bool operator ==(const Lambda &lhs, const Lambda &rhs) {

@@ -11,7 +11,7 @@ namespace snabl {
 		const Ops::iterator start_pc;
 		const size_t nops;
 		
-		Lambda(const ScopePtr &parent_scope, Ops::iterator start_pc, size_t nops);
+		Lambda(ScopePtr parent_scope, Ops::iterator start_pc, size_t nops);
 	};
 
 	bool operator ==(const Lambda &lhs, const Lambda &rhs);

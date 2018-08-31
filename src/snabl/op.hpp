@@ -64,7 +64,7 @@ namespace snabl {
 			static const OpType<Begin> type;
 			const ScopePtr parent;
 			
-			Begin(const ScopePtr &parent=nullptr);
+			Begin(ScopePtr parent=nullptr);
 		};
 
 		struct Call: public OpImp {

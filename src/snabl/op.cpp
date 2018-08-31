@@ -32,7 +32,7 @@ namespace snabl {
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 
-		Begin::Begin(const ScopePtr &parent): parent(parent) { }
+		Begin::Begin(ScopePtr parent): parent(parent) { }
 
 		Call::Call() { }
 
