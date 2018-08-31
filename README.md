@@ -19,7 +19,7 @@ func: fib<Int> Int (
 )
 ```
 
-#### Stack
+#### Stack Oriented
 Like Forth, Snabl supports directly manipulating the parameter stack from user code.
 
 ```
