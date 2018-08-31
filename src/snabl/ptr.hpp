@@ -17,10 +17,14 @@ namespace snabl {
 	template <typename T>
 	class Ptr {
 	public:
-		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }		
+		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
+		
 		explicit Ptr(PtrImp<T> &imp): Ptr<T>() { set(&imp); }
+
 		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
 
+		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
+		
 		template <typename... ArgsT>
 		Ptr(size_t nrefs, ArgsT &&... args):
 			_imp(new PtrImp<T>(nrefs, forward<ArgsT>(args)...)) { }
