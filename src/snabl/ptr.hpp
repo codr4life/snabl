@@ -5,21 +5,20 @@
 
 namespace snabl {
 	template <typename T>
-	struct PtrImp {
-		T val;
-		size_t nrefs;
-
-		template <typename... ArgsT>
-		PtrImp(size_t nrefs, ArgsT &&... args):
-			val(forward<ArgsT>(args)...), nrefs(nrefs) { }
-	};
-
-	template <typename T>
 	class Ptr {
 	public:
+		struct Imp {
+			T val;
+			size_t nrefs;
+			
+			template <typename... ArgsT>
+			Imp(size_t nrefs, ArgsT &&... args):
+				val(forward<ArgsT>(args)...), nrefs(nrefs) { }
+		};
+
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
 		
-		explicit Ptr(PtrImp<T> &imp): Ptr<T>() { set(&imp); }
+		explicit Ptr(Imp &imp): Ptr<T>() { set(&imp); }
 
 		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
 
@@ -27,7 +26,7 @@ namespace snabl {
 		
 		template <typename... ArgsT>
 		Ptr(size_t nrefs, ArgsT &&... args):
-			_imp(new PtrImp<T>(nrefs, forward<ArgsT>(args)...)) { }
+			_imp(new Imp(nrefs, forward<ArgsT>(args)...)) { }
 
 		~Ptr() {
 			if (_imp) { decr(); }
@@ -48,6 +47,10 @@ namespace snabl {
 
 		operator bool() const { return _imp; }
 		
+		size_t nrefs() const { return _imp ? _imp->nrefs : 0; }
+	private:
+		Imp *_imp;
+
 		void incr() { _imp->nrefs++; }
 		
 		void decr() {
@@ -57,16 +60,12 @@ namespace snabl {
 			}
 		}
 		
-		size_t nrefs() const { return _imp ? _imp->nrefs : 0; }
-
-		void set(PtrImp<T> *src) {
+		void set(Imp *src) {
 			if (_imp != src) {
 				if (_imp) { decr(); }
 				if ((_imp = src)) { incr(); }
 			}
-		}
-	private:
-		PtrImp<T> *_imp;
+		}		
 	};
 }
 
