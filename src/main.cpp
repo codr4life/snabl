@@ -3,7 +3,7 @@
 
 using namespace snabl;
 
-int main(int argc, const char *argv[]) {
+int main(int argc, const char *argv[]) {	
 	Env env;
 	
 	if (argc == 1) {

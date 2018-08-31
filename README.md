@@ -9,8 +9,8 @@ Snabl supports dispatching functions on multiple arguments. Each function name m
 #### Gradual Typing
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
-#### Mixfix
-Snabl allows reordering functions/operators and arguments within expressions. Expressions may be further divided using ```,``` which evaluates the rest of the expression separately, or enclosed in ```()``` which evaluates the enclosed expression and pushes the result.
+#### Fixation
+Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be further divided using ```,``` which evaluates the rest of the expression separately, or enclosed in ```()``` which evaluates the enclosed expression and pushes the result.
 
 ```
 func: fib<Int> Int (
@@ -27,6 +27,9 @@ func: fib<Int> Int (
   dup if: (< 2) _, (fib, dup - 1) swap + (fib, - 2)
 )
 ```
+
+#### Function
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion.
 
 #### Reference Counting
 Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.

@@ -4,6 +4,7 @@
 #include "snabl/env.hpp"
 #include "snabl/fmt.hpp"
 #include "snabl/func.hpp"
+#include "snabl/ptr.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
@@ -96,8 +97,40 @@ namespace snabl {
 		assert(env.pop().as<Int>() > Int(15));
 	}
 
+	void ptr_tests() {
+		Ptr<int> foo(1, 42);
+		assert(foo.nrefs() == 1);
+		assert(*foo == 42);
+
+		foo = foo;
+		assert(foo.nrefs() == 1);
+
+		{
+			Ptr<int> bar(foo);
+			assert(foo.nrefs() == 2);
+			assert(bar.nrefs() == 2);
+			*bar = 7;
+		}
+		
+		assert(foo.nrefs() == 1);
+		assert(*foo == 7);
+
+		{
+			Ptr<int> bar(1, 42);
+			auto baz(bar);
+			
+			baz = foo;
+			assert(foo.nrefs() == 2);
+			assert(bar.nrefs() == 1);
+		}
+
+		auto bar(foo.cast<short>());
+		assert(*bar == 7);
+	}
+	
 	void all_tests() {
 		fmt_tests();
 		lang_tests();
+		ptr_tests();
 	}
 }
