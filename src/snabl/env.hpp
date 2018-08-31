@@ -71,8 +71,10 @@ namespace snabl {
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
 		const ScopePtr &scope();
 		void end_scope();
+		
+		template <typename... ArgsT>
+		Call &begin_call(ArgsT &&... args);
 
-		Call &begin_call(const any &target, optional<PC> return_pc=nullopt);
 		Call &call();
 		void end_call();
 		
@@ -141,6 +143,12 @@ namespace snabl {
 																				 Env &env) {
 											 env.emit(type, (in++)->pos, forward<ArgsT>(args)...);			
 										 });
+	}
+
+	template <typename... ArgsT>
+	Call &Env::begin_call(ArgsT &&... args) {
+		_calls.emplace_back(scope(), forward<ArgsT>(args)...);
+		return _calls.back();
 	}
 }
 

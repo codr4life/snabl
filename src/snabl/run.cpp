@@ -60,18 +60,16 @@ namespace snabl {
 		SNABL_DISPATCH();
 	op_fimpret: {
 			const auto &c(call());
-			const auto fn(c.target<FimpPtr>()->func);
+			const auto fn(c.fimp->func);
 			end_scope();
 			auto stack_offs(end_stack());
 
 			if (_stack.size() != stack_offs+fn->nrets) {
-				throw Error("Invalid return stack");
+				throw Error(fmt("Invalid return stack: %0", {c.fimp->id}));
 			}
 			
-			if (!c.return_pc) { throw Error("Missing return pc"); }
-			
-			end_call();
 			pc = *c.return_pc;
+			end_call();
 			SNABL_DISPATCH();
 		}
 	op_funcall: {
@@ -109,13 +107,9 @@ namespace snabl {
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			const auto l(c.target<Lambda>());
 			end_scope();
-			
-			if (!c.return_pc) { throw Error("Missing return pc"); }
-			
-			end_call();
 			pc = *c.return_pc;
+			end_call();
 			SNABL_DISPATCH();
 		}
 	op_push:

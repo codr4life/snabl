@@ -226,11 +226,6 @@ namespace snabl {
 		if (_scopes.empty()) { throw Error("No open scopes"); }
 		_scopes.pop_back();
 	}
-
-	Call &Env::begin_call(const any &target, optional<Ops::iterator> return_pc) {
-		_calls.emplace_back(target, scope(), return_pc);
-		return _calls.back();
-	}
 	
 	Call &Env::call() {
 		if (_calls.empty()) { throw Error("No calls"); }
