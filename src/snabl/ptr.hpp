@@ -33,7 +33,7 @@ namespace snabl {
 			if (_imp) { decr(); }
 		}
 		
-		Ptr<T> operator =(Ptr<T> src) {
+		const Ptr<T> &operator =(const Ptr<T> &src) {
 			set(src._imp);
 			return *this;
 		}
