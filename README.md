@@ -14,7 +14,7 @@ func: fib<Int> Int (
 ```
 
 #### Stack
-Like Forth, Snabl allows directly manipulating the parameter stack from user code.
+Like Forth, Snabl supports directly manipulating the parameter stack from user code.
 
 ```
 func: fib<Int> Int (
