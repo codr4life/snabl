@@ -6,7 +6,7 @@ The following is a list of what could be considered defining features.
 #### Multiple Dispatch
 Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
 
-#### Gradual Types
+#### Gradual Typing
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
 #### Mixfix
@@ -19,7 +19,7 @@ func: fib<Int> Int (
 )
 ```
 
-#### Concatenative
+#### Concatenation
 Like Forth, Snabl supports directly manipulating the parameter stack from user code.
 
 ```
