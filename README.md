@@ -13,6 +13,15 @@ func: fib<Int> Int (
 )
 ```
 
+#### Stack
+Like Forth, Snabl allows directly manipulating the parameter stack from user code.
+
+```
+func: fib<Int> Int (
+  dup if: (< 2) _, (fib, dup - 1) swap + (fib, - 2)
+)
+```
+
 #### Multiple Dispatch
 Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
 
