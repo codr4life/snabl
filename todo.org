@@ -1,5 +1,4 @@
 * replace shared_ptr with Ptr
-** add operator->
 ** ScopePtr
 * only begin/end scopes if putvars in lambda like fimp
 * add nil
