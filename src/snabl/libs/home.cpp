@@ -106,7 +106,7 @@ namespace snabl {
 									}
 
 									auto fi = lib.add_fimp(id_form.id, args, rets, in++, in+1);
-									env.emit(ops::Fimp::type, form.pos, fi);
+									Fimp::compile(fi, form.pos);
 								});
 
 			add_fimp(env.sym("="),

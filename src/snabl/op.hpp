@@ -94,13 +94,6 @@ namespace snabl {
 			End();
 		};
 
-		struct Fimp: public OpImp {
-			static const OpType<Fimp> type;
-			const FimpPtr ptr;
-			Fimp(const FimpPtr &ptr);
-			void dump(Env &env, ostream &out) const override;
-		};
-
 		struct FimpRet: public OpImp {
 			static const OpType<FimpRet> type;
 			FimpRet();

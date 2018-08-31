@@ -22,7 +22,6 @@ namespace snabl {
 		const OpType<Dup> Dup::type("Dup");
 		const OpType<Else> Else::type("Else");
 		const OpType<End> End::type("End");
-		const OpType<Fimp> Fimp::type("Fimp");
 		const OpType<FimpRet> FimpRet::type("FimpRet");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<GetVar> GetVar::type("GetVar");
@@ -47,10 +46,6 @@ namespace snabl {
 
 		End::End() { }
 		
-		Fimp::Fimp(const FimpPtr &ptr): ptr(ptr) { }
-
-		void Fimp::dump(Env &env, ostream &out) const { out << ' ' << ptr->id.name(); }
-
 		FimpRet::FimpRet() { }
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }

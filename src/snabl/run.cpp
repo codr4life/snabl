@@ -25,7 +25,7 @@ namespace snabl {
 		if (!end_pc) { end_pc = ops.end(); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_call, &&op_drop, &&op_dup, &&op_else, &&op_end, &&op_fimp,
+			&&op_begin, &&op_call, &&op_drop, &&op_dup, &&op_else, &&op_end,
 			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
 			&&op_push, &&op_putvar, &&op_skip, &&op_swap
 		};
@@ -58,9 +58,6 @@ namespace snabl {
 		end_scope();
 		pc++;
 		SNABL_DISPATCH();
-	op_fimp:
-		pc++;
-		SNABL_DISPATCH();		
 	op_fimpret: {
 			const auto &c(call());
 			const auto fn(c.target<FimpPtr>()->func);
