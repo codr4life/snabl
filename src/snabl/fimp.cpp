@@ -90,7 +90,7 @@ namespace snabl {
 
 		for (; j != args.end(); i++, j++) {
 			auto &iv(*i), &jv(*j);
-			auto it(iv.type()), jt(jv.type());
+			auto &it(iv.type()), &jt(jv.type());
 			if (it == env.no_type) { continue; }
 
 			if (jv.is_undef()) {
