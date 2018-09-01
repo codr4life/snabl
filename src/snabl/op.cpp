@@ -32,7 +32,7 @@ namespace snabl {
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 
-		Begin::Begin(ScopePtr parent): parent(parent) { }
+		Begin::Begin(const ScopePtr &parent): parent(parent) { }
 
 		Call::Call() { }
 
@@ -48,9 +48,9 @@ namespace snabl {
 		
 		FimpRet::FimpRet(bool end_scope): end_scope(end_scope) { }
 
-		Funcall::Funcall(FuncPtr func): func(func) { }
+		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		
-		Funcall::Funcall(FimpPtr fimp): func(fimp->func), fimp(fimp) { }
+		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
 		void Funcall::dump(Env &env, ostream &out) const {
 			out << ' ' << (fimp ? fimp->id.name() : func->id.name());

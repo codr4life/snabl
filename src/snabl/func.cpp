@@ -4,8 +4,7 @@ namespace snabl {
 	Func::Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
 		lib(lib), id(id), nargs(nargs), nrets(nrets) { }
 
-	FimpPtr Func::get_fimp() const {
-		if (_fimps.size() != 1) { throw Error("Too many fimps"); }
+	FimpPtr &Func::get_fimp() {
 		return _fimps.begin()->second;
 	}
 

@@ -124,7 +124,7 @@ namespace snabl {
 	}
 
 	template <typename ValT>
-	MacroPtr Lib::add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val) {
+	MacroPtr &Lib::add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val) {
 		return add_macro(id, [type, val](Forms::const_iterator &in,
 																		 Forms::const_iterator end,
 																		 FuncPtr &func, FimpPtr &fimp,
@@ -136,7 +136,7 @@ namespace snabl {
 	}
 
 	template <typename ImpT, typename... ArgsT>
-	MacroPtr Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
+	MacroPtr &Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
 		return add_macro(id, [type, args...](Forms::const_iterator &in,
 																				 Forms::const_iterator end,
 																				 FuncPtr &func, FimpPtr &fimp,

@@ -64,7 +64,7 @@ namespace snabl {
 			static const OpType<Begin> type;
 			const ScopePtr parent;
 			
-			Begin(ScopePtr parent=nullptr);
+			Begin(const ScopePtr &parent=nullptr);
 		};
 
 		struct Call: public OpImp {
@@ -103,11 +103,11 @@ namespace snabl {
 
 		struct Funcall: public OpImp {
 			static const OpType<Funcall> type;
-			const FuncPtr func;
-			const FimpPtr fimp;
+			FuncPtr func;
+			FimpPtr fimp;
 			FimpPtr prev_fimp;
-			Funcall(FuncPtr func);
-			Funcall(FimpPtr fimp);
+			Funcall(const FuncPtr &func);
+			Funcall(const FimpPtr &fimp);
 			void dump(Env &env, ostream &out) const override;
 		};
 		

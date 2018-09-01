@@ -1,5 +1,3 @@
-* revert ptrs to references
-** finish ScopePtr
 * only begin/end scopes if putvars in lambda like fimp
 * add nil
 ** do nothing on call
