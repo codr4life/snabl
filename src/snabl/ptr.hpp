@@ -36,8 +36,8 @@ namespace snabl {
 
 		Ptr<T> &operator =(Ptr<T> &&src) {
 			if (_imp) { decr(); }
-			_imp = src->imp;
-			src->_imp = nullptr;
+			_imp = src._imp;
+			src._imp = nullptr;
 			return *this;
 		}
 

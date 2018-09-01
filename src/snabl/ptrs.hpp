@@ -21,13 +21,13 @@ namespace snabl {
 	using ScopePtr = Ptr<Scope>;
 
 	class Macro;
-	using MacroPtr = shared_ptr<Macro>;
+	using MacroPtr = Ptr<Macro>;
 
 	class Fimp;
-	using FimpPtr = shared_ptr<Fimp>;
+	using FimpPtr = Ptr<Fimp>;
 
 	class Func;
-	using FuncPtr = shared_ptr<Func>;
+	using FuncPtr = Ptr<Func>;
 }
 
 #endif

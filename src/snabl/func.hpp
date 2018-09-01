@@ -37,10 +37,9 @@ namespace snabl {
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
-		return func->_fimps.emplace(id,
-																std::make_shared<Fimp>(func,
-																											 args, rets,
-																											 forward<ImpT>(imp)...))
+		return func->_fimps.emplace(id, make_ptr<Fimp>(func,
+																									 args, rets,
+																									 forward<ImpT>(imp)...))
 			.first->second;
 	}
 }
