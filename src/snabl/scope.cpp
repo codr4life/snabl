@@ -3,7 +3,7 @@
 #include "snabl/scope.hpp"
 
 namespace snabl {
-	Scope::Scope(Env &env, ScopePtr parent): env(env), parent(parent) { }
+	Scope::Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
 
 	optional<Box> Scope::get_var(Sym id) const {
 		const auto found(_vars.find(id));
