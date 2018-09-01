@@ -10,7 +10,7 @@ Snabl supports dispatching functions on multiple arguments. Each function name m
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
 #### Fixation
-Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be divided using ```,``` which evaluates the rest of the expression separately as an argument, enclosed in ```()``` which evaluates the enclosed expression the same way; and divided using ```;``` which executes the current function before evaluating the rest separately. 
+Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be divided using ```,``` which evaluates the rest of the expression separately as an argument; enclosed in ```()``` which evaluates the enclosed expression the same way; and divided using ```;``` which executes the current function before evaluating the rest separately. 
 
 ```
 func: fib<Int> Int (
