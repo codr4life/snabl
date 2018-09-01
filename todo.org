@@ -1,4 +1,7 @@
 * ptr
+** fix const and add make_ptr
+*** static threadlocal sentinel
+** use for ScopePtr
 ** changes from reddit
 ** change get_best_fimp etc. to return Ptr*
 * add recall op
