@@ -18,8 +18,6 @@ namespace snabl {
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
 		
-		explicit Ptr(Imp &imp): Ptr<T>() { set(&imp); }
-
 		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
 
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
@@ -50,6 +48,8 @@ namespace snabl {
 		size_t nrefs() const { return _imp ? _imp->nrefs : 0; }
 	private:
 		Imp *_imp;
+
+		Ptr(Imp &imp): Ptr<T>() { set(&imp); }
 
 		void incr() { _imp->nrefs++; }
 		
