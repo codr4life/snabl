@@ -103,8 +103,9 @@ namespace snabl {
 
 		struct Funcall: public OpImp {
 			static const OpType<Funcall> type;
-			FuncPtr func;
-			FimpPtr fimp;
+			const FuncPtr func;
+			const FimpPtr fimp;
+			
 			FimpPtr prev_fimp;
 			Funcall(const FuncPtr &func);
 			Funcall(const FimpPtr &fimp);
