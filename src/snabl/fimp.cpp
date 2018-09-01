@@ -69,11 +69,11 @@ namespace snabl {
 		}
 	}
 
-	Fimp::Fimp(FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
+	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
 		id(get_id(func, args)), func(func), args(args), rets(rets), imp(imp),
 	  _start_pc(nullopt), _nops(0) { }
 
-	Fimp::Fimp(FuncPtr &func,
+	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):

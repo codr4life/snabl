@@ -17,12 +17,12 @@ namespace snabl {
 		const size_t nargs, nrets;
 
 		template <typename... ImpT>
-		static FimpPtr &add_fimp(FuncPtr &func,
-														 const Fimp::Args &args, const Fimp::Rets &rets,
-														 ImpT &&... imp);
+		static const FimpPtr &add_fimp(const FuncPtr &func,
+																	 const Fimp::Args &args, const Fimp::Rets &rets,
+																	 ImpT &&... imp);
 		
 		Func(Lib &lib, Sym id, size_t nargs, size_t nrets);
-		FimpPtr &get_fimp();
+		const FimpPtr &get_fimp();
 		FimpPtr get_best_fimp(const Stack &stack) const;
 		void clear();
 	private:
@@ -30,16 +30,17 @@ namespace snabl {
 	};
 
 	template <typename... ImpT>
-	FimpPtr &Func::add_fimp(FuncPtr &func,
-													const Fimp::Args &args, const Fimp::Rets &rets,
-													ImpT &&... imp) {
+	const FimpPtr &Func::add_fimp(const FuncPtr &func,
+																const Fimp::Args &args, const Fimp::Rets &rets,
+																ImpT &&... imp) {
 		auto id(Fimp::get_id(func, args));
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
 		return func->_fimps.emplace(id,
-																FimpPtr(FimpPtr::Make(),
-																				func, args, rets, forward<ImpT>(imp)...))
+																std::make_shared<Fimp>(func,
+																											 args, rets,
+																											 forward<ImpT>(imp)...))
 			.first->second;
 	}
 }

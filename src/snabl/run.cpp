@@ -63,7 +63,7 @@ namespace snabl {
 			if (op.end_scope) { end_scope(); }
 
 			const auto &c(call());
-			const auto fn(c.fimp->func);
+			const auto &fn(c.fimp->func);
 			auto stack_offs(end_stack());
 
 			if (_stack.size() != stack_offs+fn->nrets) {

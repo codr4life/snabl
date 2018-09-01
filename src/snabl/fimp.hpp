@@ -28,9 +28,9 @@ namespace snabl {
 		static bool compile(FimpPtr &fimp, Pos pos);
 		static void call(FimpPtr &fimp, Pos pos);
 
-		Fimp(FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
+		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
 		
-		Fimp(FuncPtr &func,
+		Fimp(const FuncPtr &func,
 				 const Args &args, const Rets &rets,
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
