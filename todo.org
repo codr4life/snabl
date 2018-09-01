@@ -1,9 +1,6 @@
 * ptr
-** drop delegating constructors
-** drop incr
-** skip self test in decr
-*** reverse order
 ** fix github decr issue
+*** use exchange?
 ** change get_best_fimp etc. to return Ptr*
 * add recall op
 ** jump immediately

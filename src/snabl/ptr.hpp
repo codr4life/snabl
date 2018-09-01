@@ -18,7 +18,11 @@ namespace snabl {
 		};
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
-		Ptr(const Ptr<T> &src): Ptr<T>(src._imp) { }
+
+		Ptr(const Ptr<T> &src): _imp(src._imp) {
+			if (_imp) { _imp->nrefs++; }
+		}
+		
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
 		
 		template <typename... ArgsT>
@@ -30,14 +34,21 @@ namespace snabl {
 		}
 		
 		const Ptr<T> &operator =(const Ptr<T> &src) {
-			set(src._imp);
+			if (_imp != src._imp) {
+				if (_imp) { decr(); }
+				if ((_imp = src._imp)) { _imp->nrefs++; }
+			}
+
 			return *this;
 		}
 
 		Ptr<T> &operator =(Ptr<T> &&src) {
-			if (_imp) { decr(); }
-			_imp = src._imp;
-			src._imp = nullptr;
+			if (_imp != src._imp) {
+				if (_imp) { decr(); }
+				_imp = src._imp;
+				src._imp = nullptr;
+			}
+			
 			return *this;
 		}
 
@@ -53,12 +64,10 @@ namespace snabl {
 	private:
 		Imp *_imp;
 
-		Ptr(Imp *imp): Ptr<T>() {
-			if ((_imp = imp)) { incr(); }
+		Ptr(Imp *imp): _imp(imp) {
+			if (_imp) { _imp++; }
 		}
 
-		void incr() { _imp->nrefs++; }
-		
 		void decr() {
 			if (! _imp->nrefs) {
 				delete _imp;
@@ -67,13 +76,6 @@ namespace snabl {
 				--_imp->nrefs;
 			}
 		}
-		
-		void set(Imp *src) {
-			if (_imp != src) {
-				if (_imp) { decr(); }
-				if ((_imp = src)) { incr(); }
-			}
-		}		
 	};
 
 	template <typename T, typename... ArgsT>
