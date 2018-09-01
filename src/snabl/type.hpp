@@ -23,6 +23,7 @@ namespace snabl {
 		virtual bool is_equid(const Box &lhs, const Box &rhs) const=0;
 		virtual bool is_eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
+		virtual bool is_true(const Box &val) const;
 		virtual void call(const Box &val, bool now) const; 
 		virtual void dump(const Box &val, ostream &out) const;
 		virtual void print(const Box &val, ostream &out) const;

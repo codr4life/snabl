@@ -1,5 +1,3 @@
-* add nil
-** do nothing on call
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn

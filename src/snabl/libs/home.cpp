@@ -7,6 +7,7 @@ namespace snabl {
 	namespace libs {
 		Home::Home(Env &env): Lib(env, env.sym("home")) {
 			env.maybe_type = add_type<Trait>(env.sym("Maybe"));
+			env.nil_type = add_type<NilType>(env.sym("Nil"), {env.maybe_type});
 			env.a_type = add_type<Trait>(env.sym("A"), {env.maybe_type});
 			env.no_type = add_type<Trait>(env.sym("_"));
 			env.num_type = add_type<Trait>(env.sym("Num"), {env.a_type});
@@ -18,6 +19,7 @@ namespace snabl {
 			
 			add_macro(env.sym("t"), env.bool_type, true);			
 			add_macro(env.sym("f"), env.bool_type, false);			
+			add_macro(env.sym("nil"), env.nil_type, nullptr);			
 
 			add_macro(env.sym("_"),
 								[](Forms::const_iterator &in,
@@ -179,6 +181,14 @@ namespace snabl {
 								 Env &env(call.scope->env);
 								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
 								 env.push(env.int_type, x*y);
+							 });
+
+			add_fimp(env.sym("bool"),
+							 {Box(env.maybe_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.bool_type, env.pop().is_true());
 							 });
 
 			add_fimp(env.sym("dump"),

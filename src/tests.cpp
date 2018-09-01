@@ -20,14 +20,26 @@ namespace snabl {
 
 		Env env;
 
-		env.run("42");
-		assert(env.pop().as<Int>() == Int(42));
+		env.run("nil bool");
+		assert(!env.pop().as<bool>());
+
+		env.run("t bool");
+		assert(env.pop().as<bool>());
+
+		env.run("f bool");
+		assert(!env.pop().as<bool>());
 
 		env.run("t");
 		assert(env.pop().as<bool>());
 
 		env.run("f");
 		assert(!env.pop().as<bool>());
+
+		env.run("0 bool");
+		assert(!env.pop().as<bool>());
+
+		env.run("1 bool");
+		assert(env.pop().as<bool>());
 
 		env.run("1 = 1");
 		assert(env.pop().as<bool>());

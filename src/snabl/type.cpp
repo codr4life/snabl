@@ -28,9 +28,9 @@ namespace snabl {
 			(_parent_types.size() > parent->tag && _parent_types[parent->tag]);
 	}
 
-	void AType::call(const Box &val, bool now) const {
-		lib.env.push(val);
-	}
+	bool AType::is_true(const Box &val) const { return true; }
+
+	void AType::call(const Box &val, bool now) const { lib.env.push(val); }
 
 	void AType::dump(const Box &val, ostream &out) const {
 		out << id.name() << "(n/a)";

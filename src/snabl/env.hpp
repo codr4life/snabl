@@ -13,6 +13,7 @@
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
 #include "snabl/types/lambda.hpp"
+#include "snabl/types/nil.hpp"
 #include "snabl/types/time.hpp"
 
 namespace snabl {
@@ -35,6 +36,7 @@ namespace snabl {
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
 		TypePtr<Lambda> lambda_type;
+		TypePtr<Nil> nil_type;
 		TypePtr<Time> time_type;
 		
 		libs::Home home;

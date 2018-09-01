@@ -1,16 +1,17 @@
-#ifndef SNABL_INT_HPP
-#define SNABL_INT_HPP
+#ifndef SNABL_NIL_HPP
+#define SNABL_NIL_HPP
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
-	using Int = long long;
-	
-	class IntType: public Type<Int> {
+	using Nil = nullptr_t;
+
+	class NilType: public Type<Nil> {
 	public:
-		IntType(Lib &lib, Sym id);
+		NilType(Lib &lib, Sym id);
 		bool is_true(const Box &val) const override;
+		void call(const Box &val, bool now) const override;
 		void dump(const Box &val, ostream &out) const override;
 	};
 }

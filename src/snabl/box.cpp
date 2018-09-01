@@ -24,6 +24,8 @@ namespace snabl {
 		return _type->cmp(*this, rhs);
 	}
 
+	bool Box::is_true() const { return _type->is_true(*this); }
+
 	void Box::call(bool now) const { _type->call(*this, now); }
 
 	void Box::dump(ostream &out) const { _type->dump(*this, out); }
