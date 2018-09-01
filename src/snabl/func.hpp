@@ -33,7 +33,7 @@ namespace snabl {
 	const FimpPtr &Func::add_fimp(const FuncPtr &func,
 																const Fimp::Args &args, const Fimp::Rets &rets,
 																ImpT &&... imp) {
-		auto id(Fimp::get_id(func, args));
+		auto id(Fimp::get_id(*func, args));
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 

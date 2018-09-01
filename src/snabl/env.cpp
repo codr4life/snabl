@@ -191,7 +191,7 @@ namespace snabl {
 		const auto pos(begin->pos);
 
 		if (fimp) {
-			if (!fimp->imp) { Fimp::compile(fimp, pos); }
+			if (!fimp->imp) { fimp->compile(pos); }
 			emit(ops::Funcall::type, pos, fimp);
 		} else if (func) {
 			emit(ops::Funcall::type, pos, func);

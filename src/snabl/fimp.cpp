@@ -5,9 +5,9 @@
 #include "snabl/lib.hpp"
 
 namespace snabl {
-	Sym Fimp::get_id(const FuncPtr &func, const Args &args) {
+	Sym Fimp::get_id(const Func &func, const Args &args) {
 		stringstream buf;
-		buf << func->id.name() << '<';
+		buf << func.id.name() << '<';
 		char sep = 0;
 
 		for (auto &a: args) {
@@ -25,24 +25,24 @@ namespace snabl {
 		}
 
 		buf << '>';
-		return func->lib.env.sym(buf.str());
+		return func.lib.env.sym(buf.str());
 	}
 
-	bool Fimp::compile(FimpPtr &fimp, Pos pos) {
-		auto &env(fimp->func->lib.env);
-		if (fimp->_start_pc) { return false; }
+	bool Fimp::compile(Pos pos) {
+		auto &env(func->lib.env);
+		if (_start_pc) { return false; }
 		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
-		fimp->_start_pc = env.ops.end();
+		_start_pc = env.ops.end();
 		env.emit(ops::Begin::type, pos);
-		env.compile(fimp->forms);
+		env.compile(forms);
 		
-		const bool has_vars(find_if(*fimp->_start_pc+1, env.ops.end(), [](const Op &op) {
+		const bool has_vars(find_if(*_start_pc+1, env.ops.end(), [](const Op &op) {
 					return &op.type == &ops::PutVar::type;
 				}) != env.ops.end());
 
-		if (!has_vars) { (*fimp->_start_pc)++; }
+		if (!has_vars) { (*_start_pc)++; }
 		env.emit(ops::FimpRet::type, pos, has_vars);
-		fimp->_nops = skip.nops = env.ops.end()-*fimp->_start_pc;
+		_nops = skip.nops = env.ops.end()-*_start_pc;
 		if (!has_vars) { skip.nops++; }
 		return true;
 	}
@@ -63,21 +63,21 @@ namespace snabl {
 
 			env.end_call();
 		} else {
-			compile(fimp, pos);
+			fimp->compile(pos);
 			env.begin_call(fimp, env.pc);
 			env.pc = *fimp->_start_pc;
 		}
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
-		id(get_id(func, args)), func(func), args(args), rets(rets), imp(imp),
+		id(get_id(*func, args)), func(func), args(args), rets(rets), imp(imp),
 	  _start_pc(nullopt), _nops(0) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
-		id(get_id(func, args)), func(func), args(args), rets(rets), forms(begin, end),
+		id(get_id(*func, args)), func(func), args(args), rets(rets), forms(begin, end),
 		_start_pc(nullopt), _nops(0) { }
 
 	optional<size_t> Fimp::score(const Stack &stack) const {
