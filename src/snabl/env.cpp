@@ -213,7 +213,7 @@ namespace snabl {
 	}
 
 	ScopePtr &Env::begin_scope(const ScopePtr &parent) {
-		_scopes.emplace_back(1, *this, parent);
+		_scopes.emplace_back(ScopePtr::Make(), *this, parent);
 		return _scopes.back();
 	}
 

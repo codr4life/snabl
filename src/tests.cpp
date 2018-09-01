@@ -98,7 +98,7 @@ namespace snabl {
 	}
 
 	void ptr_tests() {
-		Ptr<int> foo(1, 42);
+		Ptr<int> foo(Ptr<int>::Make(), 42);
 		assert(foo.nrefs() == 1);
 		assert(*foo == 42);
 
@@ -116,7 +116,7 @@ namespace snabl {
 		assert(*foo == 7);
 
 		{
-			Ptr<int> bar(1, 42);
+			Ptr<int> bar(Ptr<int>::Make(), 42);
 			auto baz(bar);
 
 			baz = foo;

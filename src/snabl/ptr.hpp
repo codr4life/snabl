@@ -7,13 +7,14 @@ namespace snabl {
 	template <typename T>
 	class Ptr {
 	public:
+		struct Make {};
+		
 		struct Imp {
 			T val;
 			size_t nrefs;
 			
 			template <typename... ArgsT>
-			Imp(size_t nrefs, ArgsT &&... args):
-				val(forward<ArgsT>(args)...), nrefs(nrefs) { }
+			Imp(ArgsT &&... args): val(forward<ArgsT>(args)...), nrefs(1) { }
 		};
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
@@ -23,8 +24,8 @@ namespace snabl {
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
 		
 		template <typename... ArgsT>
-		Ptr(size_t nrefs, ArgsT &&... args):
-			_imp(new Imp(nrefs, forward<ArgsT>(args)...)) { }
+		Ptr(const Make &_, ArgsT &&... args):
+			_imp(new Imp(forward<ArgsT>(args)...)) { }
 
 		~Ptr() {
 			if (_imp) { decr(); }

@@ -38,7 +38,8 @@ namespace snabl {
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
 		return func->_fimps.emplace(id,
-																FimpPtr(1, func, args, rets, forward<ImpT>(imp)...))
+																FimpPtr(FimpPtr::Make(),
+																				func, args, rets, forward<ImpT>(imp)...))
 			.first->second;
 	}
 }
