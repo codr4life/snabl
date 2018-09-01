@@ -18,7 +18,7 @@ namespace snabl {
 		};
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
-		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
+		Ptr(const Ptr<T> &src): Ptr<T>(src._imp) { }
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
 		
 		template <typename... ArgsT>
@@ -34,6 +34,13 @@ namespace snabl {
 			return *this;
 		}
 
+		Ptr<T> &operator =(Ptr<T> &&src) {
+			if (_imp) { decr(); }
+			_imp = src->imp;
+			src->_imp = nullptr;
+			return *this;
+		}
+
 		T &operator *() const { return const_cast<T &>(_imp->val); }		
 		T &operator *() { return _imp->val; }
 
@@ -46,7 +53,9 @@ namespace snabl {
 	private:
 		Imp *_imp;
 
-		Ptr(Imp &imp): Ptr<T>() { set(&imp); }
+		Ptr(Imp *imp): Ptr<T>() {
+			if ((_imp = imp)) { incr(); }
+		}
 
 		void incr() { _imp->nrefs++; }
 		

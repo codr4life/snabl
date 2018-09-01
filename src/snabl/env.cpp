@@ -226,7 +226,7 @@ namespace snabl {
 	}
 
 	const ScopePtr &Env::begin_scope(const ScopePtr &parent) {
-		_scopes.push_back(std::make_shared<Scope>(*this, parent));
+		_scopes.push_back(make_ptr<Scope>(*this, parent));
 		return _scopes.back();
 	}
 
