@@ -45,7 +45,7 @@ namespace snabl {
 		Ops ops;
 		PC pc;
 
-		const ScopePtr main;
+		const ScopePtr &main;
 		
 		Env();
 		size_t next_type_tag();
