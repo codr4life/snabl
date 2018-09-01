@@ -73,7 +73,7 @@ namespace snabl {
 				delete _imp;
 				_imp = nullptr;
 			} else {
-				--_imp->nrefs;
+				_imp->nrefs--;
 			}
 		}
 	};

@@ -66,15 +66,15 @@ namespace snabl {
 				auto m(lib.get_macro(id));
 				
 				if (m) {
-					m->call(in, end, func, fimp, env);
+					(*m)->call(in, end, func, fimp, env);
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
 					if (!fn) { throw Error("Unknown id: " + id.name()); }
 					
-					if (fn->nargs) {
+					if ((*fn)->nargs) {
 						if (func) { throw Error("Extra func"); }
-						func = fn;
+						func = *fn;
 
 						if (in != end && &in->type == &TypeList::type) {
 							auto &ids((in++)->as<TypeList>().ids);
@@ -83,13 +83,13 @@ namespace snabl {
 												[&lib](Sym id) {
 													auto t(lib.get_type(id));
 													if (!t) { throw Error("Unknown type: " + id.name()); }
-													return Box(t);
+													return Box(*t);
 												});
 							
-							fimp = fn->get_best_fimp(args);
+							fimp = (*fn)->get_best_fimp(args);
 						}
 					} else {
-						auto fi(fn->get_fimp());
+						auto &fi((*fn)->get_fimp());
 						if (!fi->imp) { fi->compile(form.pos); }
 						env.emit(ops::Funcall::type, form.pos, fi);
 					}

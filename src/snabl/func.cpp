@@ -8,12 +8,12 @@ namespace snabl {
 		return _fimps.begin()->second;
 	}
 
-	FimpPtr Func::get_best_fimp(const Stack &stack) const {
+	const FimpPtr &Func::get_best_fimp(const Stack &stack) const {
 		optional<size_t> best_score;
-		FimpPtr best_fimp;
+		FimpPtr *best_fimp(nullptr);
 		
 		for (auto &fp: _fimps) {
-			auto &f(fp.second);
+			auto &f(const_cast<FimpPtr &>(fp.second));
 			auto fs(f->score(stack));
 			
 			if (fs) {
@@ -21,13 +21,13 @@ namespace snabl {
 			
 				if (!best_score || fs < best_score) {
 					best_score = fs;
-					best_fimp = f;
+					best_fimp = &f;
 				}
 			}
 		}
 
 		if (!best_fimp) { throw Error("Func not applicable: " + id.name()); }
-		return best_fimp;
+		return *best_fimp;
 	}
 
 	void Func::clear() { _fimps.clear(); }

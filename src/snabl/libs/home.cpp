@@ -85,7 +85,7 @@ namespace snabl {
 										for (const auto id: ids) {
 											const auto t(lib.get_type(id));
 											if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
-											args.emplace_back(t);
+											args.emplace_back(*t);
 										}
 									} else {
 										throw SyntaxError(args_form.pos,
@@ -100,7 +100,7 @@ namespace snabl {
 										const auto id(rets_form.as<forms::Id>().id);
 										const auto t(lib.get_type(id));
 										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
-										rets.push_back(t);
+										rets.push_back(*t);
 									} else {
 										throw SyntaxError(rets_form.pos,
 																			fmt("Invalid func rets: %0",

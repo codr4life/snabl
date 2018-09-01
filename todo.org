@@ -1,7 +1,4 @@
-* ptr
-** fix github decr issue
-*** use exchange?
-** change get_best_fimp etc. to return Ptr*
+* fix github decr issue
 * add recall op
 ** jump immediately
 * extract Parser

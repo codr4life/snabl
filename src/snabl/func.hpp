@@ -23,7 +23,7 @@ namespace snabl {
 		
 		Func(Lib &lib, Sym id, size_t nargs, size_t nrets);
 		const FimpPtr &get_fimp();
-		FimpPtr get_best_fimp(const Stack &stack) const;
+		const FimpPtr &get_best_fimp(const Stack &stack) const;
 		void clear();
 	private:
 		unordered_map<Sym, FimpPtr> _fimps;

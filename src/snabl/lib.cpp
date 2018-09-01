@@ -30,18 +30,18 @@ namespace snabl {
 	}
 
 	
-	MacroPtr Lib::get_macro(Sym id) {
+	const MacroPtr *Lib::get_macro(Sym id) {
 		auto found(_macros.find(id));
-		return (found == _macros.end()) ? nullptr : found->second;
+		return (found == _macros.end()) ? nullptr : &found->second;
 	}
 
-	ATypePtr Lib::get_type(Sym id) {
+	const ATypePtr *Lib::get_type(Sym id) {
 		auto found(_types.find(id));
-		return (found == _types.end()) ? nullptr : found->second;
+		return (found == _types.end()) ? nullptr : &found->second;
 	}
 	
-	FuncPtr Lib::get_func(Sym id) {
+	const FuncPtr *Lib::get_func(Sym id) {
 		auto found(_funcs.find(id));
-		return (found == _funcs.end()) ? nullptr : found->second;
+		return (found == _funcs.end()) ? nullptr : &found->second;
 	}
 }

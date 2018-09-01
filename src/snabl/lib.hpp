@@ -40,9 +40,9 @@ namespace snabl {
 														const Fimp::Rets &rets,
 														ImpT &&... imp);
 
-		MacroPtr get_macro(Sym id);
-		ATypePtr get_type(Sym id);
-		FuncPtr get_func(Sym id);
+		const MacroPtr *get_macro(Sym id);
+		const ATypePtr *get_type(Sym id);
+		const FuncPtr *get_func(Sym id);
 	private:
 		unordered_map<Sym, MacroPtr> _macros;
 		unordered_map<Sym, ATypePtr> _types;
