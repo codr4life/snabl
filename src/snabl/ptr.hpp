@@ -14,7 +14,7 @@ namespace snabl {
 			size_t nrefs;
 			
 			template <typename... ArgsT>
-			Imp(ArgsT &&... args): val(forward<ArgsT>(args)...), nrefs(1) { }
+			Imp(ArgsT &&... args): val(forward<ArgsT>(args)...), nrefs(0) { }
 		};
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
@@ -60,9 +60,11 @@ namespace snabl {
 		void incr() { _imp->nrefs++; }
 		
 		void decr() {
-			if (!(--_imp->nrefs)) {
+			if (! _imp->nrefs) {
 				delete _imp;
 				_imp = nullptr;
+			} else {
+				--_imp->nrefs;
 			}
 		}
 		

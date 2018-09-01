@@ -111,20 +111,20 @@ namespace snabl {
 
 	void ptr_ref_tests() {
 		auto foo(make_ptr<int>(42));
-		assert(foo.nrefs() == 1);
+		assert(foo.nrefs() == 0);
 		assert(*foo == 42);
 
 		foo = foo;
-		assert(foo.nrefs() == 1);
+		assert(foo.nrefs() == 0);
 
 		{
 			Ptr<int> bar(foo);
-			assert(foo.nrefs() == 2);
-			assert(bar.nrefs() == 2);
+			assert(foo.nrefs() == 1);
+			assert(bar.nrefs() == 1);
 			*bar = 7;
 		}
 		
-		assert(foo.nrefs() == 1);
+		assert(foo.nrefs() == 0);
 		assert(*foo == 7);
 
 		{
@@ -132,8 +132,8 @@ namespace snabl {
 			auto baz(bar);
 
 			baz = foo;
-			assert(foo.nrefs() == 2);
-			assert(bar.nrefs() == 1);
+			assert(foo.nrefs() == 1);
+			assert(bar.nrefs() == 0);
 		}
 	}
 
