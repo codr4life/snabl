@@ -230,7 +230,7 @@ namespace snabl {
 		return _scopes.back();
 	}
 
-	const ScopePtr &Env::scope() {
+	const ScopePtr &Env::scope() const {
 		if (_scopes.empty()) { throw Error("No open scopes"); }
 		return _scopes.back();
 	}

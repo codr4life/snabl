@@ -76,8 +76,7 @@ namespace snabl {
 
 	template <typename T, typename... ArgsT>
 	Ptr<T> make_ptr(ArgsT &&... args) {
-		thread_local static const typename Ptr<T>::Make tag;
-		return Ptr<T>(tag, forward<ArgsT>(args)...);
+		return Ptr<T>(typename Ptr<T>::Make(), forward<ArgsT>(args)...);
 	}
 }
 

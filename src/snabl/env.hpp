@@ -75,7 +75,7 @@ namespace snabl {
 		void end_lib();
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
-		const ScopePtr &scope();
+		const ScopePtr &scope() const;
 		void end_scope();
 		
 		template <typename... ArgsT>

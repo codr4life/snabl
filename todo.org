@@ -1,5 +1,5 @@
 * ptr
-** decr fix from reddit
+** fix github decr issue
 ** change get_best_fimp etc. to return Ptr*
 * add recall op
 ** jump immediately
