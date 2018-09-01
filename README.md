@@ -20,7 +20,7 @@ func: fib<Int> Int (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack from user code.
+Much like Forth, Snabl supports directly manipulating the parameter stack from user code. The following code currently runs around 60% faster than the preceding due to not requiring local variables.
 
 ```
 func: fib<Int> Int (
