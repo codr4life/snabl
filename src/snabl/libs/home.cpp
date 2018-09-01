@@ -156,6 +156,22 @@ namespace snabl {
 								 env.push(env.float_type, Float(v));
 							 });
 
+			add_fimp(env.sym("++"),
+							 {Box(env.int_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.int_type, env.pop().as<Int>()+1);
+							 });
+
+			add_fimp(env.sym("--"),
+							 {Box(env.int_type)},
+							 {env.int_type},
+							 [](Call &call) {
+								 Env &env(call.scope->env);
+								 env.push(env.int_type, env.pop().as<Int>()-1);
+							 });
+			
 			add_fimp(env.sym("+"),
 							 {Box(env.int_type), Box(env.int_type)},
 							 {env.int_type},

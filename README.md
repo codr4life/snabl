@@ -10,21 +10,21 @@ Snabl supports dispatching functions on multiple arguments. Each function name m
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
 #### Fixation
-Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be further divided using ```,``` which evaluates the rest of the expression separately, or enclosed in ```()``` which evaluates the enclosed expression and pushes the result.
+Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be divided using ```,``` which evaluates the rest of the expression separately as an argument, enclosed in ```()``` which evaluates the enclosed expression the same way; and divided using ```;``` which executes the current function before evaluating the rest separately. 
 
 ```
 func: fib<Int> Int (
-  let: n _
-  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)
+  let: n _			
+  if: (@n < 2) @n, (fib, @n --) + (fib, @n - 2)
 )
 ```
 
 #### Concatenation
-Like Forth, Snabl supports directly manipulating the parameter stack from user code.
+Much like Forth, Snabl supports directly manipulating the parameter stack from user code.
 
 ```
 func: fib<Int> Int (
-  dup if: (< 2) _, (fib, dup - 1) swap + (fib, - 2)
+  dup if: (< 2) _, (fib, --; dup) swap + (fib, --)
 )
 ```
 

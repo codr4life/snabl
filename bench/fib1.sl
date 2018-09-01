@@ -1,6 +1,6 @@
 func: fib<Int> Int (
   let: n _			
-  if: (@n < 2) @n, (fib, @n - 1) + (fib, @n - 2)
+  if: (@n < 2) @n, (fib, @n --) + (fib, @n - 2)
 )
 
-say, ms, bench 100 {(fib 20) drop}
+say, bench 100 {fib 20; drop}; ms

@@ -57,10 +57,14 @@ namespace snabl {
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args);
+		
+		void emit(Pos pos, FuncPtr &func, FimpPtr &fimp);
 
 		void compile(string_view in);
 		void compile(const Forms &forms);		
 		void compile(Forms::const_iterator begin, Forms::const_iterator end);
+		void compile(Forms::const_iterator begin, Forms::const_iterator end,
+								 FuncPtr &func, FimpPtr &fimp);
 		
 		void run(string_view in);
 		void run(istream &in);

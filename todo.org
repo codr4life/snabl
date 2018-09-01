@@ -1,10 +1,10 @@
+* add recall op
+** jump immediately
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn
 * add test=/== funcs
 ** use in tests
-* add recall op
-** jump immediately
 * only begin/end scopes if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body

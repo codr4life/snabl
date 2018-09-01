@@ -8,7 +8,7 @@ namespace snabl {
 	Env::Env():
 		_type_tag(1),
 		home(*this),
-		separators({' ', '\t', '\n', ',', '<', '>', '(', ')', '{', '}'}),
+		separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
 		main(begin_scope()),
 		_pos(home_pos) { begin_lib(home); }
 
@@ -54,7 +54,10 @@ namespace snabl {
 				break;
 			case ',':
 				_pos.col++;
-				return parse_body<forms::Sexpr>(in, end, out);
+				return parse_body<forms::Comma>(in, end, out);
+			case ';':
+				_pos.col++;
+				return parse_body<forms::Semicolon>(in, end, out);
 			case '(':
 				_pos.col++;
 				parse_sexpr(in, out);
@@ -181,21 +184,31 @@ namespace snabl {
 		compile(forms);
 	}
 
+	void Env::emit(Pos pos, FuncPtr &func, FimpPtr &fimp) {
+		if (fimp) {
+			if (!fimp->imp) { fimp->compile(pos); }
+			emit(ops::Funcall::type, pos, fimp);
+			fimp = nullptr;
+		} else if (func) {
+			emit(ops::Funcall::type, pos, func);
+		}
+
+		func = nullptr;
+	}
+	
 	void Env::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
 
 	void Env::compile(Forms::const_iterator begin, Forms::const_iterator end) {
 		FuncPtr func;
 		FimpPtr fimp;
 
+		compile(begin, end, func, fimp);
+	}
+	
+	void Env::compile(Forms::const_iterator begin, Forms::const_iterator end,
+										FuncPtr &func, FimpPtr &fimp) {
 		for (auto i(begin); i != end;) { i->imp->compile(i, end, func, fimp, *this); }
-		const auto pos(begin->pos);
-
-		if (fimp) {
-			if (!fimp->imp) { fimp->compile(pos); }
-			emit(ops::Funcall::type, pos, fimp);
-		} else if (func) {
-			emit(ops::Funcall::type, pos, func);
-		}
+		emit(begin->pos, func, fimp);
 	}
 
 	void Env::begin_lib(Lib &lib) {

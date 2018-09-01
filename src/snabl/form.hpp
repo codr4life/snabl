@@ -68,6 +68,19 @@ namespace snabl {
 	}
 
 	namespace forms {
+		struct Comma: public FormImp {			
+			static const FormType<Comma> type;
+			const Forms body;
+			Comma(Forms::const_iterator begin, Forms::const_iterator end);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
 		struct Id: public FormImp {
 			static const FormType<Id> type;
 			const Sym id;
@@ -99,6 +112,19 @@ namespace snabl {
 			static const FormType<Literal> type;
 			const Box val;
 			Literal(const Box &val);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Semicolon: public FormImp {			
+			static const FormType<Semicolon> type;
+			const Forms body;
+			Semicolon(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 

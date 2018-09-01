@@ -1,5 +1,5 @@
 func: fib<Int> Int (
-  dup if: (< 2) _, (fib, dup - 1) swap + (fib, - 2)
+  dup if: (< 2) _, (fib, --; dup) swap + (fib, --)
 )
 
-say, ms, bench 100 {(fib 20) drop}
+say, bench 100 {fib 20; drop}; ms

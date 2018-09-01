@@ -14,11 +14,36 @@ namespace snabl {
 		imp(source.imp->clone()) { }
 
 	namespace forms {
+		const FormType<Comma> Comma::type("Comma");
 		const FormType<Id> Id::type("Id");
 		const FormType<Lambda> Lambda::type("Lambda");
 		const FormType<Literal> Literal::type("Literal");
+		const FormType<Semicolon> Semicolon::type("Semicolon");
 		const FormType<Sexpr> Sexpr::type("Sexpr");
 		const FormType<TypeList> TypeList::type("TypeList");
+
+		Comma::Comma(Forms::const_iterator begin, Forms::const_iterator end):
+			body(begin, end) { }
+
+		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
+
+		void Comma::dump(ostream &out) const {
+			out << ", ";
+			char sep(0);
+
+			for (auto &f: body) {
+				if (sep) { out << sep; }
+				f.imp->dump(out);
+				sep = ' ';
+			}
+		}		
+
+		void Comma::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &sexpr((*in++).as<Comma>());
+			env.compile(sexpr.body);
+		}
 
 		Id::Id(Sym id): id(id) { }
 
@@ -117,6 +142,33 @@ namespace snabl {
 			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);			
 		}
 		
+		Semicolon::Semicolon(Forms::const_iterator begin, Forms::const_iterator end):
+			body(begin, end) { }
+
+		FormImp *Semicolon::clone() const {
+			return new Semicolon(body.begin(), body.end());
+		}
+
+		void Semicolon::dump(ostream &out) const {
+			out << "; ";
+			char sep(0);
+
+			for (auto &f: body) {
+				if (sep) { out << sep; }
+				f.imp->dump(out);
+				sep = ' ';
+			}
+		}		
+
+		void Semicolon::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &form(*in++);
+			if (!func) { throw SyntaxError(form.pos, "Missing func"); }
+			env.emit(form.pos, func, fimp);
+			env.compile(form.as<Semicolon>().body);
+		}
+
 		Sexpr::Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
 			body(begin, end) { }
 
@@ -135,8 +187,7 @@ namespace snabl {
 			out << ')';
 		}		
 
-		void Sexpr::compile(Forms::const_iterator &in,
-												Forms::const_iterator end,
+		void Sexpr::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
 			auto &sexpr((*in++).as<Sexpr>());
@@ -165,8 +216,7 @@ namespace snabl {
 			out << '>';
 		}
 		
-		void TypeList::compile(Forms::const_iterator &in,
-													 Forms::const_iterator end,
+		void TypeList::compile(Forms::const_iterator &in, Forms::const_iterator end,
 													 FuncPtr &func, FimpPtr &fimp,
 													 Env &env) const {
 			throw Error("Stray type list");
