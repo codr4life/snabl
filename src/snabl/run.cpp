@@ -76,21 +76,21 @@ namespace snabl {
 		}
 	op_funcall: {
 			auto &op(pc->as<ops::Funcall>());
-			FimpPtr fimp(op.fimp);
+			const FimpPtr *fimp(op.fimp ? &op.fimp : nullptr);
 			
-			if (!fimp && op.prev_fimp) { fimp = op.prev_fimp; }
+			if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
 			
 			if (fimp) {
-				if (!fimp->score(_stack)) { fimp = nullptr; }
+				if (!(*fimp)->score(_stack)) { fimp = nullptr; }
 			} else {
-				fimp = op.func->get_best_fimp(_stack);
+				fimp = &op.func->get_best_fimp(_stack);
 			}
 			
 			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
-			if (!op.fimp) { op.prev_fimp = fimp; }
+			if (!op.fimp) { op.prev_fimp = *fimp; }
 			
 			pc++;
-			Fimp::call(fimp, pc->pos);
+			Fimp::call(*fimp, pc->pos);
 			SNABL_DISPATCH();
 		}
 	op_getvar: {
