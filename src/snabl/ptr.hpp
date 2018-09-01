@@ -18,9 +18,7 @@ namespace snabl {
 		};
 
 		Ptr(nullptr_t _ = nullptr): _imp(nullptr) { }
-		
 		Ptr(const Ptr<T> &src): Ptr<T>(*src._imp) { }
-
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
 		
 		template <typename... ArgsT>
@@ -36,12 +34,10 @@ namespace snabl {
 			return *this;
 		}
 
-		const T &operator *() const { return _imp->val; }
-		
+		T &operator *() const { return const_cast<T &>(_imp->val); }		
 		T &operator *() { return _imp->val; }
 
-		const T *operator ->() const { return &_imp->val; }
-		
+		T *operator ->() const { return const_cast<T *>(&_imp->val); }		
 		T *operator ->() { return &_imp->val; }
 
 		operator bool() const { return _imp; }
@@ -68,6 +64,12 @@ namespace snabl {
 			}
 		}		
 	};
+
+	template <typename T, typename... ArgsT>
+	Ptr<T> make_ptr(ArgsT &&... args) {
+		thread_local static const typename Ptr<T>::Make tag;
+		return Ptr<T>(tag, forward<ArgsT>(args)...);
+	}
 }
 
 #endif

@@ -109,8 +109,8 @@ namespace snabl {
 		assert(env.pop().as<Int>() > Int(15));
 	}
 
-	void ptr_tests() {
-		Ptr<int> foo(Ptr<int>::Make(), 42);
+	void ptr_ref_tests() {
+		auto foo(make_ptr<int>(42));
 		assert(foo.nrefs() == 1);
 		assert(*foo == 42);
 
@@ -128,7 +128,7 @@ namespace snabl {
 		assert(*foo == 7);
 
 		{
-			Ptr<int> bar(Ptr<int>::Make(), 42);
+			auto bar(make_ptr<int>(42));
 			auto baz(bar);
 
 			baz = foo;
@@ -137,6 +137,22 @@ namespace snabl {
 		}
 	}
 
+	struct Foo {
+		int v;
+		Foo(int v): v(v) { }
+	};
+		
+	void ptr_const_tests() {
+		const auto p(make_ptr<Foo>(41));
+		p->v++;
+		assert(p->v == 42);
+	}
+	
+	void ptr_tests() {
+		ptr_ref_tests();
+		ptr_const_tests();
+	}
+	
 	void all_tests() {
 		fmt_tests();
 		lang_tests();
