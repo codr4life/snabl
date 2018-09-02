@@ -115,7 +115,7 @@ namespace snabl {
 							 {Box(env.maybe_type), Box(env.maybe_type)},
 							 {env.bool_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
 								 env.push(env.bool_type, x.is_eqval(y));
 							 });
@@ -124,7 +124,7 @@ namespace snabl {
 							 {Box(env.maybe_type), Box(env.maybe_type)},
 							 {env.bool_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
 								 env.push(env.bool_type, x.is_equid(y));
 							 });
@@ -133,7 +133,7 @@ namespace snabl {
 							 {Box(env.a_type), Box(env.a_type)},
 							 {env.bool_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
 								 env.push(env.bool_type, x.cmp(y) == Cmp::LT);
 							 });
@@ -142,7 +142,7 @@ namespace snabl {
 							 {Box(env.float_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 const Float v(env.pop().as<Float>());
 								 env.push(env.int_type, Int(v));
 							 });
@@ -151,7 +151,7 @@ namespace snabl {
 							 {Box(env.int_type)},
 							 {env.float_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 const Int v(env.pop().as<Int>());
 								 env.push(env.float_type, Float(v));
 							 });
@@ -160,7 +160,7 @@ namespace snabl {
 							 {Box(env.int_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.int_type, env.pop().as<Int>()+1);
 							 });
 
@@ -168,7 +168,7 @@ namespace snabl {
 							 {Box(env.int_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.int_type, env.pop().as<Int>()-1);
 							 });
 			
@@ -176,7 +176,7 @@ namespace snabl {
 							 {Box(env.int_type), Box(env.int_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
 								 env.push(env.int_type, x+y);
 							 });
@@ -185,7 +185,7 @@ namespace snabl {
 							 {Box(env.int_type), Box(env.int_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
 								 env.push(env.int_type, x-y);
 							 });
@@ -194,7 +194,7 @@ namespace snabl {
 							 {Box(env.int_type), Box(env.int_type)},
 							 {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>()), x(env.pop().as<Int>());
 								 env.push(env.int_type, x*y);
 							 });
@@ -203,14 +203,14 @@ namespace snabl {
 							 {Box(env.maybe_type)},
 							 {env.bool_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.bool_type, env.pop().is_true());
 							 });
 
 			add_fimp(env.sym("dump"),
 							 {Box(env.maybe_type)}, {},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.pop().dump(cerr);
 								 cerr << endl;
 							 });
@@ -218,7 +218,7 @@ namespace snabl {
 			add_fimp(env.sym("say"),
 							 {Box(env.maybe_type)}, {},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.pop().print(cout);
 								 cout << endl;
 							 });
@@ -226,28 +226,28 @@ namespace snabl {
 			add_fimp(env.sym("ns"),
 							 {Box(env.int_type)}, {env.time_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.time_type, env.pop().as<Int>());
 							 });			
 
 			add_fimp(env.sym("ms"),
 							 {Box(env.int_type)}, {env.time_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.time_type, Time::ms(env.pop().as<Int>()));
 							 });			
 
 			add_fimp(env.sym("ms"),
 							 {Box(env.time_type)}, {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 env.push(env.int_type, env.pop().as<Time>().as_ms());
 							 });
 			
 			add_fimp(env.sym("sleep"),
 							 {Box(env.time_type)}, {},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 const Time time(env.pop().as<Time>());
 								 this_thread::sleep_for(nanoseconds(time.ns));
 							 });
@@ -255,7 +255,7 @@ namespace snabl {
 			add_fimp(env.sym("bench"),
 							 {Box(env.int_type), Box(env.a_type)}, {env.time_type},
 							 [](Call &call) {
-								 Env &env(call.scope->env);
+								 Env &env(call.scope.env);
 								 const Box target(env.pop());
 								 const Int reps(env.pop().as<Int>());
 								 for (int i(0); i < reps/2; i++) { target.call(true); }

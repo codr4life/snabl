@@ -22,8 +22,8 @@ namespace snabl {
 	void LambdaType::call(const Box &val, bool now) const {
 		const Lambda l(val.as<Lambda>());
 		Env &env(lib.env);
-		auto scope(env.begin_scope(l.parent_scope));
-		auto &call(env.begin_call(env.pc));
+		auto &scope(env.begin_scope(l.parent_scope));
+		auto &call(env.begin_call(*scope, env.pc));
 		env.pc = l.start_pc;
 		if (now) { env.run(*call.return_pc); }
 	}

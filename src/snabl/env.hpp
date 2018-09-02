@@ -79,7 +79,7 @@ namespace snabl {
 		void end_scope();
 		
 		template <typename... ArgsT>
-		Call &begin_call(ArgsT &&... args);
+		Call &begin_call(Scope &scope, ArgsT &&... args);
 
 		Call &call();
 		void end_call();
@@ -152,8 +152,8 @@ namespace snabl {
 	}
 
 	template <typename... ArgsT>
-	Call &Env::begin_call(ArgsT &&... args) {
-		_calls.emplace_back(scope(), forward<ArgsT>(args)...);
+	Call &Env::begin_call(Scope &scope, ArgsT &&... args) {
+		_calls.emplace_back(scope, forward<ArgsT>(args)...);
 		return _calls.back();
 	}
 }
