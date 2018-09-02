@@ -36,11 +36,11 @@ Snabl embraces but does not mandate functional programming. It supports first cl
 Example 3
 ```
 func: fib<Int Int Int> Int (
-	let: a swap
+  let: a swap
   swap dup
-	if: zero?
-	  (drop drop @a)
-		(dup if: one? drop (--; swap dup @a +; recall))
+  if: zero?
+    (drop drop @a)
+    (dup if: one? drop (--; swap dup @a +; recall))
 )
 ```
 
