@@ -10,7 +10,7 @@ Snabl supports dispatching functions on multiple arguments. Each function name m
 Snabl allows but doesn't require specifying types of function arguments and variables.
 
 #### Fixation
-Snabl allows reordering functions/operators and arguments within expressions to fit the problem being solved. Expressions may be divided using ```,``` which evaluates the rest of the expression separately as an argument; enclosed in ```()```, which evaluates the enclosed expression the same way; and divided using ```;```, which calls the function before evaluating the rest separately. 
+Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
 
 ```
 func: fib<Int> Int (
@@ -20,7 +20,7 @@ func: fib<Int> Int (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack from user code. The following code currently runs around 60% faster than the preceding, mostly due to not requiring local variables.
+Much like Forth, Snabl supports directly manipulating the parameter stack from user code. The following code currently runs around 60% faster than the preceding, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case before evaluating the next token.
 
 ```
 func: fib<Int> Int (
@@ -53,6 +53,8 @@ env.home.add_fimp(
 
     env.push(env.int_type, b);
   });
+
+env.run("say, fibonacci 10");
 ```
 
 #### Portability
