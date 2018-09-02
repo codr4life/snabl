@@ -37,6 +37,24 @@ Snabl uses reference counting instead of garbage collection, which leads to more
 #### Integration
 Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed.
 
+```
+snabl::Env env;
+snabl::Lib lib(env, "fib");
+lib.add_fimp(env.sym("fibonacci"),
+             {Box(env.int_type)}, {env.int_type},
+						 [](snabl::Call &call) {
+               Env &env(call.scope.env);								 
+               Int n(env.pop().as<snabl::Int>()), a(0), b(1);
+
+               while (n-- > 1) {
+                 std::swap(a, b);
+                 b += a;
+               }
+
+               env.push(env.int_type, b);
+             });
+```
+
 #### Portability
 Besides a decent C++17 compiler and CMake, Snabl has no dependencies.
 

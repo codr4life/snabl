@@ -5,17 +5,6 @@
 #include "snabl/timer.hpp"
 
 namespace snabl {
-	static Int fibonacci(Int n) {
-		Int a = 0, b = 1;
-		
-		while (n-- > 1) {
-			a = b;
-			b = a+b;
-		}
-
-		return b;
-	}
-	
 	namespace libs {
 		Home::Home(Env &env): Lib(env, env.sym("home")) {
 			env.maybe_type = add_type<Trait>(env.sym("Maybe"));
@@ -281,8 +270,15 @@ namespace snabl {
 			add_fimp(env.sym("fibonacci"),
 							 {Box(env.int_type)}, {env.int_type},
 							 [](Call &call) {
-								 Env &env(call.scope.env);
-								 env.push(env.int_type, fibonacci(env.pop().as<Int>()));
+								 Env &env(call.scope.env);								 
+								 Int n(env.pop().as<Int>()), a(0), b(1);
+								 
+								 while (n-- > 1) {
+									 swap(a, b);
+									 b += a;
+								 }
+
+								 env.push(env.int_type, b);
 							 });
 		}
 	}
