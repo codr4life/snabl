@@ -7,7 +7,7 @@ The following is a list of what could be considered defining features.
 Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
 
 #### Gradual Typing
-Snabl allows but doesn't require specifying types of function arguments and variables.
+Snabl allows but doesn't require specifying types of values, `A` may be used to allow any type.
 
 #### Fixation
 Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
@@ -31,7 +31,7 @@ func: fib<Int> Int (
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 600 times faster than Example 2 by using explicit tail recursion.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 600 times faster than Example 2 by using explicit tail recursion. While it's perfectly possible to accomplish the same thing without variables, Snabl discourages the level of stack juggling required by only supporting basic stack operations.
 
 Example 3
 ```
