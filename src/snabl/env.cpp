@@ -11,7 +11,8 @@ namespace snabl {
 		home(*this),
 		separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
 		main(begin_scope()),
-		_pos(home_pos) { begin_lib(home); }
+		_pos(home_pos),
+		_is_safe(true) { begin_lib(home); }
 
 	size_t Env::next_type_tag() { return _type_tag++; }
 
@@ -267,9 +268,10 @@ namespace snabl {
 	void Env::push(const Box &val) { _stack.push_back(val); }
 
 	Box Env::pop() {
-		if (_stack.empty() ||
-				(!_stacks.empty() &&
-				 _stack.size() <= _stacks.back())) { throw Error("Nothing to pop"); }
+		if (_is_safe &&
+				(_stack.empty() ||
+				 (!_stacks.empty() &&
+					_stack.size() <= _stacks.back()))) { throw Error("Nothing to pop"); }
 				
 		Box v(_stack.back());
 		_stack.pop_back();

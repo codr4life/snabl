@@ -12,7 +12,7 @@ namespace snabl {
 	class Call {
 	public:
 		Scope &scope;
-		State state;
+		const State state;
 
 		Fimp *const fimp;
 		Lambda *const lambda;
@@ -20,6 +20,7 @@ namespace snabl {
 		
 		Call(Scope &scope, Fimp &fimp, optional<PC> return_pc=nullopt);
 		Call(Scope &scope, Lambda &lambda, PC return_pc);
+		void recall();
 	};
 }
 

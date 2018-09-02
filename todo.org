@@ -1,6 +1,3 @@
-* add recall macro/op
-** restore state from call
-** jump to start of fimp/lambda
 * add tail recursive fib
 * add Sym type
 ** add parser support for $foo

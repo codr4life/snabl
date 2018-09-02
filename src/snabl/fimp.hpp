@@ -35,6 +35,7 @@ namespace snabl {
 				 Forms::const_iterator end);
 
 		bool compile(Pos pos);
+		optional<PC> start_pc() const { return _start_pc; }
 		optional<size_t> score(const Stack &stack) const;
 	private:
 		optional<PC> _start_pc;

@@ -28,7 +28,7 @@ namespace snabl {
 		static void* op_labels[] = {
 			&&op_begin, &&op_call, &&op_drop, &&op_dup, &&op_else, &&op_end,
 			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
-			&&op_push, &&op_putvar, &&op_skip, &&op_swap
+			&&op_push, &&op_putvar, &&op_recall, &&op_skip, &&op_swap
 		};
 
 		SNABL_DISPATCH();
@@ -67,7 +67,7 @@ namespace snabl {
 			const auto &fn(c.fimp->func);
 			auto stack_offs(end_stack());
 
-			if (_stack.size() != stack_offs+fn->nrets) {
+			if (_is_safe && _stack.size() != stack_offs+fn->nrets) {
 				throw Error(fmt("Invalid return stack: %0", {c.fimp->id}));
 			}
 			
@@ -82,7 +82,7 @@ namespace snabl {
 			if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
 			
 			if (fimp) {
-				if (!(*fimp)->score(_stack)) { fimp = nullptr; }
+				if (_is_safe && !(*fimp)->score(_stack)) { fimp = nullptr; }
 			} else {
 				fimp = &op.func->get_best_fimp(_stack);
 			}
@@ -126,6 +126,9 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
+	op_recall:
+		call().recall();
+		SNABL_DISPATCH();
 	op_skip:
 		pc += pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();

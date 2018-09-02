@@ -146,7 +146,12 @@ namespace snabl {
 			PutVar(Sym id);
 			void dump(Env &env, ostream &out) const override;
 		};
-		
+
+		struct Recall: public OpImp {
+			static const OpType<Recall> type;
+			Recall();
+		};
+
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
 			size_t nops;			

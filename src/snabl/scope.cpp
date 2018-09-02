@@ -12,8 +12,8 @@ namespace snabl {
 	}
 
 	void Scope::put_var(Sym id, const optional<Box> &val) {
-		auto found(_vars.find(id));
-
+		auto found(env.is_safe() ? _vars.find(id) : _vars.end());
+		
 		if (found == _vars.end()) {
 			if (val) {
 				_vars.emplace(make_pair(id, *val)).first->second;

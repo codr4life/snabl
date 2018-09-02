@@ -95,11 +95,14 @@ namespace snabl {
 		Box pop();
 		const Stack &stack();
 		void dump_stack(std::ostream &out) const;
+
+		bool is_safe() const { return _is_safe; }
 	private:
 		Pos _pos;
 		vector<Lib *> _libs;
 		deque<Lambda> _lambdas;
 		deque<Call> _calls;
+		bool _is_safe;
 		
 		template <typename FormT>
 		bool parse_body(istream &in, char end, Forms &out);

@@ -55,7 +55,7 @@ namespace snabl {
 			(*fimp->imp)(call);
 			auto stack_offs(env.end_stack());
 			
-			if (env.stack().size() != stack_offs+func->nrets) {
+			if (env.is_safe() && env.stack().size() != stack_offs+func->nrets) {
 				throw Error(fmt("Invalid return stack: %0", {fimp->id}));
 			}
 

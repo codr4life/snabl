@@ -29,6 +29,7 @@ namespace snabl {
 		const OpType<LambdaRet> LambdaRet::type("LambdaRet");
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
+		const OpType<Recall> Recall::type("Recall");
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 
@@ -79,6 +80,8 @@ namespace snabl {
 		PutVar::PutVar(Sym id): id(id) { }
 
 		void PutVar::dump(Env &env, ostream &out) const { out << ' ' << id.name(); }
+
+		Recall::Recall() { }
 
 		Skip::Skip(size_t nops): nops(nops) { }
 
