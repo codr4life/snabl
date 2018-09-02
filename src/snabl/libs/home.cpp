@@ -44,12 +44,22 @@ namespace snabl {
 									auto &form(*in++);
 									auto &p(*in++);
 
-									if (&p.type != &forms::Id::type) {
+									if (&p.type != &forms::Id::type && &p.type != &forms::Sexpr::type) {
 										throw SyntaxError(p.pos, "Invalid let: place");
 									}
+
+									if (in == end) { throw Error("Missing let: value"); }
+									env.compile(in++, in+1);
 									
-									if (in != end) { env.compile(in++, in+1); }
-									env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
+									if (&p.type == &forms::Id::type) {
+										env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
+									} else {
+										auto &body(p.as<forms::Sexpr>().body);
+										
+										for (auto pp = body.rbegin(); pp != body.rend(); pp++) {
+											env.emit(ops::PutVar::type, form.pos, pp->as<forms::Id>().id);
+										}
+									}
 								});
 
 			add_macro(env.sym("if:"),
@@ -149,6 +159,22 @@ namespace snabl {
 								 env.push(env.int_type, Int(v));
 							 });
 
+			add_fimp(env.sym("zero?"),
+							 {Box(env.int_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.bool_type, !env.pop().as<Int>());
+							 });
+
+			add_fimp(env.sym("one?"),
+							 {Box(env.int_type)},
+							 {env.bool_type},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.bool_type, env.pop().as<Int>() == 1);
+							 });
+			
 			add_fimp(env.sym("float"),
 							 {Box(env.int_type)},
 							 {env.float_type},

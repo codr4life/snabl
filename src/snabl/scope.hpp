@@ -18,6 +18,7 @@ namespace snabl {
 
 		void put_var(Sym id, const optional<Box> &val);
 		const Box *get_var(Sym id) const;
+		void clear_vars();
 	private:
 		map<Sym, Box> _vars;
 	};

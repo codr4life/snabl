@@ -28,4 +28,6 @@ namespace snabl {
 			}
 		}
 	}
+
+	void Scope::clear_vars() { _vars.clear(); }
 }

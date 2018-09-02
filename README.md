@@ -12,6 +12,7 @@ Snabl allows but doesn't require specifying types of function arguments and vari
 #### Fixation
 Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
 
+Example 1
 ```
 func: fib<Int> Int (
   let: n _			
@@ -20,8 +21,9 @@ func: fib<Int> Int (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. The following code currently runs around 50% faster than the preceding, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case before evaluating the next token.
+Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case before evaluating the next token.
 
+Example 2
 ```
 func: fib<Int> Int (
   dup if: (< 2) _, (fib, --; dup) swap + (fib, --)
@@ -29,7 +31,15 @@ func: fib<Int> Int (
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 600 times faster than Example 2 by using explicit tail recursion.
+
+Example 3
+```
+func: fib<Int Int Int> Int (
+  let: (n a b) _
+  if: (@n zero?) @a (if: (@n one?) @b (@n --; @b @a + @b; recall))
+)
+```
 
 #### Reference Counting
 Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.
