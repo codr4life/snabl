@@ -44,3 +44,29 @@
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin
+
+
+func: fib<Int Int Int> Int (
+	let: a swap
+  swap
+  dup if: zero? (drop drop @a) (dup if: one? drop (--; swap dup @a +; recall))
+)
+
+
+func: fib<Int Int Int> Int (
+	let: a swap
+  let: n swap
+  if: (@n zero?) (drop @a) (if: (@n one?) _ (@n --; swap dup @a +; recall))
+)
+
+
+
+func: fib<Int Int Int> Int (
+  let: (n a) _
+  if: (@n zero?) @a (if: (@n one?) _ (@n --; swap dup @a +; recall))
+)
+
+func: fib<Int Int Int> Int (
+  let: (n a b) _
+  if: (@n zero?) @a (if: (@n one?) @b (@n --; @b @a + @b; recall))
+)
