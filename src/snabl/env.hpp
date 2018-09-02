@@ -7,6 +7,7 @@
 #include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
+#include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/types/bool.hpp"
@@ -26,7 +27,7 @@ namespace snabl {
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
-		vector<size_t> _stack_offs;
+		vector<size_t> _stacks;
 		unordered_map<Sym, Box> _vars;
 	public:
 		static const Pos home_pos;
@@ -108,6 +109,8 @@ namespace snabl {
 		void parse_num(istream &in, Forms &out);
 		void parse_sexpr(istream &in, Forms &out);
 		void parse_type_list(istream &in, Forms &out);
+
+		friend struct State;
 	};
 
 	template <typename FormT>
@@ -152,7 +155,7 @@ namespace snabl {
 										 });
 	}
 
-	template <typename... ArgsT>
+		template <typename... ArgsT>
 	Call &Env::begin_call(Scope &scope, ArgsT &&... args) {
 		_calls.emplace_back(scope, forward<ArgsT>(args)...);
 		return _calls.back();

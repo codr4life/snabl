@@ -1,3 +1,4 @@
+#include "snabl/call.hpp"
 #include "snabl/env.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/std.hpp"

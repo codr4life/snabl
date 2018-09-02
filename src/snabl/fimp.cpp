@@ -1,5 +1,6 @@
 #include <cmath>
 
+#include "snabl/call.hpp"
 #include "snabl/env.hpp"
 #include "snabl/fimp.hpp"
 #include "snabl/lib.hpp"

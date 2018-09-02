@@ -1,10 +1,11 @@
 #include <ctype.h>
 
+#include "snabl/call.hpp"
 #include "snabl/env.hpp"
 
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
-	
+
 	Env::Env():
 		_type_tag(1),
 		home(*this),
@@ -251,24 +252,24 @@ namespace snabl {
 	}
 
 	void Env::begin_stack(size_t offs) {
-		_stack_offs.push_back(_stack_offs.empty()
+		_stacks.push_back(_stacks.empty()
 													? offs
-													: max(offs, _stack_offs.back()));
+													: max(offs, _stacks.back()));
 	}
 
 	size_t Env::end_stack() {
-		if (_stack_offs.empty()) { throw Error("No stacks"); }
-		auto offs(_stack_offs.back());
-		_stack_offs.pop_back();
+		if (_stacks.empty()) { throw Error("No stacks"); }
+		auto offs(_stacks.back());
+		_stacks.pop_back();
 		return offs;
 	}
-	
+
 	void Env::push(const Box &val) { _stack.push_back(val); }
 
 	Box Env::pop() {
 		if (_stack.empty() ||
-				(!_stack_offs.empty() &&
-				 _stack.size() <= _stack_offs.back())) { throw Error("Nothing to pop"); }
+				(!_stacks.empty() &&
+				 _stack.size() <= _stacks.back())) { throw Error("Nothing to pop"); }
 				
 		Box v(_stack.back());
 		_stack.pop_back();
