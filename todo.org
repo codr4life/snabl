@@ -6,6 +6,10 @@
 * add Sym type
 ** add parser support for $foo
 * fix github decr issue
+* add Str type
+** add parser support for ""
+*** convert from utf-8 on read
+** convert Sym to use wstring as name
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn
