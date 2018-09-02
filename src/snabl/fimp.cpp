@@ -50,7 +50,7 @@ namespace snabl {
 		env.begin_stack(env.stack().size()-func->nargs);
 		
 		if (fimp->imp) {
-			auto &call(env.begin_call(*env.scope(), fimp));
+			auto &call(env.begin_call(*env.scope(), *fimp));
 			(*fimp->imp)(call);
 			auto stack_offs(env.end_stack());
 			
@@ -62,7 +62,7 @@ namespace snabl {
 		} else {
 			fimp->compile(pos);
 			auto &scope(fimp->_has_vars ? env.begin_scope() : env.scope());
-			env.begin_call(*scope, fimp, env.pc);
+			env.begin_call(*scope, *fimp, env.pc);
 			env.pc = *fimp->_start_pc;
 		}
 	}
