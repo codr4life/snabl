@@ -17,7 +17,7 @@ namespace snabl {
 		Scope(Env &env, const ScopePtr &parent=nullptr);
 
 		void put_var(Sym id, const optional<Box> &val);
-		optional<Box> get_var(Sym id) const;
+		const Box *get_var(Sym id) const;
 	private:
 		map<Sym, Box> _vars;
 	};

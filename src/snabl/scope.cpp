@@ -5,10 +5,10 @@
 namespace snabl {
 	Scope::Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
 
-	optional<Box> Scope::get_var(Sym id) const {
+	const Box *Scope::get_var(Sym id) const {
 		const auto found(_vars.find(id));
-		if (found != _vars.end()) { return make_optional(found->second); }
-		return parent ? parent->get_var(id) : nullopt;
+		if (found != _vars.end()) { return &found->second; }
+		return parent ? parent->get_var(id) : nullptr;
 	}
 
 	void Scope::put_var(Sym id, const optional<Box> &val) {
