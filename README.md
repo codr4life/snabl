@@ -39,19 +39,20 @@ Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed
 
 ```
 snabl::Env env;
-snabl::Lib lib(env, "fib");
-lib.add_fimp(env.sym("fibonacci"),
-             {snabl::Box(env.int_type)}, {env.int_type}, [](snabl::Call &call) {
-               snabl::Env &env(call.scope.env);								 
-               snabl::Int n(env.pop().as<snabl::Int>()), a(0), b(1);
 
-               while (n-- > 1) {
-                 std::swap(a, b);
-                 b += a;
-               }
+env.home.add_fimp(
+  env.sym("fibonacci"),
+  {snabl::Box(env.int_type)}, {env.int_type}, [](snabl::Call &call) {
+    snabl::Env &env(call.scope.env);								 
+    snabl::Int n(env.pop().as<snabl::Int>()), a(0), b(1);
 
-               env.push(env.int_type, b);
-             });
+    while (n-- > 1) {
+      std::swap(a, b);
+      b += a;
+    }
+
+    env.push(env.int_type, b);
+  });
 ```
 
 #### Portability
