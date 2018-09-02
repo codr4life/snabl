@@ -110,7 +110,7 @@ namespace snabl {
 	}
 
 	void ptr_ref_tests() {
-		auto foo(make_ptr<int>(42));
+		auto foo(Ptr<int>::make(42));
 		assert(foo.nrefs() == 0);
 		assert(*foo == 42);
 
@@ -128,7 +128,7 @@ namespace snabl {
 		assert(*foo == 7);
 
 		{
-			auto bar(make_ptr<int>(42));
+			auto bar(Ptr<int>::make(42));
 			auto baz(bar);
 
 			baz = foo;
@@ -143,7 +143,7 @@ namespace snabl {
 	};
 		
 	void ptr_const_tests() {
-		const auto p(make_ptr<Foo>(41));
+		const auto p(Ptr<Foo>::make(41));
 		p->v++;
 		assert(p->v == 42);
 	}

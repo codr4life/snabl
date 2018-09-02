@@ -1,5 +1,5 @@
-* change make_ptr to static method
-** make Make/constructor private
+* add test=/== funcs
+** move tests to tests/all.sl
 * add Sym type
 ** add parser support for $foo
 * fix github decr issue
@@ -10,8 +10,7 @@
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn
-* add test=/== funcs
-** use in tests
+
 * only begin/end scopes if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body

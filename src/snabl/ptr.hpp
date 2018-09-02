@@ -8,6 +8,11 @@ namespace snabl {
 	class Ptr {
 	public:
 		struct Make {};
+
+		template <typename... ArgsT>
+		static Ptr<T> make(ArgsT &&... args) {
+			return Ptr<T>(Make(), forward<ArgsT>(args)...);
+		}
 		
 		struct Imp {
 			T val;
@@ -25,10 +30,6 @@ namespace snabl {
 		
 		Ptr(Ptr<T> &&src): _imp(src._imp) { src._imp = nullptr; }
 		
-		template <typename... ArgsT>
-		Ptr(const Make &_, ArgsT &&... args):
-			_imp(new Imp(forward<ArgsT>(args)...)) { }
-
 		~Ptr() {
 			if (_imp) { decr(); }
 		}
@@ -64,6 +65,10 @@ namespace snabl {
 	private:
 		Imp *_imp;
 
+		template <typename... ArgsT>
+		Ptr(const Make &_, ArgsT &&... args):
+			_imp(new Imp(forward<ArgsT>(args)...)) { }
+		
 		Ptr(Imp *imp): _imp(imp) {
 			if (_imp) { _imp++; }
 		}
@@ -77,11 +82,6 @@ namespace snabl {
 			}
 		}
 	};
-
-	template <typename T, typename... ArgsT>
-	Ptr<T> make_ptr(ArgsT &&... args) {
-		return Ptr<T>(typename Ptr<T>::Make(), forward<ArgsT>(args)...);
-	}
 }
 
 #endif

@@ -10,7 +10,7 @@ namespace snabl {
 	const MacroPtr &Lib::add_macro(Sym id, const Macro::Imp &imp) {
 		auto found(_macros.find(id));
 		if (found != _macros.end()) { _macros.erase(found); }
-		return _macros.emplace(id, make_ptr<Macro>(*this, id, imp))
+		return _macros.emplace(id, MacroPtr::make(*this, id, imp))
 			.first->second;
 	}
 	
@@ -25,7 +25,7 @@ namespace snabl {
 			return f;
 		}
 		
-		return _funcs.emplace(id, make_ptr<Func>(*this, id, nargs, nrets))
+		return _funcs.emplace(id, FuncPtr::make(*this, id, nargs, nrets))
 			.first->second;
 	}
 

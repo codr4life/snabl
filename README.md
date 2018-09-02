@@ -31,7 +31,7 @@ func: fib<Int> Int (
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 700 times faster than Example 2 using explicit tail recursion. 
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 700 times faster than Example 2 using tail recursion.
 
 Example 3
 ```
@@ -48,8 +48,9 @@ func: fib<Int Int Int> Int (
 Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.
 
 #### Integration
-Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed.
+Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed. The following example runs roughly 200 times faster than Example 3 in C++.
 
+Example 4
 ```
 snabl::Env env;
 
