@@ -39,6 +39,7 @@ namespace snabl {
 	private:
 		optional<PC> _start_pc;
 		size_t _nops;
+		bool _has_vars;
 	};
 }
 

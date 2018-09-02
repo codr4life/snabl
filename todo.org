@@ -2,6 +2,7 @@
 ** tear down scopes/libs/stack_offs
 *** track in Call
 ** jump to start
+** add tail recursive fib
 * add Sym type
 ** add parser support for $foo
 * fix github decr issue

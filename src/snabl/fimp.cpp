@@ -33,17 +33,14 @@ namespace snabl {
 		if (_start_pc) { return false; }
 		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
 		_start_pc = env.ops.end();
-		env.emit(ops::Begin::type, pos);
 		env.compile(forms);
 		
-		const bool has_vars(find_if(*_start_pc+1, env.ops.end(), [](const Op &op) {
+		_has_vars = (find_if(*_start_pc, env.ops.end(), [](const Op &op) {
 					return &op.type == &ops::PutVar::type;
 				}) != env.ops.end());
 
-		if (!has_vars) { (*_start_pc)++; }
-		env.emit(ops::FimpRet::type, pos, has_vars);
+		env.emit(ops::FimpRet::type, pos, _has_vars);
 		_nops = skip.nops = env.ops.end()-*_start_pc;
-		if (!has_vars) { skip.nops++; }
 		return true;
 	}
 
@@ -64,6 +61,7 @@ namespace snabl {
 			env.end_call();
 		} else {
 			fimp->compile(pos);
+			if (fimp->_has_vars) { env.begin_scope(); }
 			env.begin_call(fimp, env.pc);
 			env.pc = *fimp->_start_pc;
 		}
@@ -71,14 +69,14 @@ namespace snabl {
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
 		id(get_id(*func, args)), func(func), args(args), rets(rets), imp(imp),
-	  _start_pc(nullopt), _nops(0) { }
+	  _start_pc(nullopt), _nops(0), _has_vars(false) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
 		id(get_id(*func, args)), func(func), args(args), rets(rets), forms(begin, end),
-		_start_pc(nullopt), _nops(0) { }
+		_start_pc(nullopt), _nops(0), _has_vars(false) { }
 
 	optional<size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }
