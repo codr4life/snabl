@@ -1,6 +1,10 @@
-* fix github decr issue
 * add recall op
-** jump immediately
+** tear down scopes/libs/stack_offs
+*** track in Call
+** jump to start
+* add Sym type
+** add parser support for $foo
+* fix github decr issue
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn
