@@ -17,19 +17,19 @@ namespace snabl {
 		return lhs.start_pc < rhs.start_pc;
 	}
 
-	LambdaType::LambdaType(Lib &lib, Sym id): Type<Lambda>(lib, id) { }
+	LambdaType::LambdaType(Lib &lib, Sym id): Type<LambdaPtr>(lib, id) { }
 
 	void LambdaType::call(const Box &val, bool now) const {
-		const Lambda l(val.as<Lambda>());
+		const auto l(val.as<LambdaPtr>());
 		Env &env(lib.env);
-		auto &scope(env.begin_scope(l.parent_scope));
-		auto &call(env.begin_call(*scope, env.pc));
-		env.pc = l.start_pc;
+		auto &scope(env.begin_scope(l->parent_scope));
+		auto &call(env.begin_call(*scope, *l, env.pc));
+		env.pc = l->start_pc;
 		if (now) { env.run(*call.return_pc); }
 	}
 
 	void LambdaType::dump(const Box &val, ostream &out) const {
-		auto l(val.as<Lambda>());
-		out << "Lambda(" << l.start_pc-val.type()->lib.env.ops.begin() << ')';
+		auto l(val.as<LambdaPtr>());
+		out << "Lambda(" << l->start_pc-val.type()->lib.env.ops.begin() << ')';
 	}
 }

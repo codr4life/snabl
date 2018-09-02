@@ -35,7 +35,7 @@ namespace snabl {
 		TypePtr<bool> bool_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
-		TypePtr<Lambda> lambda_type;
+		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
 		TypePtr<Time> time_type;
 		
@@ -83,7 +83,7 @@ namespace snabl {
 
 		Call &call();
 		void end_call();
-		
+
 		void begin_stack(size_t offs);
 		size_t end_stack();		
 
@@ -97,6 +97,7 @@ namespace snabl {
 	private:
 		Pos _pos;
 		vector<Lib *> _libs;
+		deque<Lambda> _lambdas;
 		deque<Call> _calls;
 		
 		template <typename FormT>

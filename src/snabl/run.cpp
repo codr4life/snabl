@@ -103,7 +103,7 @@ namespace snabl {
 		}
 	op_lambda: {
 			const auto &op(pc->as<ops::Lambda>());
-			push(lambda_type, scope(), *op.start_pc, op.nops);
+			push(lambda_type, make_ptr<Lambda>(scope(), *op.start_pc, op.nops));
 			pc += op.nops+1;
 			SNABL_DISPATCH();
 		}

@@ -28,6 +28,9 @@ namespace snabl {
 
 	class Func;
 	using FuncPtr = Ptr<Func>;
+
+	class Lambda;
+	using LambdaPtr = Ptr<Lambda>;
 }
 
 #endif

@@ -2,6 +2,7 @@
 #define SNABL_LAMBDA_HPP
 
 #include "snabl/op.hpp"
+#include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
 
@@ -17,7 +18,7 @@ namespace snabl {
 	bool operator ==(const Lambda &lhs, const Lambda &rhs);
 	bool operator <(const Lambda &lhs, const Lambda &rhs);
 
-	class LambdaType: public Type<Lambda> {
+	class LambdaType: public Type<LambdaPtr> {
 	public:
 		LambdaType(Lib &lib, Sym id);
 		void call(const Box &val, bool now) const override;

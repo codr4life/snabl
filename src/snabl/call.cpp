@@ -4,8 +4,8 @@
 
 namespace snabl {
 	Call::Call(Scope &scope, Fimp &fimp, optional<PC> return_pc):
-		scope(scope), fimp(&fimp), return_pc(return_pc) { }
+		scope(scope), fimp(&fimp), lambda(nullptr), return_pc(return_pc) { }
 	
-	Call::Call(Scope &scope, PC return_pc):
-		scope(scope), fimp(nullptr), return_pc(return_pc) { }
+	Call::Call(Scope &scope, Lambda &lambda, PC return_pc):
+		scope(scope), fimp(nullptr), lambda(&lambda), return_pc(return_pc) { }
 }

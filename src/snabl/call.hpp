@@ -11,11 +11,12 @@ namespace snabl {
 	class Call {
 	public:
 		Scope &scope;
-		Fimp *fimp;
+		Fimp *const fimp;
+		Lambda *const lambda;
 		const optional<PC> return_pc;
 
 		Call(Scope &scope, Fimp &fimp, optional<PC> return_pc=nullopt);
-		Call(Scope &scope, PC return_pc);
+		Call(Scope &scope, Lambda &lambda, PC return_pc);
 	};
 }
 
