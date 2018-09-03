@@ -7,7 +7,7 @@
 #include "snabl/types/lambda.hpp"
 
 namespace snabl {
-	Lambda::Lambda(const ScopePtr &parent_scope, Ops::iterator start_pc, size_t nops):
+	Lambda::Lambda(const ScopePtr &parent_scope, size_t start_pc, size_t nops):
 		parent_scope(parent_scope), start_pc(start_pc), nops(nops) { }
 
 	bool operator ==(const Lambda &lhs, const Lambda &rhs) {
@@ -25,12 +25,12 @@ namespace snabl {
 		Env &env(lib.env);
 		auto &scope(env.begin_scope(l->parent_scope));
 		auto &call(env.begin_call(*scope, *l, env.pc));
-		env.pc = l->start_pc;
+		env.pc = env.ops.begin()+l->start_pc;
 		if (now) { env.run(*call.return_pc); }
 	}
 
 	void LambdaType::dump(const Box &val, ostream &out) const {
 		auto l(val.as<LambdaPtr>());
-		out << "Lambda(" << l->start_pc-val.type()->lib.env.ops.begin() << ')';
+		out << "Lambda(" << l->start_pc << ')';
 	}
 }

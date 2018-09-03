@@ -2,38 +2,128 @@
 #define SNABL_OP_HPP
 
 #include "snabl/box.hpp"
-#include "snabl/form.hpp"
 #include "snabl/pos.hpp"
-#include "snabl/std.hpp"
+#include "snabl/ptrs.hpp"
 #include "snabl/scope.hpp"
+#include "snabl/std.hpp"
+#include "snabl/sym.hpp"
 
 namespace snabl {
-	class AOpType {
-	public:
+	struct AOpType {
 		const string id;
 		const size_t label_offs;
-
-		AOpType(const string &id);
+		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 	private:
 		static size_t next_label_offs;
 	};
 
 	template <typename ImpT>
-	class OpType: public AOpType {
-	public:
+	struct OpType: public AOpType {
 		OpType(const string &id);
 	};
 
 	template <typename ImpT>
 	OpType<ImpT>::OpType(const string &id): AOpType(id) { }
 
-	struct OpImp {
-		virtual ~OpImp() { }
-		virtual void dump(Env &env, ostream &out) const { };
-	};
+	struct Op;
 	
-	class Op {
-	public:
+	using Ops = deque<Op>;
+	using PC = Ops::iterator;
+
+	namespace ops {
+		struct Begin {
+			static const OpType<Begin> type;
+			const ScopePtr parent;
+			Begin(const ScopePtr &parent=nullptr): parent(parent) { }
+		};
+
+		struct Call {
+			static const OpType<Call> type;
+		};
+
+		struct Drop {
+			static const OpType<Drop> type;
+		};
+
+		struct Dup {
+			static const OpType<Dup> type;
+		};
+
+		struct Else {
+			static const OpType<Else> type;
+			size_t nops;
+			Else(): nops(0) { }
+		};
+		
+		struct End {
+			static const OpType<End> type;
+		};
+
+		struct FimpRet {
+			static const OpType<FimpRet> type;
+			const bool end_scope;
+			FimpRet(bool end_scope): end_scope(end_scope) { }
+		};
+
+		struct Funcall {
+			static const OpType<Funcall> type;
+			const FuncPtr func;
+			const FimpPtr fimp;
+			
+			FimpPtr prev_fimp;
+			Funcall(const FuncPtr &func);
+			Funcall(const FimpPtr &fimp);
+		};
+		
+		struct GetVar {
+			static const OpType<GetVar> type;
+			const Sym id;
+			GetVar(Sym id): id(id) { }
+		};
+
+		struct Lambda {
+			static const OpType<Lambda> type;
+			optional<size_t> start_pc;
+			size_t nops;
+			Lambda(): nops(0) { }
+		};
+
+		struct LambdaRet {
+			static const OpType<LambdaRet> type;
+		};
+
+		struct Push {
+			static const OpType<Push> type;			
+			const Box val;
+			Push(const Box &val): val(val) { }
+		};
+
+		struct PutVar {
+			static const OpType<PutVar> type;
+			const Sym id;
+			PutVar(Sym id): id(id) { }
+		};
+
+		struct Recall {
+			static const OpType<Recall> type;
+		};
+
+		struct Rot {
+			static const OpType<Rot> type;
+		};
+
+		struct Skip {
+			static const OpType<Skip> type;
+			size_t nops;			
+			Skip(): nops(0) { }
+		};
+
+		struct Swap {
+			static const OpType<Swap> type;
+		};
+	}
+	
+	struct Op {
 		const AOpType &type;
 		const Pos pos;
 		
@@ -43,132 +133,26 @@ namespace snabl {
 		virtual ~Op() { }
 
 		template <typename ImpT>
-		ImpT &as() const;
-		void dump(Env &env, ostream &out) const;
+		const ImpT &as() const;
+
+		template <typename ImpT>
+		ImpT &as();
 	private:
-		unique_ptr<OpImp> _imp;
+		variant<ops::Begin, ops::Call, ops::Drop, ops::Dup, ops::Else, ops::End,
+						ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
+						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::Skip,
+						ops::Swap> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>
 	Op::Op(const OpType<ImpT> &type, Pos pos, ArgsT &&... args):
-		type(type), pos(pos), _imp(new ImpT(forward<ArgsT>(args)...)) { }
+		type(type), pos(pos), _imp(ImpT(forward<ArgsT>(args)...)) { }
 
 	template <typename ImpT>
-	ImpT &Op::as() const { return *static_cast<ImpT *>(_imp.get()); }
+	const ImpT &Op::as() const { return get<ImpT>(_imp); }
 
-	using Ops = deque<Op>;
-	using PC = Ops::iterator;
-
-	namespace ops {
-		struct Begin: public OpImp {
-			static const OpType<Begin> type;
-			const ScopePtr parent;
-			
-			Begin(const ScopePtr &parent=nullptr);
-		};
-
-		struct Call: public OpImp {
-			static const OpType<Call> type;
-			Call();
-		};
-
-		struct Drop: public OpImp {
-			static const OpType<Drop> type;
-			Drop();
-		};
-
-		struct Dup: public OpImp {
-			static const OpType<Dup> type;
-			Dup();
-		};
-
-		struct Else: public OpImp {
-			static const OpType<Else> type;
-			size_t nops;
-			Else(size_t nops);
-			void dump(Env &env, ostream &out) const override;
-		};
-		
-		struct End: public OpImp {
-			static const OpType<End> type;
-			End();
-		};
-
-		struct FimpRet: public OpImp {
-			static const OpType<FimpRet> type;
-			const bool end_scope;
-			
-			FimpRet(bool end_scope);
-		};
-
-		struct Funcall: public OpImp {
-			static const OpType<Funcall> type;
-			const FuncPtr func;
-			const FimpPtr fimp;
-			
-			FimpPtr prev_fimp;
-			Funcall(const FuncPtr &func);
-			Funcall(const FimpPtr &fimp);
-			void dump(Env &env, ostream &out) const override;
-		};
-		
-		struct GetVar: public OpImp {
-			static const OpType<GetVar> type;
-			const Sym id;
-			GetVar(Sym id);
-			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct Lambda: public OpImp {
-			static const OpType<Lambda> type;
-			optional<PC> start_pc;
-			size_t nops;
-			
-			Lambda();
-			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct LambdaRet: public OpImp {
-			static const OpType<LambdaRet> type;
-			LambdaRet();
-		};
-
-		struct Push: public OpImp {
-			static const OpType<Push> type;			
-			const Box val;
-			Push(const Box &val);
-			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct PutVar: public OpImp {
-			static const OpType<PutVar> type;
-			const Sym id;
-			PutVar(Sym id);
-			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct Recall: public OpImp {
-			static const OpType<Recall> type;
-			Recall();
-		};
-
-		struct Rot: public OpImp {
-			static const OpType<Rot> type;
-			Rot();
-		};
-
-		struct Skip: public OpImp {
-			static const OpType<Skip> type;
-			size_t nops;			
-			Skip(size_t nops);
-			void dump(Env &env, ostream &out) const override;
-		};
-
-		struct Swap: public OpImp {
-			static const OpType<Swap> type;
-			Swap();
-		};
-	}
+	template <typename ImpT>
+	ImpT &Op::as() { return get<ImpT>(_imp); }
 }
 
 #endif

@@ -10,6 +10,7 @@ namespace snabl {
 		_type_tag(1),
 		home(*this),
 		separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
+		pc(ops.begin()),
 		main(begin_scope()),
 		_pos(home_pos),
 		_is_safe(true) { begin_lib(home); }
@@ -186,7 +187,7 @@ namespace snabl {
 		compile(forms);
 	}
 
-	void Env::emit(Pos pos, FuncPtr &func, FimpPtr &fimp) {
+	void Env::emit(Pos pos, FuncPtr &func, FimpPtr &fimp) {		
 		if (fimp) {
 			if (!fimp->imp) { fimp->compile(pos); }
 			emit(ops::Funcall::type, pos, fimp);

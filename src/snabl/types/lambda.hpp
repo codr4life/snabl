@@ -9,10 +9,9 @@
 namespace snabl {
 	struct Lambda {
 		const ScopePtr parent_scope;
-		const Ops::iterator start_pc;
-		const size_t nops;
+		const size_t start_pc, nops;
 		
-		Lambda(const ScopePtr &parent_scope, Ops::iterator start_pc, size_t nops);
+		Lambda(const ScopePtr &parent_scope, size_t start_pc, size_t nops);
 	};
 
 	bool operator ==(const Lambda &lhs, const Lambda &rhs);

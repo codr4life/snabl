@@ -32,16 +32,18 @@ namespace snabl {
 	bool Fimp::compile(Pos pos) {
 		auto &env(func->lib.env);
 		if (_start_pc) { return false; }
-		auto &skip(env.emit(ops::Skip::type, pos, 0).as<ops::Skip>());
-		_start_pc = env.ops.end();
+		auto &skip(env.emit(ops::Skip::type, pos).as<ops::Skip>());
+		_start_pc = env.ops.size();
 		env.compile(forms);
 		
-		_has_vars = (find_if(*_start_pc, env.ops.end(), [](const Op &op) {
-					return &op.type == &ops::PutVar::type;
-				}) != env.ops.end());
+		_has_vars = (find_if(env.ops.begin() + *_start_pc, 
+												 env.ops.end(), 
+												 [](const Op &op) {
+													 return &op.type == &ops::PutVar::type;
+												 }) != env.ops.end());
 
 		env.emit(ops::FimpRet::type, pos, _has_vars);
-		_nops = skip.nops = env.ops.end()-*_start_pc;
+		_nops = skip.nops = env.ops.size() - *_start_pc;
 		return true;
 	}
 
@@ -64,7 +66,7 @@ namespace snabl {
 			fimp->compile(pos);
 			auto &scope(fimp->_has_vars ? env.begin_scope() : env.scope());
 			env.begin_call(*scope, *fimp, env.pc);
-			env.pc = *fimp->_start_pc;
+			env.pc = env.ops.begin() + *fimp->_start_pc;
 		}
 	}
 

@@ -70,10 +70,10 @@ namespace snabl {
 									 Env &env) {
 									auto &form(*in++);
 									env.compile(in++, in+1);
-									auto &else_skip(env.emit(ops::Else::type, form.pos, 0));
+									auto &else_skip(env.emit(ops::Else::type, form.pos));
 									size_t start_pc(env.ops.size());								
 									env.compile(in++, in+1);
-									auto &if_skip(env.emit(ops::Skip::type, form.pos, 0));
+									auto &if_skip(env.emit(ops::Skip::type, form.pos));
 									else_skip.as<ops::Else>().nops = env.ops.size()-start_pc;
 									start_pc = env.ops.size();
 									env.compile(in++, in+1);

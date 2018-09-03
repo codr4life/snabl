@@ -16,6 +16,6 @@ namespace snabl {
 		auto &env(scope.env);
 		state.restore(env);
 		scope.clear_vars();
-		env.pc = fimp ? *fimp->start_pc() : lambda->start_pc;
+		env.pc = env.ops.begin() + (fimp ? *fimp->start_pc() : lambda->start_pc);
 	}
 }
