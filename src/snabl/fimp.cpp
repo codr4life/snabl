@@ -98,7 +98,7 @@ namespace snabl {
 				if (iv.is_undef() || !iv.is_eqval(jv)) { return nullopt; }
 			}
 			
-			score += abs(it->tag-jt->tag);
+			score += abs(static_cast<ssize_t>(it->tag-jt->tag));
 		}
 
 		return score;
