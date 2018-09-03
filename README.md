@@ -40,7 +40,7 @@ Example 3
 ```
 func: fib<Int Int Int> Int (
   let: (n a b) _
-  if: (zero? @n) @a (if: (one? @n) @b (@n --; @b dup @a +; recall))
+  if: (zero? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
 )
 ```
 
@@ -51,8 +51,8 @@ Example 4
 func: fib<Int Int Int> Int (
   rswap dup
   if: zero?
-    (drop swap drop)
-    (dup if: one? (drop drop) (--; rswap dup rot +; recall))
+    (drop swap drop),
+    dup if: one? (drop drop), --; rswap dup rot +; recall
 )
 ```
 
