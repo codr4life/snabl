@@ -3,6 +3,15 @@
 ** add Safe op
 *** is_safe param
 *** emit with true/false before after
+* move short methods inline
+* rename rotl to rot
+** skip rotr
+* replace rot swap with rswap
+** add RSwap op
+** swap iters once
+* replace drop drop with ddrop
+** add size to Drop op
+** resize instead of popping if > 1
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
