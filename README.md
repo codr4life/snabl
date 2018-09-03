@@ -56,13 +56,6 @@ func: fib<Int Int Int> Int (
 )
 ```
 
-#### Safety
-By default, Snabl trades some speed for safety; ```unsafe:``` may be used to disable most checks and run code around 20% faster.
-
-```
-unsafe: (fib 10 0 1)
-```
-
 #### Integration
 Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed. The following example in C++ runs roughly 100 times faster than Example 4.
 
