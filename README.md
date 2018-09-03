@@ -64,7 +64,7 @@ unsafe: (fib 10 0 1)
 ```
 
 #### Integration
-Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed. The following example runs roughly 100 times faster than Example 4 in C++.
+Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed. The following example in C++ runs roughly 100 times faster than Example 4.
 
 Example 5
 ```
