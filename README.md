@@ -34,7 +34,7 @@ func: fib<Int> Int (
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail recursion. The following example currently runs around 500 times faster than Example 2 using a superior, tail recursive algorithm.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail call optimization. The following example currently runs around 500 times faster than Example 2 using a superior, tail recursive algorithm; the actual TCO results in a 25% speed up.
 
 Example 3
 ```
