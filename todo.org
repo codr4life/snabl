@@ -3,6 +3,9 @@
 ** add Safe op
 *** is_safe param
 *** emit with true/false before after
+* add iterative fib
+** fib5.sl
+** add iteration to readme
 * add test=/== funcs
 ** move tests to tests/all.sl
 * add Sym type
