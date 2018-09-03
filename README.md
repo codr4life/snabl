@@ -57,7 +57,7 @@ func: fib<Int Int Int> Int (
 ```
 
 #### Safety
-By default, Snabl trades some speed for safety; ```unsafe:``` may be used to locally disable most checks and run the code around 20% faster.
+By default, Snabl trades some speed for safety; ```unsafe:``` may be used to disable most checks and run code around 20% faster.
 
 ```
 unsafe: (fib 10 0 1)
