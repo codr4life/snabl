@@ -49,10 +49,10 @@ As before, the same algorithm may be implemented without variables.
 Example 4
 ```
 func: fib<Int Int Int> Int (
-  rotl swap dup
+  rot swap dup
   if: zero?
     (drop swap drop)
-    (dup if: one? (drop drop) (--; rotl swap dup rotl +; recall))
+    (dup if: one? (drop drop) (--; rot swap dup rot +; recall))
 )
 ```
 

@@ -80,11 +80,8 @@ namespace snabl {
 		env.run("1 3 swap -");
 		assert(env.pop().as<Int>() == Int(2));
 
-		env.run("1 2 3 rotl -; -");
+		env.run("1 2 3 rot -; -");
 		assert(env.pop().as<Int>() == Int(4));
-
-		env.run("1 2 3 rotr -; -");
-		assert(env.pop().as<Int>() == Int(0));
 
 		env.run("(let: foo 42) @foo");
 		assert(env.pop().as<Int>() == Int(42));

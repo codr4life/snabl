@@ -84,7 +84,7 @@ namespace snabl {
 
 		Recall::Recall() { }
 
-		Rot::Rot(bool r): r(r) { }
+		Rot::Rot() { }
 
 		Skip::Skip(size_t nops): nops(nops) { }
 

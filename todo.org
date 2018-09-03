@@ -1,14 +1,10 @@
-* add unsafe: macro
-** one arg
-** add Safe op
-*** is_safe param
-*** emit with true/false before after
 * rename rotl to rot
 ** skip rotr
 * replace rot swap with rswap
 ** add RSwap op
 ** swap iters once
 * move short methods inline
+* conver Op.imp to variant
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
@@ -16,6 +12,11 @@
 ** move tests to tests/all.sl
 * add Sym type
 ** add parser support for $foo
+* add unsafe: macro
+** one arg
+** add Safe op
+*** is_safe param
+*** emit with true/false before after
 * fix github decr issue
 * extract Parser
 ** pos & separators

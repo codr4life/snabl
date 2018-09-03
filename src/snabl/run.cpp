@@ -130,11 +130,10 @@ namespace snabl {
 		call().recall();
 		SNABL_DISPATCH();
 	op_rot: {
-			if (_stack.size() < 2) { throw Error("Nothing to rotate"); }
-			const auto &op(pc->as<ops::Rot>());
+			if (_stack.size() < 3) { throw Error("Nothing to rotate"); }
 			auto i(_stack.rbegin());
 			iter_swap(i, i+2);
-			iter_swap(op.r ? i+1 : i, op.r ? i+2 : i+1);
+			iter_swap(i, i+1);
 			pc++;
 			SNABL_DISPATCH();
 		}

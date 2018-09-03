@@ -154,9 +154,7 @@ namespace snabl {
 
 		struct Rot: public OpImp {
 			static const OpType<Rot> type;
-			const bool r;
-			
-			Rot(bool r);
+			Rot();
 		};
 
 		struct Skip: public OpImp {
