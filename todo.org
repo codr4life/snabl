@@ -1,6 +1,5 @@
-* replace rot swap with rswap
-** add RSwap op
-** swap iters once
+* add SDrop op like RSwap
+** erase rbegin-1
 * move short Env methods inline
 * add iterative fib
 ** fib5.sl

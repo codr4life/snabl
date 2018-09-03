@@ -22,6 +22,7 @@ namespace snabl {
 		const OpType<PutVar> PutVar::type("PutVar");
 		const OpType<Recall> Recall::type("Recall");
 		const OpType<Rot> Rot::type("Rot");
+		const OpType<RSwap> RSwap::type("RSwap");
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 

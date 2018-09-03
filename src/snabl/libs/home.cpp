@@ -33,10 +33,25 @@ namespace snabl {
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("drop"), ops::Drop::type);
 			add_macro(env.sym("dup"), ops::Dup::type);
-			add_macro(env.sym("rot"), ops::Rot::type);
 			add_macro(env.sym("recall"), ops::Recall::type);
-			add_macro(env.sym("swap"), ops::Swap::type);
+			add_macro(env.sym("rot"), ops::Rot::type);
+			add_macro(env.sym("rswap"), ops::RSwap::type);
 
+			add_macro(env.sym("swap"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									if (!env.ops.empty() &&
+											&env.ops.back().type == &ops::Rot::type) {
+										env.note(in->pos, "Rewriting (rot swap) as (rswap)");
+										env.ops.pop_back();
+										env.emit(ops::RSwap::type, (in++)->pos);
+									} else {
+										env.emit(ops::Swap::type, (in++)->pos);
+									}
+								});
+			
 			add_macro(env.sym("let:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,

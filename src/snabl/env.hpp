@@ -96,6 +96,18 @@ namespace snabl {
 		const Stack &stack();
 		void dump_stack(std::ostream &out) const;
 
+		template <typename... ArgsT>
+		void note(Pos pos, const string &msg, ArgsT &&... args) {
+			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
+					 << fmt(msg, {args...}) << endl;
+		}
+
+		template <typename... ArgsT>
+		void warn(Pos pos, const string &msg, ArgsT &&... args) {
+			cerr << fmt("Warning in row %0, col %1: ", {pos.row, pos.col})
+					 << fmt(msg, {args...}) << endl;
+		}
+
 		bool is_safe() const { return _is_safe; }
 	private:
 		Pos _pos;
@@ -150,10 +162,10 @@ namespace snabl {
 
 	template <typename ImpT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
-		return add_macro(id, [type, args...](Forms::const_iterator &in,
-																				 Forms::const_iterator end,
-																				 FuncPtr &func, FimpPtr &fimp,
-																				 Env &env) {
+		return add_macro(id, [&type, args...](Forms::const_iterator &in,
+																					Forms::const_iterator end,
+																					FuncPtr &func, FimpPtr &fimp,
+																					Env &env) {
 											 env.emit(type, (in++)->pos, args...);			
 										 });
 	}

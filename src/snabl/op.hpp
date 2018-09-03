@@ -13,6 +13,7 @@ namespace snabl {
 		const string id;
 		const size_t label_offs;
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
+		AOpType(const AOpType &) = delete;
 	private:
 		static size_t next_label_offs;
 	};
@@ -112,6 +113,10 @@ namespace snabl {
 			static const OpType<Rot> type;
 		};
 
+		struct RSwap {
+			static const OpType<RSwap> type;
+		};
+
 		struct Skip {
 			static const OpType<Skip> type;
 			size_t nops;			
@@ -140,8 +145,8 @@ namespace snabl {
 	private:
 		variant<ops::Begin, ops::Call, ops::Drop, ops::Dup, ops::Else, ops::End,
 						ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
-						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::Skip,
-						ops::Swap> _imp;
+						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::RSwap,
+						ops::Skip, ops::Swap> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>
