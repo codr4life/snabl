@@ -9,9 +9,6 @@
 * replace rot swap with rswap
 ** add RSwap op
 ** swap iters once
-* replace drop drop with ddrop
-** add size to Drop op
-** resize instead of popping if > 1
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme

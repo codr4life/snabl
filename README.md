@@ -24,7 +24,7 @@ func: fib<Int> Int (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster than Example 1. ```;``` calls the current function, ```--``` in this case, before evaluating the next token.
+Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the next token.
 
 Example 2
 ```
@@ -34,7 +34,7 @@ func: fib<Int> Int (
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail call optimization. The following example currently runs around 500 times faster than Example 2 using a superior, tail recursive algorithm; the actual TCO results in a 25% speed up.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail call optimization. The following example gets a 25% speed up from using explicit tail recursion.
 
 Example 3
 ```
@@ -44,7 +44,7 @@ func: fib<Int Int Int> Int (
 )
 ```
 
-The same algorithm may be implemented without variables to get another 50% speed up.
+As before, the same algorithm may be implemented without variables.
 
 Example 4
 ```
@@ -57,7 +57,7 @@ func: fib<Int Int Int> Int (
 ```
 
 #### Integration
-Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed. The following example in C++ runs roughly 100 times faster than Example 4.
+Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed.
 
 Example 5
 ```
