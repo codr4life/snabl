@@ -1,16 +1,24 @@
+* add unsafe: macro
+** one arg
+** add Safe op
+*** is_safe param
+*** emit with true/false before after
 * add test=/== funcs
 ** move tests to tests/all.sl
 * add Sym type
 ** add parser support for $foo
+* ---
 * fix github decr issue
-* add Str type
-** add parser support for ""
-*** convert from utf-8 on read
-** convert Sym to use wstring as name
 * extract Parser
 ** pos & separators
 * add repl(env, in, out) fn
 
+* add Str type
+** add parser support for ""
+*** convert from utf-8 on read
+** convert Sym to use wstring as name
+* add Bin type
+** add parser support for ''
 * only begin/end scopes if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body

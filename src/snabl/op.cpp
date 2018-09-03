@@ -30,6 +30,7 @@ namespace snabl {
 		const OpType<Push> Push::type("Push");
 		const OpType<PutVar> PutVar::type("PutVar");
 		const OpType<Recall> Recall::type("Recall");
+		const OpType<Rot> Rot::type("Rot");
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 
@@ -82,6 +83,8 @@ namespace snabl {
 		void PutVar::dump(Env &env, ostream &out) const { out << ' ' << id.name(); }
 
 		Recall::Recall() { }
+
+		Rot::Rot(bool r): r(r) { }
 
 		Skip::Skip(size_t nops): nops(nops) { }
 

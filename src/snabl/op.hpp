@@ -152,6 +152,13 @@ namespace snabl {
 			Recall();
 		};
 
+		struct Rot: public OpImp {
+			static const OpType<Rot> type;
+			const bool r;
+			
+			Rot(bool r);
+		};
+
 		struct Skip: public OpImp {
 			static const OpType<Skip> type;
 			size_t nops;			

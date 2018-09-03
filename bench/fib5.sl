@@ -1,0 +1,1 @@
+say, bench 1000000 {fibonacci 20; drop}; ms

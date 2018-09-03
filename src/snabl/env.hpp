@@ -154,7 +154,7 @@ namespace snabl {
 																				 Forms::const_iterator end,
 																				 FuncPtr &func, FimpPtr &fimp,
 																				 Env &env) {
-											 env.emit(type, (in++)->pos, forward<ArgsT>(args)...);			
+											 env.emit(type, (in++)->pos, args...);			
 										 });
 	}
 

@@ -28,7 +28,7 @@ namespace snabl {
 		static void* op_labels[] = {
 			&&op_begin, &&op_call, &&op_drop, &&op_dup, &&op_else, &&op_end,
 			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
-			&&op_push, &&op_putvar, &&op_recall, &&op_skip, &&op_swap
+			&&op_push, &&op_putvar, &&op_recall, &&op_rot, &&op_skip, &&op_swap
 		};
 
 		SNABL_DISPATCH();
@@ -129,6 +129,15 @@ namespace snabl {
 	op_recall:
 		call().recall();
 		SNABL_DISPATCH();
+	op_rot: {
+			if (_stack.size() < 2) { throw Error("Nothing to rotate"); }
+			const auto &op(pc->as<ops::Rot>());
+			auto i(_stack.rbegin());
+			iter_swap(i, i+2);
+			iter_swap(op.r ? i+1 : i, op.r ? i+2 : i+1);
+			pc++;
+			SNABL_DISPATCH();
+		}
 	op_skip:
 		pc += pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();
