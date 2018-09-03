@@ -1,10 +1,7 @@
-* rename rotl to rot
-** skip rotr
 * replace rot swap with rswap
 ** add RSwap op
 ** swap iters once
-* move short methods inline
-* conver Op.imp to variant
+* move short Env methods inline
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
