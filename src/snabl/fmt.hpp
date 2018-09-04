@@ -4,21 +4,14 @@
 #include "snabl/std.hpp"
 
 namespace snabl {	
-	string fmt_arg(const char* x);
-	string fmt_arg(const string &x);
-
 	template <typename T>
-	string fmt_arg(const T &x) { return to_string(x); }
+	void fmt_arg(const T &x, ostream &out) { out << x; }
 
 	struct fmt_conv {
 		template <typename T>
-		fmt_conv(T&& val);
-		
-		const string as_str;
+		fmt_conv(T&& val): print([val](ostream &out) { fmt_arg(val, out); }) { }
+		const function<void (ostream &)> print;
 	};
-
-	template <typename T>
-	fmt_conv::fmt_conv(T&& val): as_str(fmt_arg(val)) { }
 	
 	string fmt(string_view spec, const vector<fmt_conv> &args);
 }

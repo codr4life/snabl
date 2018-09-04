@@ -2,6 +2,9 @@
 #include "snabl/fmt.hpp"
 
 namespace snabl {
+	string fmt_arg(const char* x) { return string(x); }
+	string fmt_arg(const string &x) { return x; }
+
 	string fmt(string_view spec, const vector<fmt_conv> &args) {
 		stringstream out;
 		size_t i(0), j;
@@ -20,7 +23,7 @@ namespace snabl {
 					throw Error("Invalid fmt arg: " + to_string(arg));
 				}
 
-				args[arg].print(out);
+				out << args[arg].as_str;
 				i = j+len+1;
 			}
 		}

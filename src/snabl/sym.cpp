@@ -7,5 +7,5 @@ namespace snabl {
 
 	bool operator <(Sym x, Sym y) { return x._imp < y._imp; }
 
-	string fmt_arg(const Sym &x) { return x.name(); }
+	void fmt_arg(const Sym &x, ostream &out) { out << x.name(); }
 }
