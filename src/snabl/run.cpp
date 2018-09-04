@@ -27,16 +27,12 @@ namespace snabl {
 		if (!end_pc) { end_pc = ops.end(); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_end,
+			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else,
 			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
 			&&op_push, &&op_putvar, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
 			&&op_skip, &&op_swap
 		};
 
-		SNABL_DISPATCH();
-	op_begin:
-		begin_scope(pc->as<ops::Begin>().parent);
-		pc++;
 		SNABL_DISPATCH();
 	op_call:
 		pc++;
@@ -62,10 +58,6 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
-	op_end:
-		end_scope();
-		pc++;
-		SNABL_DISPATCH();
 	op_fimpret: {
 			const auto &op(pc->as<ops::FimpRet>());
 			if (op.end_scope) { end_scope(); }

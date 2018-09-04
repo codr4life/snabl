@@ -7,13 +7,11 @@ namespace snabl {
 	size_t AOpType::next_label_offs(0);
 
 	namespace ops {
-		const OpType<Begin> Begin::type("Begin");
 		const OpType<Call> Call::type("Call");
 		const OpType<DDrop> DDrop::type("DDrop");
 		const OpType<Drop> Drop::type("Drop");
 		const OpType<Dup> Dup::type("Dup");
 		const OpType<Else> Else::type("Else");
-		const OpType<End> End::type("End");
 		const OpType<FimpRet> FimpRet::type("FimpRet");
 		const OpType<Funcall> Funcall::type("Funcall");
 		const OpType<GetVar> GetVar::type("GetVar");

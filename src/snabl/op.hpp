@@ -32,12 +32,6 @@ namespace snabl {
 	using PC = Ops::iterator;
 
 	namespace ops {
-		struct Begin {
-			static const OpType<Begin> type;
-			const ScopePtr parent;
-			Begin(const ScopePtr &parent=nullptr): parent(parent) { }
-		};
-
 		struct Call {
 			static const OpType<Call> type;
 		};
@@ -60,10 +54,6 @@ namespace snabl {
 			Else(): nops(0) { }
 		};
 		
-		struct End {
-			static const OpType<End> type;
-		};
-
 		struct FimpRet {
 			static const OpType<FimpRet> type;
 			const bool end_scope;
@@ -151,8 +141,8 @@ namespace snabl {
 		template <typename ImpT>
 		ImpT &as();
 	private:
-		variant<ops::Begin, ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else,
-						ops::End, ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
+		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else,
+					  ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
 						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::RSwap,
 						ops::SDrop, ops::Skip, ops::Swap> _imp;
 	};
