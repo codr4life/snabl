@@ -73,7 +73,7 @@ namespace snabl {
 			const auto &fn(c.fimp->func);
 			auto stack_offs(end_stack());
 
-			if (_is_safe && _stack.size() != stack_offs+fn->nrets) {
+			if (_stack.size() != stack_offs+fn->nrets) {
 				throw Error(fmt("Invalid return stack: %0", {c.fimp->id}));
 			}
 			

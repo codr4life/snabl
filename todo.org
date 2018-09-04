@@ -1,3 +1,4 @@
+* inline func, fimp, box, scope, sym
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
