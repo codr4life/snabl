@@ -9,6 +9,7 @@ namespace snabl {
 	namespace ops {
 		const OpType<Begin> Begin::type("Begin");
 		const OpType<Call> Call::type("Call");
+		const OpType<DDrop> DDrop::type("DDrop");
 		const OpType<Drop> Drop::type("Drop");
 		const OpType<Dup> Dup::type("Dup");
 		const OpType<Else> Else::type("Else");
@@ -23,6 +24,7 @@ namespace snabl {
 		const OpType<Recall> Recall::type("Recall");
 		const OpType<Rot> Rot::type("Rot");
 		const OpType<RSwap> RSwap::type("RSwap");
+		const OpType<SDrop> SDrop::type("SDrop");
 		const OpType<Skip> Skip::type("Skip");
 		const OpType<Swap> Swap::type("Swap");
 

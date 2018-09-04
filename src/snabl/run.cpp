@@ -26,9 +26,10 @@ namespace snabl {
 		if (!end_pc) { end_pc = ops.end(); }
 		
 		static void* op_labels[] = {
-			&&op_begin, &&op_call, &&op_drop, &&op_dup, &&op_else, &&op_end,
+			&&op_begin, &&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_end,
 			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
-			&&op_push, &&op_putvar, &&op_recall, &&op_rot, &&op_rswap, &&op_skip, &&op_swap
+			&&op_push, &&op_putvar, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
+			&&op_skip, &&op_swap
 		};
 
 		SNABL_DISPATCH();
@@ -39,6 +40,11 @@ namespace snabl {
 	op_call:
 		pc++;
 		pop().call(false);
+		SNABL_DISPATCH();
+	op_ddrop:
+		if (_stack.size() < 2) { throw Error("Missing value"); }
+		_stack.erase(_stack.begin()+_stack.size()-2, _stack.end());
+		pc++;
 		SNABL_DISPATCH();
 	op_drop:
 		pop();
@@ -144,6 +150,11 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
+	op_sdrop:
+		if (_stack.size() < 2) { throw Error("Missing value"); }
+		_stack.erase(_stack.begin()+_stack.size()-2);
+		pc++;
+		SNABL_DISPATCH();
 	op_skip:
 		pc += pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();

@@ -42,6 +42,10 @@ namespace snabl {
 			static const OpType<Call> type;
 		};
 
+		struct DDrop {
+			static const OpType<DDrop> type;
+		};
+
 		struct Drop {
 			static const OpType<Drop> type;
 		};
@@ -117,6 +121,10 @@ namespace snabl {
 			static const OpType<RSwap> type;
 		};
 
+		struct SDrop {
+			static const OpType<SDrop> type;
+		};
+
 		struct Skip {
 			static const OpType<Skip> type;
 			size_t nops;			
@@ -143,10 +151,10 @@ namespace snabl {
 		template <typename ImpT>
 		ImpT &as();
 	private:
-		variant<ops::Begin, ops::Call, ops::Drop, ops::Dup, ops::Else, ops::End,
-						ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
+		variant<ops::Begin, ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else,
+						ops::End, ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
 						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::RSwap,
-						ops::Skip, ops::Swap> _imp;
+						ops::SDrop, ops::Skip, ops::Swap> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>

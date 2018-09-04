@@ -31,11 +31,33 @@ namespace snabl {
 								});
 			
 			add_macro(env.sym("call"), ops::Call::type);
-			add_macro(env.sym("drop"), ops::Drop::type);
+			add_macro(env.sym("ddrop"), ops::DDrop::type);
+
+			add_macro(env.sym("drop"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									if (!env.ops.empty() &&
+											&env.ops.back().type == &ops::Drop::type) {
+										env.note(in->pos, "Rewriting (drop drop) as (ddrop)");
+										env.ops.pop_back();
+										env.emit(ops::DDrop::type, (in++)->pos);
+									} else if (!env.ops.empty() &&
+														 &env.ops.back().type == &ops::Swap::type) {
+										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
+										env.ops.pop_back();
+										env.emit(ops::SDrop::type, (in++)->pos);
+									} else {
+										env.emit(ops::Drop::type, (in++)->pos);
+									}
+								});
+
 			add_macro(env.sym("dup"), ops::Dup::type);
 			add_macro(env.sym("recall"), ops::Recall::type);
 			add_macro(env.sym("rot"), ops::Rot::type);
 			add_macro(env.sym("rswap"), ops::RSwap::type);
+			add_macro(env.sym("sdrop"), ops::SDrop::type);
 
 			add_macro(env.sym("swap"),
 								[](Forms::const_iterator &in,

@@ -1,7 +1,3 @@
-* add SDrop op like RSwap
-** erase rbegin-1
-* add DDrop for dropping two items
-** use erase()
 * move short Env methods inline
 * add iterative fib
 ** fib5.sl
