@@ -40,7 +40,7 @@ Example 3
 ```
 func: fib<Int Int Int> Int (
   let: (n a b) _
-  if: (zero? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
+  if: (z? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
 )
 ```
 
@@ -50,7 +50,7 @@ Example 4
 ```
 func: fib<Int Int Int> Int (
   rswap dup
-  if: zero?
+  if: z?
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )

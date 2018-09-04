@@ -1,9 +1,8 @@
-* inline func, fimp, box, scope, sym
+* add test=/== funcs
+** move tests to tests/all.sl
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
-* add test=/== funcs
-** move tests to tests/all.sl
 * add Sym type
 ** add parser support for $foo
 * add unsafe: macro

@@ -2,12 +2,6 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	Box::Box(const ATypePtr &type): _type(type), _val(nullptr), _is_undef(true) { }
-
-	const ATypePtr &Box::type() const { return _type; }
-
-	bool Box::is_undef() const { return _is_undef; }
-
 	bool Box::is_equid(const Box &rhs) const {
 		if (rhs.type() != _type) { return false; }
 		return _type->is_equid(*this, rhs);

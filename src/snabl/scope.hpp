@@ -14,11 +14,33 @@ namespace snabl {
 		Env &env;
 		const ScopePtr parent;
 		
-		Scope(Env &env, const ScopePtr &parent=nullptr);
+		Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
 
-		void put_var(Sym id, const optional<Box> &val);
-		const Box *get_var(Sym id) const;
-		void clear_vars();
+		const Box *get_var(Sym id) const {
+			const auto found(_vars.find(id));
+			if (found != _vars.end()) { return &found->second; }
+			return parent ? parent->get_var(id) : nullptr;
+		}
+
+		void put_var(Sym id, const optional<Box> &val) {
+			auto found(_vars.find(id));
+		
+			if (found == _vars.end()) {
+				if (val) {
+					_vars.emplace(make_pair(id, *val)).first->second;
+				} else {
+					throw Error("Missing var: " + id.name());				
+				}
+			} else {
+				if (val) {
+					throw Error("Duplicate var: " + id.name());
+				} else {
+					_vars.erase(found);
+				}
+			}
+		}
+
+		void clear_vars() { _vars.clear(); }
 	private:
 		map<Sym, Box> _vars;
 	};

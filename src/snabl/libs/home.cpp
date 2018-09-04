@@ -197,7 +197,7 @@ namespace snabl {
 								 env.push(env.int_type, Int(v));
 							 });
 
-			add_fimp(env.sym("zero?"),
+			add_fimp(env.sym("z?"),
 							 {Box(env.int_type)},
 							 {env.bool_type},
 							 [](Call &call) {

@@ -21,12 +21,38 @@ namespace snabl {
 																	 const Fimp::Args &args, const Fimp::Rets &rets,
 																	 ImpT &&... imp);
 		
-		Func(Lib &lib, Sym id, size_t nargs, size_t nrets);
-		const FimpPtr &get_fimp();
-		const FimpPtr &get_best_fimp(const Stack &stack) const;
-		void clear();
+		Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
+			lib(lib), id(id), nargs(nargs), nrets(nrets) { }
+
+		const FimpPtr &get_fimp() {
+			return _fimps.begin()->second;
+		}
+
+		const FimpPtr &get_best_fimp(const Stack &stack) const {
+			optional<size_t> best_score;
+			FimpPtr *best_fimp(nullptr);
+			
+			for (auto &fp: _fimps) {
+				auto &f(const_cast<FimpPtr &>(fp.second));
+				auto fs(f->score(stack));
+				
+				if (fs) {
+					if (*fs == 0) { return f; }
+					
+					if (!best_score || fs < best_score) {
+						best_score = fs;
+						best_fimp = &f;
+					}
+				}
+			}
+			
+			if (!best_fimp) { throw Error("Func not applicable: " + id.name()); }
+			return *best_fimp;
+		}
+
+		void clear() { _fimps.clear(); }
 	private:
-		unordered_map<Sym, FimpPtr> _fimps;
+		map<Sym, FimpPtr> _fimps;
 	};
 
 	template <typename... ImpT>

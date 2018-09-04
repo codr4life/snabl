@@ -1,6 +1,6 @@
 func: fib<Int Int Int> Int (
 	rswap dup
-  if: zero?
+  if: z?
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
