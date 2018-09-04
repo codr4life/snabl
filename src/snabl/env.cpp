@@ -6,26 +6,6 @@
 namespace snabl {
 	const Pos Env::home_pos(1, 0);
 
-	Env::Env():
-		_type_tag(1),
-		home(*this),
-		separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
-		pc(ops.begin()),
-		main(begin_scope()),
-		_pos(home_pos),
-		_is_safe(true) { begin_lib(home); }
-
-	size_t Env::next_type_tag() { return _type_tag++; }
-
-	Sym Env::sym(const string &name) {
-		auto found(_syms.find(name));
-
-		return Sym((found == _syms.end())
-							 ? _syms.emplace(name, make_unique<SymImp>(name))
-							 .first->second.get()
-							 : found->second.get());
-	}
-
 	void Env::parse(string_view in, Forms &out) {
 		const string s(in);
 		istringstream ss(s);
@@ -212,85 +192,5 @@ namespace snabl {
 										FuncPtr &func, FimpPtr &fimp) {
 		for (auto i(begin); i != end;) { i->imp->compile(i, end, func, fimp, *this); }
 		emit(begin->pos, func, fimp);
-	}
-
-	void Env::begin_lib(Lib &lib) {
-		_libs.push_back(&lib);
-	}
-	
-	Lib &Env::lib() {
-		if (_libs.empty()) { throw Error("No libs"); }
-		return *_libs.back();
-	}
-
-	void Env::end_lib() {
-		if (_libs.empty()) { throw Error("No libs"); }
-		_libs.pop_back();
-	}
-
-	const ScopePtr &Env::begin_scope(const ScopePtr &parent) {
-		_scopes.push_back(ScopePtr::make(*this, parent));
-		return _scopes.back();
-	}
-
-	const ScopePtr &Env::scope() const {
-		if (_scopes.empty()) { throw Error("No open scopes"); }
-		return _scopes.back();
-	}
-
-	void Env::end_scope() {
-		if (_scopes.empty()) { throw Error("No open scopes"); }
-		_scopes.pop_back();
-	}
-	
-	Call &Env::call() {
-		if (_calls.empty()) { throw Error("No calls"); }
-		return _calls.back();
-	}
-
-	void Env::end_call() {
-		if (_calls.empty()) { throw Error("No active calls"); }
-		_calls.pop_back();
-	}
-
-	void Env::begin_stack(size_t offs) {
-		_stacks.push_back(_stacks.empty()
-													? offs
-													: max(offs, _stacks.back()));
-	}
-
-	size_t Env::end_stack() {
-		if (_stacks.empty()) { throw Error("No stacks"); }
-		auto offs(_stacks.back());
-		_stacks.pop_back();
-		return offs;
-	}
-
-	void Env::push(const Box &val) { _stack.push_back(val); }
-
-	Box Env::pop() {
-		if (_is_safe &&
-				(_stack.empty() ||
-				 (!_stacks.empty() &&
-					_stack.size() <= _stacks.back()))) { throw Error("Nothing to pop"); }
-				
-		Box v(_stack.back());
-		_stack.pop_back();
-		return v;
-	}
-
-	const Stack &Env::stack() { return _stack; }
-
-	void Env::dump_stack(std::ostream &out) const {
-		out << '[';
-		char sep(0);
-		
-		for (auto &v: _stack) {
-			if (sep) { out << sep; }
-			v.dump(out);
-			sep = ' ';
-		}
-
-		out << ']' << endl;
 	}
 }

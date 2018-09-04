@@ -1,4 +1,3 @@
-* move short Env methods inline
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme

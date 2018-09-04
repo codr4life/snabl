@@ -48,17 +48,36 @@ namespace snabl {
 
 		const ScopePtr &main;
 		
-		Env();
-		size_t next_type_tag();
-		Sym sym(const string &name);
-		
+		Env():
+			_type_tag(1),
+			home(*this),
+			separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
+			pc(ops.begin()),
+			main(begin_scope()),
+			_pos(home_pos),
+			_is_safe(true) { begin_lib(home); }
+
+		size_t next_type_tag() { return _type_tag++; }
+
+		Sym sym(const string &name) {
+			auto found(_syms.find(name));
+			
+			return Sym((found == _syms.end())
+								 ? _syms.emplace(name, make_unique<SymImp>(name))
+								 .first->second.get()
+								 : found->second.get());
+		}
+
 		void parse(string_view in, Forms &out);
 		void parse(istream &in, Forms &out);
 		bool parse(istream &in, Pos start_pos, char end, Forms &out);
-		
+
 		template <typename ImpT, typename... ArgsT>
-		Op &emit(const OpType<ImpT> &type, ArgsT &&... args);
-		
+		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
+			ops.emplace_back(type, args...);
+			return ops.back();
+		}
+
 		void emit(Pos pos, FuncPtr &func, FimpPtr &fimp);
 
 		void compile(string_view in);
@@ -71,30 +90,94 @@ namespace snabl {
 		void run(istream &in);
 		void run(optional<PC> end_pc=nullopt);
 
-		void begin_lib(Lib &lib);
-		Lib &lib();
-		void end_lib();
+		void begin_lib(Lib &lib) { _libs.push_back(&lib); }
+	
+		Lib &lib() {
+			if (_libs.empty()) { throw Error("No libs"); }
+			return *_libs.back();
+		}
 
-		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr);
-		const ScopePtr &scope() const;
-		void end_scope();
-		
+		void end_lib() {
+			if (_libs.empty()) { throw Error("No libs"); }
+			_libs.pop_back();
+		}
+
+		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
+			_scopes.push_back(ScopePtr::make(*this, parent));
+			return _scopes.back();
+		}
+
+		const ScopePtr &scope() const {
+			if (_scopes.empty()) { throw Error("No open scopes"); }
+			return _scopes.back();
+		}
+
+		void end_scope() {
+			if (_scopes.empty()) { throw Error("No open scopes"); }
+			_scopes.pop_back();
+		}
+
 		template <typename... ArgsT>
-		Call &begin_call(Scope &scope, ArgsT &&... args);
+		Call &begin_call(Scope &scope, ArgsT &&... args) {
+			_calls.emplace_back(scope, forward<ArgsT>(args)...);
+			return _calls.back();
+		}
+		
+		Call &call() {
+			if (_calls.empty()) { throw Error("No calls"); }
+			return _calls.back();
+		}
 
-		Call &call();
-		void end_call();
+		void end_call() {
+			if (_calls.empty()) { throw Error("No active calls"); }
+			_calls.pop_back();
+		}
 
-		void begin_stack(size_t offs);
-		size_t end_stack();		
+		void begin_stack(size_t offs) {
+			_stacks.push_back(_stacks.empty()
+												? offs
+												: max(offs, _stacks.back()));
+		}
+
+		size_t end_stack() {
+			if (_stacks.empty()) { throw Error("No stacks"); }
+			auto offs(_stacks.back());
+			_stacks.pop_back();
+			return offs;
+		}
+
+		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
-		void push(const TypePtr<ValT> &type, ArgsT &&...args);
+		void push(const TypePtr<ValT> &type, ArgsT &&...args) {
+			_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
+		}
 
-		void push(const Box &val);
-		Box pop();
-		const Stack &stack();
-		void dump_stack(std::ostream &out) const;
+		Box pop() {
+			if (_is_safe &&
+					(_stack.empty() ||
+					 (!_stacks.empty() &&
+						_stack.size() <= _stacks.back()))) { throw Error("Nothing to pop"); }
+				
+			Box v(_stack.back());
+			_stack.pop_back();
+			return v;
+		}
+
+		const Stack &stack() { return _stack; }
+
+		void dump_stack(std::ostream &out) const {
+			out << '[';
+			char sep(0);
+		
+			for (auto &v: _stack) {
+				if (sep) { out << sep; }
+				v.dump(out);
+				sep = ' ';
+			}
+
+			out << ']' << endl;
+		}
 
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
@@ -117,7 +200,13 @@ namespace snabl {
 		bool _is_safe;
 		
 		template <typename FormT>
-		bool parse_body(istream &in, char end, Forms &out);
+		bool parse_body(istream &in, char end, Forms &out) {
+			auto start_pos(_pos);
+			Forms body;
+			if (!parse(in, start_pos, end, body) && end) { return false; }
+			out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
+			return true;
+		}
 
 		void parse_id(istream &in, Forms &out);
 		void parse_lambda(istream &in, Forms &out);
@@ -127,27 +216,7 @@ namespace snabl {
 
 		friend struct State;
 	};
-
-	template <typename FormT>
-	bool Env::parse_body(istream &in, char end, Forms &out) {
-		auto start_pos(_pos);
-		Forms body;
-		if (!parse(in, start_pos, end, body) && end) { return false; }
-		out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
-		return true;
-	}
-	
-	template <typename ImpT, typename... ArgsT>
-	Op &Env::emit(const OpType<ImpT> &type, ArgsT &&... args) {
-		ops.emplace_back(type, args...);
-		return ops.back();
-	}
-	
-	template <typename ValT, typename... ArgsT>
-	void Env::push(const TypePtr<ValT> &type, ArgsT &&...args) {
-		_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
-	}
-
+		
 	template <typename ValT>
 	const MacroPtr &Lib::add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val) {
 		return add_macro(id, [type, val](Forms::const_iterator &in,
@@ -168,12 +237,6 @@ namespace snabl {
 																					Env &env) {
 											 env.emit(type, (in++)->pos, args...);			
 										 });
-	}
-
-		template <typename... ArgsT>
-	Call &Env::begin_call(Scope &scope, ArgsT &&... args) {
-		_calls.emplace_back(scope, forward<ArgsT>(args)...);
-		return _calls.back();
 	}
 }
 
