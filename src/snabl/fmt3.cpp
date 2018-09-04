@@ -1,11 +1,11 @@
 #include "snabl/error.hpp"
-#include "snabl/fmt.hpp"
+#include "snabl/fmt3.hpp"
 
 namespace snabl {
-	string fmt_arg(const char* x) { return string(x); }
-	string fmt_arg(const string &x) { return x; }
+	string fmt3_arg(const char* x) { return string(x); }
+	string fmt3_arg(const string &x) { return x; }
 
-	string fmt(string_view spec, const vector<fmt_conv> &args) {
+	string fmt3(string_view spec, const vector<fmt3_conv> &args) {
 		stringstream out;
 		size_t i(0), j;
 		
@@ -20,7 +20,7 @@ namespace snabl {
 				const auto arg(stoul(string(spec.substr(j+1)), &len));
 
 				if (arg >= args.size()) {
-					throw Error("Invalid fmt arg: " + to_string(arg));
+					throw Error("Invalid fmt3 arg: " + to_string(arg));
 				}
 
 				out << args[arg].as_str;

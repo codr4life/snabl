@@ -1,5 +1,6 @@
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
+#include "snabl/parser.hpp"
 
 #define SNABL_DISPATCH()												\
 	if (pc == *end_pc) { return; }								\
@@ -15,7 +16,7 @@ namespace snabl {
 
 	void Env::run(istream &in) {
 		Forms fs;
-		parse(in, fs);
+		Parser(*this).parse(in, fs);
 		auto offs(ops.size());
 		compile(fs.begin(), fs.end());
 		pc = ops.begin()+offs;		

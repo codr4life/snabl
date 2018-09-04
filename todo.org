@@ -1,5 +1,11 @@
 * add test=/== funcs
 ** move tests to tests/all.sl
+* add quasi-quoting
+** `foo `(1 2 ´(1 + 2) 4 5)
+** inc/dec size_t _quoted
+** use write / parse to splice
+** push form rather than compiling when quoted
+*** add Form type
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
@@ -11,8 +17,6 @@
 *** is_safe param
 *** emit with true/false before after
 * fix github decr issue
-* extract Parser
-** pos & separators
 * add repl(env, in, out) fn
 
 * add Str type

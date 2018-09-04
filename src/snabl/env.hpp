@@ -30,8 +30,6 @@ namespace snabl {
 		vector<size_t> _stacks;
 		unordered_map<Sym, Box> _vars;
 	public:
-		static const Pos home_pos;
-
 		TraitPtr maybe_type, a_type, no_type, num_type;
 		TypePtr<bool> bool_type;
 		TypePtr<Float> float_type;
@@ -54,7 +52,6 @@ namespace snabl {
 			separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
 			pc(ops.begin()),
 			main(begin_scope()),
-			_pos(home_pos),
 			_is_safe(true) { begin_lib(home); }
 
 		size_t next_type_tag() { return _type_tag++; }
@@ -69,8 +66,6 @@ namespace snabl {
 		}
 
 		void parse(string_view in, Forms &out);
-		void parse(istream &in, Forms &out);
-		bool parse(istream &in, Pos start_pos, char end, Forms &out);
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
@@ -193,27 +188,11 @@ namespace snabl {
 
 		bool is_safe() const { return _is_safe; }
 	private:
-		Pos _pos;
 		vector<Lib *> _libs;
 		deque<Lambda> _lambdas;
 		deque<Call> _calls;
 		bool _is_safe;
 		
-		template <typename FormT>
-		bool parse_body(istream &in, char end, Forms &out) {
-			auto start_pos(_pos);
-			Forms body;
-			if (!parse(in, start_pos, end, body) && end) { return false; }
-			out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
-			return true;
-		}
-
-		void parse_id(istream &in, Forms &out);
-		void parse_lambda(istream &in, Forms &out);
-		void parse_num(istream &in, Forms &out);
-		void parse_sexpr(istream &in, Forms &out);
-		void parse_type_list(istream &in, Forms &out);
-
 		friend struct State;
 	};
 		
