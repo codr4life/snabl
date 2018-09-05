@@ -1,19 +1,18 @@
 #ifndef SNABL_FUNC_HPP
 #define SNABL_FUNC_HPP
 
+#include "snabl/def.hpp"
 #include "snabl/fimp.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
 #include "snabl/std.hpp"
-#include "snabl/sym.hpp"
 
 namespace snabl {
 	class Lib;
 
-	class Func {
+	class Func: public Def {
 	public:
 		Lib &lib;
-		const Sym id;
 		const size_t nargs, nrets;
 
 		template <typename... ImpT>
@@ -22,7 +21,7 @@ namespace snabl {
 																	 ImpT &&... imp);
 		
 		Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
-			lib(lib), id(id), nargs(nargs), nrets(nrets) { }
+			Def(id), lib(lib), nargs(nargs), nrets(nrets) { }
 
 		const FimpPtr &get_fimp() {
 			return _fimps.begin()->second;

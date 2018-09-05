@@ -27,11 +27,17 @@ namespace snabl {
 		const SymImp *_imp;
 	};
 
-	bool operator ==(Sym x, Sym y);
-	bool operator !=(Sym x, Sym y);
-	bool operator <(Sym x, Sym y);
+	inline bool operator ==(Sym x, Sym y) { return x._imp == y._imp; }
 
-	void fmt_arg(const Sym &x, ostream &out);
+	inline bool operator !=(Sym x, Sym y) { return x._imp != y._imp; }
+
+	inline bool operator <(Sym x, Sym y) { return x._imp < y._imp; }
+
+	inline ostream &operator <<(ostream &out, const Sym &x) {
+		out << x.name();
+		return out;
+	}
+
 }
 
 namespace std {

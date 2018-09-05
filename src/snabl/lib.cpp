@@ -1,7 +1,7 @@
 #include "snabl/lib.hpp"
 
 namespace snabl {
-	Lib::Lib(Env &env, Sym id): env(env), id(id) { }
+	Lib::Lib(Env &env, Sym id): Def(id), env(env) { }
 
 	Lib::~Lib() {
 		for (auto &f: _funcs) { f.second->clear(); }

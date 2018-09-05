@@ -39,7 +39,10 @@ namespace snabl {
 		bool _is_undef;
 	};
 
-	string fmt_arg(const Box &x);
+	inline ostream &operator <<(ostream &out, const Box &x) {
+		x.print(out);
+		return out;
+	}
 }
 
 #endif

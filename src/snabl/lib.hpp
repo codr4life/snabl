@@ -1,6 +1,7 @@
 #ifndef SNABL_LIB_HPP
 #define SNABL_LIB_HPP
 
+#include "snabl/def.hpp"
 #include "snabl/error.hpp"
 #include "snabl/func.hpp"
 #include "snabl/macro.hpp"
@@ -11,14 +12,13 @@
 namespace snabl {
 	class Env;
 	
-	class Lib {
+	class Lib: public Def {
 	public:
 		Env &env;
-		const Sym id;
 		
 		Lib(Env &env, Sym id);
 		~Lib();
-
+		
 		template <typename ValT>
 		const MacroPtr &add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val);
 

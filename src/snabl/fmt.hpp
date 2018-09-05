@@ -4,12 +4,9 @@
 #include "snabl/std.hpp"
 
 namespace snabl {	
-	template <typename T>
-	void fmt_arg(const T &x, ostream &out) { out << x; }
-
 	struct fmt_conv {
 		template <typename T>
-		fmt_conv(T&& val): print([val](ostream &out) { fmt_arg(val, out); }) { }
+		fmt_conv(const T& v): print([&v](ostream &out) { out << v; }) { }
 		const function<void (ostream &)> print;
 	};
 	

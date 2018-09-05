@@ -53,6 +53,9 @@ namespace snabl {
 			return *this;
 		}
 
+		T *get() const { return const_cast<T *>(&_imp->val); }		
+		T *get() { return &_imp->val; }
+
 		T &operator *() const { return const_cast<T &>(_imp->val); }		
 		T &operator *() { return _imp->val; }
 
@@ -82,6 +85,12 @@ namespace snabl {
 			}
 		}
 	};
+
+	template <typename T>
+	ostream &operator <<(ostream &out, const Ptr<T> &x) {
+		out << x.get() ? "null" : *x;
+		return out;
+	}
 }
 
 #endif

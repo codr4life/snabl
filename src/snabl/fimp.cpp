@@ -71,14 +71,14 @@ namespace snabl {
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp):
-		id(get_id(*func, args)), func(func), args(args), rets(rets), imp(imp),
+		Def(get_id(*func, args)), func(func), args(args), rets(rets), imp(imp),
 	  _start_pc(nullopt), _nops(0), _has_vars(false) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args, const Rets &rets,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
-		id(get_id(*func, args)), func(func), args(args), rets(rets), forms(begin, end),
+		Def(get_id(*func, args)), func(func), args(args), rets(rets), forms(begin, end),
 		_start_pc(nullopt), _nops(0), _has_vars(false) { }
 
 	optional<size_t> Fimp::score(const Stack &stack) const {

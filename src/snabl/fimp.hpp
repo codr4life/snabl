@@ -1,6 +1,7 @@
 #ifndef SNABL_FIMP_HPP
 #define SNABL_FIMP_HPP
 
+#include "snabl/def.hpp"
 #include "snabl/form.hpp"
 #include "snabl/op.hpp"
 #include "snabl/ptrs.hpp"
@@ -10,14 +11,12 @@
 namespace snabl {
 	class Call;
 
-	class Fimp {
+	class Fimp: public Def {
 	public:
 		using Args = vector<Box>;
 		using Rets = vector<ATypePtr>;					
 		using Imp = function<void (Call &)>;
 		
-		const Sym id;
-
 		const FuncPtr func;
 		const Args args;
 		const Rets rets;

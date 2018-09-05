@@ -3,19 +3,18 @@
 
 #include "snabl/box.hpp"
 #include "snabl/cmp.hpp"
+#include "snabl/def.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
-#include "snabl/sym.hpp"
 
 namespace snabl {
 	class Box;
 	class Lib;
 
-	class AType {
+	class AType: public Def {
 	public:
 		Lib &lib;
 		const size_t tag;
-		const Sym id;
 
 		static void derive(const ATypePtr &child, const ATypePtr &parent) {
 			if (child->_parent_types.size() <= parent->tag) {
@@ -30,9 +29,6 @@ namespace snabl {
 				if (p) { derive(child, p); }
 			}
 		}
-
-		AType(const AType &) = delete;
-		const AType &operator=(const AType &) = delete;
 
 		bool isa(const ATypePtr &parent) const {
 			return

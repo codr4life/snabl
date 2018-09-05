@@ -5,7 +5,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	AType::AType(Lib &lib, Sym id): lib(lib), tag(lib.env.next_type_tag()), id(id) { }
+	AType::AType(Lib &lib, Sym id): Def(id), lib(lib), tag(lib.env.next_type_tag()) { }
 	
 	void AType::call(const Box &val, bool now) const { lib.env.push(val); }
 }
