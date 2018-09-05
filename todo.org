@@ -5,12 +5,11 @@
 ** inc/dec size_t _quoted
 ** use write / parse to splice
 ** push form rather than compiling when quoted
-*** add Form type
+** add Form type
+** add Sym type
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
-* add Sym type
-** add parser support for $foo
 * add unsafe: macro
 ** one arg
 ** add Safe op
@@ -25,7 +24,7 @@
 ** convert Sym to use wstring as name
 * add Bin type
 ** add parser support for ''
-* only begin/end scopes if putvars in lambda like fimp
+* only begin/end scope if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body
 ** allow anonymous, _
