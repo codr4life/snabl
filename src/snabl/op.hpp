@@ -14,6 +14,7 @@ namespace snabl {
 		const size_t label_offs;
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 		AOpType(const AOpType &) = delete;
+		const AOpType &operator=(const AOpType &) = delete;
 	private:
 		static size_t next_label_offs;
 	};

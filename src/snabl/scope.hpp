@@ -15,7 +15,9 @@ namespace snabl {
 		const ScopePtr parent;
 		
 		Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
-
+		Scope(const Scope &) = delete;
+		const Scope &operator=(const Scope &) = delete;
+		
 		const Box *get_var(Sym id) const {
 			const auto found(_vars.find(id));
 			if (found != _vars.end()) { return &found->second; }

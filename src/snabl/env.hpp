@@ -54,6 +54,9 @@ namespace snabl {
 			main(begin_scope()),
 			_is_safe(true) { begin_lib(home); }
 
+		Env(const Env &) = delete;
+		const Env &operator=(const Env &) = delete;
+
 		size_t next_type_tag() { return _type_tag++; }
 
 		Sym sym(const string &name) {

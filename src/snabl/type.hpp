@@ -31,6 +31,9 @@ namespace snabl {
 			}
 		}
 
+		AType(const AType &) = delete;
+		const AType &operator=(const AType &) = delete;
+
 		bool isa(const ATypePtr &parent) const {
 			return
 				parent.get() == this ||
