@@ -1,3 +1,5 @@
+* add Push op type/val constructor
+** use in add_macro/grep
 * add switch: macro
 ** use instead of fib double if
 * add quasi-quoting
@@ -18,12 +20,6 @@
 * fix github decr issue
 * add repl(env, in, out) fn
 
-* add Str type
-** add parser support for ""
-*** convert from utf-8 on read
-** convert Sym to use wstring as name
-* add Bin type
-** add parser support for ''
 * only begin/end scope if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body
@@ -31,16 +27,13 @@
 *** push anonymous libs in current scope
 *** add lib op which contains the actual lib
 *** use for local defs
-* add swap macro
 * add load func
 ** call when called with args
-* add support for type args
+* add type args
 ** add type.args
 ** add type.specialize fn
 ** T0-TN
 *** create on demand in home lib when referenced
-* add Stack type
-** use std::shared_ptr<Deque>
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add support for parsing ? as Maybe
@@ -51,8 +44,6 @@
 * add use: macro
 * add Sink<T>
 ** add push fn
-* add Push op type/val constructor
-** use in add_macro/grep
 * add sqlite plugin
 * add proxygen plugin
 * add wxwidgets plugin
