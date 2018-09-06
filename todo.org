@@ -1,5 +1,5 @@
-* finish converting tests
-** commit
+* add switch: macro
+** use instead of fib double if
 * add quasi-quoting
 ** `foo `(1 2 ´(1 + 2) 4 5)
 ** inc/dec size_t _quoted
