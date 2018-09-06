@@ -33,5 +33,10 @@
 (test= if: (1 < 3) 5 7 5)
 (test= if: (3 < 1) 5 7 7)
 
+(test= (switch: 7 (drop t) $foo) $foo)
+(test= (switch: 35 (< 42) $foo, drop $bar) $foo)
+(test= (switch: 35 (< 7) $foo, drop $bar) $bar)
+(test= (switch: 35 (< 7) $foo (< 42) $bar, drop $baz) $bar) 
+
 func: foo1<A> A (* 2)
 (test=, 21 foo1; 42)

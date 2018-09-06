@@ -52,7 +52,7 @@ namespace snabl {
 		struct Else {
 			static const OpType<Else> type;
 			size_t nops;
-			Else(): nops(0) { }
+			Else(size_t nops=0): nops(nops) { }
 		};
 		
 		struct FimpRet {
@@ -122,7 +122,7 @@ namespace snabl {
 		struct Skip {
 			static const OpType<Skip> type;
 			size_t nops;			
-			Skip(): nops(0) { }
+			Skip(size_t nops=0): nops(nops) { }
 		};
 
 		struct Swap {

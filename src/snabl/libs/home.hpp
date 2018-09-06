@@ -1,5 +1,5 @@
-#ifndef SNABL_LIBS_HOME_HPP
-#define SNABL_LIBS_HOME_HPP
+#ifndef SNABL_LIB_HOME_HPP
+#define SNABL_LIB_HOME_HPP
 
 #include "snabl/lib.hpp"
 

@@ -15,6 +15,7 @@
 #include "snabl/types/int.hpp"
 #include "snabl/types/lambda.hpp"
 #include "snabl/types/nil.hpp"
+#include "snabl/types/sym.hpp"
 #include "snabl/types/time.hpp"
 
 namespace snabl {
@@ -36,6 +37,7 @@ namespace snabl {
 		TypePtr<Int> int_type;
 		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
+		TypePtr<Sym> sym_type;
 		TypePtr<Time> time_type;
 		
 		libs::Home home;

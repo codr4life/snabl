@@ -1,5 +1,5 @@
-#ifndef SNABL_INT_HPP
-#define SNABL_INT_HPP
+#ifndef SNABL_TYPE_INT_HPP
+#define SNABL_TYPE_INT_HPP
 
 #include <cstdint>
 #include "snabl/std.hpp"

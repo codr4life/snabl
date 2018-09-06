@@ -1,5 +1,5 @@
-#ifndef SNABL_TIME_HPP
-#define SNABL_TIME_HPP
+#ifndef SNABL_TYPE_TIME_HPP
+#define SNABL_TYPE_TIME_HPP
 
 #include "snabl/types/int.hpp"
 

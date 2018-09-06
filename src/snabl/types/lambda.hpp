@@ -1,5 +1,5 @@
-#ifndef SNABL_LAMBDA_HPP
-#define SNABL_LAMBDA_HPP
+#ifndef SNABL_TYPE_LAMBDA_HPP
+#define SNABL_TYPE_LAMBDA_HPP
 
 #include "snabl/op.hpp"
 #include "snabl/ptrs.hpp"

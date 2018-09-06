@@ -15,6 +15,7 @@ namespace snabl {
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
+			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.a_type});
 			env.time_type = add_type<TimeType>(env.sym("Time"), {env.a_type});
 			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.a_type});
 			
@@ -117,6 +118,40 @@ namespace snabl {
 									if_skip.as<ops::Skip>().nops = env.ops.size()-start_pc;
 								});	
 
+			add_macro(env.sym("switch:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									if (in == end) { throw Error("Missing switch: value"); }
+									env.compile(in++, in+1);
+									vector<ops::Skip *> skips;
+									
+									while (in != end) {
+										if (in+1 != end) { env.emit(ops::Dup::type, form.pos); }
+										env.compile(in++, in+1);
+
+										if (in != end) {
+											auto &else_op(env.emit(ops::Else::type,
+																							form.pos).as<ops::Else>());
+											auto start_pc = env.ops.size();
+											env.emit(ops::Drop::type, form.pos);
+											env.compile(in++, in+1);
+
+											if (in != end) {
+												skips.push_back(&env.emit(ops::Skip::type,
+																									form.pos,
+																									env.ops.size()+1).as<ops::Skip>());
+											}
+											
+											else_op.nops = env.ops.size()-start_pc;
+										}
+									}
+
+									for (auto &s: skips) { s->nops = env.ops.size()-s->nops; }
+								});	
+			
 			add_macro(env.sym("func:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,

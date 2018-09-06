@@ -1,5 +1,5 @@
-#ifndef SNABL_NIL_HPP
-#define SNABL_NIL_HPP
+#ifndef SNABL_TYPE_NIL_HPP
+#define SNABL_TYPE_NIL_HPP
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"

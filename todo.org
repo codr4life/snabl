@@ -1,5 +1,4 @@
-* add switch: macro
-** use instead of fib double if
+* try fib
 * add quasi-quoting
 ** `foo `(1 2 ´(1 + 2) 4 5)
 ** inc/dec size_t _quoted
@@ -44,3 +43,8 @@
 ** add push fn
 * add sqlite plugin
 * add wxwidgets plugin
+
+func: fib<Int Int Int> Int (
+  let: (n a b) _
+  switch: @n z? @a one? @b, --; @b dup @a +; recall
+)

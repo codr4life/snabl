@@ -1,5 +1,5 @@
-#ifndef SNABL_BOOL_HPP
-#define SNABL_BOOL_HPP
+#ifndef SNABL_TYPE_BOOL_HPP
+#define SNABL_TYPE_BOOL_HPP
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"

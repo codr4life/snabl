@@ -1,5 +1,5 @@
-#ifndef SNABL_FLOAT_HPP
-#define SNABL_FLOAT_HPP
+#ifndef SNABL_TYPE_FLOAT_HPP
+#define SNABL_TYPE_FLOAT_HPP
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
