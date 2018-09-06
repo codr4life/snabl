@@ -318,6 +318,18 @@ namespace snabl {
 								 this_thread::sleep_for(nanoseconds(time.ns));
 							 });
 
+			add_fimp(env.sym("test="),
+							 {Box(env.maybe_type), Box(env.maybe_type)},
+							 {},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 Box y(env.pop()), x(env.pop());
+								 
+								 if (!x.is_eqval(y)) {
+									 throw Error(fmt("Expected (%0), was (%1)", {y, x}));
+								 }
+							 });
+
 			add_fimp(env.sym("bench"),
 							 {Box(env.int_type), Box(env.a_type)}, {env.time_type},
 							 [](Call &call) {

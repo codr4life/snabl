@@ -86,7 +86,7 @@ namespace snabl {
 													return Box(*t);
 												});
 							
-							fimp = (*fn)->get_best_fimp(args);
+							fimp = (*fn)->get_best_fimp(args, 0);
 						}
 					} else {
 						auto &fi((*fn)->get_fimp());

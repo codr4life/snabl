@@ -137,11 +137,13 @@ namespace snabl {
 												: max(offs, _stacks.back()));
 		}
 
-		size_t end_stack() {
+		void end_stack() {
 			if (_stacks.empty()) { throw Error("No stacks"); }
-			auto offs(_stacks.back());
 			_stacks.pop_back();
-			return offs;
+		}
+
+		size_t stack_size() const {
+			return _stacks.empty() ? _stack.size() : _stack.size() - _stacks.back();
 		}
 
 		void push(const Box &val) { _stack.push_back(val); }
@@ -152,11 +154,7 @@ namespace snabl {
 		}
 
 		Box pop() {
-			if (_is_safe &&
-					(_stack.empty() ||
-					 (!_stacks.empty() &&
-						_stack.size() <= _stacks.back()))) { throw Error("Nothing to pop"); }
-				
+			if (!stack_size()) { throw Error("Nothing to pop"); }
 			Box v(_stack.back());
 			_stack.pop_back();
 			return v;

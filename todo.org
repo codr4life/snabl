@@ -1,5 +1,5 @@
-* add test=/== funcs
-** move tests to tests/all.sl
+* finish converting tests
+** commit
 * add quasi-quoting
 ** `foo `(1 2 ´(1 + 2) 4 5)
 ** inc/dec size_t _quoted

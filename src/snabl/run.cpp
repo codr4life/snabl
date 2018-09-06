@@ -39,16 +39,17 @@ namespace snabl {
 		pop().call(false);
 		SNABL_DISPATCH();
 	op_ddrop:
-		if (_stack.size() < 2) { throw Error("Missing value"); }
+		if (stack_size() < 2) { throw Error("Nothing to ddrop"); }
 		_stack.erase(_stack.begin()+_stack.size()-2, _stack.end());
 		pc++;
 		SNABL_DISPATCH();
 	op_drop:
-		if (_stack.empty()) { throw Error("Missing value"); }
+		if (!stack_size()) { throw Error("Nothing to drop"); }
 		_stack.pop_back();
 		pc++;
 		SNABL_DISPATCH();
 	op_dup:
+		if (!stack_size()) { throw Error("Nothing to dup"); }
 		push(_stack.back());
 		pc++;
 		SNABL_DISPATCH();
@@ -65,13 +66,13 @@ namespace snabl {
 
 			const auto &c(call());
 			const auto &fn(c.fimp->func);
-			auto stack_offs(end_stack());
 
-			if (_stack.size() != stack_offs+fn->nrets) {
+			if (stack_size() != fn->nrets) {
 				throw Error(fmt("Invalid return stack: %0", {c.fimp->id}));
 			}
 			
 			pc = *c.return_pc;
+			end_stack();
 			end_call();
 			SNABL_DISPATCH();
 		}
@@ -82,9 +83,12 @@ namespace snabl {
 			if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
 			
 			if (fimp) {
-				if (_is_safe && !(*fimp)->score(_stack)) { fimp = nullptr; }
+				if (_is_safe &&
+						!(*fimp)->score(_stack, _stacks.empty() ? 0 : _stacks.back())) {
+					fimp = nullptr;
+				}
 			} else {
-				fimp = &op.func->get_best_fimp(_stack);
+				fimp = &op.func->get_best_fimp(_stack, _stacks.empty() ? 0 : _stacks.back());
 			}
 			
 			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
@@ -130,7 +134,7 @@ namespace snabl {
 		call().recall();
 		SNABL_DISPATCH();
 	op_rot: {
-			if (_stack.size() < 3) { throw Error("Missing value"); }
+			if (stack_size() < 3) { throw Error("Nothing to rot"); }
 			auto i(_stack.rbegin());
 			iter_swap(i, i+2);
 			iter_swap(i, i+1);
@@ -138,14 +142,14 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_rswap: {
-			if (_stack.size() < 3) { throw Error("Missing value"); }
+			if (stack_size() < 3) { throw Error("Nothing to rswap"); }
 			auto i(_stack.rbegin());
 			iter_swap(i, i+2);
 			pc++;
 			SNABL_DISPATCH();
 		}
 	op_sdrop:
-		if (_stack.size() < 2) { throw Error("Missing value"); }
+		if (stack_size() < 2) { throw Error("Nothing to sdrop"); }
 		_stack.erase(_stack.begin()+_stack.size()-2);
 		pc++;
 		SNABL_DISPATCH();
@@ -153,6 +157,7 @@ namespace snabl {
 		pc += pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();
 	op_swap:
+		if (stack_size() < 2) { throw Error("Nothing to swap"); }
 		auto i(_stack.rbegin());
 		iter_swap(i, i+1);
 		pc++;
