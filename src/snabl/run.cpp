@@ -44,7 +44,8 @@ namespace snabl {
 		pc++;
 		SNABL_DISPATCH();
 	op_drop:
-		pop();
+		if (_stack.empty()) { throw Error("Missing value"); }
+		_stack.pop_back();
 		pc++;
 		SNABL_DISPATCH();
 	op_dup:
