@@ -197,24 +197,27 @@ namespace snabl {
 		friend struct State;
 	};
 		
-	template <typename ValT>
-	const MacroPtr &Lib::add_macro(Sym id, const TypePtr<ValT> &type, const ValT &val) {
-		return add_macro(id, [type, val](Forms::const_iterator &in,
-																		 Forms::const_iterator end,
-																		 FuncPtr &func, FimpPtr &fimp,
-																		 Env &env) {
+	template <typename ValT, typename... ArgsT>
+	const MacroPtr &Lib::add_macro(Sym id,
+																 const TypePtr<ValT> &type,
+																 ArgsT &&... args) {
+		return add_macro(id, [type, args...](Forms::const_iterator &in,
+																					Forms::const_iterator end,
+																					FuncPtr &func, FimpPtr &fimp,
+																					Env &env) {
 											 env.emit(ops::Push::type,
 																(in++)->pos,
-																Box(type, val));			
+																type,
+																args...);			
 										 });
 	}
 
 	template <typename ImpT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
 		return add_macro(id, [&type, args...](Forms::const_iterator &in,
-																					Forms::const_iterator end,
-																					FuncPtr &func, FimpPtr &fimp,
-																					Env &env) {
+																					 Forms::const_iterator end,
+																					 FuncPtr &func, FimpPtr &fimp,
+																					 Env &env) {
 											 env.emit(type, (in++)->pos, args...);			
 										 });
 	}

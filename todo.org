@@ -1,5 +1,3 @@
-* add Push op type/val constructor
-** use in add_macro/grep
 * add switch: macro
 ** use instead of fib double if
 * add quasi-quoting
@@ -45,5 +43,4 @@
 * add Sink<T>
 ** add push fn
 * add sqlite plugin
-* add proxygen plugin
 * add wxwidgets plugin

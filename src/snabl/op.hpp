@@ -92,6 +92,9 @@ namespace snabl {
 			static const OpType<Push> type;			
 			const Box val;
 			Push(const Box &val): val(val) { }
+			template <typename ValT, typename... ArgsT>
+			Push(const TypePtr<ValT> &type, ArgsT &&...args):
+				val(type, forward<ArgsT>(args)...) { }
 		};
 
 		struct PutVar {
