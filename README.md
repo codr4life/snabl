@@ -40,7 +40,7 @@ Example 3
 ```
 func: fib<Int Int Int> Int (
   let: (n a b) _
-  if: (z? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
+  switch: @n z? @a one? @b, --; @b dup @a +; recall
 )
 ```
 
@@ -49,10 +49,10 @@ As before, the same algorithm may be implemented without variables.
 Example 4
 ```
 func: fib<Int Int Int> Int (
-  rswap dup
-  if: z?
-    (drop sdrop),
-    dup if: one? ddrop, --; rswap dup rot +; recall
+  rswap switch: _
+    z? sdrop
+    one? drop,
+    --; rswap dup rot +; recall
 )
 ```
 

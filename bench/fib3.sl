@@ -1,6 +1,6 @@
 func: fib<Int Int Int> Int (
   let: (n a b) _
-  if: (z? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
+  switch: @n z? @a one? @b, --; @b dup @a +; recall
 )
 
 say, bench 10000 {fib 20 0 1; drop}; ms

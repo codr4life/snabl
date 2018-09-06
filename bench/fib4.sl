@@ -1,8 +1,9 @@
 func: fib<Int Int Int> Int (
-	rswap dup
-  if: z?
-    (drop sdrop),
-    dup if: one? ddrop, --; rswap dup rot +; recall
+	rswap
+ 	switch: _
+	  z? sdrop
+    one? drop,
+		--; rswap dup rot +; recall
 )
 
 say, bench 10000 {fib 20 0 1; drop}; ms

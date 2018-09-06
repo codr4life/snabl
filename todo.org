@@ -1,11 +1,3 @@
-* try fib
-* add quasi-quoting
-** `foo `(1 2 ´(1 + 2) 4 5)
-** inc/dec size_t _quoted
-** use write / parse to splice
-** push form rather than compiling when quoted
-** add Form type
-** add Sym type
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
@@ -48,3 +40,16 @@ func: fib<Int Int Int> Int (
   let: (n a b) _
   switch: @n z? @a one? @b, --; @b dup @a +; recall
 )
+
+func: fib<Int Int Int> Int (
+  let: (n a b) _
+  if: (z? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
+)
+
+func: fib<Int Int Int> Int (
+	rswap dup
+  if: z?
+    (drop sdrop),
+    dup if: one? ddrop, --; rswap dup rot +; recall
+)
+
