@@ -39,7 +39,8 @@ namespace snabl {
 		_has_vars = (find_if(env.ops.begin() + *_start_pc, 
 												 env.ops.end(), 
 												 [](const Op &op) {
-													 return &op.type == &ops::PutVar::type;
+													 return &op.type == &ops::GetVar::type ||
+													 &op.type == &ops::PutVar::type;
 												 }) != env.ops.end());
 
 		env.emit(ops::FimpRet::type, pos, _has_vars);

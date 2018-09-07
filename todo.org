@@ -1,3 +1,8 @@
+* switch Env to static _stack
+** update stack ops
+*** change iter_swap to swap
+* add fence after if: and switch: when needed
+** add ops::Nop
 * add iterative fib
 ** fib5.sl
 ** add iteration to readme
@@ -9,7 +14,6 @@
 * fix github decr issue
 * add repl(env, in, out) fn
 
-* only begin/end scope if putvars in lambda like fimp
 * add lib: macro
 ** two args, id & body
 ** allow anonymous, _

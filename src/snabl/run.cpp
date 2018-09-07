@@ -108,13 +108,15 @@ namespace snabl {
 		}
 	op_lambda: {
 			const auto &op(pc->as<ops::Lambda>());
-			push(lambda_type, LambdaPtr::make(scope(), *op.start_pc, op.nops));
+			push(lambda_type, LambdaPtr::make(op.has_vars ? scope() : nullptr,
+																				*op.start_pc, op.nops,
+																				op.has_vars));
 			pc += op.nops+1;
 			SNABL_DISPATCH();
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			end_scope();
+			if (c.lambda->has_vars) { end_scope(); }
 			pc = *c.return_pc;
 			end_call();
 			SNABL_DISPATCH();

@@ -130,6 +130,14 @@ namespace snabl {
 			auto &op(env.emit(ops::Lambda::type, f.pos).as<ops::Lambda>());
 			op.start_pc = env.ops.size();
 			env.compile(l.body);
+
+			op.has_vars = (find_if(env.ops.begin() + *op.start_pc, 
+														 env.ops.end(), 
+														 [](const Op &op) {
+															 return &op.type == &ops::GetVar::type ||
+															 &op.type == &ops::PutVar::type;
+														 }) != env.ops.end());
+
 			env.emit(ops::LambdaRet::type, f.pos);
 			op.nops = env.ops.size()-*op.start_pc;
 		}
@@ -167,8 +175,8 @@ namespace snabl {
 		}		
 
 		void Semicolon::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
-												Env &env) const {
+														FuncPtr &func, FimpPtr &fimp,
+														Env &env) const {
 			auto &form(*in++);
 			if (!func) { throw SyntaxError(form.pos, "Missing func"); }
 			env.emit(form.pos, func, fimp);

@@ -81,7 +81,9 @@ namespace snabl {
 			static const OpType<Lambda> type;
 			optional<size_t> start_pc;
 			size_t nops;
-			Lambda(): nops(0) { }
+			bool has_vars;
+			
+			Lambda(): nops(0), has_vars(false) { }
 		};
 
 		struct LambdaRet {
