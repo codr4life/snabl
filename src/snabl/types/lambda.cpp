@@ -26,7 +26,7 @@ namespace snabl {
 		const auto l(val.as<LambdaPtr>());
 		Env &env(lib.env);
 		auto &scope(l->has_vars ? env.begin_scope(l->parent_scope) : env.scope());
-		auto &call(env.begin_call(*scope, *l, env.pc));
+		auto &call(env.begin_call(*scope, l, env.pc));
 		env.pc = env.ops.begin()+l->start_pc;
 		if (now) { env.run(*call.return_pc); }
 	}

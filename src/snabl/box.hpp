@@ -9,7 +9,6 @@
 namespace snabl {
 	class Box {
 	public:
-		
 		Box(const ATypePtr &type): _type(type), _val(nullptr), _is_undef(true) { }
 		
 		template <typename ValT>

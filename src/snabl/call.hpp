@@ -15,15 +15,15 @@ namespace snabl {
 		const State state;
 
 		Fimp *const fimp;
-		Lambda *const lambda;
+		const LambdaPtr lambda;
 		const optional<PC> return_pc;
 		
 		Call(Scope &scope, Fimp &fimp, optional<PC> return_pc=nullopt):
 			scope(scope), state(scope.env), fimp(&fimp), lambda(nullptr),
 			return_pc(return_pc) { }
 	
-		Call(Scope &scope, Lambda &lambda, PC return_pc):
-			scope(scope), state(scope.env), fimp(nullptr), lambda(&lambda),
+		Call(Scope &scope, const LambdaPtr &lambda, PC return_pc):
+			scope(scope), state(scope.env), fimp(nullptr), lambda(lambda),
 			return_pc(return_pc) { }
 
 		void recall() const;
