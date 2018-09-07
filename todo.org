@@ -1,14 +1,5 @@
-* add iterative fib
-** fib5.sl
-** add iteration to readme
-* add unsafe: macro
-** one arg
-** add Safe op
-*** is_safe param
-*** emit with true/false before after
-* fix github decr issue
 * add repl(env, in, out) fn
-
+* fix github decr issue
 * add lib: macro
 ** two args, id & body
 ** allow anonymous, _
@@ -34,6 +25,12 @@
 * add use: macro
 * add Sink<T>
 ** add push fn
+* add unsafe: macro
+** one arg
+** add Safe op
+*** is_safe param
+*** emit with true/false before after
+
 * add sqlite plugin
 * add wxwidgets plugin
 
