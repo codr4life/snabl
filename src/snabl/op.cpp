@@ -12,14 +12,14 @@ namespace snabl {
 		const OpType<Drop> Drop::type("drop");
 		const OpType<Dup> Dup::type("dup");
 		const OpType<Else> Else::type("else");
-		const OpType<Eqval> Eqval::type("eqval");
+		const Eqval::Type Eqval::type("eqval");
 		const OpType<FimpRet> FimpRet::type("fimpret");
-		const OpType<Funcall> Funcall::type("funcall");
+		const Funcall::Type Funcall::type("funcall");
 		const OpType<Get> Get::type("get");
 		const OpType<Lambda> Lambda::type("lambda");
 		const OpType<LambdaRet> LambdaRet::type("lambdaret");
 		const OpType<Let> Let::type("let");
-		const OpType<Push> Push::type("push");
+		const Push::Type Push::type("push");
 		const OpType<Recall> Recall::type("recall");
 		const OpType<Rot> Rot::type("rot");
 		const OpType<RSwap> RSwap::type("rswap");
@@ -29,5 +29,20 @@ namespace snabl {
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
+
+		void Eqval::Type::dump(const Eqval &op, ostream &out) const {
+			out << ' ';
+			op.lhs.dump(out);
+		}
+
+		void Funcall::Type::dump(const Funcall &op, ostream &out) const {
+			out << ' ' << (op.fimp ? op.fimp->id : op.func->id);
+			if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
+		}
+
+		void Push::Type::dump(const Push &op, ostream &out) const {
+			out << ' ';
+			op.val.dump(out);
+		}
 	}
 }

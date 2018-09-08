@@ -4,15 +4,15 @@
 #include "snabl/parser.hpp"
 
 namespace snabl {
-	void Env::parse(string_view in, Forms &out) {
+	void Env::compile(string_view in) {
 		const string s(in);
 		istringstream ss(s);
-		Parser(*this).parse(ss, out);		
-	}	
+		compile(ss);
+	}
 
-	void Env::compile(string_view in) {
+	void Env::compile(istream &in) {
 		Forms forms;
-		parse(in, forms);
+		Parser(*this).parse(in, forms);		
 		compile(forms);
 	}
 

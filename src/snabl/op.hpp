@@ -9,31 +9,32 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
+	struct Op;
+
 	struct AOpType {
 		const string id;
 		const size_t label_offs;
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
+
+		virtual void dump(const Op &op, ostream &out) const { }
 	private:
 		static size_t next_label_offs;
 	};
 
 	template <typename ImpT>
 	struct OpType: public AOpType {
-		OpType(const string &id);
+		OpType(const string &id): AOpType(id) { }
+		void dump(const Op &op, ostream &out) const override;
+		virtual void dump(const ImpT &op, ostream &out) const { }
 	};
-
-	template <typename ImpT>
-	OpType<ImpT>::OpType(const string &id): AOpType(id) { }
-
-	struct Op;
 	
 	using Ops = deque<Op>;
 	using PC = Ops::iterator;
 
 	namespace ops {
-		struct Call {
+		struct Call {				
 			static const OpType<Call> type;
 		};
 
@@ -56,7 +57,12 @@ namespace snabl {
 		};
 		
 		struct Eqval {
-			static const OpType<Eqval> type;			
+			struct Type: public OpType<Eqval> {
+				Type(const string &id): OpType<Eqval>(id) { }
+				void dump(const Eqval &op, ostream &out) const override;
+			};
+
+			static const Type type;
 			const Box lhs;
 			Eqval(const Box &lhs): lhs(lhs) { }
 		};
@@ -68,7 +74,12 @@ namespace snabl {
 		};
 
 		struct Funcall {
-			static const OpType<Funcall> type;
+			struct Type: public OpType<Funcall> {
+				Type(const string &id): OpType<Funcall>(id) { }
+				void dump(const Funcall &op, ostream &out) const override;
+			};
+			
+			static const Type type;
 			const FuncPtr func;
 			const FimpPtr fimp;
 			
@@ -103,7 +114,12 @@ namespace snabl {
 		};
 
 		struct Push {
-			static const OpType<Push> type;			
+			struct Type: public OpType<Push> {
+				Type(const string &id): OpType<Push>(id) { }
+				void dump(const Push &op, ostream &out) const override;
+			};
+				
+			static const Type type;			
 			const Box val;
 			Push(const Box &val): val(val) { }
 			template <typename ValT, typename... ArgsT>
@@ -152,6 +168,12 @@ namespace snabl {
 
 		template <typename ImpT>
 		ImpT &as();
+
+		void dump(ostream &out) const {
+			out << type.id;
+			type.dump(*this, out);
+			out << endl;
+		}
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
@@ -168,6 +190,11 @@ namespace snabl {
 
 	template <typename ImpT>
 	ImpT &Op::as() { return get<ImpT>(_imp); }
+
+	template <typename ImpT>
+	void OpType<ImpT>::dump(const Op &op, ostream &out) const {
+		dump(op.as<ImpT>(), out);
+	}
 }
 
 #endif

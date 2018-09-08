@@ -1,7 +1,6 @@
-* add compile mode
-** print ops with row numbers & args if -c flag present
-** treat anything that's not a flag as filename
-** check fibs
+* add Fimp op like Lambda
+** replaces Skip
+** implement dump to print id
 * add env.repl(in, out) fn
 * add type args
 ** add type.args

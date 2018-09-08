@@ -68,8 +68,6 @@ namespace snabl {
 								 : found->second.get());
 		}
 
-		void parse(string_view in, Forms &out);
-
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
 			ops.emplace_back(type, args...);
@@ -79,6 +77,7 @@ namespace snabl {
 		void emit(Pos pos, FuncPtr &func, FimpPtr &fimp);
 
 		void compile(string_view in);
+		void compile(istream &in);
 		void compile(const Forms &forms);		
 		void compile(Forms::const_iterator begin, Forms::const_iterator end);
 		void compile(Forms::const_iterator begin, Forms::const_iterator end,
