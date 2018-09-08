@@ -111,11 +111,11 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Literal: public FormImp {			
-			static const FormType<Literal> type;
+		struct Lit: public FormImp {			
+			static const FormType<Lit> type;
 			const Box val;
 
-			Literal(const Box &val);
+			Lit(const Box &val);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 

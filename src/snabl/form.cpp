@@ -17,7 +17,7 @@ namespace snabl {
 		const FormType<Comma> Comma::type("Comma");
 		const FormType<Id> Id::type("Id");
 		const FormType<Lambda> Lambda::type("Lambda");
-		const FormType<Literal> Literal::type("Literal");
+		const FormType<Lit> Lit::type("Lit");
 		const FormType<Query> Query::type("Query");
 		const FormType<Semi> Semi::type("Semi");
 		const FormType<Sexpr> Sexpr::type("Sexpr");
@@ -143,18 +143,18 @@ namespace snabl {
 			op.nops = env.ops.size()-*op.start_pc;
 		}
 		
-		Literal::Literal(const Box &val): val(val) { }
+		Lit::Lit(const Box &val): val(val) { }
 
-		FormImp *Literal::clone() const { return new Literal(val); }
+		FormImp *Lit::clone() const { return new Lit(val); }
 
-		void Literal::dump(ostream &out) const { val.dump(out); }
+		void Lit::dump(ostream &out) const { val.dump(out); }
 
-		void Literal::compile(Forms::const_iterator &in,
-													Forms::const_iterator end,
-													FuncPtr &func, FimpPtr &fimp,
-													Env &env) const {
+		void Lit::compile(Forms::const_iterator &in,
+											Forms::const_iterator end,
+											FuncPtr &func, FimpPtr &fimp,
+											Env &env) const {
 			auto &form(*in++);
-			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);
+			env.emit(ops::Push::type, form.pos, form.as<Lit>().val);
 		}
 
 		Query::Query(const Form &form): form(form) {}
@@ -173,8 +173,8 @@ namespace snabl {
 												Env &env) const {
 			auto &form((in++)->as<forms::Query>().form);
 			
-			if (&form.type == &forms::Literal::type) {
-				env.emit(ops::Eqval::type, form.pos, form.as<Literal>().val);
+			if (&form.type == &forms::Lit::type) {
+				env.emit(ops::Eqval::type, form.pos, form.as<Lit>().val);
 			} else {
 				throw Error(fmt("Invalid query: %0", {form.type.id}));
 			}
@@ -199,8 +199,8 @@ namespace snabl {
 		}		
 
 		void Semi::compile(Forms::const_iterator &in, Forms::const_iterator end,
-														FuncPtr &func, FimpPtr &fimp,
-														Env &env) const {
+											 FuncPtr &func, FimpPtr &fimp,
+											 Env &env) const {
 			auto &form(*in++);
 			if (!func) { throw SyntaxError(form.pos, "Missing func"); }
 			env.emit(form.pos, func, fimp);

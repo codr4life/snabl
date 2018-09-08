@@ -136,7 +136,7 @@ namespace snabl {
 			}
 		}
 	 
-		out.emplace_back(forms::Literal::type,
+		out.emplace_back(forms::Lit::type,
 										 start_pos,
 										 is_float
 										 ? Box(env.float_type, stold(buf.str()))

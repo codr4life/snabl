@@ -9,6 +9,9 @@
 (test=, 1 = 1; t)
 (test=, 1 = 3; f)
 
+(test= 1 1? t)
+(test= 1 3? f)
+
 (test=, 1 < 3; t)
 (test=, 3 < 1; f)
 
