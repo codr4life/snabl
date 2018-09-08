@@ -1,12 +1,13 @@
 * add Fimp op like Lambda
 ** replaces Skip
 ** implement dump to print id
+** also implement FimpRet dump
 * add env.repl(in, out) fn
 * add type args
 ** add type.args
 ** add type.specialize fn
 * add rewrite fence after if: and switch: when needed
-** add ops::Nop
+** add ops::Fence nop
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add support for parsing ? as Maybe
@@ -25,12 +26,6 @@
 *** use for local defs
 * add load func
 ** call when called with args
-* add unsafe: macro
-** one arg
-** add Safe op
-*** is_safe param
-*** emit with true/false before after
-
 * add sqlite plugin
 * add wxwidgets plugin
 

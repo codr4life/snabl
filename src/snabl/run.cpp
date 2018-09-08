@@ -83,10 +83,7 @@ namespace snabl {
 			if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
 			
 			if (fimp) {
-				if (_is_safe &&
-						!(*fimp)->score(_stack)) {
-					fimp = nullptr;
-				}
+				if (!(*fimp)->score(_stack)) { fimp = nullptr; }
 			} else {
 				fimp = &op.func->get_best_fimp(_stack);
 			}

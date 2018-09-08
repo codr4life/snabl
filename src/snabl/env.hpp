@@ -51,8 +51,7 @@ namespace snabl {
 			home(*this),
 			separators({' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}'}),
 			pc(ops.begin()),
-			main(begin_scope()),
-			_is_safe(true) { begin_lib(home); }
+			main(begin_scope()) { begin_lib(home); }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
@@ -171,12 +170,10 @@ namespace snabl {
 					 << fmt(msg, {args...}) << endl;
 		}
 
-		bool is_safe() const { return _is_safe; }
 	private:
 		vector<Lib *> _libs;
 		deque<Lambda> _lambdas;
 		deque<Call> _calls;
-		bool _is_safe;
 		
 		friend struct State;
 	};
