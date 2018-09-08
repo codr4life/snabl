@@ -51,17 +51,10 @@ namespace snabl {
 	void Fimp::call(const FimpPtr &fimp, Pos pos) {
 		const auto &func(fimp->func);
 		auto &env(func->lib.env);
-		env.begin_stack(env.stack().size()-func->nargs);
 		
 		if (fimp->imp) {
 			auto &call(env.begin_call(*env.scope(), *fimp));
 			(*fimp->imp)(call);
-
-			if (env.stack_size() != func->nrets) {
-				throw Error(fmt("Invalid return stack: %0", {fimp->id}));
-			}
-
-			env.end_stack();
 			env.end_call();
 		} else {
 			fimp->compile(pos);
@@ -82,9 +75,9 @@ namespace snabl {
 		Def(get_id(*func, args)), func(func), args(args), rets(rets), forms(begin, end),
 		_start_pc(nullopt), _nops(0), _has_vars(false) { }
 
-	optional<size_t> Fimp::score(const Stack &stack, size_t offs) const {
+	optional<size_t> Fimp::score(const Stack &stack) const {
 		if (!func->nargs) { return 0; }
-		if (stack.size()-offs < func->nargs) { return nullopt; }
+		if (stack.size() < func->nargs) { return nullopt; }
 		auto &env(func->lib.env);
 		auto i(next(stack.begin(), stack.size()-func->nargs));
 		auto j(args.begin());

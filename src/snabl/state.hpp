@@ -5,7 +5,7 @@ namespace snabl {
 	class Env;
 	
 	struct State {
-		const size_t nlibs, nscopes, nstacks;
+		const size_t nlibs, nscopes;
 		
 		State(const Env &env);
 		void restore(Env &env) const;

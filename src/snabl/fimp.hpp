@@ -35,7 +35,7 @@ namespace snabl {
 
 		bool compile(Pos pos);
 		optional<size_t> start_pc() const { return _start_pc; }
-		optional<size_t> score(const Stack &stack, size_t offs) const;
+		optional<size_t> score(const Stack &stack) const;
 	private:
 		optional<size_t> _start_pc;
 		size_t _nops;

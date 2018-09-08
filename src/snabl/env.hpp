@@ -28,8 +28,6 @@ namespace snabl {
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
-		vector<size_t> _stacks;
-		unordered_map<Sym, Box> _vars;
 	public:
 		TraitPtr maybe_type, a_type, no_type, num_type;
 		TypePtr<bool> bool_type;
@@ -133,21 +131,6 @@ namespace snabl {
 			_calls.pop_back();
 		}
 
-		void begin_stack(size_t offs) {
-			_stacks.push_back(_stacks.empty()
-												? offs
-												: max(offs, _stacks.back()));
-		}
-
-		void end_stack() {
-			if (_stacks.empty()) { throw Error("No stacks"); }
-			_stacks.pop_back();
-		}
-
-		size_t stack_size() const {
-			return _stacks.empty() ? _stack.size() : _stack.size() - _stacks.back();
-		}
-
 		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
@@ -156,7 +139,7 @@ namespace snabl {
 		}
 
 		Box pop() {
-			if (!stack_size()) { throw Error("Nothing to pop"); }
+			if (_stack.empty()) { throw Error("Nothing to pop"); }
 			Box v(_stack.back());
 			_stack.pop_back();
 			return v;

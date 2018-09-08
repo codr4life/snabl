@@ -29,7 +29,7 @@ namespace snabl {
 		
 			if (found == _vars.end()) {
 				if (val) {
-					_vars.emplace(make_pair(id, *val)).first->second;
+					auto ok(_vars.emplace(make_pair(id, *val)));
 				} else {
 					throw Error("Missing var: " + id.name());				
 				}
