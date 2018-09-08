@@ -79,7 +79,7 @@ namespace snabl {
 		if (!func->nargs) { return 0; }
 		if (stack.size() < func->nargs) { return nullopt; }
 		auto &env(func->lib.env);
-		auto i(next(stack.begin(), stack.size()-func->nargs));
+		auto i(stack.begin()+stack.size()-func->nargs);
 		auto j(args.begin());
 		size_t score(0);
 

@@ -1,9 +1,9 @@
-* add repl(env, in, out) fn
+* rewrite stack ops using vector methods
+** swap indexes instead of iter_swap
+* add env.repl(in, out) fn
 * add type args
 ** add type.args
 ** add type.specialize fn
-** T0-TN
-*** create on demand in home lib when referenced
 * add rewrite fence after if: and switch: when needed
 ** add ops::Nop
 * add support for func/fimp refs with &
@@ -49,4 +49,3 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
-

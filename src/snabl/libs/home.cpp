@@ -45,6 +45,15 @@ namespace snabl {
 										env.ops.pop_back();
 										env.emit(ops::DDrop::type, (in++)->pos);
 									} else if (!env.ops.empty() &&
+														 (&env.ops.back().type == &ops::Dup::type ||
+															&env.ops.back().type == &ops::Get::type ||
+															&env.ops.back().type == &ops::Lambda::type ||
+															&env.ops.back().type == &ops::Push::type)) {
+										env.note(in->pos, fmt("Rewriting (%0 drop) as ()",
+																					{env.ops.back().type.id}));
+										env.ops.pop_back();
+										in++;
+									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();

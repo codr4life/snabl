@@ -7,24 +7,24 @@ namespace snabl {
 	size_t AOpType::next_label_offs(0);
 
 	namespace ops {
-		const OpType<Call> Call::type("Call");
-		const OpType<DDrop> DDrop::type("DDrop");
-		const OpType<Drop> Drop::type("Drop");
-		const OpType<Dup> Dup::type("Dup");
-		const OpType<Else> Else::type("Else");
-		const OpType<FimpRet> FimpRet::type("FimpRet");
-		const OpType<Funcall> Funcall::type("Funcall");
-		const OpType<Get> Get::type("Get");
-		const OpType<Lambda> Lambda::type("Lambda");
-		const OpType<LambdaRet> LambdaRet::type("LambdaRet");
-		const OpType<Let> Let::type("Let");
-		const OpType<Push> Push::type("Push");
-		const OpType<Recall> Recall::type("Recall");
-		const OpType<Rot> Rot::type("Rot");
-		const OpType<RSwap> RSwap::type("RSwap");
-		const OpType<SDrop> SDrop::type("SDrop");
-		const OpType<Skip> Skip::type("Skip");
-		const OpType<Swap> Swap::type("Swap");
+		const OpType<Call> Call::type("call");
+		const OpType<DDrop> DDrop::type("ddrop");
+		const OpType<Drop> Drop::type("drop");
+		const OpType<Dup> Dup::type("dup");
+		const OpType<Else> Else::type("else");
+		const OpType<FimpRet> FimpRet::type("fimpret");
+		const OpType<Funcall> Funcall::type("funcall");
+		const OpType<Get> Get::type("get");
+		const OpType<Lambda> Lambda::type("lambda");
+		const OpType<LambdaRet> LambdaRet::type("lambdaret");
+		const OpType<Let> Let::type("let");
+		const OpType<Push> Push::type("push");
+		const OpType<Recall> Recall::type("recall");
+		const OpType<Rot> Rot::type("rot");
+		const OpType<RSwap> RSwap::type("rswap");
+		const OpType<SDrop> SDrop::type("sdrop");
+		const OpType<Skip> Skip::type("skip");
+		const OpType<Swap> Swap::type("swap");
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
