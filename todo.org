@@ -1,5 +1,3 @@
-* push syms as Lit
-** add $foo? test
 * add compile mode
 ** print ops with row numbers & args if -c flag present
 ** treat anything that's not a flag as filename

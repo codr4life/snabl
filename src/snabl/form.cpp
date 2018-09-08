@@ -62,12 +62,6 @@ namespace snabl {
 			if (id.name().front() == '@') {
 				in++;
 				env.emit(ops::Get::type, form.pos, env.sym(id.name().substr(1)));
-			} else if (id.name().front() == '$') {
-				in++;
-				env.emit(ops::Push::type,
-								 form.pos,
-								 env.sym_type,
-								 env.sym(id.name().substr(1)));
 			} else {
 				auto &lib(env.lib());
 				auto m(lib.get_macro(id));

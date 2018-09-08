@@ -100,11 +100,22 @@ namespace snabl {
 			c = 0;
 		}
 
-		out.emplace_back(forms::Id::type, start_pos, env.sym(buf.str()));
+		const auto id(buf.str());
+		
+		if (id.front() == '$') {
+			out.emplace_back(forms::Lit::type,
+											 start_pos,
+											 Box(env.sym_type, env.sym(id.substr(1))));
+		} else {
+			out.emplace_back(forms::Id::type, start_pos, env.sym(id));
+			
+			if (c == '<') {
+				parse_type_list(in, out);
+				c = 0;
+			}
+		}
 
-		if (c == '<') {
-			parse_type_list(in, out);
-		} else if (c) {
+		if (c) {
 			in.clear();
 			in.putback(c);
 		}

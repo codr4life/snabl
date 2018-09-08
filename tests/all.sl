@@ -12,6 +12,9 @@
 (test= 1 1? t)
 (test= 1 3? f)
 
+(test= $foo $foo? t)
+(test= $foo $bar? f)
+
 (test=, 1 < 3; t)
 (test=, 3 < 1; f)
 
