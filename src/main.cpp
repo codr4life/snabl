@@ -3,11 +3,11 @@
 
 using namespace snabl;
 
-enum class Mode { Compile, Repl, Run };
+enum class Mode { Compile, Default, Repl, Run };
 
 int main(int argc, const char *argv[]) {	
 	Env env;
-	Mode mode(Mode::Repl);
+	Mode mode(Mode::Default);
 	argc--;
 	
 	for (const char **ap(argv+1); argc; argc--, ap++) {
@@ -25,6 +25,7 @@ int main(int argc, const char *argv[]) {
 			ifstream f(a);
 			if (f.fail()) { throw Error(fmt("File not found: %0", {a})); }
 			env.compile(f);
+			if (mode == Mode::Default) { mode = Mode::Run; }
 		}
 	}
 	
@@ -37,6 +38,7 @@ int main(int argc, const char *argv[]) {
 		}
 		break;
 	}
+	case Mode::Default:
 	case Mode::Repl:
 		snabl::all_tests();
 		//todo: start repl

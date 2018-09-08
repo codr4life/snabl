@@ -69,7 +69,9 @@ namespace snabl {
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
+			auto prev_offs(pc-ops.begin());
 			ops.emplace_back(type, args...);
+			pc = ops.begin()+prev_offs;
 			return ops.back();
 		}
 
