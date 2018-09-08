@@ -24,15 +24,9 @@ namespace snabl {
 			return parent ? parent->get(id) : nullptr;
 		}
 
-		void let(Sym id, const optional<Box> &val) {
-			if (val) {
-				const auto ok(_vars.emplace(make_pair(id, *val)));
-				if (!ok.second) { throw Error("Duplicate var: " + id.name()); }
-			} else {
-				const auto found(_vars.find(id));
-				if (found == _vars.end()) { throw Error("Missing var: " + id.name()); }
-				_vars.erase(found);
-			}
+		void let(Sym id, const Box &val) {
+			const auto ok(_vars.emplace(make_pair(id, val)));
+			if (!ok.second) { throw Error("Duplicate var: " + id.name()); }
 		}
 
 		void clear_vars() { _vars.clear(); }

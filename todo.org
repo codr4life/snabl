@@ -1,13 +1,4 @@
 * add repl(env, in, out) fn
-* fix github decr issue
-* add lib: macro
-** two args, id & body
-** allow anonymous, _
-*** push anonymous libs in current scope
-*** add lib op which contains the actual lib
-*** use for local defs
-* add load func
-** call when called with args
 * add type args
 ** add type.args
 ** add type.specialize fn
@@ -19,12 +10,20 @@
 ** add func/fimp type
 * add support for parsing ? as Maybe
 ** A? -> Maybe<A>
+* add Sink<T>
+** add push fn
 * add [] indexing support
 ** parse as func '[]' and call with args
 
 * add use: macro
-* add Sink<T>
-** add push fn
+* add lib: macro
+** two args, id & body
+** allow anonymous, _
+*** push anonymous libs in current scope
+*** add lib op which contains the actual lib
+*** use for local defs
+* add load func
+** call when called with args
 * add unsafe: macro
 ** one arg
 ** add Safe op
