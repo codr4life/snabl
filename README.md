@@ -6,9 +6,6 @@ The following is a list of what could be considered defining features.
 #### Multiple Dispatch
 Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
 
-#### Gradual Typing
-Snabl supports but doesn't require specifying types of function arguments, results and variables.
-
 #### Reference Counting
 Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.
 
