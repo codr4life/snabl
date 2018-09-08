@@ -14,11 +14,11 @@ namespace snabl {
 		const OpType<Else> Else::type("Else");
 		const OpType<FimpRet> FimpRet::type("FimpRet");
 		const OpType<Funcall> Funcall::type("Funcall");
-		const OpType<GetVar> GetVar::type("GetVar");
+		const OpType<Get> Get::type("Get");
 		const OpType<Lambda> Lambda::type("Lambda");
 		const OpType<LambdaRet> LambdaRet::type("LambdaRet");
+		const OpType<Let> Let::type("Let");
 		const OpType<Push> Push::type("Push");
-		const OpType<PutVar> PutVar::type("PutVar");
 		const OpType<Recall> Recall::type("Recall");
 		const OpType<Rot> Rot::type("Rot");
 		const OpType<RSwap> RSwap::type("RSwap");

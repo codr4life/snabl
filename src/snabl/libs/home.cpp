@@ -91,12 +91,12 @@ namespace snabl {
 									env.compile(in++, in+1);
 									
 									if (&p.type == &forms::Id::type) {
-										env.emit(ops::PutVar::type, form.pos, p.as<forms::Id>().id);
+										env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
 									} else {
 										auto &body(p.as<forms::Sexpr>().body);
 										
 										for (auto pp = body.rbegin(); pp != body.rend(); pp++) {
-											env.emit(ops::PutVar::type, form.pos, pp->as<forms::Id>().id);
+											env.emit(ops::Let::type, form.pos, pp->as<forms::Id>().id);
 										}
 									}
 								});

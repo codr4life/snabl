@@ -13,7 +13,7 @@
 ** add type.specialize fn
 ** T0-TN
 *** create on demand in home lib when referenced
-* add fence after if: and switch: when needed
+* add rewrite fence after if: and switch: when needed
 ** add ops::Nop
 * add support for func/fimp refs with &
 ** add func/fimp type

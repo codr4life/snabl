@@ -18,27 +18,20 @@ namespace snabl {
 		Scope(const Scope &) = delete;
 		const Scope &operator=(const Scope &) = delete;
 		
-		const Box *get_var(Sym id) const {
+		const Box *get(Sym id) const {
 			const auto found(_vars.find(id));
 			if (found != _vars.end()) { return &found->second; }
-			return parent ? parent->get_var(id) : nullptr;
+			return parent ? parent->get(id) : nullptr;
 		}
 
-		void put_var(Sym id, const optional<Box> &val) {
-			auto found(_vars.find(id));
-		
-			if (found == _vars.end()) {
-				if (val) {
-					auto ok(_vars.emplace(make_pair(id, *val)));
-				} else {
-					throw Error("Missing var: " + id.name());				
-				}
+		void let(Sym id, const optional<Box> &val) {
+			if (val) {
+				const auto ok(_vars.emplace(make_pair(id, *val)));
+				if (!ok.second) { throw Error("Duplicate var: " + id.name()); }
 			} else {
-				if (val) {
-					throw Error("Duplicate var: " + id.name());
-				} else {
-					_vars.erase(found);
-				}
+				const auto found(_vars.find(id));
+				if (found == _vars.end()) { throw Error("Missing var: " + id.name()); }
+				_vars.erase(found);
 			}
 		}
 

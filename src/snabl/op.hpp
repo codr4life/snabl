@@ -71,10 +71,10 @@ namespace snabl {
 			Funcall(const FimpPtr &fimp);
 		};
 		
-		struct GetVar {
-			static const OpType<GetVar> type;
+		struct Get {
+			static const OpType<Get> type;
 			const Sym id;
-			GetVar(Sym id): id(id) { }
+			Get(Sym id): id(id) { }
 		};
 
 		struct Lambda {
@@ -90,6 +90,12 @@ namespace snabl {
 			static const OpType<LambdaRet> type;
 		};
 
+		struct Let {
+			static const OpType<Let> type;
+			const Sym id;
+			Let(Sym id): id(id) { }
+		};
+
 		struct Push {
 			static const OpType<Push> type;			
 			const Box val;
@@ -97,12 +103,6 @@ namespace snabl {
 			template <typename ValT, typename... ArgsT>
 			Push(const TypePtr<ValT> &type, ArgsT &&...args):
 				val(type, forward<ArgsT>(args)...) { }
-		};
-
-		struct PutVar {
-			static const OpType<PutVar> type;
-			const Sym id;
-			PutVar(Sym id): id(id) { }
 		};
 
 		struct Recall {
@@ -148,8 +148,8 @@ namespace snabl {
 		ImpT &as();
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else,
-					  ops::FimpRet, ops::Funcall, ops::GetVar, ops::Lambda,
-						ops::LambdaRet, ops::Push, ops::PutVar, ops::Recall, ops::Rot, ops::RSwap,
+					  ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
+						ops::LambdaRet, ops::Let, ops::Push, ops::Recall, ops::Rot, ops::RSwap,
 						ops::SDrop, ops::Skip, ops::Swap> _imp;
 	};
 	

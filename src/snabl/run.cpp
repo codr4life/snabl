@@ -28,8 +28,8 @@ namespace snabl {
 		
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else,
-			&&op_fimpret, &&op_funcall, &&op_getvar, &&op_lambda, &&op_lambdaret,
-			&&op_push, &&op_putvar, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
+			&&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
+			&&op_let, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
 			&&op_skip, &&op_swap
 		};
 
@@ -91,9 +91,9 @@ namespace snabl {
 			Fimp::call(*fimp, pc->pos);
 			SNABL_DISPATCH();
 		}
-	op_getvar: {
-			const auto &op(pc->as<ops::GetVar>());		
-			auto v(scope()->get_var(op.id));
+	op_get: {
+			const auto &op(pc->as<ops::Get>());		
+			auto v(scope()->get(op.id));
 			if (!v) { throw Error("Unknown var"); }
 			push(*v);
 			pc++;
@@ -114,17 +114,17 @@ namespace snabl {
 			end_call();
 			SNABL_DISPATCH();
 		}
+	op_let: {
+			const auto &op(pc->as<ops::Let>());
+			auto v(pop());
+			scope()->let(op.id, v);
+			pc++;
+			SNABL_DISPATCH();
+		}
 	op_push:
 		push(pc->as<ops::Push>().val); 
 		pc++;
 		SNABL_DISPATCH();
-	op_putvar: {
-			const auto &op(pc->as<ops::PutVar>());
-			auto v(pop());
-			scope()->put_var(op.id, v);
-			pc++;
-			SNABL_DISPATCH();
-		}
 	op_recall:
 		call().recall();
 		SNABL_DISPATCH();

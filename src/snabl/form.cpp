@@ -60,7 +60,7 @@ namespace snabl {
 
 			if (id.name().front() == '@') {
 				in++;
-				env.emit(ops::GetVar::type, form.pos, env.sym(id.name().substr(1)));
+				env.emit(ops::Get::type, form.pos, env.sym(id.name().substr(1)));
 			} else if (id.name().front() == '$') {
 				in++;
 				env.emit(ops::Push::type,
@@ -134,8 +134,8 @@ namespace snabl {
 			op.has_vars = (find_if(env.ops.begin() + *op.start_pc, 
 														 env.ops.end(), 
 														 [](const Op &op) {
-															 return &op.type == &ops::GetVar::type ||
-															 &op.type == &ops::PutVar::type;
+															 return &op.type == &ops::Get::type ||
+															 &op.type == &ops::Let::type;
 														 }) != env.ops.end());
 
 			env.emit(ops::LambdaRet::type, f.pos);
