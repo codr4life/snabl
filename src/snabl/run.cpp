@@ -40,7 +40,8 @@ namespace snabl {
 		SNABL_DISPATCH();
 	op_ddrop:
 		if (_stack.size() < 2) { throw Error("Nothing to ddrop"); }
-		_stack.erase(_stack.begin()+_stack.size()-2, _stack.end());
+		_stack.pop_back();
+		_stack.pop_back();
 		pc++;
 		SNABL_DISPATCH();
 	op_drop:
@@ -136,32 +137,35 @@ namespace snabl {
 		SNABL_DISPATCH();
 	op_rot: {
 			if (_stack.size() < 3) { throw Error("Nothing to rot"); }
-			auto i(_stack.rbegin());
-			iter_swap(i, i+2);
-			iter_swap(i, i+1);
+			auto i(_stack.size()-1);
+			swap(_stack[i], _stack[i-2]);
+			swap(_stack[i], _stack[i-1]);
 			pc++;
 			SNABL_DISPATCH();
 		}
 	op_rswap: {
 			if (_stack.size() < 3) { throw Error("Nothing to rswap"); }
-			auto i(_stack.rbegin());
-			iter_swap(i, i+2);
+			auto i(_stack.size()-1);
+			swap(_stack[i], _stack[i-2]);
 			pc++;
 			SNABL_DISPATCH();
 		}
 	op_sdrop:
 		if (_stack.size() < 2) { throw Error("Nothing to sdrop"); }
-		_stack.erase(_stack.begin()+_stack.size()-2);
+		auto i(_stack.size()-1);
+		_stack[i-1] = _stack[i];	
+		_stack.pop_back();
 		pc++;
 		SNABL_DISPATCH();
 	op_skip:
 		pc += pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();
-	op_swap:
-		if (_stack.size() < 2) { throw Error("Nothing to swap"); }
-		auto i(_stack.rbegin());
-		iter_swap(i, i+1);
-		pc++;
-		SNABL_DISPATCH();
+	op_swap: {
+			if (_stack.size() < 2) { throw Error("Nothing to swap"); }
+			auto i(_stack.size()-1);
+			swap(_stack[i], _stack[i-1]);
+			pc++;
+			SNABL_DISPATCH();
+		}
 	}
 }
