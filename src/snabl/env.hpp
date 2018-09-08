@@ -49,7 +49,7 @@ namespace snabl {
 		Env():
 			_type_tag(1),
 			home(*this),
-			separators({' ', '\t', '\n', ',', ';', '<', '>', '(', ')', '{', '}'}),
+			separators({' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}'}),
 			pc(ops.begin()),
 			main(begin_scope()),
 			_is_safe(true) { begin_lib(home); }

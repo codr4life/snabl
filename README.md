@@ -37,7 +37,7 @@ Example 3
 ```
 func: fib<Int Int Int> Int (
   let: (n a b) _
-  switch: @n z? @a one? @b, --; @b dup @a +; recall
+  switch: @n 0? @a 1? @b, --; @b dup @a +; recall
 )
 ```
 
@@ -47,8 +47,8 @@ Example 4
 ```
 func: fib<Int Int Int> Int (
   rswap switch: _
-    z? sdrop
-    one? drop,
+    0? sdrop
+    1? drop,
     --; rswap dup rot +; recall
 )
 ```

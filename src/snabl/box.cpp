@@ -2,14 +2,14 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	bool Box::is_equid(const Box &rhs) const {
+	bool Box::equid(const Box &rhs) const {
 		if (rhs.type() != _type) { return false; }
-		return _type->is_equid(*this, rhs);
+		return _type->equid(*this, rhs);
 	}
 
-	bool Box::is_eqval(const Box &rhs) const {
+	bool Box::eqval(const Box &rhs) const {
 		if (rhs.type() != _type) { return false; }
-		return _type->is_eqval(*this, rhs);
+		return _type->eqval(*this, rhs);
 	}
 
 	Cmp Box::cmp(const Box &rhs) const {

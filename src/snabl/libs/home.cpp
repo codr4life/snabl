@@ -211,7 +211,7 @@ namespace snabl {
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
-								 env.push(env.bool_type, x.is_eqval(y));
+								 env.push(env.bool_type, x.eqval(y));
 							 });
 
 			add_fimp(env.sym("=="),
@@ -220,7 +220,7 @@ namespace snabl {
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
-								 env.push(env.bool_type, x.is_equid(y));
+								 env.push(env.bool_type, x.equid(y));
 							 });
 
 			add_fimp(env.sym("<"),
@@ -369,7 +369,7 @@ namespace snabl {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
 								 
-								 if (!x.is_eqval(y)) {
+								 if (!x.eqval(y)) {
 									 throw Error(fmt("Expected (%0), was (%1)", {y, x}));
 								 }
 							 });

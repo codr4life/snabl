@@ -18,7 +18,8 @@ namespace snabl {
 		const FormType<Id> Id::type("Id");
 		const FormType<Lambda> Lambda::type("Lambda");
 		const FormType<Literal> Literal::type("Literal");
-		const FormType<Semicolon> Semicolon::type("Semicolon");
+		const FormType<Query> Query::type("Query");
+		const FormType<Semi> Semi::type("Semi");
 		const FormType<Sexpr> Sexpr::type("Sexpr");
 		const FormType<TypeList> TypeList::type("TypeList");
 
@@ -153,17 +154,40 @@ namespace snabl {
 													FuncPtr &func, FimpPtr &fimp,
 													Env &env) const {
 			auto &form(*in++);
-			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);			
+			env.emit(ops::Push::type, form.pos, form.as<Literal>().val);
 		}
+
+		Query::Query(const Form &form): form(form) {}
 		
-		Semicolon::Semicolon(Forms::const_iterator begin, Forms::const_iterator end):
+		FormImp *Query::clone() const {
+			return new Query(form);
+		}
+
+		void Query::dump(ostream &out) const {
+			form.imp->dump(out);
+			out << '?';
+		}		
+
+		void Query::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &form((in++)->as<forms::Query>().form);
+			
+			if (&form.type == &forms::Literal::type) {
+				env.emit(ops::Eqval::type, form.pos, form.as<Literal>().val);
+			} else {
+				throw Error(fmt("Invalid query: %0", {form.type.id}));
+			}
+		}
+
+		Semi::Semi(Forms::const_iterator begin, Forms::const_iterator end):
 			body(begin, end) { }
 
-		FormImp *Semicolon::clone() const {
-			return new Semicolon(body.begin(), body.end());
+		FormImp *Semi::clone() const {
+			return new Semi(body.begin(), body.end());
 		}
 
-		void Semicolon::dump(ostream &out) const {
+		void Semi::dump(ostream &out) const {
 			out << "; ";
 			char sep(0);
 
@@ -174,13 +198,13 @@ namespace snabl {
 			}
 		}		
 
-		void Semicolon::compile(Forms::const_iterator &in, Forms::const_iterator end,
+		void Semi::compile(Forms::const_iterator &in, Forms::const_iterator end,
 														FuncPtr &func, FimpPtr &fimp,
 														Env &env) const {
 			auto &form(*in++);
 			if (!func) { throw SyntaxError(form.pos, "Missing func"); }
 			env.emit(form.pos, func, fimp);
-			env.compile(form.as<Semicolon>().body);
+			env.compile(form.as<Semi>().body);
 		}
 
 		Sexpr::Sexpr(Forms::const_iterator begin, Forms::const_iterator end):

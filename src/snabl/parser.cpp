@@ -33,7 +33,15 @@ namespace snabl {
 				return parse_body<forms::Comma>(in, end, out);
 			case ';':
 				_pos.col++;
-				return parse_body<forms::Semicolon>(in, end, out);
+				return parse_body<forms::Semi>(in, end, out);
+			case '?': {
+				_pos.col++;
+				if (out.empty()) { throw Error("Nothing to query"); }
+				auto form(out.back());
+				out.pop_back();
+				out.emplace_back(forms::Query::type, start_pos, form);
+				break;
+			}
 			case '(':
 				_pos.col++;
 				parse_sexpr(in, out);

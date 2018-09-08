@@ -1,8 +1,8 @@
 func: fib<Int Int Int> Int (
 	rswap
  	switch: _
-	  z? sdrop
-    one? drop,
+	  0? sdrop
+    1? drop,
 		--; rswap dup rot +; recall
 )
 

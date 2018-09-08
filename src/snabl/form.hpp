@@ -16,7 +16,8 @@ namespace snabl {
 
 	struct AFormType {
 		const string id;
-		AFormType(string_view id);		
+		AFormType(string_view id);
+		AFormType(const AFormType &) = delete;
 	};
 
 	template <typename ImpT>
@@ -71,6 +72,7 @@ namespace snabl {
 		struct Comma: public FormImp {			
 			static const FormType<Comma> type;
 			const Forms body;
+
 			Comma(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
@@ -98,6 +100,7 @@ namespace snabl {
 		struct Lambda: public FormImp {			
 			static const FormType<Lambda> type;
 			const Forms body;
+
 			Lambda(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
@@ -111,6 +114,7 @@ namespace snabl {
 		struct Literal: public FormImp {			
 			static const FormType<Literal> type;
 			const Box val;
+
 			Literal(const Box &val);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
@@ -121,10 +125,25 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Semicolon: public FormImp {			
-			static const FormType<Semicolon> type;
+		struct Query: public FormImp {			
+			static const FormType<Query> type;
+			const Form form;
+			
+			Query(const Form &form);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Semi: public FormImp {			
+			static const FormType<Semi> type;
 			const Forms body;
-			Semicolon(Forms::const_iterator begin, Forms::const_iterator end);
+
+			Semi(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -137,6 +156,7 @@ namespace snabl {
 		struct Sexpr: public FormImp {			
 			static const FormType<Sexpr> type;
 			const Forms body;
+
 			Sexpr(Forms::const_iterator begin, Forms::const_iterator end);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;

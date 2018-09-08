@@ -91,7 +91,7 @@ namespace snabl {
 			if (jv.is_undef()) {
 				if (!it->isa(jt)) { return nullopt; }
 			} else {
-				if (iv.is_undef() || !iv.is_eqval(jv)) { return nullopt; }
+				if (iv.is_undef() || !iv.eqval(jv)) { return nullopt; }
 			}
 			
 			score += abs(static_cast<ssize_t>(it->tag-jt->tag));

@@ -55,6 +55,12 @@ namespace snabl {
 			Else(size_t nops=0): nops(nops) { }
 		};
 		
+		struct Eqval {
+			static const OpType<Eqval> type;			
+			const Box lhs;
+			Eqval(const Box &lhs): lhs(lhs) { }
+		};
+
 		struct FimpRet {
 			static const OpType<FimpRet> type;
 			const bool end_scope;
@@ -147,7 +153,7 @@ namespace snabl {
 		template <typename ImpT>
 		ImpT &as();
 	private:
-		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else,
+		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
 						ops::LambdaRet, ops::Let, ops::Push, ops::Recall, ops::Rot, ops::RSwap,
 						ops::SDrop, ops::Skip, ops::Swap> _imp;

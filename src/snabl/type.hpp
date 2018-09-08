@@ -36,8 +36,8 @@ namespace snabl {
 				(_parent_types.size() > parent->tag && _parent_types[parent->tag]);
 		}
 
-		virtual bool is_equid(const Box &lhs, const Box &rhs) const=0;
-		virtual bool is_eqval(const Box &lhs, const Box &rhs) const=0;
+		virtual bool equid(const Box &lhs, const Box &rhs) const=0;
+		virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		virtual bool is_true(const Box &val) const { return true; }
 		virtual void call(const Box &val, bool now) const;
@@ -61,8 +61,8 @@ namespace snabl {
 	public:
 		Type(Lib &lib, Sym id);
 
-		virtual bool is_equid(const Box &lhs, const Box &rhs) const override;
-		virtual bool is_eqval(const Box &lhs, const Box &rhs) const override;
+		virtual bool equid(const Box &lhs, const Box &rhs) const override;
+		virtual bool eqval(const Box &lhs, const Box &rhs) const override;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const override;
 	};
 
@@ -70,12 +70,12 @@ namespace snabl {
 	Type<ValT>::Type(Lib &lib, Sym id): AType(lib, id) { }
 
 	template <typename ValT>
-	bool Type<ValT>::is_equid(const Box &lhs, const Box &rhs) const {
-		return is_eqval(lhs, rhs);
+	bool Type<ValT>::equid(const Box &lhs, const Box &rhs) const {
+		return eqval(lhs, rhs);
 	}
 	
 	template <typename ValT>
-	bool Type<ValT>::is_eqval(const Box &lhs, const Box &rhs) const {
+	bool Type<ValT>::eqval(const Box &lhs, const Box &rhs) const {
 		return lhs.as<ValT>() == rhs.as<ValT>();
 	}
 	

@@ -23,8 +23,8 @@ namespace snabl {
 
 		const ATypePtr &type() const { return _type; }
 		
-		bool is_equid(const Box &rhs) const;
-		bool is_eqval(const Box &rhs) const;
+		bool equid(const Box &rhs) const;
+		bool eqval(const Box &rhs) const;
 		Cmp cmp(const Box &rhs) const;
 		bool is_true() const;
 		bool is_undef() const { return _is_undef; }

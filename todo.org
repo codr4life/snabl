@@ -1,3 +1,4 @@
+* Lit
 * rewrite stack ops using vector methods
 ** swap indexes instead of iter_swap
 * add compile mode

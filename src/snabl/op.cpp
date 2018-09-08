@@ -12,6 +12,7 @@ namespace snabl {
 		const OpType<Drop> Drop::type("drop");
 		const OpType<Dup> Dup::type("dup");
 		const OpType<Else> Else::type("else");
+		const OpType<Eqval> Eqval::type("eqval");
 		const OpType<FimpRet> FimpRet::type("fimpret");
 		const OpType<Funcall> Funcall::type("funcall");
 		const OpType<Get> Get::type("get");

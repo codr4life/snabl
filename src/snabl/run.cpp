@@ -27,7 +27,7 @@ namespace snabl {
 		if (!end_pc) { end_pc = ops.end(); }
 		
 		static void* op_labels[] = {
-			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else,
+			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
 			&&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
 			&&op_let, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
 			&&op_skip, &&op_swap
@@ -57,6 +57,12 @@ namespace snabl {
 			const auto &op(pc->as<ops::Else>());
 			const auto v(pop());
 			if (!v.as<bool>()) { pc += op.nops; }
+			pc++;
+			SNABL_DISPATCH();
+		}
+	op_eqval: {
+			const auto rhs(pop());
+			push(bool_type, pc->as<ops::Eqval>().lhs.eqval(rhs)); 
 			pc++;
 			SNABL_DISPATCH();
 		}
