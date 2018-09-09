@@ -24,6 +24,27 @@ func: fib<Int> Int (
 )
 ```
 
+#### Typing
+Snabl supports strong, first class Types. ```A``` may be used to allow any type except ```Nil```, and ```Maybe``` where missing values are expected.
+
+```
+   42 isa Int
+.. 
+[t]
+   42 isa Maybe
+.. 
+[t t]
+   nil isa Maybe
+.. 
+[t t t]
+   42 isa Nil
+.. 
+[t t t f]
+   nil isa Nil
+.. 
+[t t t f t]
+```
+
 #### Function
 Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail call optimization. The following example gets a 25% speed up from using explicit tail recursion.
 
