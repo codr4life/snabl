@@ -71,7 +71,7 @@ func: tail-fib<Int Int Int> Int (
 ```
 
 #### Failure
-Snabl offers two flavors of error handling, optional values and exceptions. Optional values never need to be wrapped/unwrapped, stray ```nil```'s are usually caught in the next function call/return.
+Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next function call/return.
 
 ```
    func: foo<A> A _
@@ -91,7 +91,7 @@ Error in row 1, col 0:
 [nil]
 ```
 
-Any value may be thrown, ```try:``` runs its first argument with an error or ```nil``` on the stack depending on what happened while running the second argument. ```catch``` may be used to retrieve the thrown value from the error.
+Any value may be thrown. ```try:``` runs its first argument with the error or ```nil``` on the stack depending on what happened while running the second, ```catch``` may be used to retrieve the thrown value.
 
 ```
    try: (catch; ++), throw 41
