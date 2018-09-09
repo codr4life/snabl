@@ -27,6 +27,7 @@ namespace snabl {
 		const OpType<SDrop> SDrop::type("sdrop");
 		const Skip::Type Skip::type("skip");
 		const OpType<Swap> Swap::type("swap");
+		const OpType<Try> Try::type("try");
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }

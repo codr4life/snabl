@@ -11,11 +11,13 @@
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/types/bool.hpp"
+#include "snabl/types/error.hpp"
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
 #include "snabl/types/lambda.hpp"
 #include "snabl/types/meta.hpp"
 #include "snabl/types/nil.hpp"
+#include "snabl/types/str.hpp"
 #include "snabl/types/sym.hpp"
 #include "snabl/types/time.hpp"
 
@@ -35,10 +37,12 @@ namespace snabl {
 		TraitPtr a_type, maybe_type, no_type, num_type;
 		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;
+		TypePtr<ErrorPtr> error_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
 		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
+		TypePtr<string> str_type;
 		TypePtr<Sym> sym_type;
 		TypePtr<Time> time_type;
 		

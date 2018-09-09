@@ -31,6 +31,9 @@ namespace snabl {
 
 	class Lambda;
 	using LambdaPtr = Ptr<Lambda>;
+
+	class UserError;
+	using ErrorPtr = Ptr<UserError>;
 }
 
 #endif

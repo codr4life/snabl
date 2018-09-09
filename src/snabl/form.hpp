@@ -69,11 +69,18 @@ namespace snabl {
 	}
 
 	namespace forms {
-		struct Comma: public FormImp {			
-			static const FormType<Comma> type;
+		struct Body: public FormImp {			
 			const Forms body;
+			Body(Forms::const_iterator begin, Forms::const_iterator end):
+				body(begin, end) { }
+		};
 
-			Comma(Forms::const_iterator begin, Forms::const_iterator end);
+		struct Comma: public Body {			
+			static const FormType<Comma> type;
+
+			Comma(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -97,11 +104,12 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Lambda: public FormImp {			
+		struct Lambda: public Body {			
 			static const FormType<Lambda> type;
-			const Forms body;
 
-			Lambda(Forms::const_iterator begin, Forms::const_iterator end);
+			Lambda(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -139,11 +147,12 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Semi: public FormImp {			
+		struct Semi: public Body {			
 			static const FormType<Semi> type;
-			const Forms body;
 
-			Semi(Forms::const_iterator begin, Forms::const_iterator end);
+			Semi(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 
@@ -153,11 +162,12 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Sexpr: public FormImp {			
+		struct Sexpr: public Body {			
 			static const FormType<Sexpr> type;
-			const Forms body;
 
-			Sexpr(Forms::const_iterator begin, Forms::const_iterator end);
+			Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 

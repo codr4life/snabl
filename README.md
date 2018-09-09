@@ -15,7 +15,7 @@ func: fib<Int> Int (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the next token.
+Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
 Example 2
 ```
@@ -68,6 +68,34 @@ func: fib<Int Int Int> Int (
     1? drop,
     --; rswap dup rot +; recall
 )
+```
+
+#### Failure
+Snabl offers two flavors of error handling, optional values and exceptions. Optional values never need to be wrapped/unwrapped, stray ```nil```'s are usually caught in the next function call/return.
+
+```
+   func: foo<A> A _
+   foo 42
+[42]
+
+   foo nil
+[nil]
+Error in row 1, col 0:
+'Func not applicable: foo'
+
+   func: bar<Maybe> Maybe _
+	 bar 42
+[42]
+
+   bar nil
+[nil]
+```
+
+Any value may be thrown, ```try:``` runs its first argument with an error or ```nil``` on the stack depending on what happened while running the second argument. ```catch``` may be used to retrieve the thrown value from the error.
+
+```
+   try: (catch; ++), throw 41
+[42]
 ```
 
 #### Integration

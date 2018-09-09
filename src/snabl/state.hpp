@@ -5,10 +5,12 @@ namespace snabl {
 	class Env;
 	
 	struct State {
-		const size_t nlibs, nscopes;
+		const size_t nlibs, nscopes, nstack;
 		
 		State(const Env &env);
-		void restore(Env &env) const;
+		void restore_libs(Env &env) const;
+		void restore_scopes(Env &env) const;
+		void restore_stack(Env &env) const;
 	};
 }
 

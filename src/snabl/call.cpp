@@ -6,7 +6,8 @@
 namespace snabl {	
 	void Call::recall() const {
 		auto &env(scope.env);
-		state.restore(env);
+		state.restore_libs(env);
+		state.restore_scopes(env);
 		scope.clear_vars();
 		env.pc = env.ops.begin() + (fimp ? *fimp->start_pc() : lambda->start_pc);
 	}

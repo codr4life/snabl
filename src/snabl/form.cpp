@@ -23,9 +23,6 @@ namespace snabl {
 		const FormType<Sexpr> Sexpr::type("Sexpr");
 		const FormType<TypeList> TypeList::type("TypeList");
 
-		Comma::Comma(Forms::const_iterator begin, Forms::const_iterator end):
-			body(begin, end) { }
-
 		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
 
 		void Comma::dump(ostream &out) const {
@@ -91,8 +88,17 @@ namespace snabl {
 													if (!t) { throw Error("Unknown type: " + id.name()); }
 													return Box(*t);
 												});
+
+							auto fi((*fn)->get_best_fimp(args));
+
+							if (!fi) {
+								throw UserError(env,
+																form.pos,
+																Box(env.str_type,
+																		fmt("Func not applicable: %0", {(*fn)->id})));
+							}
 							
-							fimp = (*fn)->get_best_fimp(args);
+							fimp = *fi;
 						}
 					} else {
 						auto &fi((*fn)->get_fimp());
@@ -102,9 +108,6 @@ namespace snabl {
 				}
 			}
 		}
-
-		Lambda::Lambda(Forms::const_iterator begin, Forms::const_iterator end):
-			body(begin, end) { }
 
 		FormImp *Lambda::clone() const { return new Lambda(body.begin(), body.end()); }
 
@@ -179,12 +182,7 @@ namespace snabl {
 			}
 		}
 
-		Semi::Semi(Forms::const_iterator begin, Forms::const_iterator end):
-			body(begin, end) { }
-
-		FormImp *Semi::clone() const {
-			return new Semi(body.begin(), body.end());
-		}
+		FormImp *Semi::clone() const { return new Semi(body.begin(), body.end()); }
 
 		void Semi::dump(ostream &out) const {
 			out << "; ";
@@ -205,9 +203,6 @@ namespace snabl {
 			env.emit(form.pos, func, fimp);
 			env.compile(form.as<Semi>().body);
 		}
-
-		Sexpr::Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
-			body(begin, end) { }
 
 		FormImp *Sexpr::clone() const { return new Sexpr(body.begin(), body.end()); }
 

@@ -15,8 +15,10 @@ namespace snabl {
 
 			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.a_type});	
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
+			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.a_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
+			env.str_type = add_type<StrType>(env.sym("Str"), {env.a_type});
 			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.a_type});
 			env.time_type = add_type<TimeType>(env.sym("Time"), {env.a_type});
 			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.a_type});
@@ -84,6 +86,20 @@ namespace snabl {
 									} else {
 										env.emit(ops::Swap::type, (in++)->pos);
 									}
+								});
+
+			add_macro(env.sym("try:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									auto &try_op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
+									try_op.start_pc = env.ops.size();
+									env.compile(in++, in+1);
+									try_op.body_pc = env.ops.size();
+									env.compile(in++, in+1);
+									try_op.body_nops = env.ops.size()-*try_op.body_pc;
 								});
 			
 			add_macro(env.sym("let:"),
@@ -212,6 +228,13 @@ namespace snabl {
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 throw UserError(env, env.call().pos, env.pop());
+							 });
+
+			add_fimp(env.sym("catch"),
+							 {Box(env.error_type)}, {env.a_type},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.pop().as<ErrorPtr>()->val);
 							 });
 
 			add_fimp(env.sym("isa"),

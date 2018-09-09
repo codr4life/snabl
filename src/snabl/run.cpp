@@ -30,7 +30,7 @@ namespace snabl {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
 			&&op_fimp, &&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
 			&&op_let, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
-			&&op_skip, &&op_swap
+			&&op_skip, &&op_swap, &&op_try
 		};
 
 		SNABL_DISPATCH();
@@ -90,10 +90,15 @@ namespace snabl {
 			if (fimp) {
 				if (!(*fimp)->score(_stack)) { fimp = nullptr; }
 			} else {
-				fimp = &op.func->get_best_fimp(_stack);
+				fimp = op.func->get_best_fimp(_stack);
 			}
 			
-			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
+			if (!fimp) {
+				throw UserError(*this,
+												pc->pos,
+												Box(str_type, fmt("Func not applicable: %0", {op.func->id})));
+			}
+			
 			if (!op.fimp) { op.prev_fimp = *fimp; }
 
 			const auto pos(pc->pos);
@@ -168,6 +173,26 @@ namespace snabl {
 			auto i(_stack.size()-1);
 			swap(_stack[i], _stack[i-1]);
 			pc++;
+			SNABL_DISPATCH();
+		}
+	op_try: {
+			const auto &op(pc->as<ops::Try>());
+			State state(*this);
+			
+			try {
+				pc = ops.begin()+*op.body_pc;
+				run(pc+*op.body_nops);
+				push(nil_type);
+			} catch (const UserError &e) {
+				state.restore_libs(*this);
+				state.restore_scopes(*this);
+				state.restore_stack(*this);
+				push(error_type, ErrorPtr::make(e));
+			}
+
+			pc = ops.begin()+*op.start_pc;
+			run(ops.begin()+*op.body_pc);
+			pc = ops.begin()+*op.body_pc+*op.body_nops;
 			SNABL_DISPATCH();
 		}
 	}

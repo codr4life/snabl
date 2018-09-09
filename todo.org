@@ -1,15 +1,21 @@
-* add try: macro
-** save state and restore on error
-** add Error type
-** push full error before executing handler
-** use nested run(end_pc) in try block
-** add test
+* add throw(Error) fn + test
 * convert bench to macro
 ** add Bench op
 ** use nested run(end_pc) in op
+* add try bench
+* add support for type queries
+** 42 Int?
+* make Eqval.val optional
+** pop both vals if null
+** emit Eqval with null val by default
+** translate to isa
+** update readme
+* change switch: to take two args
+** assume second is forms::Body
 * add Fimp closure like Lambda
 * add rewrite fence after if: and switch: when needed
 ** add ops::Fence nop
+* check snabl fimp results
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add Source
@@ -50,3 +56,5 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
+
+try: (catch; ++), throw 41

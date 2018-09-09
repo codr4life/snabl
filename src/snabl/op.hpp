@@ -173,6 +173,12 @@ namespace snabl {
 		struct Swap {
 			static const OpType<Swap> type;
 		};
+
+		struct Try {
+			static const OpType<Try> type;
+			optional<size_t> start_pc, body_pc, body_nops;
+			Try() { }
+		};
 	}
 	
 	struct Op {
@@ -199,7 +205,7 @@ namespace snabl {
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
 						ops::LambdaRet, ops::Let, ops::Push, ops::Recall, ops::Rot, ops::RSwap,
-						ops::SDrop, ops::Skip, ops::Swap> _imp;
+						ops::SDrop, ops::Skip, ops::Swap, ops::Try> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>
