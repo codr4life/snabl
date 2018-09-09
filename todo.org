@@ -1,17 +1,14 @@
-* add type args
-** add type.args
-** add type.specialize fn
+* add isa fn for type/value
+** test in repl
 * add rewrite fence after if: and switch: when needed
 ** add ops::Fence nop
 * add support for func/fimp refs with &
 ** add func/fimp type
-* add support for parsing ? as Maybe
-** A? -> Maybe<A>
-* add Source<T>
+* add Source
 ** add pop fn
-* add Sink<T>
+* add Sink
 ** add push fn
-* add Stack<T>
+* add Stack
 ** use vector imp
 * add [] indexing support
 ** parse as func '[]' and call with args

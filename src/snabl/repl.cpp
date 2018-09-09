@@ -23,9 +23,14 @@ namespace snabl {
 	
 		while (std::getline(in, l)) {
 			if (l == "") {
-				env.run(buf.str());
+				try {
+					env.run(buf.str());
+					out << env.stack() << endl;
+				} catch (const exception &e) {
+					out << e.what() << endl;
+				}
+				
 				stringstream().swap(buf);
-				out << env.stack() << endl;
 				cout << "   ";
 			} else {
 				buf << l << endl;

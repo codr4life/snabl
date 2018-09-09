@@ -7,11 +7,13 @@
 namespace snabl {
 	namespace libs {
 		Home::Home(Env &env): Lib(env, env.sym("home")) {
+			env.no_type = add_type<Trait>(env.sym("_"));
 			env.maybe_type = add_type<Trait>(env.sym("Maybe"));
 			env.nil_type = add_type<NilType>(env.sym("Nil"), {env.maybe_type});
 			env.a_type = add_type<Trait>(env.sym("A"), {env.maybe_type});
-			env.no_type = add_type<Trait>(env.sym("_"));
 			env.num_type = add_type<Trait>(env.sym("Num"), {env.a_type});
+
+			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.a_type});	
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});

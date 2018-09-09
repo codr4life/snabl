@@ -14,6 +14,7 @@
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
 #include "snabl/types/lambda.hpp"
+#include "snabl/types/meta.hpp"
 #include "snabl/types/nil.hpp"
 #include "snabl/types/sym.hpp"
 #include "snabl/types/time.hpp"
@@ -29,7 +30,8 @@ namespace snabl {
 		vector<ScopePtr> _scopes;
 		Stack _stack;
 	public:
-		TraitPtr maybe_type, a_type, no_type, num_type;
+		TraitPtr a_type, maybe_type, no_type, num_type;
+		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;

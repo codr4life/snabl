@@ -62,6 +62,11 @@ namespace snabl {
 			if (id.name().front() == '@') {
 				in++;
 				env.emit(ops::Get::type, form.pos, env.sym(id.name().substr(1)));
+			} else if (isupper(id.name().front())) {
+				in++;
+				auto t(env.lib().get_type(id));
+				if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+				env.emit(ops::Push::type, form.pos, env.meta_type, *t);
 			} else {
 				auto &lib(env.lib());
 				auto m(lib.get_macro(id));
@@ -74,7 +79,7 @@ namespace snabl {
 					if (!fn) { throw Error("Unknown id: " + id.name()); }
 					
 					if ((*fn)->nargs) {
-						if (func) { throw Error("Extra func"); }
+						if (func) { throw Error(fmt("Extra func: %0", {(*fn)->id})); }
 						func = *fn;
 
 						if (in != end && &in->type == &TypeList::type) {
