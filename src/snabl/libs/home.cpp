@@ -25,7 +25,7 @@ namespace snabl {
 			
 			add_macro(env.sym("t"), env.bool_type, true);			
 			add_macro(env.sym("f"), env.bool_type, false);			
-			add_macro(env.sym("nil"), env.nil_type, nullptr);			
+			add_macro(env.sym("nil"), env.nil_type);			
 
 			add_macro(env.sym("_"),
 								[](Forms::const_iterator &in,
