@@ -31,9 +31,7 @@ namespace snabl {
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									in++;
-								});
+									 Env &env) { in++; });
 			
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("ddrop"), ops::DDrop::type);
@@ -437,7 +435,7 @@ namespace snabl {
 								 env.push(env.time_type, t.ns());
 							 });
 
-			add_fimp(env.sym("fibonacci"),
+			add_fimp(env.sym("fib"),
 							 {Box(env.int_type)}, {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);								 

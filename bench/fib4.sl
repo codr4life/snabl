@@ -1,4 +1,4 @@
-func: fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> Int (
 	rswap
  	switch: _
 	  0? sdrop
@@ -6,4 +6,4 @@ func: fib<Int Int Int> Int (
 		--; rswap dup rot +; recall
 )
 
-say, bench 10000 {fib 20 0 1; drop}; ms
+say, bench 10000 {tail-fib 20 0 1; drop}; ms

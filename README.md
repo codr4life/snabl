@@ -8,9 +8,9 @@ Snabl allows reordering functions and arguments within expressions. Expressions 
 
 Example 1
 ```
-func: fib<Int> Int (
+func: naive-fib<Int> Int (
   let: n _			
-  if: (@n < 2) @n, (fib, @n --) + (fib, @n - 2)
+  if: (@n < 2) @n, (naive-fib, @n --) + (naive-fib, @n - 2)
 )
 ```
 
@@ -19,8 +19,8 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. The f
 
 Example 2
 ```
-func: fib<Int> Int (
-  dup if: (< 2) _, (fib, --; dup) swap + (fib, --)
+func: naive-fib<Int> Int (
+  dup if: (< 2) _, (naive-fib, --; dup) swap + (naive-fib, --)
 )
 ```
 
@@ -52,7 +52,7 @@ Snabl embraces but does not mandate functional programming. It supports first cl
 
 Example 3
 ```
-func: fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> Int (
   let: (n a b) _
   switch: @n 0? @a 1? @b, --; @b dup @a +; recall
 )
@@ -62,7 +62,7 @@ As before, the same algorithm may be implemented without variables.
 
 Example 4
 ```
-func: fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> Int (
   rswap switch: _
     0? sdrop
     1? drop,
@@ -106,7 +106,7 @@ Example 5
 snabl::Env env;
 
 env.home.add_fimp(
-  env.sym("fib"),
+  env.sym("iter-fib"),
   {snabl::Box(env.int_type)}, {env.int_type}, [](snabl::Call &call) {
     snabl::Env &env(call.scope.env);								 
     snabl::Int n(env.pop().as<snabl::Int>()), a(0), b(1);
@@ -119,7 +119,7 @@ env.home.add_fimp(
     env.push(env.int_type, b);
   });
 
-env.run("say, fib 10");
+env.run("say, iter-fib 10");
 ```
 
 #### Portability

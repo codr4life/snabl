@@ -1,5 +1,5 @@
-func: fib<Int> Int (
-  dup if: (< 2) _, (fib, --; dup) swap + (fib, --)
+func: naive-fib<Int> Int (
+  dup if: (< 2) _, (naive-fib, --; dup) swap + (naive-fib, --)
 )
 
-say, bench 100 {fib 20; drop}; ms
+say, bench 100 {naive-fib 20; drop}; ms
