@@ -1,4 +1,5 @@
 #include "snabl/box.hpp"
+#include "snabl/pos.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
@@ -20,7 +21,7 @@ namespace snabl {
 
 	bool Box::is_true() const { return _type->is_true(*this); }
 
-	void Box::call(bool now) const { _type->call(*this, now); }
+	void Box::call(Pos pos, bool now) const { _type->call(*this, pos, now); }
 
 	void Box::dump(ostream &out) const { _type->dump(*this, out); }
 

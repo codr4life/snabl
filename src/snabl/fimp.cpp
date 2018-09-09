@@ -53,13 +53,13 @@ namespace snabl {
 		auto &env(func->lib.env);
 		
 		if (fimp->imp) {
-			auto &call(env.begin_call(*env.scope(), *fimp));
+			auto &call(env.begin_call(*env.scope(), pos, *fimp));
 			(*fimp->imp)(call);
 			env.end_call();
 		} else {
 			fimp->compile(fimp, pos);
 			auto &scope(fimp->_has_vars ? env.begin_scope() : env.scope());
-			env.begin_call(*scope, *fimp, env.pc);
+			env.begin_call(*scope, pos, *fimp, env.pc);
 			env.pc = env.ops.begin() + *fimp->_start_pc;
 		}
 	}

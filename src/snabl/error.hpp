@@ -3,11 +3,10 @@
 
 #include <stdexcept>
 
+#include "snabl/pos.hpp"
 #include "snabl/std.hpp"
 
 namespace snabl {
-	struct Pos;
-	
 	class Error: public runtime_error {
 	public:
     Error(const string &msg);
@@ -15,7 +14,9 @@ namespace snabl {
 
 	class SyntaxError: public Error {
 	public:
-    SyntaxError(Pos pos, const string &msg);
+		const Pos pos;
+		
+    SyntaxError(Pos _pos, const string &msg);
 	};
 }
 

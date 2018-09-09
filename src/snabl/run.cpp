@@ -34,10 +34,12 @@ namespace snabl {
 		};
 
 		SNABL_DISPATCH();
-	op_call:
-		pc++;
-		pop().call(false);
-		SNABL_DISPATCH();
+	op_call: {
+			const auto pos(pc->pos);
+			pc++;
+			pop().call(pos, false);
+			SNABL_DISPATCH();
+		}
 	op_ddrop:
 		if (_stack.size() < 2) { throw Error("Nothing to ddrop"); }
 		_stack.pop_back();
@@ -93,9 +95,10 @@ namespace snabl {
 			
 			if (!fimp) { throw Error(fmt("Func not applicable: %0", {op.func->id})); }
 			if (!op.fimp) { op.prev_fimp = *fimp; }
-			
+
+			const auto pos(pc->pos);
 			pc++;
-			Fimp::call(*fimp, pc->pos);
+			Fimp::call(*fimp, pos);
 			SNABL_DISPATCH();
 		}
 	op_get: {

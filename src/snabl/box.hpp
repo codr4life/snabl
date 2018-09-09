@@ -28,7 +28,7 @@ namespace snabl {
 		Cmp cmp(const Box &rhs) const;
 		bool is_true() const;
 		bool is_undef() const { return _is_undef; }
-		void call(bool now) const;
+		void call(Pos pos, bool now) const;
 		void dump(ostream &out) const;
 		void print(ostream &out) const;
 		void write(ostream &out) const;

@@ -40,7 +40,7 @@ namespace snabl {
 		virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		virtual bool is_true(const Box &val) const { return true; }
-		virtual void call(const Box &val, bool now) const;
+		virtual void call(const Box &val, Pos pos, bool now) const;
 
 		virtual void dump(const Box &val, ostream &out) const {
 			out << id.name() << "(n/a)";

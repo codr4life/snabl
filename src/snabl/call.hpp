@@ -12,18 +12,19 @@ namespace snabl {
 	class Call {
 	public:
 		Scope &scope;
+		const Pos pos;
 		const State state;
-
+		
 		Fimp *const fimp;
 		const LambdaPtr lambda;
 		const optional<PC> return_pc;
 		
-		Call(Scope &scope, Fimp &fimp, optional<PC> return_pc=nullopt):
-			scope(scope), state(scope.env), fimp(&fimp), lambda(nullptr),
+		Call(Scope &scope, Pos pos, Fimp &fimp, optional<PC> return_pc=nullopt):
+			scope(scope), pos(pos), state(scope.env), fimp(&fimp), lambda(nullptr),
 			return_pc(return_pc) { }
 	
-		Call(Scope &scope, const LambdaPtr &lambda, PC return_pc):
-			scope(scope), state(scope.env), fimp(nullptr), lambda(lambda),
+		Call(Scope &scope, Pos pos, const LambdaPtr &lambda, PC return_pc):
+			scope(scope), pos(pos), state(scope.env), fimp(nullptr), lambda(lambda),
 			return_pc(return_pc) { }
 
 		void recall() const;
