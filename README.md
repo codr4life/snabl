@@ -31,18 +31,21 @@ Snabl supports strong, first class Types. ```A``` may be used to allow any type 
    42 isa Int
 .. 
 [t]
+   Int isa Num
+.. 
+[t]
    42 isa Maybe
 .. 
-[t t]
+[t]
    nil isa Maybe
 .. 
-[t t t]
+[t]
    42 isa Nil
 .. 
-[t t t f]
+[f]
    nil isa Nil
 .. 
-[t t t f t]
+[t]
 ```
 
 #### Function
