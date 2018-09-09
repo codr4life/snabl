@@ -207,6 +207,13 @@ namespace snabl {
 									Fimp::compile(fi, form.pos);
 								});
 
+			add_fimp(env.sym("throw"),
+							 {Box(env.a_type)}, {},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 throw UserError(env, env.pc->pos, env.pop());
+							 });
+
 			add_fimp(env.sym("isa"),
 							 {Box(env.meta_type), Box(env.meta_type)},
 							 {env.bool_type},

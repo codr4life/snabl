@@ -35,11 +35,11 @@ namespace snabl {
 				_pos.col++;
 				return parse_body<forms::Semi>(in, end, out);
 			case '?': {
-				_pos.col++;
 				if (out.empty()) { throw Error("Nothing to query"); }
 				auto form(out.back());
 				out.pop_back();
-				out.emplace_back(forms::Query::type, start_pos, form);
+				out.emplace_back(forms::Query::type, _pos, form);
+				_pos.col++;
 				break;
 			}
 			case '(':

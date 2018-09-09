@@ -22,6 +22,8 @@
 namespace snabl {
 	template <typename ValT>
 	class Type;
+
+	class UserError;
 	
 	class Env {
 	private:
@@ -167,6 +169,7 @@ namespace snabl {
 		deque<Call> _calls;
 		
 		friend struct State;
+		friend struct UserError;
 	};
 		
 	template <typename ValT, typename... ArgsT>
@@ -193,6 +196,29 @@ namespace snabl {
 											 env.emit(type, (in++)->pos, args...);			
 										 });
 	}
+
+	class UserError: public Error {
+	public:
+		const Pos pos;
+		const Box val;
+		const Stack stack;
+		const vector<Call> calls;
+		
+		UserError(Env &env, Pos _pos, const Box &_val):
+			Error([&env, &_pos, &_val]() {
+					stringstream buf;
+
+					buf << env._stack << endl
+						  << fmt("Error in row %0, col %1:\n", {_pos.row, _pos.col})
+							<< _val;
+					
+					return buf.str();
+				}()),
+			pos(_pos),
+			val(_val),
+			stack(env._stack.begin(), env._stack.end()),
+			calls(env._calls.begin(), env._calls.end()) { }
+	};
 }
 
 #endif

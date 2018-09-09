@@ -1,3 +1,6 @@
+* add try: macro
+** save state and restore on error
+** use nested run(end_pc) in try block
 * convert bench to macro
 ** add Bench op
 ** use nested run(end_pc) in op
