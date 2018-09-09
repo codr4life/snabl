@@ -1,18 +1,18 @@
-* add isa fn for type/value
-** test in repl
 * add rewrite fence after if: and switch: when needed
 ** add ops::Fence nop
 * add support for func/fimp refs with &
 ** add func/fimp type
+* add times fn
 * add Source
 ** add pop fn
 * add Sink
 ** add push fn
 * add Stack
 ** use vector imp
+* add Seq/Iter
+** add for fn
 * add [] indexing support
 ** parse as func '[]' and call with args
-
 * add use: macro
 * add lib: macro
 ** two args, id & body
