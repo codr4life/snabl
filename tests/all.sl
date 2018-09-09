@@ -49,3 +49,4 @@ func: foo1<A> A (* 2)
 
 (test= (try: (drop 7) 42 -) 35)
 (test= (try: (catch; ++), throw 41) 42)
+(test= (try: (catch; ++), try: throw, throw 41) 42)

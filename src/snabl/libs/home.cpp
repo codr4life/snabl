@@ -229,6 +229,13 @@ namespace snabl {
 								 throw UserError(env, env.call().pos, env.pop());
 							 });
 
+			add_fimp(env.sym("throw"),
+							 {Box(env.error_type)}, {},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 throw *env.pop().as<ErrorPtr>();
+							 });
+
 			add_fimp(env.sym("catch"),
 							 {Box(env.error_type)}, {env.a_type},
 							 [](Call &call) {
