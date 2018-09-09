@@ -1,3 +1,6 @@
+* convert bench to macro
+** add Bench op
+** use nested run(end_pc) in op
 * add rewrite fence after if: and switch: when needed
 ** add ops::Fence nop
 * add support for func/fimp refs with &
