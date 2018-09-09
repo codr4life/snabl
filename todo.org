@@ -1,7 +1,3 @@
-* convert bench to macro
-** add Bench op
-** use nested run(end_pc) in op
-* add try bench
 * add support for type queries
 ** 42 Int?
 * make Eqval.val optional

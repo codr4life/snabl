@@ -186,6 +186,7 @@ namespace snabl {
 			} catch (const UserError &e) {
 				state.restore_libs(*this);
 				state.restore_scopes(*this);
+				state.restore_calls(*this);
 				state.restore_stack(*this);
 				push(error_type, ErrorPtr::make(e));
 			}

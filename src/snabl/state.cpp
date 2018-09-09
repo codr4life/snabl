@@ -5,6 +5,7 @@ namespace snabl {
 	State::State(const Env &env):
 		nlibs(env._libs.size()),
 		nscopes(env._scopes.size()),
+		ncalls(env._calls.size()),
 		nstack(env._stack.size()) { }
 
 	void State::restore_libs(Env &env) const {
@@ -13,6 +14,10 @@ namespace snabl {
 
 	void State::restore_scopes(Env &env) const {
 		if (env._scopes.size() > nscopes) { env._scopes.resize(nscopes); }
+	}
+
+	void State::restore_calls(Env &env) const {
+		while (env._calls.size() > ncalls) { env._calls.pop_back(); }
 	}
 
 	void State::restore_stack(Env &env) const {
