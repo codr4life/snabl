@@ -1,5 +1,6 @@
 #include "snabl/box.hpp"
 #include "snabl/env.hpp"
+#include "snabl/run.hpp"
 #include "snabl/types/error.hpp"
 
 namespace snabl {

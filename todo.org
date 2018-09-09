@@ -1,7 +1,3 @@
-* add run.hpp
-** move UserError
-** add base class RuntimeError with msg instead of val
-*** use for 'func not applicable' in run/form.cpp
 * add throw(Error) fn + test
 * convert bench to macro
 ** add Bench op
@@ -22,6 +18,8 @@
 * check snabl fimp results
 * add support for func/fimp refs with &
 ** add func/fimp type
+* add Str literal support
+** 'foo\''
 * add Source
 ** add pop fn
 * add Sink

@@ -1,7 +1,6 @@
-#include <algorithm>
-
 #include "snabl/env.hpp"
 #include "snabl/form.hpp"
+#include "snabl/run.hpp"
 
 namespace snabl {
 	AFormType::AFormType(string_view id): id(id) { }
@@ -92,11 +91,8 @@ namespace snabl {
 							auto fi((*fn)->get_best_fimp(args));
 
 							if (!fi) {
-								throw UserError(env,
-																form.pos,
-																Box(env.str_type,
-																		StrPtr::make(fmt("Func not applicable: %0",
-																										 {(*fn)->id}))));
+								throw RuntimeError(env, form.pos, fmt("Func not applicable: %0",
+																											{(*fn)->id}));
 							}
 							
 							fimp = *fi;

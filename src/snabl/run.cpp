@@ -1,6 +1,7 @@
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
 #include "snabl/parser.hpp"
+#include "snabl/run.hpp"
 
 #define SNABL_DISPATCH()												\
 	if (pc == *end_pc) { return; }								\
@@ -94,11 +95,8 @@ namespace snabl {
 			}
 			
 			if (!fimp) {
-				throw UserError(*this,
-												pc->pos,
-												Box(str_type,
-														StrPtr::make(fmt("Func not applicable: %0",
-																						 {op.func->id}))));
+				throw RuntimeError(*this, pc->pos, fmt("Func not applicable: %0",
+																							 {op.func->id}));
 			}
 			
 			if (!op.fimp) { op.prev_fimp = *fimp; }
@@ -198,4 +196,21 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	}
+
+	RuntimeError::RuntimeError(Env &env, Pos _pos, const string &msg):
+		Error([&env, &_pos, msg]() {
+				stringstream buf;
+				
+				buf << env._stack << endl
+						<< fmt("Error in row %0, col %1:\n", {_pos.row, _pos.col})
+						<< msg;
+				
+				return buf.str();
+			}()),
+		pos(_pos),
+		stack(env._stack.begin(), env._stack.end()),
+		calls(env._calls.begin(), env._calls.end()) { }
+
+	UserError::UserError(Env &env, Pos pos, const Box &_val):
+		RuntimeError(env, pos, fmt("%0", {_val})), val(_val) { }
 }
