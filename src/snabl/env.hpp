@@ -42,7 +42,7 @@ namespace snabl {
 		TypePtr<Int> int_type;
 		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
-		TypePtr<string> str_type;
+		TypePtr<StrPtr> str_type;
 		TypePtr<Sym> sym_type;
 		TypePtr<Time> time_type;
 		

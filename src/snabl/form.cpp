@@ -95,7 +95,8 @@ namespace snabl {
 								throw UserError(env,
 																form.pos,
 																Box(env.str_type,
-																		fmt("Func not applicable: %0", {(*fn)->id})));
+																		StrPtr::make(fmt("Func not applicable: %0",
+																										 {(*fn)->id}))));
 							}
 							
 							fimp = *fi;

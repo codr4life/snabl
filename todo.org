@@ -56,5 +56,3 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
-
-try: (catch; ++), throw 41

@@ -5,7 +5,9 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	class StrType: public Type<string> {
+	using StrPtr = Ptr<string>;
+
+	class StrType: public Type<StrPtr> {
 	public:
 		StrType(Lib &lib, Sym id);
 		bool is_true(const Box &val) const override;

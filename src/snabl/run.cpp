@@ -96,12 +96,14 @@ namespace snabl {
 			if (!fimp) {
 				throw UserError(*this,
 												pc->pos,
-												Box(str_type, fmt("Func not applicable: %0", {op.func->id})));
+												Box(str_type,
+														StrPtr::make(fmt("Func not applicable: %0",
+																						 {op.func->id}))));
 			}
 			
 			if (!op.fimp) { op.prev_fimp = *fimp; }
-
 			const auto pos(pc->pos);
+			
 			pc++;
 			Fimp::call(*fimp, pos);
 			SNABL_DISPATCH();
