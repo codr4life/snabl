@@ -174,7 +174,7 @@ namespace snabl {
 										}
 									}
 
-									for (auto &s: skips) { s->nops = env.ops.size()-s->nops; }
+									for (auto &s: skips) { s->nops = env.ops.size()-*s->nops; }
 								});	
 			
 			add_macro(env.sym("func:"),

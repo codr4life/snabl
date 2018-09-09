@@ -52,8 +52,7 @@ namespace snabl {
 
 		struct Else {
 			static const OpType<Else> type;
-			size_t nops;
-			Else(size_t nops=0): nops(nops) { }
+			optional<size_t> nops;
 		};
 		
 		struct Eqval {
@@ -108,11 +107,10 @@ namespace snabl {
 
 		struct Lambda {
 			static const OpType<Lambda> type;
-			optional<size_t> start_pc;
-			size_t nops;
+			optional<size_t> start_pc, nops;
 			bool has_vars;
 			
-			Lambda(): nops(0), has_vars(false) { }
+			Lambda(): has_vars(false) { }
 		};
 
 		struct LambdaRet {
@@ -160,14 +158,14 @@ namespace snabl {
 				Type(const string &id): OpType<Skip>(id) { }
 
 				void dump(const Skip &op, ostream &out) const override {
-					out << ' ' << op.nops;
+					out << ' ' << *op.nops;
 				}
 			};
 
 			static const Type type;
-			size_t nops;			
+			optional<size_t> nops;
 
-			Skip(size_t nops=0): nops(nops) { }
+			Skip(optional<size_t> nops=nullopt): nops(nops) { }
 		};
 
 		struct Swap {

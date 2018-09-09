@@ -59,7 +59,7 @@ namespace snabl {
 	op_else: {
 			const auto &op(pc->as<ops::Else>());
 			const auto v(pop());
-			if (!v.as<bool>()) { pc += op.nops; }
+			if (!v.as<bool>()) { pc += *op.nops; }
 			pc++;
 			SNABL_DISPATCH();
 		}
@@ -119,9 +119,9 @@ namespace snabl {
 	op_lambda: {
 			const auto &op(pc->as<ops::Lambda>());
 			push(lambda_type, LambdaPtr::make(op.has_vars ? scope() : nullptr,
-																				*op.start_pc, op.nops,
+																				*op.start_pc, *op.nops,
 																				op.has_vars));
-			pc += op.nops+1;
+			pc += *op.nops+1;
 			SNABL_DISPATCH();
 		}
 	op_lambdaret: {
@@ -168,7 +168,7 @@ namespace snabl {
 		pc++;
 		SNABL_DISPATCH();
 	op_skip:
-		pc += pc->as<ops::Skip>().nops+1;
+		pc += *pc->as<ops::Skip>().nops+1;
 		SNABL_DISPATCH();
 	op_swap: {
 			if (_stack.size() < 2) { throw Error("Nothing to swap"); }
