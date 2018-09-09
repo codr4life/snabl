@@ -18,7 +18,7 @@ namespace snabl {
 
 	void Env::emit(Pos pos, FuncPtr &func, FimpPtr &fimp) {		
 		if (fimp) {
-			if (!fimp->imp) { fimp->compile(pos); }
+			if (!fimp->imp) { Fimp::compile(fimp, pos); }
 			emit(ops::Funcall::type, pos, fimp);
 			fimp = nullptr;
 		} else if (func) {

@@ -28,7 +28,7 @@ namespace snabl {
 		
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
-			&&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
+			&&op_fimp, &&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
 			&&op_let, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
 			&&op_skip, &&op_swap
 		};
@@ -67,6 +67,9 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
+	op_fimp:
+		pc += pc->as<ops::Fimp>().ptr->nops()+1;
+		SNABL_DISPATCH();
 	op_fimpret: {
 			const auto &op(pc->as<ops::FimpRet>());
 			if (op.end_scope) { end_scope(); }

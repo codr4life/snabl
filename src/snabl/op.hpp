@@ -67,6 +67,18 @@ namespace snabl {
 			Eqval(const Box &lhs): lhs(lhs) { }
 		};
 
+		struct Fimp {
+			struct Type: public OpType<Fimp> {
+				Type(const string &id): OpType<Fimp>(id) { }
+				void dump(const Fimp &op, ostream &out) const override;
+			};
+
+			static const Type type;
+			const FimpPtr ptr;
+			
+			Fimp(const FimpPtr &ptr): ptr(ptr) { }
+		};
+
 		struct FimpRet {
 			static const OpType<FimpRet> type;
 			const bool end_scope;
@@ -144,8 +156,17 @@ namespace snabl {
 		};
 
 		struct Skip {
-			static const OpType<Skip> type;
+			struct Type: public OpType<Skip> {
+				Type(const string &id): OpType<Skip>(id) { }
+
+				void dump(const Skip &op, ostream &out) const override {
+					out << ' ' << op.nops;
+				}
+			};
+
+			static const Type type;
 			size_t nops;			
+
 			Skip(size_t nops=0): nops(nops) { }
 		};
 
@@ -176,7 +197,7 @@ namespace snabl {
 		}
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
+					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
 						ops::LambdaRet, ops::Let, ops::Push, ops::Recall, ops::Rot, ops::RSwap,
 						ops::SDrop, ops::Skip, ops::Swap> _imp;
 	};

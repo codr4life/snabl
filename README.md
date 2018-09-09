@@ -88,6 +88,14 @@ $ cd build
 $ cmake ..
 $ sudo make install
 $ snabl
+
+Snabl v0.1
+
+Press Return on empty line to eval.
+
+   1 + 2
+.. 
+[3]
 ```
 
 ### License

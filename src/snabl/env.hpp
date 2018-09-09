@@ -147,19 +147,6 @@ namespace snabl {
 
 		const Stack &stack() { return _stack; }
 
-		void dump_stack(std::ostream &out) const {
-			out << '[';
-			char sep(0);
-		
-			for (auto &v: _stack) {
-				if (sep) { out << sep; }
-				v.dump(out);
-				sep = ' ';
-			}
-
-			out << ']' << endl;
-		}
-
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
 			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})

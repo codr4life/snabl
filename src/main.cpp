@@ -1,4 +1,5 @@
 #include "snabl/env.hpp"
+#include "snabl/repl.hpp"
 #include "tests.hpp"
 
 using namespace snabl;
@@ -41,7 +42,7 @@ int main(int argc, const char *argv[]) {
 	case Mode::Default:
 	case Mode::Repl:
 		snabl::all_tests();
-		//todo: start repl
+		repl(env, cin, cout);
 		break;
 	case Mode::Run:
 		env.run();

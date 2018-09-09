@@ -29,22 +29,22 @@ namespace snabl {
 		return func.lib.env.sym(buf.str());
 	}
 
-	bool Fimp::compile(Pos pos) {
-		auto &env(func->lib.env);
-		if (_start_pc) { return false; }
-		auto &skip(env.emit(ops::Skip::type, pos).as<ops::Skip>());
-		_start_pc = env.ops.size();
-		env.compile(forms);
+	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
+		auto &env(fimp->func->lib.env);
+		if (fimp->_start_pc) { return false; }
+		env.emit(ops::Fimp::type, pos, fimp);
+		fimp->_start_pc = env.ops.size();
+		env.compile(fimp->forms);
 		
-		_has_vars = (find_if(env.ops.begin() + *_start_pc, 
-												 env.ops.end(), 
-												 [](const Op &op) {
-													 return &op.type == &ops::Get::type ||
-													 &op.type == &ops::Let::type;
-												 }) != env.ops.end());
+		fimp->_has_vars = (find_if(env.ops.begin() + *fimp->_start_pc, 
+															 env.ops.end(), 
+															 [](const Op &op) {
+																 return &op.type == &ops::Get::type ||
+																 &op.type == &ops::Let::type;
+															 }) != env.ops.end());
 
-		env.emit(ops::FimpRet::type, pos, _has_vars);
-		_nops = skip.nops = env.ops.size() - *_start_pc;
+		env.emit(ops::FimpRet::type, pos, fimp->_has_vars);
+		fimp->_nops = env.ops.size() - *fimp->_start_pc;
 		return true;
 	}
 
@@ -57,7 +57,7 @@ namespace snabl {
 			(*fimp->imp)(call);
 			env.end_call();
 		} else {
-			fimp->compile(pos);
+			fimp->compile(fimp, pos);
 			auto &scope(fimp->_has_vars ? env.begin_scope() : env.scope());
 			env.begin_call(*scope, *fimp, env.pc);
 			env.pc = env.ops.begin() + *fimp->_start_pc;

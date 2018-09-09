@@ -1,8 +1,3 @@
-* add Fimp op like Lambda
-** replaces Skip
-** implement dump to print id
-** also implement FimpRet dump
-* add env.repl(in, out) fn
 * add type args
 ** add type.args
 ** add type.specialize fn
@@ -12,8 +7,12 @@
 ** add func/fimp type
 * add support for parsing ? as Maybe
 ** A? -> Maybe<A>
+* add Source<T>
+** add pop fn
 * add Sink<T>
 ** add push fn
+* add Stack<T>
+** use vector imp
 * add [] indexing support
 ** parse as func '[]' and call with args
 

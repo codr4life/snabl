@@ -24,6 +24,7 @@ namespace snabl {
 		const optional<Imp> imp;
 
 		static Sym get_id(const Func &func, const Args &args);
+		static bool compile(const FimpPtr &fimp, Pos pos);
 		static void call(const FimpPtr &fimp, Pos pos);
 
 		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
@@ -33,8 +34,8 @@ namespace snabl {
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 
-		bool compile(Pos pos);
 		optional<size_t> start_pc() const { return _start_pc; }
+		size_t nops() const { return _nops; }
 		optional<size_t> score(const Stack &stack) const;
 	private:
 		optional<size_t> _start_pc;

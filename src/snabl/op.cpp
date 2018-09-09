@@ -13,6 +13,7 @@ namespace snabl {
 		const OpType<Dup> Dup::type("dup");
 		const OpType<Else> Else::type("else");
 		const Eqval::Type Eqval::type("eqval");
+		const Fimp::Type Fimp::type("fimp");
 		const OpType<FimpRet> FimpRet::type("fimpret");
 		const Funcall::Type Funcall::type("funcall");
 		const OpType<Get> Get::type("get");
@@ -24,7 +25,7 @@ namespace snabl {
 		const OpType<Rot> Rot::type("rot");
 		const OpType<RSwap> RSwap::type("rswap");
 		const OpType<SDrop> SDrop::type("sdrop");
-		const OpType<Skip> Skip::type("skip");
+		const Skip::Type Skip::type("skip");
 		const OpType<Swap> Swap::type("swap");
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
@@ -33,6 +34,10 @@ namespace snabl {
 		void Eqval::Type::dump(const Eqval &op, ostream &out) const {
 			out << ' ';
 			op.lhs.dump(out);
+		}
+
+		void Fimp::Type::dump(const Fimp &op, ostream &out) const {
+			out << ' ' << op.ptr->id << ' ' << op.ptr->nops();
 		}
 
 		void Funcall::Type::dump(const Funcall &op, ostream &out) const {
