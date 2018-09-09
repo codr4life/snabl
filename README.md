@@ -3,12 +3,6 @@
 ### Features
 The following is a list of what could be considered defining features.
 
-#### Multiple Dispatch
-Snabl supports dispatching functions on multiple arguments. Each function name may have multiple implementations, as long as they have the same number of arguments with different types.
-
-#### Reference Counting
-Snabl uses reference counting instead of garbage collection, which leads to more predictable performance and resource usage.
-
 #### Fixation
 Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
 
