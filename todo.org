@@ -2,7 +2,6 @@
 ** add ops::Fence nop
 * add support for func/fimp refs with &
 ** add func/fimp type
-* add times fn
 * add Source
 ** add pop fn
 * add Sink

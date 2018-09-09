@@ -29,22 +29,21 @@ Snabl supports strong, first class Types. ```A``` may be used to allow any type 
 
 ```
    42 isa Int
-.. 
 [t]
+
    Int isa Num
-.. 
 [t]
+
    42 isa Maybe
-.. 
 [t]
+
    nil isa Maybe
-.. 
 [t]
+
    42 isa Nil
-.. 
 [f]
+
    nil isa Nil
-.. 
 [t]
 ```
 
