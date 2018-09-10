@@ -173,7 +173,7 @@ namespace snabl {
 
 	private:
 		vector<Lib *> _libs;
-		deque<Call, Alloc<Call, 32>> _calls;
+		deque<Call, Alloc<Call>> _calls;
 		
 		friend struct State;
 		friend struct RuntimeError;

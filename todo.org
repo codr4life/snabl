@@ -1,8 +1,4 @@
 * add alloc support to Ptr
-* switch Env._syms to map
-** allocate SymImp in map
-** add custom Alloc
-* add custom alloc to Scope._vars
 * add support for type queries
 ** 42 Int?
 ** translate to isa
