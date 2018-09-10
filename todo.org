@@ -1,4 +1,7 @@
-* try slab allocation
+* alloc
+** freelist
+** slabs
+** add support to Ptr
 * add support for type queries
 ** 42 Int?
 ** translate to isa
@@ -6,6 +9,10 @@
 * make Eqval.val optional
 ** pop both vals if null
 ** emit Eqval with null val by default
+* replace Box.val with static space
+** add const MAX_SIZE;
+** static cast in as()
+*** return const ref
 * change switch: to take two args
 ** check second is forms::Comma/Semi/Sexpr
 *** treat as Body
