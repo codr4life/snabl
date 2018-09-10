@@ -30,7 +30,7 @@ namespace snabl {
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
 			&&op_fimp, &&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
-			&&op_let, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
+			&&op_let, &&op_nop, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
 			&&op_skip, &&op_swap, &&op_try
 		};
 
@@ -136,6 +136,9 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
+	op_nop:
+		pc++;
+		SNABL_DISPATCH();
 	op_push:
 		push(pc->as<ops::Push>().val); 
 		pc++;
@@ -182,13 +185,13 @@ namespace snabl {
 			try {
 				pc = ops.begin()+*op.body_pc;
 				run(pc+*op.body_nops);
-				push(nil_type);
+				if (op.push) { push(nil_type); }
 			} catch (const UserError &e) {
 				state.restore_libs(*this);
 				state.restore_scopes(*this);
 				state.restore_calls(*this);
 				state.restore_stack(*this);
-				push(error_type, ErrorPtr::make(e));
+				if (op.push) { push(error_type, ErrorPtr::make(e)); }
 			}
 
 			pc = ops.begin()+*op.start_pc;

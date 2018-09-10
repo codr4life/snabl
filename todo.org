@@ -9,7 +9,7 @@
 ** assume second is forms::Body
 * add Fimp closure like Lambda
 * add rewrite fence after if: and switch: when needed
-** add ops::Fence nop
+** use ops::Nop
 * check snabl fimp results
 * add support for func/fimp refs with &
 ** add func/fimp type

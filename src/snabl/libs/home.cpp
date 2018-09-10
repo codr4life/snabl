@@ -42,27 +42,39 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
+									auto &form(*in++);
+									
 									if (!env.ops.empty() &&
 											&env.ops.back().type == &ops::Drop::type) {
 										env.note(in->pos, "Rewriting (drop drop) as (ddrop)");
 										env.ops.pop_back();
-										env.emit(ops::DDrop::type, (in++)->pos);
+										env.emit(ops::DDrop::type, form.pos);
 									} else if (!env.ops.empty() &&
 														 (&env.ops.back().type == &ops::Dup::type ||
 															&env.ops.back().type == &ops::Get::type ||
 															&env.ops.back().type == &ops::Lambda::type ||
-															&env.ops.back().type == &ops::Push::type)) {
+															&env.ops.back().type == &ops::Push::type ||
+															&env.ops.back().type == &ops::Try::type)) {
 										env.note(in->pos, fmt("Rewriting (%0 drop) as ()",
 																					{env.ops.back().type.id}));
+
+										if (&env.ops.back().type == &ops::Try::type) {
+											auto &try_op(env.ops.back().as<ops::Try>());
+											try_op.push = false;
+											
+											if (in == end) {
+												env.emit(ops::Nop::type, form.pos);
+											}
+										}
+
 										env.ops.pop_back();
-										in++;
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();
-										env.emit(ops::SDrop::type, (in++)->pos);
+										env.emit(ops::SDrop::type, form.pos);
 									} else {
-										env.emit(ops::Drop::type, (in++)->pos);
+										env.emit(ops::Drop::type, form.pos);
 									}
 								});
 
@@ -93,12 +105,12 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									auto &try_op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
-									try_op.start_pc = env.ops.size();
+									auto &op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
+									op.start_pc = env.ops.size();
 									env.compile(in++, in+1);
-									try_op.body_pc = env.ops.size();
+									op.body_pc = env.ops.size();
 									env.compile(in++, in+1);
-									try_op.body_nops = env.ops.size()-*try_op.body_pc;
+									op.body_nops = env.ops.size()-*op.body_pc;
 								});
 			
 			add_macro(env.sym("let:"),

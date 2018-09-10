@@ -123,6 +123,10 @@ namespace snabl {
 			Let(Sym id): id(id) { }
 		};
 
+		struct Nop {
+			static const OpType<Nop> type;
+		};
+
 		struct Push {
 			struct Type: public OpType<Push> {
 				Type(const string &id): OpType<Push>(id) { }
@@ -175,7 +179,9 @@ namespace snabl {
 		struct Try {
 			static const OpType<Try> type;
 			optional<size_t> start_pc, body_pc, body_nops;
-			Try() { }
+			bool push;
+
+			Try(): push(true) { }
 		};
 	}
 	
@@ -202,8 +208,8 @@ namespace snabl {
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
-						ops::LambdaRet, ops::Let, ops::Push, ops::Recall, ops::Rot, ops::RSwap,
-						ops::SDrop, ops::Skip, ops::Swap, ops::Try> _imp;
+						ops::LambdaRet, ops::Let, ops::Nop, ops::Push, ops::Recall, ops::Rot,
+						ops::RSwap, ops::SDrop, ops::Skip, ops::Swap, ops::Try> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>

@@ -20,6 +20,7 @@ namespace snabl {
 		const OpType<Lambda> Lambda::type("lambda");
 		const OpType<LambdaRet> LambdaRet::type("lambdaret");
 		const OpType<Let> Let::type("let");
+		const OpType<Nop> Nop::type("nop");
 		const Push::Type Push::type("push");
 		const OpType<Recall> Recall::type("recall");
 		const OpType<Rot> Rot::type("rot");
