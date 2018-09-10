@@ -1,6 +1,5 @@
 * alloc
-** freelist
-** slabs
+** use more
 ** add support to Ptr
 * add support for type queries
 ** 42 Int?
