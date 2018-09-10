@@ -27,8 +27,8 @@ namespace snabl {
 
 	class Env {
 	public:
-		Alloc<Box> box_alloc;
-		Alloc<Call> call_alloc;
+		Alloc<Box> stack_alloc;
+		Alloc<Call> calls_alloc;
 	private:
 		unordered_map<string, unique_ptr<SymImp>> _syms;
 		size_t _type_tag;
@@ -57,12 +57,12 @@ namespace snabl {
 		
 		Env():
 			_type_tag(1),
-			_stack(box_alloc),
+			_stack(stack_alloc),
 			home(*this),
 			separators({' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}'}),
 			pc(ops.begin()),
 			main(begin_scope()),
-		  _calls(call_alloc) { begin_lib(home); }
+		  _calls(calls_alloc) { begin_lib(home); }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
@@ -172,7 +172,6 @@ namespace snabl {
 
 	private:
 		vector<Lib *> _libs;
-		deque<Lambda> _lambdas;
 		deque<Call, Alloc<Call>> _calls;
 		
 		friend struct State;

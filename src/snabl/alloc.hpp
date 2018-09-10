@@ -9,9 +9,10 @@ namespace snabl {
 	class Alloc: public allocator<T> {
 	public:
 		struct Slot {
+			Slot(): next() { }
+
 			Slot *next;
 			unsigned char val[sizeof(T)];			
-			Slot(): next(nullptr) { }
 		};
 			
 		using size_type = size_t;
@@ -31,7 +32,9 @@ namespace snabl {
 
 		~Alloc() {
 			for (size_t i(0); i < NMAX; i++) {
-				if (_free[i]) { free(_free[i]); }
+				for (Slot *s(_free[i]), *ns=(s ? s->next : nullptr);
+						 s;
+						 s = ns, ns=(s ? s->next : nullptr)) { free(s); }
 			}
 		}
 		
@@ -43,7 +46,7 @@ namespace snabl {
 			if (s) {
 				_free[n-1] = s->next;
 			} else {
-				s = reinterpret_cast<Slot *>(malloc(n*sizeof(Slot)));
+				s = reinterpret_cast<Slot *>(malloc(sizeof(Slot) + (n-1)*sizeof(T)));
 			}
 			
 			return reinterpret_cast<T *>(&s->val);
