@@ -1,11 +1,10 @@
-* add move-constructor to RuntimeError
 * add support for type queries
 ** 42 Int?
+** translate to isa
+** update readme
 * make Eqval.val optional
 ** pop both vals if null
 ** emit Eqval with null val by default
-** translate to isa
-** update readme
 * change switch: to take two args
 ** assume second is forms::Body
 * add Fimp closure like Lambda
