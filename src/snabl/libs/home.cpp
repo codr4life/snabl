@@ -32,7 +32,7 @@ namespace snabl {
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) { in++; });
+									 Env &env) { /*env.emit(ops::Nop::type, (in++)->pos);*/ in++; });
 			
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("ddrop"), ops::DDrop::type);
@@ -53,26 +53,21 @@ namespace snabl {
 														 (&env.ops.back().type == &ops::Dup::type ||
 															&env.ops.back().type == &ops::Get::type ||
 															&env.ops.back().type == &ops::Lambda::type ||
-															&env.ops.back().type == &ops::Push::type ||
-															&env.ops.back().type == &ops::Try::type)) {
-										env.note(in->pos, fmt("Rewriting (%0 drop) as ()",
-																					{env.ops.back().type.id}));
-
-										if (&env.ops.back().type == &ops::Try::type) {
-											auto &try_op(env.ops.back().as<ops::Try>());
-											try_op.push = false;
-											
-											if (in == end) {
-												env.emit(ops::Nop::type, form.pos);
-											}
-										}
-
+															&env.ops.back().type == &ops::Push::type)) {
+										env.note(form.pos, fmt("Rewriting (%0 drop) as ()",
+																					 {env.ops.back().type.id}));
 										env.ops.pop_back();
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();
 										env.emit(ops::SDrop::type, form.pos);
+									} else if (!env.ops.empty() &&
+														 &env.ops.back().type == &ops::Try::type) {
+										env.note(in->pos, "Rewriting (try: drop) as (try: nop)");
+										auto &try_op(env.ops.back().as<ops::Try>());
+										try_op.push = false;
+										if (in == end) { env.emit(ops::Nop::type, form.pos); }
 									} else {
 										env.emit(ops::Drop::type, form.pos);
 									}
