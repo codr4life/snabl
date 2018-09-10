@@ -6,7 +6,7 @@ using namespace snabl;
 
 enum class Mode { Compile, Default, Repl, Run };
 
-int main(int argc, const char *argv[]) {	
+int main(int argc, const char *argv[]) {
 	Env env;
 	Mode mode(Mode::Default);
 	argc--;

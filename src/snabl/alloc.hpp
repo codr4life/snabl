@@ -31,8 +31,7 @@ namespace snabl {
 
 		~Alloc() {
 			for (size_t i(0); i < NMAX; i++) {
-				auto s(_free[i]);
-				if (i) { delete[] s; } else { delete s; }
+				if (_free[i]) { free(_free[i]); }
 			}
 		}
 		
@@ -44,7 +43,7 @@ namespace snabl {
 			if (s) {
 				_free[n-1] = s->next;
 			} else {
-				s = (n == 1) ? new Slot : new Slot[n];
+				s = reinterpret_cast<Slot *>(malloc(n*sizeof(Slot)));
 			}
 			
 			return reinterpret_cast<T *>(&s->val);

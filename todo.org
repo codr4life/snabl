@@ -1,5 +1,6 @@
 * alloc
-** use more
+** alloc Slot with flexible array
+** use in more cases
 ** add support to Ptr
 * add support for type queries
 ** 42 Int?
