@@ -194,8 +194,11 @@ namespace snabl {
 				if (op.push) { push(error_type, ErrorPtr::make(e)); }
 			}
 
-			pc = ops.begin()+*op.start_pc;
-			run(ops.begin()+*op.body_pc);
+			if (*op.body_pc > *op.start_pc) {
+				pc = ops.begin()+*op.start_pc;
+				run(ops.begin()+*op.body_pc);
+			}
+			
 			pc = ops.begin()+*op.body_pc+*op.body_nops;
 			SNABL_DISPATCH();
 		}

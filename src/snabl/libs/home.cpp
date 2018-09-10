@@ -67,7 +67,6 @@ namespace snabl {
 										env.note(in->pos, "Rewriting (try: drop) as (try: nop)");
 										auto &try_op(env.ops.back().as<ops::Try>());
 										try_op.push = false;
-										if (in == end) { env.emit(ops::Nop::type, form.pos); }
 									} else {
 										env.emit(ops::Drop::type, form.pos);
 									}
