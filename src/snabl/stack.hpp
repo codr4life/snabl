@@ -1,11 +1,11 @@
 #ifndef SNABL_STACK_HPP
 #define SNABL_STACK_HPP
 
-#include "snabl/std.hpp"
+#include "snabl/alloc.hpp"
 #include "snabl/box.hpp"
 
 namespace snabl {
-	using Stack = vector<Box>;
+	using Stack = deque<Box, Alloc<Box>>;
 
 	ostream &operator <<(ostream &out, const Stack &stack);
 }
