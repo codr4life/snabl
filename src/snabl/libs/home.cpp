@@ -64,7 +64,7 @@ namespace snabl {
 										env.emit(ops::SDrop::type, form.pos);
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Try::type) {
-										env.note(in->pos, "Rewriting (try: drop) as (try: nop)");
+										env.note(in->pos, "Rewriting (try: drop) as (try:)");
 										auto &try_op(env.ops.back().as<ops::Try>());
 										try_op.push = false;
 									} else {

@@ -11,6 +11,12 @@
 * add Fimp closure like Lambda
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
+* add slab allocator
+** implement as std::allocator
+** keep unordered map from size to freelist
+*** alloc next pointer as part of value
+* add if-else func
+** use in fib1/2 and compare perf
 * check snabl fimp results
 * add support for func/fimp refs with &
 ** add func/fimp type
