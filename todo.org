@@ -6,7 +6,8 @@
 ** pop both vals if null
 ** emit Eqval with null val by default
 * change switch: to take two args
-** assume second is forms::Body
+** check second is forms::Comma/Semi/Sexpr
+*** treat as Body
 * add Fimp closure like Lambda
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
