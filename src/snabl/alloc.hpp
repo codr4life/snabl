@@ -40,7 +40,7 @@ namespace snabl {
 		
 		T* allocate(size_type n, const void *hint=0) {
 			assert(n < NMAX);
-			//cout << "allocate " << n*sizeof(T) << endl;
+
 			Slot *s(_free[n-1]);
 
 			if (s) {
@@ -54,7 +54,7 @@ namespace snabl {
 
 		void deallocate(T *p, size_type n) {
 			assert(n < NMAX);
-			//cout << "deallocate " << n*sizeof(T) << endl;
+			
 			Slot *s(reinterpret_cast<Slot *>(reinterpret_cast<unsigned char *>(p)-
 																			 offsetof(Slot, val)));
 
