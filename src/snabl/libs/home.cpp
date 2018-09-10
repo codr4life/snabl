@@ -32,7 +32,7 @@ namespace snabl {
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) { /*env.emit(ops::Nop::type, (in++)->pos);*/ in++; });
+									 Env &env) { env.emit(ops::Nop::type, (in++)->pos); });
 			
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("ddrop"), ops::DDrop::type);
