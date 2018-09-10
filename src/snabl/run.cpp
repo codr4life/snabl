@@ -177,7 +177,7 @@ namespace snabl {
 		}
 	op_try: {
 			const auto &op(pc->as<ops::Try>());
-			State state(*this);
+			const State state(*this);
 			
 			try {
 				pc = ops.begin()+*op.body_pc;
@@ -209,7 +209,13 @@ namespace snabl {
 	}
 
 	const char *RuntimeError::what() const noexcept { return _what.c_str(); }
+
+	static string val_str(const Box &val) {
+		stringstream buf;
+		buf << val;
+		return buf.str();
+	}
 	
 	UserError::UserError(Env &env, Pos pos, const Box &_val):
-		RuntimeError(env, pos, fmt("%0", {_val})), val(_val) { }
+		RuntimeError(env, pos, val_str(_val)), val(_val) { }
 }
