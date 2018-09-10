@@ -10,13 +10,13 @@ namespace snabl {
 	class Error: public runtime_error {
 	public:
     Error(const string &msg);
+	protected:
+		Error(): runtime_error("") { }
 	};
 
 	class SyntaxError: public Error {
 	public:
-		const Pos pos;
-		
-    SyntaxError(Pos _pos, const string &msg);
+    SyntaxError(Pos pos, const string &msg);
 	};
 }
 

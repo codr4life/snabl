@@ -9,11 +9,10 @@ namespace snabl {
 	
 	class RuntimeError: public Error {
 	public:
-		const Pos pos;
-		const Stack stack;
-		const vector<Call> calls;
-		
 		RuntimeError(Env &env, Pos _pos, const string &msg);
+		const char *what() const noexcept override;
+	private:
+		string _what;
 	};
 
 	class UserError: public RuntimeError {

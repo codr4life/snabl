@@ -198,20 +198,18 @@ namespace snabl {
 		}
 	}
 
-	RuntimeError::RuntimeError(Env &env, Pos _pos, const string &msg):
-		Error([&env, &_pos, msg]() {
-				stringstream buf;
+	RuntimeError::RuntimeError(Env &env, Pos _pos, const string &msg) {
+		stringstream buf;
 				
-				buf << env._stack << endl
-						<< fmt("Error in row %0, col %1:\n", {_pos.row, _pos.col})
-						<< msg;
-				
-				return buf.str();
-			}()),
-		pos(_pos),
-		stack(env._stack.begin(), env._stack.end()),
-		calls(env._calls.begin(), env._calls.end()) { }
+		buf << env._stack << endl
+				<< fmt("Error in row %0, col %1:\n", {_pos.row, _pos.col})
+				<< msg;
+		
+		_what = buf.str();
+	}
 
+	const char *RuntimeError::what() const noexcept { return _what.c_str(); }
+	
 	UserError::UserError(Env &env, Pos pos, const Box &_val):
 		RuntimeError(env, pos, fmt("%0", {_val})), val(_val) { }
 }

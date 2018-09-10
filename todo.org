@@ -1,3 +1,4 @@
+* add move-constructor to RuntimeError
 * add support for type queries
 ** 42 Int?
 * make Eqval.val optional
