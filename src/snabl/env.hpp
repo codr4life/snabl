@@ -29,8 +29,9 @@ namespace snabl {
 	public:
 		Alloc<Box> stack_alloc;
 		Alloc<Call> calls_alloc;
+		Alloc<pair<string, SymImp>> syms_alloc;
 	private:
-		unordered_map<string, unique_ptr<SymImp>> _syms;
+		map<string, SymImp, less<string>, Alloc<pair<string, SymImp>>> _syms;
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
@@ -56,6 +57,7 @@ namespace snabl {
 		const ScopePtr &main;
 		
 		Env():
+			_syms(syms_alloc),
 			_type_tag(1),
 			_stack(stack_alloc),
 			home(*this),
@@ -73,9 +75,8 @@ namespace snabl {
 			auto found(_syms.find(name));
 			
 			return Sym((found == _syms.end())
-								 ? _syms.emplace(name, make_unique<SymImp>(name))
-								 .first->second.get()
-								 : found->second.get());
+								 ? &_syms.emplace(name, SymImp(name)).first->second
+								 : &found->second);
 		}
 
 		template <typename ImpT, typename... ArgsT>
@@ -172,7 +173,7 @@ namespace snabl {
 
 	private:
 		vector<Lib *> _libs;
-		deque<Call, Alloc<Call>> _calls;
+		deque<Call, Alloc<Call, 32>> _calls;
 		
 		friend struct State;
 		friend struct RuntimeError;

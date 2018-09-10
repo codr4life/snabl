@@ -21,14 +21,14 @@ namespace snabl {
 		using const_pointer = const T*;
 
 		template <typename U>
-		struct rebind { typedef Alloc<U> other; };
+		struct rebind { typedef Alloc<U, NMAX> other; };
 
 		Alloc() noexcept: allocator<T>(), _free() {}
 		
 		Alloc(const Alloc<T>& other) noexcept: allocator<T>(other), _free() { }
 
 		template<class U>
-		Alloc(const Alloc<U>& other) noexcept: allocator<T>(other), _free() { }
+		Alloc(const Alloc<U, NMAX>& other) noexcept: allocator<T>(other), _free() { }
 
 		~Alloc() {
 			for (size_t i(0); i < NMAX; i++) {
@@ -63,7 +63,7 @@ namespace snabl {
 		}
 
 	private:
-		array<Slot *, NMAX> _free;
+		Slot *_free[NMAX];
 	};
 }
 
