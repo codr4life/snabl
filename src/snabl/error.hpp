@@ -14,7 +14,14 @@ namespace snabl {
 		Error(): runtime_error("") { }
 	};
 
-	class SyntaxError: public Error {
+	class CompileError: public Error {
+	public:
+    CompileError(Pos pos, const string &msg);
+	protected:
+    CompileError(const string &msg);
+	};
+
+	class SyntaxError: public CompileError {
 	public:
     SyntaxError(Pos pos, const string &msg);
 	};

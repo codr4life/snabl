@@ -9,7 +9,7 @@
 ** put in front of Alloc
 ** take as constructor param
 ** replaces destructor
-* add Recycler<T> class
+* add Realloc<T> class
 ** use Slab in front
 ** add free list
 * change switch: to take two args

@@ -61,7 +61,7 @@ namespace snabl {
 			} else if (isupper(id.name().front())) {
 				in++;
 				auto t(env.lib().get_type(id));
-				if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+				if (!t) { throw CompileError(form.pos, fmt("Unknown type: %0", {id})); }
 				env.emit(ops::Push::type, form.pos, env.meta_type, *t);
 			} else {
 				auto &lib(env.lib());
@@ -72,27 +72,34 @@ namespace snabl {
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
-					if (!fn) { throw Error("Unknown id: " + id.name()); }
+					if (!fn) { throw CompileError(form.pos, "Unknown id: " + id.name()); }
 					
 					if ((*fn)->nargs) {
-						if (func) { throw Error(fmt("Extra func: %0", {(*fn)->id})); }
+						if (func) {
+							throw CompileError(form.pos,fmt("Extra func: %0", {(*fn)->id}));
+						}
+						
 						func = *fn;
 
 						if (in != end && &in->type == &TypeList::type) {
 							auto &ids((in++)->as<TypeList>().ids);
 							Stack args;
 							transform(ids.begin(), ids.end(), back_inserter(args),
-												[&lib](Sym id) {
+												[&form, &lib](Sym id) {
 													auto t(lib.get_type(id));
-													if (!t) { throw Error("Unknown type: " + id.name()); }
+
+													if (!t) {
+														throw CompileError(form.pos,
+																							 "Unknown type: " + id.name());
+													}
+													
 													return Box(*t);
 												});
 
 							auto fi((*fn)->get_best_fimp(args));
 
 							if (!fi) {
-								throw RuntimeError(env, form.pos, fmt("Func not applicable: %0",
-																											{(*fn)->id}));
+								throw CompileError(form.pos, fmt("Unknown fimp: %0", {(*fn)->id}));
 							}
 							
 							fimp = *fi;
@@ -170,18 +177,19 @@ namespace snabl {
 		void Query::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
-			auto &form((in++)->as<forms::Query>().form);
+			auto &form(*in++);
+			auto &qf(form.as<forms::Query>().form);
 			
-			if (&form.type == &forms::Lit::type) {
-				env.emit(ops::Eqval::type, form.pos, form.as<Lit>().val);
-			} else if (&form.type == &forms::Id::type &&
-								 isupper(form.as<forms::Id>().id.name().front())) {
-				auto &id(form.as<forms::Id>().id);
+			if (&qf.type == &forms::Lit::type) {
+				env.emit(ops::Eqval::type, qf.pos, qf.as<Lit>().val);
+			} else if (&qf.type == &forms::Id::type &&
+								 isupper(qf.as<forms::Id>().id.name().front())) {
+				auto &id(qf.as<forms::Id>().id);
 				auto t(env.lib().get_type(id));
-				if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
-				env.emit(ops::Isa::type, form.pos, *t);
+				if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
+				env.emit(ops::Isa::type, qf.pos, *t);
 			} else {
-				throw Error(fmt("Invalid query: %0", {form.type.id}));
+				throw CompileError(qf.pos, fmt("Invalid query: %0", {qf.type.id}));
 			}
 		}
 
@@ -254,7 +262,7 @@ namespace snabl {
 		void TypeList::compile(Forms::const_iterator &in, Forms::const_iterator end,
 													 FuncPtr &func, FimpPtr &fimp,
 													 Env &env) const {
-			throw Error("Stray type list");
+			throw CompileError(in->pos, "Stray type list");
 		}		
 	}
 }
