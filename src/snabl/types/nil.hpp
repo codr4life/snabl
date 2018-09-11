@@ -10,6 +10,7 @@ namespace snabl {
 	class NilType: public Type<Nil> {
 	public:
 		NilType(Lib &lib, Sym id);
+		bool eqval(const Box &lhs, const Box &rhs) const override;
 		bool is_true(const Box &val) const override;
 		void call(const Box &val, Pos pos, bool now) const override;
 		void dump(const Box &val, ostream &out) const override;

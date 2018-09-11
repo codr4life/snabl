@@ -177,20 +177,26 @@ namespace snabl {
 		void Query::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
-			auto &form(*in++);
+			auto &form(*in);
 			auto &qf(form.as<forms::Query>().form);
 			
 			if (&qf.type == &forms::Lit::type) {
 				env.emit(ops::Eqval::type, qf.pos, qf.as<Lit>().val);
-			} else if (&qf.type == &forms::Id::type &&
-								 isupper(qf.as<forms::Id>().id.name().front())) {
-				auto &id(qf.as<forms::Id>().id);
-				auto t(env.lib().get_type(id));
-				if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
-				env.emit(ops::Isa::type, qf.pos, *t);
+			} else if (&qf.type == &forms::Id::type) {
+				if (isupper(qf.as<forms::Id>().id.name().front())) {
+					auto &id(qf.as<forms::Id>().id);
+					auto t(env.lib().get_type(id));
+					if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
+					env.emit(ops::Isa::type, qf.pos, *t);
+				} else {
+					env.compile(qf, func, fimp);
+					env.emit(ops::Eqval::type, qf.pos);
+				}
 			} else {
 				throw CompileError(qf.pos, fmt("Invalid query: %0", {qf.type.id}));
 			}
+
+			in++;
 		}
 
 		FormImp *Semi::clone() const { return new Semi(body.begin(), body.end()); }

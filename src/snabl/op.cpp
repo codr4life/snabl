@@ -35,8 +35,10 @@ namespace snabl {
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
 		void Eqval::Type::dump(const Eqval &op, ostream &out) const {
-			out << ' ';
-			op.rhs.dump(out);
+			if (op.rhs) {
+				out << ' ';
+				op.rhs->dump(out);
+			}
 		}
 
 		void Fimp::Type::dump(const Fimp &op, ostream &out) const {

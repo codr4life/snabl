@@ -65,8 +65,10 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_eqval: {
+			auto &op(pc->as<ops::Eqval>());
 			const auto lhs(pop());
-			push(bool_type, lhs.eqval(pc->as<ops::Eqval>().rhs)); 
+			const auto rhs(op.rhs ? *op.rhs : pop());
+			push(bool_type, lhs.eqval(rhs)); 
 			pc++;
 			SNABL_DISPATCH();
 		}

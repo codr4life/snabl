@@ -91,7 +91,8 @@ namespace snabl {
 
 		void compile(string_view in);
 		void compile(istream &in);
-		void compile(const Forms &forms);		
+		void compile(const Forms &forms);
+		void compile(const Form &form, FuncPtr &func, FimpPtr &fimp);
 		void compile(Forms::const_iterator begin, Forms::const_iterator end);
 		void compile(Forms::const_iterator begin, Forms::const_iterator end,
 								 FuncPtr &func, FimpPtr &fimp);

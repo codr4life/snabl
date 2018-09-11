@@ -7,6 +7,8 @@
 namespace snabl {
 	NilType::NilType(Lib &lib, Sym id): Type<Nil>(lib, id) { }
 
+	bool NilType::eqval(const Box &lhs, const Box &rhs) const { return true; }
+
 	bool NilType::is_true(const Box &val) const { return false; }
 
 	void NilType::call(const Box &val, Pos pos, bool now) const { }

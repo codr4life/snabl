@@ -62,8 +62,8 @@ namespace snabl {
 			};
 
 			static const Type type;
-			const Box rhs;
-			Eqval(const Box &rhs): rhs(rhs) { }
+			const optional<const Box> rhs;
+			Eqval(const optional<const Box> rhs=nullopt): rhs(rhs) { }
 		};
 
 		struct Fimp {
