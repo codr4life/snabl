@@ -28,22 +28,22 @@ func: naive-fib<Int> Int (
 Snabl supports strong, first class Types. ```A``` may be used to allow any type except ```Nil```, and ```Maybe``` where missing values are expected.
 
 ```
-   42 isa Int
+   42 Int?
 [t]
 
-   Int isa Num
+   Int Num?
 [t]
 
-   42 isa Maybe
+   42 Maybe?
 [t]
 
-   nil isa Maybe
+   nil Maybe?
 [t]
 
-   42 isa Nil
+   42 Nil?
 [f]
 
-   nil isa Nil
+   nil Nil?
 [t]
 ```
 

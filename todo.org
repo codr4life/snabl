@@ -1,7 +1,3 @@
-* add support for type queries
-** 42 Int?
-** translate to isa
-** update readme
 * make Eqval.val optional
 ** pop both vals if null
 ** emit Eqval with null val by default

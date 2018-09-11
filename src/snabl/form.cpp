@@ -174,6 +174,12 @@ namespace snabl {
 			
 			if (&form.type == &forms::Lit::type) {
 				env.emit(ops::Eqval::type, form.pos, form.as<Lit>().val);
+			} else if (&form.type == &forms::Id::type &&
+								 isupper(form.as<forms::Id>().id.name().front())) {
+				auto &id(form.as<forms::Id>().id);
+				auto t(env.lib().get_type(id));
+				if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+				env.emit(ops::Isa::type, form.pos, *t);
 			} else {
 				throw Error(fmt("Invalid query: %0", {form.type.id}));
 			}

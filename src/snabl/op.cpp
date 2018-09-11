@@ -17,6 +17,7 @@ namespace snabl {
 		const OpType<FimpRet> FimpRet::type("fimpret");
 		const Funcall::Type Funcall::type("funcall");
 		const OpType<Get> Get::type("get");
+		const Isa::Type Isa::type("isa");
 		const OpType<Lambda> Lambda::type("lambda");
 		const OpType<LambdaRet> LambdaRet::type("lambdaret");
 		const OpType<Let> Let::type("let");
@@ -35,7 +36,7 @@ namespace snabl {
 
 		void Eqval::Type::dump(const Eqval &op, ostream &out) const {
 			out << ' ';
-			op.lhs.dump(out);
+			op.rhs.dump(out);
 		}
 
 		void Fimp::Type::dump(const Fimp &op, ostream &out) const {
@@ -45,6 +46,10 @@ namespace snabl {
 		void Funcall::Type::dump(const Funcall &op, ostream &out) const {
 			out << ' ' << (op.fimp ? op.fimp->id : op.func->id);
 			if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
+		}
+
+		void Isa::Type::dump(const Isa &op, ostream &out) const {
+			out << ' ' << op.rhs->id;
 		}
 
 		void Push::Type::dump(const Push &op, ostream &out) const {

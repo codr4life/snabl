@@ -1,3 +1,6 @@
+(test=, 42 isa Int; t)
+(test=, Int Num? t)
+
 (test=, nil bool; f)
 
 (test=, t bool; t)

@@ -250,21 +250,12 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("isa"),
-							 {Box(env.meta_type), Box(env.meta_type)},
-							 {env.bool_type},
-							 [](Call &call) {
-								 Env &env(call.scope.env);
-								 Box y(env.pop()), x(env.pop());
-								 env.push(env.bool_type, x.as<ATypePtr>()->isa(y.as<ATypePtr>()));
-							 });
-
-			add_fimp(env.sym("isa"),
 							 {Box(env.maybe_type), Box(env.meta_type)},
 							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
-								 env.push(env.bool_type, x.type()->isa(y.as<ATypePtr>()));
+								 env.push(env.bool_type, x.isa(y.as<ATypePtr>()));
 							 });
 
 			add_fimp(env.sym("="),

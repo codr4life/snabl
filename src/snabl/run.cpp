@@ -29,9 +29,9 @@ namespace snabl {
 		
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
-			&&op_fimp, &&op_fimpret, &&op_funcall, &&op_get, &&op_lambda, &&op_lambdaret,
-			&&op_let, &&op_nop, &&op_push, &&op_recall, &&op_rot, &&op_rswap, &&op_sdrop,
-			&&op_skip, &&op_swap, &&op_try
+			&&op_fimp, &&op_fimpret, &&op_funcall, &&op_get, &&op_isa, &&op_lambda,
+			&&op_lambdaret, &&op_let, &&op_nop, &&op_push, &&op_recall, &&op_rot,
+			&&op_rswap, &&op_sdrop, &&op_skip, &&op_swap, &&op_try
 		};
 
 		SNABL_DISPATCH();
@@ -65,8 +65,8 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_eqval: {
-			const auto rhs(pop());
-			push(bool_type, pc->as<ops::Eqval>().lhs.eqval(rhs)); 
+			const auto lhs(pop());
+			push(bool_type, lhs.eqval(pc->as<ops::Eqval>().rhs)); 
 			pc++;
 			SNABL_DISPATCH();
 		}
@@ -111,6 +111,12 @@ namespace snabl {
 			auto v(scope()->get(op.id));
 			if (!v) { throw Error("Unknown var"); }
 			push(*v);
+			pc++;
+			SNABL_DISPATCH();
+		}
+	op_isa: {
+			const auto lhs(pop());
+			push(bool_type, lhs.isa(pc->as<ops::Isa>().rhs)); 
 			pc++;
 			SNABL_DISPATCH();
 		}

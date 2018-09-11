@@ -62,8 +62,8 @@ namespace snabl {
 			};
 
 			static const Type type;
-			const Box lhs;
-			Eqval(const Box &lhs): lhs(lhs) { }
+			const Box rhs;
+			Eqval(const Box &rhs): rhs(rhs) { }
 		};
 
 		struct Fimp {
@@ -103,6 +103,17 @@ namespace snabl {
 			static const OpType<Get> type;
 			const Sym id;
 			Get(Sym id): id(id) { }
+		};
+
+		struct Isa {
+			struct Type: public OpType<Isa> {
+				Type(const string &id): OpType<Isa>(id) { }
+				void dump(const Isa &op, ostream &out) const override;
+			};
+
+			static const Type type;
+			const ATypePtr rhs;
+			Isa(const ATypePtr &rhs): rhs(rhs) { }
 		};
 
 		struct Lambda {
@@ -207,7 +218,7 @@ namespace snabl {
 		}
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Lambda,
+					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Isa, ops::Lambda,
 						ops::LambdaRet, ops::Let, ops::Nop, ops::Push, ops::Recall, ops::Rot,
 						ops::RSwap, ops::SDrop, ops::Skip, ops::Swap, ops::Try> _imp;
 	};

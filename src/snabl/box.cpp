@@ -1,8 +1,15 @@
 #include "snabl/box.hpp"
+#include "snabl/env.hpp"
+#include "snabl/lib.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
+	bool Box::isa(const ATypePtr &rhs) const {
+		auto lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
+		return lhs->isa(rhs);
+	}
+
 	bool Box::equid(const Box &rhs) const {
 		if (rhs.type() != _type) { return false; }
 		return _type->equid(*this, rhs);
