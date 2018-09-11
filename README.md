@@ -84,7 +84,7 @@ Error in row 1, col 0:
 'Func not applicable: foo'
 
    func: bar<Maybe> Maybe _
-	 bar 42
+   bar 42
 [42]
 
    bar nil
