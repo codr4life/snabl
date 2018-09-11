@@ -6,6 +6,9 @@
 namespace snabl {
 	template <size_t MAX_SIZE>
 	struct Var {
+		Var(const Var &)=delete;
+		Var &operator =(const Var &)=delete;
+		
 		template <typename T>
 		Var(const T &val) {
 			static_assert(sizeof(T) <= MAX_SIZE);
