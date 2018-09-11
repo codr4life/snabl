@@ -15,13 +15,13 @@ namespace snabl {
 		template <typename T>
 		const T &as() const {
 			static_assert(sizeof(T) <= MAX_SIZE);
-			return *reinterpret_cast<const T *>(&_val);
+			return reinterpret_cast<const T &>(_val);
 		}
 		
 		template <typename T>
 		T &as() {
 			static_assert(sizeof(T) <= MAX_SIZE);
-			return *reinterpret_cast<T *>(&_val);
+			return reinterpret_cast<T &>(_val);
 		}
 	private:
 		aligned_storage_t<MAX_SIZE> _val;

@@ -11,17 +11,19 @@
 namespace snabl {
 	class Box {
 	public:
-		static const size_t MaxSize = 16;
-
 		Box(const Box &src): _type(src._type) {
 			if (src._val) { _val.emplace(_type->copy(*src._val)); }
 		}
 		
-		Box(const ATypePtr &type): _type(type) { assert(type->size <= MaxSize); }
+		Box(const ATypePtr &type): _type(type) { assert(type->size <= AType::MaxSize); }
 		
 		template <typename ValT>
 		Box(const TypePtr<ValT> &type, const ValT &val): _type(type), _val(val) { }
 
+		~Box() {
+			if (_val) { _type->destroy(*_val); }
+		}
+		
 		Box &operator=(const Box &src) {
 			_type = src._type;
 
@@ -62,7 +64,7 @@ namespace snabl {
 		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
-		optional<Var<MaxSize>> _val;
+		optional<Var<AType::MaxSize>> _val;
 	};
 
 	inline ostream &operator <<(ostream &out, const Box &x) {
