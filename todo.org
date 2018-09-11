@@ -1,3 +1,5 @@
+* extract Var type
+** use std::array, Luke
 * change switch: to take two args
 ** check second is forms::Comma/Semi/Sexpr
 *** treat as Body
