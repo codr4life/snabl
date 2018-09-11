@@ -6,27 +6,25 @@
 namespace snabl {
 	template <size_t MAX_SIZE>
 	struct Var {
-		Var(): _val() { }
-
 		template <typename T>
 		Var(const T &val) {
-			assert(sizeof(T) <= MAX_SIZE);
-			new(_val.begin()) T(val);
+			static_assert(sizeof(T) <= MAX_SIZE);
+			new(&_val) T(val);
 		}
-		
+
 		template <typename T>
 		const T &as() const {
-			assert(sizeof(T) <= MAX_SIZE);
-			return *reinterpret_cast<const T *>(_val.begin());
+			static_assert(sizeof(T) <= MAX_SIZE);
+			return *reinterpret_cast<const T *>(&_val);
 		}
 		
 		template <typename T>
 		T &as() {
-			assert(sizeof(T) <= MAX_SIZE);
-			return *reinterpret_cast<T *>(_val.begin());
+			static_assert(sizeof(T) <= MAX_SIZE);
+			return *reinterpret_cast<T *>(&_val);
 		}
 	private:
-		array<unsigned char, MAX_SIZE> _val;
+		aligned_storage_t<MAX_SIZE> _val;
 	};				
 }
 

@@ -10,6 +10,14 @@ namespace snabl {
 	public:
 		Type(Lib &lib, Sym id);
 
+		Var<MaxSize> copy(const Var<MaxSize> &src) const override {
+			return Var<MaxSize>(src.as<ValT>());
+		}
+		
+		void destroy(const Var<MaxSize> &val) const override {
+			val.as<ValT>().~ValT();
+		}
+
 		virtual bool equid(const Box &lhs, const Box &rhs) const override;
 		virtual bool eqval(const Box &lhs, const Box &rhs) const override;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const override;

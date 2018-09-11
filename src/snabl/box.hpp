@@ -12,27 +12,38 @@ namespace snabl {
 	class Box {
 	public:
 		static const size_t MaxSize = 16;
-		
-		Box(const ATypePtr &type): _type(type), _val(), _is_undef(true) {
-			assert(type->size <= MaxSize);
+
+		Box(const Box &src): _type(src._type) {
+			if (src._val) { _val.emplace(_type->copy(*src._val)); }
 		}
+		
+		Box(const ATypePtr &type): _type(type) { assert(type->size <= MaxSize); }
 		
 		template <typename ValT>
-		Box(const TypePtr<ValT> &type, const ValT &val):
-			_type(type), _val(val), _is_undef(false) {
-		}
+		Box(const TypePtr<ValT> &type, const ValT &val): _type(type), _val(val) { }
 
+		Box &operator=(const Box &src) {
+			_type = src._type;
+
+			if (_val) {
+				_type->destroy(*_val);
+				_val.reset();
+			}
+
+			if (src._val) { _val.emplace(_type->copy(*src._val)); }
+			return *this;
+		}
+				
 		template <typename ValT>
 		const ValT &as() const {
 			assert(sizeof(ValT) == _type->size);
-			if (_is_undef) { throw Error("Deref of undef val"); }
-			return _val.as<ValT>();
+			return _val->as<ValT>();
 		}
 
 		template <typename ValT>
 		ValT &as() {
 			assert(sizeof(ValT) == _type->size);
-			return _val.as<ValT>();
+			return _val->as<ValT>();
 		}
 
 		const ATypePtr &type() const { return _type; }		
@@ -43,7 +54,7 @@ namespace snabl {
 		Cmp cmp(const Box &rhs) const;
 
 		bool is_true() const;
-		bool is_undef() const { return _is_undef; }
+		bool is_undef() const { return !_val; }
 
 		void call(Pos pos, bool now) const;
 		void dump(ostream &out) const;
@@ -51,8 +62,7 @@ namespace snabl {
 		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
-		Var<MaxSize> _val;
-		bool _is_undef;
+		optional<Var<MaxSize>> _val;
 	};
 
 	inline ostream &operator <<(ostream &out, const Box &x) {
