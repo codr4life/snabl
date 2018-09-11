@@ -1,7 +1,3 @@
-* replace Box.val with static space
-** add const MAX_SIZE;
-** static cast in as()
-*** return const ref
 * add Slab<SIZE> class
 ** put in front of Alloc
 ** take as constructor param
