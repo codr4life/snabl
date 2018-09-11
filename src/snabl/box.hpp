@@ -1,6 +1,7 @@
 #ifndef SNABL_BOX_HPP
 #define SNABL_BOX_HPP
 
+#include "snabl/atype.hpp"
 #include "snabl/cmp.hpp"
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
@@ -9,16 +10,30 @@
 namespace snabl {
 	class Box {
 	public:
-		Box(const ATypePtr &type): _type(type), _val(), _is_undef(true) { }
+		static const size_t MaxSize = 16;
+		
+		Box(const ATypePtr &type): _type(type), _val(), _is_undef(true) {
+			assert(type->size <= MaxSize);
+		}
 		
 		template <typename ValT>
-		Box(const TypePtr<ValT> &type, const ValT &val):
-			_type(type), _val(val), _is_undef(false) { }
+		Box(const TypePtr<ValT> &type, const ValT &val): _type(type), _is_undef(false) {
+			assert(type->size <= MaxSize);
+			new(_val.begin()) ValT(val);
+		}
 
 		template <typename ValT>
-		ValT as() const {
+		const ValT &as() const {
+			assert(sizeof(ValT) == _type->size);
 			if (_is_undef) { throw Error("Deref of undef val"); }
-			return any_cast<ValT>(_val);
+			return *reinterpret_cast<const ValT *>(_val.begin());
+		}
+
+		template <typename ValT>
+		ValT &as() {
+			assert(sizeof(ValT) == _type->size);
+			if (_is_undef) { throw Error("Deref of undef val"); }
+			return *reinterpret_cast<ValT *>(_val.begin());
 		}
 
 		const ATypePtr &type() const { return _type; }
@@ -35,7 +50,7 @@ namespace snabl {
 		void write(ostream &out) const;
 	private:
 		ATypePtr _type;
-		any _val;
+		array<unsigned char, MaxSize> _val;
 		bool _is_undef;
 	};
 

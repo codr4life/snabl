@@ -1,8 +1,9 @@
 #ifndef SNABL_STD_HPP
 #define SNABL_STD_HPP
 
+#include <cassert>
+
 #include <algorithm>
-#include <any>
 #include <chrono>
 #include <deque>
 #include <fstream>

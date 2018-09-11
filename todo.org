@@ -1,10 +1,3 @@
-* add Slab<SIZE> class
-** put in front of Alloc
-** take as constructor param
-** replaces destructor
-* add Realloc<T> class
-** use Slab in front
-** add free list
 * change switch: to take two args
 ** check second is forms::Comma/Semi/Sexpr
 *** treat as Body
@@ -13,9 +6,14 @@
 ** rename to Types
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
-* add if-else func
-** use in fib1/2 and compare perf
-* check snabl fimp results
+
+* add Slab<SIZE> class
+** put in front of Alloc
+** take as constructor param
+** replaces destructor
+* add Realloc<T> class
+** use Slab in front
+** add free list
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add Str literal support
@@ -58,3 +56,6 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
+* add if-else func
+** use in fib1/2 and compare perf
+* check snabl fimp results on return

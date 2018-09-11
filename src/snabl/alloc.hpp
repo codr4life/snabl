@@ -1,7 +1,6 @@
 #ifndef SNABL_ALLOC_H
 #define SNABL_ALLOC_H
 
-#include <cassert>
 #include "snabl/std.hpp"
 
 namespace snabl {
