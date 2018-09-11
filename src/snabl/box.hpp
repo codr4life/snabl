@@ -12,10 +12,10 @@ namespace snabl {
 	class Box {
 	public:
 		Box(const Box &src): _type(src._type) {
-			if (src._val) { _val.emplace(_type->copy(*src._val)); }
+			if (src._val) { _type->copy(_val, *src._val); }
 		}
 		
-		Box(const ATypePtr &type): _type(type) { assert(type->size <= AType::MaxSize); }
+		Box(const ATypePtr &type): _type(type) { }
 		
 		template <typename ValT>
 		Box(const TypePtr<ValT> &type, const ValT &val): _type(type), _val(val) { }
@@ -32,7 +32,7 @@ namespace snabl {
 				_val.reset();
 			}
 
-			if (src._val) { _val.emplace(_type->copy(*src._val)); }
+			if (src._val) { _type->copy(_val, *src._val); }
 			return *this;
 		}
 				
@@ -48,20 +48,32 @@ namespace snabl {
 			return _val->as<ValT>();
 		}
 
-		const ATypePtr &type() const { return _type; }		
+		const ATypePtr &type() const { return _type; }
 		bool isa(const ATypePtr &rhs) const;
 		
-		bool equid(const Box &rhs) const;
-		bool eqval(const Box &rhs) const;
-		Cmp cmp(const Box &rhs) const;
+		bool equid(const Box &rhs) const {
+			if (rhs.type() != _type) { return false; }
+			return _type->equid(*this, rhs);
+		}
+		
+		bool eqval(const Box &rhs) const {
+			if (rhs.type() != _type) { return false; }
+			return _type->eqval(*this, rhs);
+		}
+		
+		Cmp cmp(const Box &rhs) const {
+			auto rt(rhs.type());
+			if (rt != _type) { return snabl::cmp(_type->tag, rt->tag); }
+			return _type->cmp(*this, rhs);
+		}
 
-		bool is_true() const;
+		bool is_true() const { return _type->is_true(*this); }
 		bool is_undef() const { return !_val; }
 
-		void call(Pos pos, bool now) const;
-		void dump(ostream &out) const;
-		void print(ostream &out) const;
-		void write(ostream &out) const;
+		void call(Pos pos, bool now) const { _type->call(*this, pos, now); }
+		void dump(ostream &out) const { _type->dump(*this, out); }
+		void print(ostream &out) const { _type->print(*this, out); }
+		void write(ostream &out) const { _type->write(*this, out); }
 	private:
 		ATypePtr _type;
 		optional<Var<AType::MaxSize>> _val;

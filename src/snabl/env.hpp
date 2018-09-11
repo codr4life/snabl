@@ -179,7 +179,12 @@ namespace snabl {
 		friend struct State;
 		friend struct RuntimeError;
 	};
-		
+
+	inline bool Box::isa(const ATypePtr &rhs) const {
+		auto lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
+		return lhs->isa(rhs);
+	}
+	
 	template <typename ValT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id,
 																 const TypePtr<ValT> &type,

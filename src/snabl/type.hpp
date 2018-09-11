@@ -5,41 +5,31 @@
 #include "snabl/box.hpp"
 
 namespace snabl {
-	template <typename ValT>
+	template <typename T>
 	class Type: public AType {
 	public:
-		Type(Lib &lib, Sym id);
+		Type(Lib &lib, Sym id): AType(lib, id, sizeof(T)) {
+			static_assert(sizeof(T) <= AType::MaxSize);
+		}
 
-		Var<MaxSize> copy(const Var<MaxSize> &src) const override {
-			return Var<MaxSize>(src.as<ValT>());
+		void copy(optional<Var<MaxSize>> &dst, const Var<MaxSize> &src) const override {
+			dst.emplace(src.as<T>());
 		}
 		
-		void destroy(const Var<MaxSize> &val) const override {
-			val.as<ValT>().~ValT();
+		void destroy(const Var<MaxSize> &val) const override { val.as<T>().~T(); }
+
+		bool equid(const Box &lhs, const Box &rhs) const override {
+			return eqval(lhs, rhs);
 		}
-
-		virtual bool equid(const Box &lhs, const Box &rhs) const override;
-		virtual bool eqval(const Box &lhs, const Box &rhs) const override;
-		virtual Cmp cmp(const Box &lhs, const Box &rhs) const override;
+		
+		bool eqval(const Box &lhs, const Box &rhs) const override {
+			return lhs.as<T>() == rhs.as<T>();
+		}
+		
+		Cmp cmp(const Box &lhs, const Box &rhs) const override {
+			return snabl::cmp(lhs.as<T>(), rhs.as<T>());
+		}
 	};
-
-	template <typename ValT>
-	Type<ValT>::Type(Lib &lib, Sym id): AType(lib, id, sizeof(ValT)) { }
-
-	template <typename ValT>
-	bool Type<ValT>::equid(const Box &lhs, const Box &rhs) const {
-		return eqval(lhs, rhs);
-	}
-	
-	template <typename ValT>
-	bool Type<ValT>::eqval(const Box &lhs, const Box &rhs) const {
-		return lhs.as<ValT>() == rhs.as<ValT>();
-	}
-	
-	template <typename ValT>
-	Cmp Type<ValT>::cmp(const Box &lhs, const Box &rhs) const {
-		return snabl::cmp(lhs.as<ValT>(), rhs.as<ValT>());
-	}
 
 	class Trait: public Type<nullptr_t> {
 	public:
