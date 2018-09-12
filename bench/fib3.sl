@@ -1,4 +1,4 @@
-func: tail-fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> (
   let: (n a b) _
   switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
 )

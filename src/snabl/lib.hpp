@@ -32,13 +32,10 @@ namespace snabl {
 															 initializer_list<ATypePtr> parent_types={},
 															 ArgsT &&... args);
 
-		const FuncPtr &add_func(Sym id, size_t nargs, size_t nrets);
+		const FuncPtr &add_func(Sym id, size_t nargs);
 
 		template <typename... ImpT>
-		const FimpPtr &add_fimp(Sym id,
-														const Fimp::Args &args,
-														const Fimp::Rets &rets,
-														ImpT &&... imp);
+		const FimpPtr &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
 
 		const MacroPtr *get_macro(Sym id);
 		const ATypePtr *get_type(Sym id);
@@ -62,12 +59,9 @@ namespace snabl {
 	}
 
 	template <typename... ImpT>
-	const FimpPtr &Lib::add_fimp(Sym id,
-															 const Fimp::Args &args,
-															 const Fimp::Rets &rets,
-															 ImpT &&... imp) {
-		auto &fn(add_func(id, args.size(), rets.size()));
-		return Func::add_fimp(fn, args, rets, imp...);
+	const FimpPtr &Lib::add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp) {
+		auto &fn(add_func(id, args.size()));
+		return Func::add_fimp(fn, args, forward<ImpT>(imp)...);
 	}
 }
 

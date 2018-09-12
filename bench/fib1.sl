@@ -1,4 +1,4 @@
-func: naive-fib<Int> Int (
+func: naive-fib<Int> (
   let: n _			
   if: (@n < 2) @n, (naive-fib, @n --) + (naive-fib, @n - 2)
 )

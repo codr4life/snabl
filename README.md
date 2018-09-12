@@ -8,7 +8,7 @@ Snabl allows reordering functions and arguments within expressions. Expressions 
 
 Example 1
 ```
-func: naive-fib<Int> Int (
+func: naive-fib<Int> (
   let: n _			
   if: (@n < 2) @n, (naive-fib, @n --) + (naive-fib, @n - 2)
 )
@@ -19,7 +19,7 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. The f
 
 Example 2
 ```
-func: naive-fib<Int> Int (
+func: naive-fib<Int> (
   dup if: (< 2) _, (naive-fib, --; dup) swap + (naive-fib, --)
 )
 ```
@@ -52,7 +52,7 @@ Snabl embraces but does not mandate functional programming. It supports first cl
 
 Example 3
 ```
-func: tail-fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> (
   let: (n a b) _
   switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
 )
@@ -62,7 +62,7 @@ As before, the same algorithm may be implemented without variables.
 
 Example 4
 ```
-func: tail-fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> (
   rswap switch: _,
     0? sdrop
     1? drop,
@@ -74,7 +74,7 @@ func: tail-fib<Int Int Int> Int (
 Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next function call/return.
 
 ```
-   func: foo<A> A _
+   func: foo<A> _
    foo 42
 [42]
 
@@ -83,7 +83,7 @@ Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch
 Error in row 1, col 0:
 'Func not applicable: foo'
 
-   func: bar<Maybe> Maybe _
+   func: bar<Maybe> _
    bar 42
 [42]
 

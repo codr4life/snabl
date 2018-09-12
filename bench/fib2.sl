@@ -1,4 +1,4 @@
-func: naive-fib<Int> Int (
+func: naive-fib<Int> (
   dup if: (< 2) _, (naive-fib, --; dup) swap + (naive-fib, --)
 )
 

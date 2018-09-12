@@ -1,4 +1,3 @@
-* remove func rets
 * change forms::TypeList to contain form like Query
 ** rename to Types
 * add rewrite fence after if: and switch: when needed
@@ -51,6 +50,3 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
-* ---
-* add if-else func
-** use in fib1/2 and compare perf

@@ -15,12 +15,10 @@ namespace snabl {
 	class Fimp: public Def, public Target {
 	public:
 		using Args = vector<Box>;
-		using Rets = vector<ATypePtr>;					
 		using Imp = function<void (Call &)>;
 		
 		const FuncPtr func;
 		const Args args;
-		const Rets rets;
 		const Forms forms;
 		const optional<Imp> imp;
 
@@ -28,10 +26,10 @@ namespace snabl {
 		static bool compile(const FimpPtr &fimp, Pos pos);
 		static void call(const FimpPtr &fimp, Pos pos);
 
-		Fimp(const FuncPtr &func, const Args &args, const Rets &rets, Imp imp);
+		Fimp(const FuncPtr &func, const Args &args, Imp imp);
 		
 		Fimp(const FuncPtr &func,
-				 const Args &args, const Rets &rets,
+				 const Args &args,
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 

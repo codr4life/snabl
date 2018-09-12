@@ -214,40 +214,26 @@ namespace snabl {
 																					{args_form.type.id}));
 									}
 
-									auto &rets_form(*in++);
-									vector<ATypePtr> rets;
-									
-									if (&rets_form.type == &forms::Id::type) {
-										const auto id(rets_form.as<forms::Id>().id);
-										const auto t(lib.get_type(id));
-										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
-										rets.push_back(*t);
-									} else {
-										throw SyntaxError(rets_form.pos,
-																			fmt("Invalid func rets: %0",
-																					{rets_form.type.id}));
-									}
-
-									auto fi = lib.add_fimp(id_form.id, args, rets, in++, in+1);
+									auto fi = lib.add_fimp(id_form.id, args, in++, in+1);
 									Fimp::compile(fi, form.pos);
 								});
 
 			add_fimp(env.sym("throw"),
-							 {Box(env.a_type)}, {},
+							 {Box(env.a_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 throw UserError(env, env.call().pos, env.pop());
 							 });
 
 			add_fimp(env.sym("throw"),
-							 {Box(env.error_type)}, {},
+							 {Box(env.error_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 throw *env.pop().as<ErrorPtr>();
 							 });
 
 			add_fimp(env.sym("catch"),
-							 {Box(env.error_type)}, {env.a_type},
+							 {Box(env.error_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.push(env.pop().as<ErrorPtr>()->val);
@@ -255,7 +241,6 @@ namespace snabl {
 
 			add_fimp(env.sym("isa"),
 							 {Box(env.maybe_type), Box(env.meta_type)},
-							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -264,7 +249,6 @@ namespace snabl {
 
 			add_fimp(env.sym("="),
 							 {Box(env.maybe_type), Box(env.maybe_type)},
-							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -273,7 +257,6 @@ namespace snabl {
 
 			add_fimp(env.sym("=="),
 							 {Box(env.maybe_type), Box(env.maybe_type)},
-							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -282,7 +265,6 @@ namespace snabl {
 
 			add_fimp(env.sym("<"),
 							 {Box(env.a_type), Box(env.a_type)},
-							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -291,7 +273,6 @@ namespace snabl {
 	
 			add_fimp(env.sym("int"),
 							 {Box(env.float_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 const Float v(env.pop().as<Float>());
@@ -300,7 +281,6 @@ namespace snabl {
 
 			add_fimp(env.sym("float"),
 							 {Box(env.int_type)},
-							 {env.float_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 const Int v(env.pop().as<Int>());
@@ -309,7 +289,6 @@ namespace snabl {
 
 			add_fimp(env.sym("++"),
 							 {Box(env.int_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.peek().as<Int>()++;
@@ -317,7 +296,6 @@ namespace snabl {
 
 			add_fimp(env.sym("--"),
 							 {Box(env.int_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.peek().as<Int>()--;
@@ -325,7 +303,6 @@ namespace snabl {
 			
 			add_fimp(env.sym("+"),
 							 {Box(env.int_type), Box(env.int_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>());
@@ -334,7 +311,6 @@ namespace snabl {
 
 			add_fimp(env.sym("-"),
 							 {Box(env.int_type), Box(env.int_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>());
@@ -343,7 +319,6 @@ namespace snabl {
 			
 			add_fimp(env.sym("*"),
 							 {Box(env.int_type), Box(env.int_type)},
-							 {env.int_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Int y(env.pop().as<Int>());
@@ -352,14 +327,13 @@ namespace snabl {
 
 			add_fimp(env.sym("bool"),
 							 {Box(env.maybe_type)},
-							 {env.bool_type},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.push(env.bool_type, env.pop().is_true());
 							 });
 
 			add_fimp(env.sym("dump"),
-							 {Box(env.maybe_type)}, {},
+							 {Box(env.maybe_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.pop().dump(cerr);
@@ -367,7 +341,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("say"),
-							 {Box(env.maybe_type)}, {},
+							 {Box(env.maybe_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.pop().print(cout);
@@ -375,28 +349,28 @@ namespace snabl {
 							 });
 			
 			add_fimp(env.sym("ns"),
-							 {Box(env.int_type)}, {env.time_type},
+							 {Box(env.int_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.push(env.time_type, env.pop().as<Int>());
 							 });			
 
 			add_fimp(env.sym("ms"),
-							 {Box(env.int_type)}, {env.time_type},
+							 {Box(env.int_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.push(env.time_type, Time::ms(env.pop().as<Int>()));
 							 });			
 
 			add_fimp(env.sym("ms"),
-							 {Box(env.time_type)}, {env.int_type},
+							 {Box(env.time_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 env.push(env.int_type, env.pop().as<Time>().as_ms());
 							 });
 			
 			add_fimp(env.sym("sleep"),
-							 {Box(env.time_type)}, {},
+							 {Box(env.time_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 const Time time(env.pop().as<Time>());
@@ -405,7 +379,6 @@ namespace snabl {
 
 			add_fimp(env.sym("test="),
 							 {Box(env.maybe_type), Box(env.maybe_type)},
-							 {},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -416,7 +389,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("bench"),
-							 {Box(env.int_type), Box(env.a_type)}, {env.time_type},
+							 {Box(env.int_type), Box(env.a_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 const Box target(env.pop());
@@ -429,7 +402,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("fib"),
-							 {Box(env.int_type)}, {env.int_type},
+							 {Box(env.int_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box &v(env.peek());

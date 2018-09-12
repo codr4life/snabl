@@ -1,4 +1,4 @@
-func: tail-fib<Int Int Int> Int (
+func: tail-fib<Int Int Int> (
 	rswap
  	switch: _,
 	  0? sdrop

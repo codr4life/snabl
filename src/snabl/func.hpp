@@ -13,15 +13,14 @@ namespace snabl {
 	class Func: public Def {
 	public:
 		Lib &lib;
-		const size_t nargs, nrets;
+		const size_t nargs;
 
 		template <typename... ImpT>
 		static const FimpPtr &add_fimp(const FuncPtr &func,
-																	 const Fimp::Args &args, const Fimp::Rets &rets,
+																	 const Fimp::Args &args,
 																	 ImpT &&... imp);
 		
-		Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
-			Def(id), lib(lib), nargs(nargs), nrets(nrets) { }
+		Func(Lib &lib, Sym id, size_t nargs): Def(id), lib(lib), nargs(nargs) { }
 
 		const FimpPtr &get_fimp() const { return _fimps.begin()->second; }
 
@@ -53,15 +52,14 @@ namespace snabl {
 
 	template <typename... ImpT>
 	const FimpPtr &Func::add_fimp(const FuncPtr &func,
-																const Fimp::Args &args, const Fimp::Rets &rets,
+																const Fimp::Args &args,
 																ImpT &&... imp) {
 		auto id(Fimp::get_id(*func, args));
 		auto found = func->_fimps.find(id);
 		if (found != func->_fimps.end()) { func->_fimps.erase(found); }
 
-		return func->_fimps.emplace(id, make_shared<Fimp>(func,
-																											args, rets,
-																											forward<ImpT>(imp)...))
+		return func->_fimps.emplace(id,
+																make_shared<Fimp>(func, args, forward<ImpT>(imp)...))
 			.first->second;
 	}
 }

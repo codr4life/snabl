@@ -10,23 +10,19 @@ namespace snabl {
 	const MacroPtr &Lib::add_macro(Sym id, const Macro::Imp &imp) {
 		auto found(_macros.find(id));
 		if (found != _macros.end()) { _macros.erase(found); }
-		return _macros.emplace(id, make_shared<Macro>(*this, id, imp))
-			.first->second;
+		return _macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
 	}
 	
-	const FuncPtr &Lib::add_func(Sym id, size_t nargs, size_t nrets) {
+	const FuncPtr &Lib::add_func(Sym id, size_t nargs) {
 		auto found(_funcs.find(id));
 		
 		if (found != _funcs.end()) {
 			auto &f(found->second);
-
 			if (f->nargs != nargs) { throw Error("Args mismatch"); }
-			if (f->nrets != nrets) { throw Error("Rets mismatch"); }
 			return f;
 		}
 		
-		return _funcs.emplace(id, make_shared<Func>(*this, id, nargs, nrets))
-			.first->second;
+		return _funcs.emplace(id, make_shared<Func>(*this, id, nargs)).first->second;
 	}
 
 	
