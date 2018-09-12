@@ -6,18 +6,17 @@
 #include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/scope.hpp"
-#include "snabl/types/lambda.hpp"
 
 namespace snabl {
 	class Call {
 	public:
 		Scope &scope;
-		Pos pos;
-		State state;
+		const Pos pos;
+		const State state;
 		
 		Fimp *const fimp;
 		LambdaPtr lambda;
-		optional<PC> return_pc;
+		const optional<PC> return_pc;
 
 		Call(Scope &scope, Pos pos, Fimp &fimp, optional<PC> return_pc=nullopt):
 			scope(scope), pos(pos), state(scope.env), fimp(&fimp), lambda(nullptr),
