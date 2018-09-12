@@ -109,15 +109,16 @@ env.home.add_fimp(
   env.sym("iter-fib"),
   {snabl::Box(env.int_type)},
   [](snabl::Call &call) {
-    snabl::Env &env(call.scope.env);								 
-    snabl::Int n(env.pop().as<snabl::Int>()), a(0), b(1);
+    snabl::Env &env(call.scope.env);
+    snabl::Box &v(env.peek());
+    snabl::Int n(v.as<snabl::Int>()), a(0), b(1);
 
     while (n-- > 1) {
       std::swap(a, b);
       b += a;
     }
 
-    env.push(env.int_type, b);
+    v.as<Int>() = b;
   });
 
 env.run("say, iter-fib 10");
