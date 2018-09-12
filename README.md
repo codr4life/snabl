@@ -108,7 +108,7 @@ snabl::Env env;
 env.home.add_fimp(
   env.sym("iter-fib"),
   {snabl::Box(env.int_type)},
-	[](snabl::Call &call) {
+  [](snabl::Call &call) {
     snabl::Env &env(call.scope.env);								 
     snabl::Int n(env.pop().as<snabl::Int>()), a(0), b(1);
 
