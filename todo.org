@@ -1,3 +1,5 @@
+* add push ddrop rewrite
+** pop two ops and compile drop
 * change forms::TypeList to contain form like Query
 ** rename to Types
 * add rewrite fence after if: and switch: when needed

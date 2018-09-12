@@ -48,7 +48,8 @@ namespace snabl {
 											&env.ops.back().type == &ops::Drop::type) {
 										env.note(in->pos, "Rewriting (drop drop) as (ddrop)");
 										env.ops.pop_back();
-										env.emit(ops::DDrop::type, form.pos);
+										env.compile(Form(forms::Id::type, form.pos, env.sym("ddrop")),
+																func, fimp);
 									} else if (!env.ops.empty() &&
 														 (&env.ops.back().type == &ops::Dup::type ||
 															&env.ops.back().type == &ops::Get::type ||
@@ -61,11 +62,8 @@ namespace snabl {
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();
-
 										env.compile(Form(forms::Id::type, form.pos, env.sym("sdrop")),
 																func, fimp);
-																												
-										//env.emit(ops::SDrop::type, form.pos);
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Try::type) {
 										env.note(in->pos, "Rewriting (try: drop) as (try:)");
@@ -87,13 +85,16 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
+									auto &form(*in++);
+
 									if (!env.ops.empty() &&
 											&env.ops.back().type == &ops::Rot::type) {
 										env.note(in->pos, "Rewriting (rot swap) as (rswap)");
 										env.ops.pop_back();
-										env.emit(ops::RSwap::type, (in++)->pos);
+										env.compile(Form(forms::Id::type, form.pos, env.sym("rswap")),
+																func, fimp);
 									} else {
-										env.emit(ops::Swap::type, (in++)->pos);
+										env.emit(ops::Swap::type, form.pos);
 									}
 								});
 
