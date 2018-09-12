@@ -33,22 +33,6 @@
 * add load func
 ** call when called with args
 * ---
-* add sqlite plugin
-* add wxwidgets plugin
+* wxwidgets
+* firebird
 
-func: fib<Int Int Int> Int (
-  let: (n a b) _
-  switch: @n z? @a one? @b, --; @b dup @a +; recall
-)
-
-func: fib<Int Int Int> Int (
-  let: (n a b) _
-  if: (z? @n) @a, if: (one? @n) @b, @n --; @b dup @a +; recall
-)
-
-func: fib<Int Int Int> Int (
-	rswap dup
-  if: z?
-    (drop sdrop),
-    dup if: one? ddrop, --; rswap dup rot +; recall
-)

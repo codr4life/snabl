@@ -125,7 +125,7 @@ env.run("say, iter-fib 10");
 ```
 
 #### Portability
-Besides a decent C++17 compiler and CMake, Snabl has no dependencies.
+Besides a C++17-capable compiler and CMake, Snabl comes without dependencies.
 
 ```
 $ git clone https://github.com/codr4life/snabl.git
