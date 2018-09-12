@@ -24,7 +24,7 @@ namespace snabl {
 			if (_val) { _type->destroy(*_val); }
 		}
 		
-		Box &operator=(const Box &src) {
+		Box &operator =(const Box &src) {
 			_type = src._type;
 
 			if (_val) {
@@ -35,7 +35,7 @@ namespace snabl {
 			if (src._val) { _type->copy(_val, *src._val); }
 			return *this;
 		}
-				
+
 		template <typename ValT>
 		const ValT &as() const {
 			assert(sizeof(ValT) == _type->size);

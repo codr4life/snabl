@@ -6,8 +6,8 @@
 namespace snabl {
 	template <size_t MAX_SIZE>
 	struct Var {
-		Var(const Var &)=delete;
-		Var &operator =(const Var &)=delete;
+		Var(const Var<MAX_SIZE> &)=delete;
+		Var &operator =(const Var<MAX_SIZE> &)=delete;
 		
 		template <typename T>
 		Var(const T &val) {
