@@ -66,7 +66,7 @@ namespace snabl {
 		size_t next_type_tag() { return _type_tag++; }
 
 		Sym sym(const string &name) {
-			auto found(_syms.find(name));
+			const auto found(_syms.find(name));
 			
 			return Sym((found == _syms.end())
 								 ? &_syms.emplace(name, SymImp(name)).first->second
@@ -75,7 +75,7 @@ namespace snabl {
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-			auto prev_offs(pc-ops.begin());
+			const auto prev_offs(pc-ops.begin());
 			ops.emplace_back(type, args...);
 			pc = ops.begin()+prev_offs;
 			return ops.back();
@@ -145,9 +145,7 @@ namespace snabl {
 			_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
 		}
 
-		Box &peek() {
-			return _stack.back();
-		}
+		Box &peek() { return _stack.back(); }
 
 		Box pop() {
 			Box v(_stack.back());
@@ -178,7 +176,7 @@ namespace snabl {
 	};
 
 	inline bool Box::isa(const ATypePtr &rhs) const {
-		auto lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
+		auto &lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
 		return lhs->isa(rhs);
 	}
 	
@@ -190,10 +188,7 @@ namespace snabl {
 																					Forms::const_iterator end,
 																					FuncPtr &func, FimpPtr &fimp,
 																					Env &env) {
-											 env.emit(ops::Push::type,
-																(in++)->pos,
-																type,
-																args...);			
+											 env.emit(ops::Push::type, (in++)->pos, type, args...);			
 										 });
 	}
 

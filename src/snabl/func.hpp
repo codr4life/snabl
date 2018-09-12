@@ -23,9 +23,7 @@ namespace snabl {
 		Func(Lib &lib, Sym id, size_t nargs, size_t nrets):
 			Def(id), lib(lib), nargs(nargs), nrets(nrets) { }
 
-		const FimpPtr &get_fimp() {
-			return _fimps.begin()->second;
-		}
+		const FimpPtr &get_fimp() const { return _fimps.begin()->second; }
 
 		const FimpPtr *get_best_fimp(const Stack &stack) const {
 			optional<size_t> best_score;

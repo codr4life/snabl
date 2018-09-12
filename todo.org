@@ -1,8 +1,9 @@
+* remove func rets
 * change forms::TypeList to contain form like Query
 ** rename to Types
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
-* extract snabl/lambda from types
+* extract snabl/lambda.hpp from types
 * add include: macro
 ** one arg
 ** load all files into ops
@@ -53,4 +54,3 @@ func: fib<Int Int Int> Int (
 * ---
 * add if-else func
 ** use in fib1/2 and compare perf
-* check snabl fimp results on return
