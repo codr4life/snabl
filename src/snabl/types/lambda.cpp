@@ -10,7 +10,7 @@ namespace snabl {
 	LambdaType::LambdaType(Lib &lib, Sym id): Type<LambdaPtr>(lib, id) { }
 
 	void LambdaType::call(const Box &val, Pos pos, bool now) const {
-		const auto l(val.as<LambdaPtr>());
+		const auto &l(val.as<LambdaPtr>());
 		Env &env(lib.env);
 
 		auto &scope((l->opts() & Target::Opts::Vars)
@@ -23,7 +23,7 @@ namespace snabl {
 	}
 
 	void LambdaType::dump(const Box &val, ostream &out) const {
-		auto l(val.as<LambdaPtr>());
+		auto &l(val.as<LambdaPtr>());
 		out << "Lambda(" << l->start_pc() << ')';
 	}
 }

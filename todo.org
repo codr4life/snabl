@@ -2,6 +2,7 @@
 ** rename to Types
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
+* extract snabl/lambda from types
 * add include: macro
 ** one arg
 ** load all files into ops

@@ -1,7 +1,6 @@
 #ifndef SNABL_ENV_HPP
 #define SNABL_ENV_HPP
 
-#include "snabl/alloc.hpp"
 #include "snabl/call.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
@@ -29,7 +28,7 @@ namespace snabl {
 	class Env {
 	public:
 	private:
-		map<string, SymImp, less<string>, Alloc<pair<string, SymImp>>> _syms;
+		map<string, SymImp> _syms;
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
@@ -172,7 +171,7 @@ namespace snabl {
 
 	private:
 		vector<Lib *> _libs;
-		deque<Call, Alloc<Call>> _calls;
+		deque<Call> _calls;
 		
 		friend struct State;
 		friend struct RuntimeError;

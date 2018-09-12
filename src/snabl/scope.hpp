@@ -1,7 +1,6 @@
 #ifndef SNABL_SCOPE_HPP
 #define SNABL_SCOPE_HPP
 
-#include "snabl/alloc.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/stack.hpp"
 #include "snabl/std.hpp"
@@ -32,7 +31,7 @@ namespace snabl {
 
 		void clear_vars() { _vars.clear(); }
 	private:
-		map<Sym, Box, less<Sym>, Alloc<pair<Sym, Box>>> _vars;
+		map<Sym, Box> _vars;
 	};
 }
 

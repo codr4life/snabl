@@ -59,8 +59,9 @@ namespace snabl {
 		SNABL_DISPATCH();
 	op_else: {
 			const auto &op(pc->as<ops::Else>());
-			const auto v(pop());
+			const auto &v(_stack.back());
 			if (!v.as<bool>()) { pc += *op.nops; }
+			_stack.pop_back();
 			pc++;
 			SNABL_DISPATCH();
 		}
@@ -144,8 +145,9 @@ namespace snabl {
 		}
 	op_let: {
 			const auto &op(pc->as<ops::Let>());
-			auto v(pop());
+			auto &v(_stack.back());
 			scope()->let(op.id, v);
+			_stack.pop_back();
 			pc++;
 			SNABL_DISPATCH();
 		}
@@ -176,7 +178,7 @@ namespace snabl {
 		}
 	op_sdrop:
 		if (_stack.size() < 2) { throw Error("Nothing to sdrop"); }
-		auto i(_stack.size()-1);
+		const auto i(_stack.size()-1);
 		_stack[i-1] = _stack[i];	
 		_stack.pop_back();
 		pc++;
