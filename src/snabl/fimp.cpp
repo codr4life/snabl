@@ -59,7 +59,7 @@ namespace snabl {
 			env.end_call();
 		} else {
 			fimp->compile(fimp, pos);
-			auto &scope(fimp->_opts & Opts::Vars
+			auto &scope((fimp->_opts & Opts::Vars)
 									? env.begin_scope(fimp->_parent_scope)
 									: env.scope());
 			env.begin_call(*scope, pos, fimp, env.pc);

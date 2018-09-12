@@ -72,15 +72,15 @@ namespace snabl {
 			pc++;
 			SNABL_DISPATCH();
 		}
-	op_fimp:
-		auto &fimp(*pc->as<ops::Fimp>().ptr);
-		if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = scope(); }
-		pc += pc->as<ops::Fimp>().ptr->nops()+1;
-		SNABL_DISPATCH();
+	op_fimp: {
+			auto &fimp(*pc->as<ops::Fimp>().ptr);
+			if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = scope(); }
+			pc += pc->as<ops::Fimp>().ptr->nops()+1;
+			SNABL_DISPATCH();
+		}
 	op_fimpret: {
 			const auto &op(pc->as<ops::FimpRet>());
 			if (op.end_scope) { end_scope(); }
-
 			const auto &c(call());
 			pc = *c.return_pc;
 			end_call();
@@ -136,8 +136,8 @@ namespace snabl {
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			const auto &l(dynamic_pointer_cast<Lambda>(c.target));
-			if (l->opts() & Target::Opts::Vars) { end_scope(); }
+			const auto &l(*dynamic_pointer_cast<Lambda>(c.target));
+			if (l.opts() & Target::Opts::Vars) { end_scope(); }
 			pc = *c.return_pc;
 			end_call();
 			SNABL_DISPATCH();
