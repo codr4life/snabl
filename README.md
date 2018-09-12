@@ -25,7 +25,7 @@ func: naive-fib<Int> (
 ```
 
 #### Typing
-Snabl supports strong, first class Types. The root type, ```T```, may be used to allow any type except ```Nil```.
+Snabl supports strong, first class Types. The root type ```T``` may be used to allow any type except ```Nil```.
 
 ```
    42 Int?
@@ -37,12 +37,12 @@ Snabl supports strong, first class Types. The root type, ```T```, may be used to
    42 Nil?
 [f]
 
-   nil Nil?
-[t]
+   nil T?
+[f]
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, closures and tail call optimization. The following example gets a 25% speed up from using explicit tail recursion.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap closures and tail call optimization. The following example gets a 20% speed up from using explicit tail recursion.
 
 Example 3
 ```
@@ -65,7 +65,7 @@ func: tail-fib<Int Int Int> (
 ```
 
 #### Failure
-Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next function call/return.
+Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
 
 ```
    func: foo<T> _
