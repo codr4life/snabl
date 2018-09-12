@@ -49,8 +49,13 @@
 (test= (switch: 35, (< 7) $foo, drop $bar) $bar)
 (test= (switch: 35, (< 7) $foo (< 42) $bar, drop $baz) $bar) 
 
-func: foo1<A> A (* 2)
-(test=, 21 foo1; 42)
+func: double<A> A (* 2)
+(test=, 21 double; 42)
+
+
+let: result 42
+func: closure<> Int @result
+(test= closure 42)
 
 (test= (try: (drop 7) 42 -) 35)
 (test= (try: (catch; ++), throw 41) 42)

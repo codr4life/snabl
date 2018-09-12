@@ -73,6 +73,8 @@ namespace snabl {
 			SNABL_DISPATCH();
 		}
 	op_fimp:
+		auto &fimp(*pc->as<ops::Fimp>().ptr);
+		if (fimp.opt(Target::Opt::Vars)) { fimp._parent_scope = scope(); }
 		pc += pc->as<ops::Fimp>().ptr->nops()+1;
 		SNABL_DISPATCH();
 	op_fimpret: {

@@ -40,9 +40,12 @@ namespace snabl {
 		size_t nops() const { return _nops; }
 		optional<size_t> score(const Stack &stack) const;
 	private:
+		ScopePtr _parent_scope;
 		optional<size_t> _start_pc;
 		size_t _nops;
 		Opts _opts;
+
+		friend class Env;
 	};
 }
 

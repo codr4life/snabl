@@ -1,11 +1,11 @@
-* add Fimp closure like Lambda
 * change forms::TypeList to contain form like Query
 ** rename to Types
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
-
-* add support for func/fimp refs with &
-** add func/fimp type
+* add include: macro
+** one arg
+** load all files into ops
+** add bench/all.sl
 * add Str literal support
 ** 'foo\''
 * add Source
@@ -18,6 +18,8 @@
 ** add for fn
 * add [] indexing support
 ** parse as func '[]' and call with args
+* add support for func/fimp refs with &
+** add func/fimp type
 * add use: macro
 * add lib: macro
 ** two args, id & body
