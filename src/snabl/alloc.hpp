@@ -4,7 +4,7 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-	template <typename T, size_t NMAX=32>
+	template <typename T, size_t NMAX=20>
 	class Alloc: public allocator<T> {
 	public:
 		struct Slot {
@@ -24,7 +24,7 @@ namespace snabl {
 
 		Alloc() noexcept: allocator<T>(), _free() {}
 		
-		Alloc(const Alloc<T>& other) noexcept: allocator<T>(other), _free() { }
+		Alloc(const Alloc<T, NMAX>& other) noexcept: allocator<T>(other), _free() { }
 
 		template<class U>
 		Alloc(const Alloc<U, NMAX>& other) noexcept: allocator<T>(other), _free() { }
@@ -38,7 +38,7 @@ namespace snabl {
 		}
 		
 		T* allocate(size_type n, const void *hint=0) {
-			assert(n < NMAX);
+			assert(n <= NMAX);
 
 			Slot *s(_free[n-1]);
 
@@ -52,7 +52,7 @@ namespace snabl {
 		}
 
 		void deallocate(T *p, size_type n) {
-			assert(n < NMAX);
+			assert(n <= NMAX);
 			
 			Slot *s(reinterpret_cast<Slot *>(reinterpret_cast<unsigned char *>(p)-
 																			 offsetof(Slot, val)));
