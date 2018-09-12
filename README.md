@@ -54,7 +54,7 @@ Example 3
 ```
 func: tail-fib<Int Int Int> Int (
   let: (n a b) _
-  switch: @n 0? @a 1? @b, --; @b dup @a +; recall
+  switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
 )
 ```
 
@@ -63,7 +63,7 @@ As before, the same algorithm may be implemented without variables.
 Example 4
 ```
 func: tail-fib<Int Int Int> Int (
-  rswap switch: _
+  rswap switch: _,
     0? sdrop
     1? drop,
     --; rswap dup rot +; recall

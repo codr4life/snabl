@@ -1,6 +1,6 @@
 func: tail-fib<Int Int Int> Int (
 	rswap
- 	switch: _
+ 	switch: _,
 	  0? sdrop
     1? drop,
 		--; rswap dup rot +; recall

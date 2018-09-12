@@ -156,22 +156,26 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									if (in == end) { throw Error("Missing switch: value"); }
+									if (in == end) { throw Error("Missing value"); }
 									env.compile(in++, in+1);
 									vector<ops::Skip *> skips;
-									
-									while (in != end) {
-										if (in+1 != end) { env.emit(ops::Dup::type, form.pos); }
-										env.compile(in++, in+1);
+									auto &cases((in++)->as<forms::Body>());;
 
-										if (in != end) {
+									for (auto f(cases.body.begin()); f != cases.body.end();) {
+										if (f+1 != cases.body.end()) {
+											env.emit(ops::Dup::type, form.pos);
+										}
+										
+										env.compile(f++, f+1);
+
+										if (f != cases.body.end()) {
 											auto &else_op(env.emit(ops::Else::type,
 																							form.pos).as<ops::Else>());
 											auto start_pc = env.ops.size();
 											env.emit(ops::Drop::type, form.pos);
-											env.compile(in++, in+1);
+											env.compile(f++, f+1);
 
-											if (in != end) {
+											if (f != cases.body.end()) {
 												skips.push_back(&env.emit(ops::Skip::type,
 																									form.pos,
 																									env.ops.size()+1).as<ops::Skip>());

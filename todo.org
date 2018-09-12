@@ -1,9 +1,3 @@
-* add Target.Opts enum with Vars/Recalls
-** add virtual Target.opts()
-** replaces has_vars/has_recalls
-* change switch: to take two args
-** check second is forms::Comma/Semi/Sexpr
-*** treat as Body
 * add Fimp closure like Lambda
 * change forms::TypeList to contain form like Query
 ** rename to Types
