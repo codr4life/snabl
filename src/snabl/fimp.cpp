@@ -44,9 +44,7 @@ namespace snabl {
 			if (&op->type == &ops::Recall::type) { fimp->_opts.insert(Opt::Recalls); }
 		}
 		
-		env.emit(ops::FimpRet::type, pos,
-						 fimp->_opts.find(Opt::Vars) != fimp->_opts.end());
-		
+		env.emit(ops::FimpRet::type, pos, fimp->opt(Opt::Vars));
 		fimp->_nops = env.ops.size() - *fimp->_start_pc;
 		return true;
 	}
@@ -61,9 +59,7 @@ namespace snabl {
 			env.end_call();
 		} else {
 			fimp->compile(fimp, pos);
-			auto &scope((fimp->_opts.find(Opt::Vars) == fimp->_opts.end())
-									? env.scope()
-									: env.begin_scope());
+			auto &scope(fimp->opt(Opt::Vars) ? env.begin_scope() : env.scope());
 			env.begin_call(*scope, pos, fimp, env.pc);
 			env.pc = env.ops.begin() + *fimp->_start_pc;
 		}
