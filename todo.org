@@ -1,6 +1,3 @@
-* add Lambda.has_recalls
-** update call state init
-** try removing calls Alloc
 * add Target.Opts enum with Vars/Recalls
 ** add virtual Target.opts()
 ** replaces has_vars/has_recalls

@@ -7,6 +7,7 @@
 #include "snabl/scope.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
+#include "snabl/target.hpp"
 
 namespace snabl {
 	struct Op;
@@ -119,9 +120,7 @@ namespace snabl {
 		struct Lambda {
 			static const OpType<Lambda> type;
 			optional<size_t> start_pc, nops;
-			bool has_vars, has_recalls;
-			
-			Lambda(): has_vars(false), has_recalls(false) { }
+			Target::Opts opts;
 		};
 
 		struct LambdaRet {

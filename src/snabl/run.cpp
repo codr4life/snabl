@@ -124,15 +124,20 @@ namespace snabl {
 		}
 	op_lambda: {
 			const auto &op(pc->as<ops::Lambda>());
-			push(lambda_type, make_shared<Lambda>(op.has_vars ? scope() : nullptr,
-																						*op.start_pc, *op.nops,
-																						op.has_vars, op.has_recalls));
+
+			push(lambda_type,
+					 make_shared<Lambda>((op.opts.find(Target::Opt::Vars) == op.opts.end())
+															 ? nullptr
+															 : scope(),
+															 *op.start_pc, *op.nops,
+															 op.opts));
 			pc += *op.nops+1;
 			SNABL_DISPATCH();
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			if (dynamic_pointer_cast<Lambda>(c.target)->has_vars) { end_scope(); }
+			const auto &opts(dynamic_pointer_cast<Lambda>(c.target)->opts());
+			if (opts.find(Target::Opt::Vars) != opts.end()) { end_scope(); }
 			pc = *c.return_pc;
 			end_call();
 			SNABL_DISPATCH();
