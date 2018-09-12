@@ -62,7 +62,7 @@ namespace snabl {
 		}
 
 	private:
-		Slot *_free[NMAX];
+		array<Slot *, NMAX> _free;
 	};
 }
 
