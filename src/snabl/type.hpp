@@ -8,15 +8,7 @@ namespace snabl {
 	template <typename T>
 	class Type: public AType {
 	public:
-		static_assert(sizeof(T) <= AType::MaxSize);
-
 		Type(Lib &lib, Sym id): AType(lib, id, sizeof(T)) { }
-
-		void copy(optional<Var<MaxSize>> &dst, const Var<MaxSize> &src) const override {
-			dst.emplace(src.as<T>());
-		}
-		
-		void destroy(const Var<MaxSize> &val) const override { val.as<T>().~T(); }
 
 		bool equid(const Box &lhs, const Box &rhs) const override {
 			return eqval(lhs, rhs);

@@ -14,8 +14,6 @@ namespace snabl {
 
 	class AType: public Def {
 	public:
-		static const size_t MaxSize = 16;
-		
 		Lib &lib;
 		const size_t size;
 		const size_t tag;
@@ -40,9 +38,6 @@ namespace snabl {
 				(_parent_types.size() > parent->tag && _parent_types[parent->tag]);
 		}
 
-		virtual void copy(optional<Var<MaxSize>> &dst, const Var<MaxSize> &src) const=0;
-		virtual void destroy(const Var<MaxSize> &val) const=0;
-											
 		virtual bool equid(const Box &lhs, const Box &rhs) const=0;
 		virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
