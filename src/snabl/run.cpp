@@ -124,9 +124,9 @@ namespace snabl {
 		}
 	op_lambda: {
 			const auto &op(pc->as<ops::Lambda>());
-			push(lambda_type, LambdaPtr::make(op.has_vars ? scope() : nullptr,
-																				*op.start_pc, *op.nops,
-																				op.has_vars));
+			push(lambda_type, make_shared<Lambda>(op.has_vars ? scope() : nullptr,
+																						*op.start_pc, *op.nops,
+																						op.has_vars));
 			pc += *op.nops+1;
 			SNABL_DISPATCH();
 		}
@@ -199,7 +199,7 @@ namespace snabl {
 				state.restore_scopes(*this);
 				state.restore_calls(*this);
 				state.restore_stack(*this);
-				if (op.push) { push(error_type, ErrorPtr::make(e)); }
+				if (op.push) { push(error_type, make_shared<UserError>(e)); }
 			}
 
 			if (*op.body_pc > *op.start_pc) {

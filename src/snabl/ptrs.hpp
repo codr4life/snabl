@@ -1,7 +1,6 @@
 #ifndef SNABL_PTRS_HPP
 #define SNABL_PTRS_HPP
 
-#include "snabl/ptr.hpp"
 #include "snabl/std.hpp"
 
 namespace snabl {
@@ -18,22 +17,22 @@ namespace snabl {
 	using TraitPtr = shared_ptr<Trait>;
 	
 	class Scope;	
-	using ScopePtr = Ptr<Scope>;
+	using ScopePtr = shared_ptr<Scope>;
 
 	class Macro;
-	using MacroPtr = Ptr<Macro>;
+	using MacroPtr = shared_ptr<Macro>;
 
 	class Fimp;
-	using FimpPtr = Ptr<Fimp>;
+	using FimpPtr = shared_ptr<Fimp>;
 
 	class Func;
-	using FuncPtr = Ptr<Func>;
+	using FuncPtr = shared_ptr<Func>;
 
 	class Lambda;
-	using LambdaPtr = Ptr<Lambda>;
+	using LambdaPtr = shared_ptr<Lambda>;
 
 	class UserError;
-	using ErrorPtr = Ptr<UserError>;
+	using ErrorPtr = shared_ptr<UserError>;
 }
 
 #endif

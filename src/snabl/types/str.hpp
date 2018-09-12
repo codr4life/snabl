@@ -5,7 +5,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	using StrPtr = Ptr<string>;
+	using StrPtr = shared_ptr<string>;
 
 	class StrType: public Type<StrPtr> {
 	public:

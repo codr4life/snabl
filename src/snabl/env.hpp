@@ -109,7 +109,7 @@ namespace snabl {
 		}
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-			_scopes.push_back(ScopePtr::make(*this, parent));
+			_scopes.push_back(make_shared<Scope>(*this, parent));
 			return _scopes.back();
 		}
 
