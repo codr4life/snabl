@@ -5,7 +5,8 @@
 
 namespace snabl {
 	using Stack = vector<Box>;
-
+	using StackPtr = shared_ptr<Stack>;
+	
 	ostream &operator <<(ostream &out, const Stack &stack);
 }
 

@@ -13,12 +13,18 @@ namespace snabl {
 			env.nil_type = add_type<NilType>(env.sym("Nil"), {env.maybe_type});
 			env.root_type = add_type<Trait>(env.sym("T"), {env.maybe_type});
 			env.num_type = add_type<Trait>(env.sym("Num"), {env.root_type});
+			env.seq_type = add_type<Trait>(env.sym("Seq"), {env.root_type});
+			env.source_type = add_type<Trait>(env.sym("Source"), {env.root_type});
+			env.sink_type = add_type<Trait>(env.sym("Sink"), {env.root_type});
 
 			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.root_type});	
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
 			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
+			env.stack_type =
+				add_type<StackType>(env.sym("Stack"), {
+						env.seq_type, env.source_type, env.sink_type});
 			env.str_type = add_type<StrType>(env.sym("Str"), {env.root_type});
 			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.root_type});
 			env.time_type = add_type<TimeType>(env.sym("Time"), {env.root_type});

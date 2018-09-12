@@ -17,6 +17,7 @@
 #include "snabl/types/lambda.hpp"
 #include "snabl/types/meta.hpp"
 #include "snabl/types/nil.hpp"
+#include "snabl/types/stack.hpp"
 #include "snabl/types/str.hpp"
 #include "snabl/types/sym.hpp"
 #include "snabl/types/time.hpp"
@@ -34,7 +35,8 @@ namespace snabl {
 		vector<ScopePtr> _scopes;
 		Stack _stack;
 	public:
-		TraitPtr root_type, maybe_type, no_type, num_type;
+		TraitPtr root_type, maybe_type, no_type, num_type, seq_type, sink_type, 
+			source_type;
 		
 		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;
@@ -43,6 +45,7 @@ namespace snabl {
 		TypePtr<Int> int_type;
 		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
+		TypePtr<StackPtr> stack_type;
 		TypePtr<StrPtr> str_type;
 		TypePtr<Sym> sym_type;
 		TypePtr<Time> time_type;

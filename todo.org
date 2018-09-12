@@ -1,7 +1,5 @@
-* add Stack
-** use vector imp
-* add Sink
-** add push fn
+* add push<Sink> fn
+* add pop<Source> fn
 * add stack literals
 ** add Stack op
 *** alloc & push new stack on each exec
