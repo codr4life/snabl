@@ -138,13 +138,18 @@ namespace snabl {
 			op.start_pc = env.ops.size();
 			env.compile(l.body);
 
-			op.has_vars = (find_if(env.ops.begin() + *op.start_pc, 
-														 env.ops.end(), 
-														 [](const Op &op) {
-															 return &op.type == &ops::Get::type ||
-															 &op.type == &ops::Let::type;
-														 }) != env.ops.end());
-
+			for (auto bop(env.ops.begin() + *op.start_pc);
+					 bop != env.ops.end();
+					 bop++) {
+				if (&bop->type == &ops::Get::type || &bop->type == &ops::Let::type) {
+					op.has_vars = true;
+				}
+				
+				if (&bop->type == &ops::Recall::type) {
+					op.has_recalls = true;
+				}
+			}
+			
 			env.emit(ops::LambdaRet::type, f.pos);
 			op.nops = env.ops.size()-*op.start_pc;
 		}

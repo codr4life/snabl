@@ -37,11 +37,12 @@ namespace snabl {
 
 		size_t start_pc() const override { return *_start_pc; }
 		size_t nops() const { return _nops; }
+		bool has_recalls() const { return _has_recalls; }
 		optional<size_t> score(const Stack &stack) const;
 	private:
 		optional<size_t> _start_pc;
 		size_t _nops;
-		bool _has_vars;
+		bool _has_vars, _has_recalls;
 	};
 }
 

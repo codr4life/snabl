@@ -14,26 +14,23 @@ namespace snabl {
 	public:
 		Scope &scope;
 		const Pos pos;
-		const State state;
 		
 		const TargetPtr target;
-		const optional<PC> return_pc;
+		const optional<const PC> return_pc;
 
 		Call(Scope &scope, Pos pos, const FimpPtr &fimp, optional<PC> return_pc=nullopt):
-			scope(scope),
-			pos(pos),
-			state(scope.env),
-			target(fimp),
-			return_pc(return_pc) { }
+			scope(scope), pos(pos), target(fimp), return_pc(return_pc) {
+			if (fimp->has_recalls()) { _state.emplace(scope.env); }
+		}
 	
 		Call(Scope &scope, Pos pos, const LambdaPtr &lambda, PC return_pc):
-			scope(scope),
-			pos(pos),
-			state(scope.env),
-			target(lambda),
-			return_pc(return_pc) { }
+			scope(scope), pos(pos), target(lambda), return_pc(return_pc) {
+			if (lambda->has_recalls) { _state.emplace(scope.env); }
+		}
 
 		void recall() const;
+	private:
+    optional<const State> _state;
 	};
 }
 

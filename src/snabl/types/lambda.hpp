@@ -11,14 +11,15 @@ namespace snabl {
 	struct Lambda: public Target {
 		const ScopePtr parent_scope;
 		const size_t nops;
-		const bool has_vars;
+		const bool has_vars, has_recalls;
 
 		Lambda(const ScopePtr &parent_scope,
 					 size_t start_pc, size_t nops,
-					 bool has_vars):
+					 bool has_vars, bool has_recalls):
 			parent_scope(parent_scope),
 			nops(nops),
 			has_vars(has_vars),
+			has_recalls(has_recalls),
 			_start_pc(start_pc) { }
 
 		size_t start_pc() const override { return _start_pc; }

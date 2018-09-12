@@ -6,8 +6,8 @@
 namespace snabl {	
 	void Call::recall() const {
 		auto &env(scope.env);
-		state.restore_libs(env);
-		state.restore_scopes(env);
+		_state->restore_libs(env);
+		_state->restore_scopes(env);
 		scope.clear_vars();
 		env.pc = env.ops.begin() + target->start_pc();
 	}

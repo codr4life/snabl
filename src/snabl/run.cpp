@@ -126,7 +126,7 @@ namespace snabl {
 			const auto &op(pc->as<ops::Lambda>());
 			push(lambda_type, make_shared<Lambda>(op.has_vars ? scope() : nullptr,
 																						*op.start_pc, *op.nops,
-																						op.has_vars));
+																						op.has_vars, op.has_recalls));
 			pc += *op.nops+1;
 			SNABL_DISPATCH();
 		}

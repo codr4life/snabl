@@ -2,6 +2,7 @@
 #define SNABL_STD_HPP
 
 #include <cassert>
+#include <cmath>
 
 #include <algorithm>
 #include <any>
