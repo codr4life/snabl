@@ -3,6 +3,7 @@
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
 #include "snabl/box.hpp"
+#include "snabl/lambda.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/types/lambda.hpp"
 

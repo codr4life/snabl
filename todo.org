@@ -2,6 +2,11 @@
 ** use vector imp
 * add Sink
 ** add push fn
+* add stack literals
+** add Stack op
+*** alloc & push new stack on each exec
+** eval each form with push after
+*** add support for pushing to Stack op
 * add for: loop
 ** Iter For ... Next
 ** store iterator in Iter op
@@ -10,15 +15,14 @@
 ** add Type.iter
 * add stack bench
 ** push/pop range of ints
+* add Type.clone
+** clone pushed values in Push/Get ops
 * change forms::TypeList to contain form like Query
 ** rename to Fimp
 ** remove no_type
 *** map _ to Maybe instead
-* add stack literals
-** eval each form with push after
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
-* extract snabl/lambda.hpp from types
 * add include: macro
 ** one arg
 ** load all files into ops

@@ -2,12 +2,12 @@
 #define SNABL_CALL_HPP
 
 #include "snabl/fimp.hpp"
+#include "snabl/lambda.hpp"
 #include "snabl/op.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/scope.hpp"
-#include "snabl/types/lambda.hpp"
 
 namespace snabl {	
 	class Call {
