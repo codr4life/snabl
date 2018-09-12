@@ -61,7 +61,11 @@ namespace snabl {
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();
-										env.emit(ops::SDrop::type, form.pos);
+
+										env.compile(Form(forms::Id::type, form.pos, env.sym("sdrop")),
+																func, fimp);
+																												
+										//env.emit(ops::SDrop::type, form.pos);
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Try::type) {
 										env.note(in->pos, "Rewriting (try: drop) as (try:)");

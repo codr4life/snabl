@@ -16,10 +16,10 @@ namespace snabl {
 				sep = ' ';
 			}
 
-			if (a.is_undef()) {
-				buf << a.type()->id.name();
-			} else {
+			if (a.has_val()) {
 				a.write(buf);
+			} else {
+				buf << a.type()->id.name();
 			}
 		}
 
@@ -91,10 +91,10 @@ namespace snabl {
 			auto &it(iv.type()), &jt(jv.type());
 			if (it == env.no_type) { continue; }
 
-			if (jv.is_undef()) {
-				if (!it->isa(jt)) { return nullopt; }
+			if (jv.has_val()) {
+				if (!iv.has_val() || !iv.eqval(jv)) { return nullopt; }
 			} else {
-				if (iv.is_undef() || !iv.eqval(jv)) { return nullopt; }
+				if (!it->isa(jt)) { return nullopt; }
 			}
 			
 			score += abs(static_cast<ssize_t>(it->tag-jt->tag));

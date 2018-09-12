@@ -19,13 +19,13 @@ namespace snabl {
 		template <typename ValT>
 		const ValT &as() const {
 			assert(sizeof(ValT) == _type->size);
-			return any_cast<const ValT &>(*_val);
+			return any_cast<const ValT &>(_val);
 		}
 
 		template <typename ValT>
 		ValT &as() {
 			assert(sizeof(ValT) == _type->size);
-			return any_cast<ValT &>(*_val);
+			return any_cast<ValT &>(_val);
 		}
 
 		const ATypePtr &type() const { return _type; }
@@ -47,8 +47,8 @@ namespace snabl {
 			return _type->cmp(*this, rhs);
 		}
 
+		bool has_val() const { return _val.has_value(); }
 		bool is_true() const { return _type->is_true(*this); }
-		bool is_undef() const { return !_val; }
 
 		void call(Pos pos, bool now) const { _type->call(*this, pos, now); }
 		void dump(ostream &out) const { _type->dump(*this, out); }
@@ -56,7 +56,7 @@ namespace snabl {
 		void write(ostream &out) const { _type->write(*this, out); }
 	private:
 		ATypePtr _type;
-		optional<any> _val;
+		any _val;
 	};
 
 	inline ostream &operator <<(ostream &out, const Box &x) {
