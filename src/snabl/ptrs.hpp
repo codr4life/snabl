@@ -22,6 +22,9 @@ namespace snabl {
 	class Macro;
 	using MacroPtr = shared_ptr<Macro>;
 
+	class Target;
+	using TargetPtr = shared_ptr<Target>;
+	
 	class Fimp;
 	using FimpPtr = shared_ptr<Fimp>;
 

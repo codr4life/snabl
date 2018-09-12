@@ -132,7 +132,7 @@ namespace snabl {
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			if (c.lambda->has_vars) { end_scope(); }
+			if (dynamic_pointer_cast<Lambda>(c.target)->has_vars) { end_scope(); }
 			pc = *c.return_pc;
 			end_call();
 			SNABL_DISPATCH();
