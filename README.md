@@ -118,7 +118,7 @@ env.home.add_fimp(
       b += a;
     }
 
-    v.as<Int>() = b;
+    v.as<snabl::Int>() = b;
   });
 
 env.run("say, iter-fib 10");
