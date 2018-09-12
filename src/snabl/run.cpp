@@ -4,7 +4,7 @@
 #include "snabl/run.hpp"
 
 #define SNABL_DISPATCH()												\
-	if (pc == *end_pc) { return; }								\
+	if (pc == end_pc) { return; }									\
 	goto *op_labels[pc->type.label_offs];					\
 
 namespace snabl {
@@ -24,8 +24,8 @@ namespace snabl {
 		run();
 	}
 
-	void Env::run(optional<PC> end_pc) {
-		if (!end_pc) { end_pc = ops.end(); }
+	void Env::run(optional<PC> _end_pc) {
+		const auto end_pc(_end_pc ? *_end_pc : ops.end());
 		
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,

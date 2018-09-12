@@ -14,6 +14,8 @@
 ** rename to Fimp
 ** remove no_type
 *** map _ to Maybe instead
+* add stack literals
+** eval each form with push after
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
 * extract snabl/lambda.hpp from types
