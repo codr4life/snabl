@@ -3,6 +3,7 @@
 * add stack literals
 ** add Stack op
 *** alloc & push new stack on each exec
+*** set capacity
 ** eval each form with push after
 *** add support for pushing to Stack op
 * add for: loop
@@ -13,7 +14,9 @@
 ** add Type.iter
 * add stack bench
 ** push/pop range of ints
+** wrap each int in nested stack/list
 * add Type.clone
+** push clone of arg
 ** clone pushed values in Push/Get ops
 * change forms::TypeList to contain form like Query
 ** rename to Fimp
@@ -50,14 +53,14 @@
 * wxwidgets
 * firebird
 
-vmacro: (drop drop) (ddrop $ddrop)
-vmacro: (rot swap) (ddrop $rswap)
-vmacro: (swap drop) (ddrop $sdrop)
+vmacro: (drop drop) (ddrop 'ddrop)
+vmacro: (rot swap) (ddrop 'rswap)
+vmacro: (swap drop) (ddrop 'sdrop)
 vmacro: (dup drop) ddrop
-vmacro: (dup ddrop) (ddrop $drop)
+vmacro: (dup ddrop) (ddrop 'drop)
 vmacro: (get drop) ddrop
-vmacro: (get ddrop) (ddrop $drop)
+vmacro: (get ddrop) (ddrop 'drop)
 vmacro: (lambda drop) ddrop
-vmacro: (lambda ddrop) (ddrop $drop)
+vmacro: (lambda ddrop) (ddrop 'drop)
 vmacro: (push drop) ddrop
-vmacro: (push ddrop) (ddrop $drop)
+vmacro: (push ddrop) (ddrop 'drop)

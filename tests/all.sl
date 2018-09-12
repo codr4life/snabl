@@ -17,8 +17,8 @@
 (test= 1 1? t)
 (test= 1 3? f)
 
-(test= $foo $foo? t)
-(test= $foo $bar? f)
+(test= 'foo 'foo? t)
+(test= 'foo 'bar? f)
 
 (test=, 1 < 3; t)
 (test=, 3 < 1; f)
@@ -44,10 +44,10 @@
 (test= if: (1 < 3) 5 7 5)
 (test= if: (3 < 1) 5 7 7)
 
-(test= (switch: 7, (drop t) $foo) $foo)
-(test= (switch: 35, (< 42) $foo, drop $bar) $foo)
-(test= (switch: 35, (< 7) $foo, drop $bar) $bar)
-(test= (switch: 35, (< 7) $foo (< 42) $bar, drop $baz) $bar) 
+(test= (switch: 7, (drop t) 'foo) 'foo)
+(test= (switch: 35, (< 42) 'foo, drop 'bar) 'foo)
+(test= (switch: 35, (< 7) 'foo, drop 'bar) 'bar)
+(test= (switch: 35, (< 7) 'foo (< 42) 'bar, drop 'baz) 'bar) 
 
 func: double<T> (* 2)
 (test=, 21 double; 42)

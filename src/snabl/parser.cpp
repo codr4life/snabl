@@ -102,7 +102,7 @@ namespace snabl {
 
 		const auto id(buf.str());
 		
-		if (id.front() == '$') {
+		if (id.front() == '\'') {
 			out.emplace_back(forms::Lit::type,
 											 start_pos,
 											 Box(env.sym_type, env.sym(id.substr(1))));
