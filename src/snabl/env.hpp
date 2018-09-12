@@ -29,7 +29,7 @@ namespace snabl {
 	class Env {
 	public:
 	private:
-		map<string, SymImp> _syms;
+		map<string, SymImp, less<string>, Alloc<pair<string, SymImp>>> _syms;
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;

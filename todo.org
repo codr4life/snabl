@@ -27,6 +27,7 @@
 *** use for local defs
 * add load func
 ** call when called with args
+* ---
 * add sqlite plugin
 * add wxwidgets plugin
 
@@ -46,6 +47,7 @@ func: fib<Int Int Int> Int (
     (drop sdrop),
     dup if: one? ddrop, --; rswap dup rot +; recall
 )
+* ---
 * add if-else func
 ** use in fib1/2 and compare perf
 * check snabl fimp results on return
