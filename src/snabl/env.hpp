@@ -151,8 +151,11 @@ namespace snabl {
 			_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
 		}
 
+		Box &peek() {
+			return _stack.back();
+		}
+
 		Box pop() {
-			if (_stack.empty()) { throw Error("Nothing to pop"); }
 			Box v(_stack.back());
 			_stack.pop_back();
 			return v;
