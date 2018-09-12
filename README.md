@@ -15,7 +15,7 @@ func: naive-fib<Int> (
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 50% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
+Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 30% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
 Example 2
 ```
