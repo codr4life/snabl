@@ -34,7 +34,7 @@ namespace snabl {
 		vector<ScopePtr> _scopes;
 		Stack _stack;
 	public:
-		TraitPtr a_type, maybe_type, no_type, num_type;
+		TraitPtr root_type, maybe_type, no_type, num_type;
 		
 		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;

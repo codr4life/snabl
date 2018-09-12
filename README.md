@@ -25,19 +25,13 @@ func: naive-fib<Int> (
 ```
 
 #### Typing
-Snabl supports strong, first class Types. ```A``` may be used to allow any type except ```Nil```, and ```Maybe``` where missing values are expected.
+Snabl supports strong, first class Types. The root type, ```T```, may be used to allow any type except ```Nil```.
 
 ```
    42 Int?
 [t]
 
-   Int Num?
-[t]
-
-   42 Maybe?
-[t]
-
-   nil Maybe?
+   Int T?
 [t]
 
    42 Nil?
@@ -74,7 +68,7 @@ func: tail-fib<Int Int Int> (
 Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next function call/return.
 
 ```
-   func: foo<A> _
+   func: foo<T> _
    foo 42
 [42]
 

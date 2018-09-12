@@ -11,18 +11,18 @@ namespace snabl {
 			env.no_type = add_type<Trait>(env.sym("_"));
 			env.maybe_type = add_type<Trait>(env.sym("Maybe"));
 			env.nil_type = add_type<NilType>(env.sym("Nil"), {env.maybe_type});
-			env.a_type = add_type<Trait>(env.sym("A"), {env.maybe_type});
-			env.num_type = add_type<Trait>(env.sym("Num"), {env.a_type});
+			env.root_type = add_type<Trait>(env.sym("T"), {env.maybe_type});
+			env.num_type = add_type<Trait>(env.sym("Num"), {env.root_type});
 
-			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.a_type});	
-			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.a_type});
-			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.a_type});
+			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.root_type});	
+			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
+			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
-			env.str_type = add_type<StrType>(env.sym("Str"), {env.a_type});
-			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.a_type});
-			env.time_type = add_type<TimeType>(env.sym("Time"), {env.a_type});
-			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.a_type});
+			env.str_type = add_type<StrType>(env.sym("Str"), {env.root_type});
+			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.root_type});
+			env.time_type = add_type<TimeType>(env.sym("Time"), {env.root_type});
+			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.root_type});
 			
 			add_macro(env.sym("t"), env.bool_type, true);			
 			add_macro(env.sym("f"), env.bool_type, false);			
@@ -224,7 +224,7 @@ namespace snabl {
 								});
 
 			add_fimp(env.sym("throw"),
-							 {Box(env.a_type)},
+							 {Box(env.root_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 throw UserError(env, env.call().pos, env.pop());
@@ -269,7 +269,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("<"),
-							 {Box(env.a_type), Box(env.a_type)},
+							 {Box(env.root_type), Box(env.root_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 Box y(env.pop()), x(env.pop());
@@ -394,7 +394,7 @@ namespace snabl {
 							 });
 
 			add_fimp(env.sym("bench"),
-							 {Box(env.int_type), Box(env.a_type)},
+							 {Box(env.int_type), Box(env.root_type)},
 							 [](Call &call) {
 								 Env &env(call.scope.env);
 								 const Box target(env.pop());
