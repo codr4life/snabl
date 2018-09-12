@@ -1,7 +1,10 @@
-* add push ddrop rewrite
-** pop two ops and compile drop
+* rename a_type to root_type
+** change name to T
+** update code & readme
 * change forms::TypeList to contain form like Query
-** rename to Types
+** rename to Fimp
+** remove no_type
+*** map _ to Maybe instead
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
 * extract snabl/lambda.hpp from types
@@ -32,7 +35,20 @@
 *** use for local defs
 * add load func
 ** call when called with args
+* add push ddrop rewrite
+** pop two ops and compile drop
 * ---
 * wxwidgets
 * firebird
 
+vmacro: (drop drop) (ddrop $ddrop)
+vmacro: (rot swap) (ddrop $rswap)
+vmacro: (swap drop) (ddrop $sdrop)
+vmacro: (dup drop) ddrop
+vmacro: (dup ddrop) (ddrop $drop)
+vmacro: (get drop) ddrop
+vmacro: (get ddrop) (ddrop $drop)
+vmacro: (lambda drop) ddrop
+vmacro: (lambda ddrop) (ddrop $drop)
+vmacro: (push drop) ddrop
+vmacro: (push ddrop) (ddrop $drop)
