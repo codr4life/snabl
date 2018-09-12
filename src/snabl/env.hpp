@@ -29,9 +29,8 @@ namespace snabl {
 	public:
 		Alloc<Box> stack_alloc;
 		Alloc<Call> calls_alloc;
-		Alloc<pair<string, SymImp>> syms_alloc;
 	private:
-		map<string, SymImp, less<string>, Alloc<pair<string, SymImp>>> _syms;
+		map<string, SymImp> _syms;
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
@@ -57,7 +56,6 @@ namespace snabl {
 		const ScopePtr &main;
 		
 		Env():
-			_syms(syms_alloc),
 			_type_tag(1),
 			_stack(stack_alloc),
 			home(*this),
