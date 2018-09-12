@@ -28,12 +28,14 @@ namespace snabl {
 	class Env {
 	public:
 	private:
-		map<string, SymImp> _syms;
+		list<SymImp> _syms;
+		unordered_map<string, Sym> _sym_table;
 		size_t _type_tag;
 		vector<ScopePtr> _scopes;
 		Stack _stack;
 	public:
 		TraitPtr a_type, maybe_type, no_type, num_type;
+		
 		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;
 		TypePtr<ErrorPtr> error_type;
@@ -66,11 +68,11 @@ namespace snabl {
 		size_t next_type_tag() { return _type_tag++; }
 
 		Sym sym(const string &name) {
-			const auto found(_syms.find(name));
-			
-			return Sym((found == _syms.end())
-								 ? &_syms.emplace(name, SymImp(name)).first->second
-								 : &found->second);
+			const auto found(_sym_table.find(name));
+			if (found != _sym_table.end()) { return found->second; }
+			_syms.emplace_back(name);
+			const auto imp(&_syms.back());
+			return _sym_table.emplace(name, Sym(imp)).first->second;
 		}
 
 		template <typename ImpT, typename... ArgsT>
