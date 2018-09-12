@@ -1,6 +1,7 @@
 #ifndef SNABL_ENV_HPP
 #define SNABL_ENV_HPP
 
+#include "snabl/alloc.hpp"
 #include "snabl/call.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
@@ -27,8 +28,6 @@ namespace snabl {
 
 	class Env {
 	public:
-		Alloc<Box> stack_alloc;
-		Alloc<Call> calls_alloc;
 	private:
 		map<string, SymImp> _syms;
 		size_t _type_tag;
@@ -57,12 +56,10 @@ namespace snabl {
 		
 		Env():
 			_type_tag(1),
-			_stack(stack_alloc),
 			home(*this),
 			separators({' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}'}),
 			pc(ops.begin()),
-			main(begin_scope()),
-		  _calls(calls_alloc) { begin_lib(home); }
+			main(begin_scope()) { begin_lib(home); }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;

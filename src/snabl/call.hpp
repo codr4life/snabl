@@ -12,13 +12,13 @@ namespace snabl {
 	class Call {
 	public:
 		Scope &scope;
-		const Pos pos;
-		const State state;
+		Pos pos;
+		State state;
 		
 		Fimp *const fimp;
-		const LambdaPtr lambda;
-		const optional<PC> return_pc;
-		
+		LambdaPtr lambda;
+		optional<PC> return_pc;
+
 		Call(Scope &scope, Pos pos, Fimp &fimp, optional<PC> return_pc=nullopt):
 			scope(scope), pos(pos), state(scope.env), fimp(&fimp), lambda(nullptr),
 			return_pc(return_pc) { }

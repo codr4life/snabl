@@ -7,13 +7,6 @@
 * add rewrite fence after if: and switch: when needed
 ** use ops::Nop
 
-* add Slab<SIZE> class
-** put in front of Alloc
-** take as constructor param
-** replaces destructor
-* add Realloc<T> class
-** use Slab in front
-** add free list
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add Str literal support
