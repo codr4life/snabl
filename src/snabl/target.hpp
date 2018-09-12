@@ -4,17 +4,20 @@
 namespace snabl {
 	class Target {
 	public:
-		enum class Opt {Vars, Recalls};
-		using Opts = set<Opt>;
+		enum class Opts: int {None=0, Vars=1, Recalls=2};
 
-		bool opt(Opt o) {
-			const auto &os(opts());
-			return os.find(o) != os.end();
-		}
-			
-		virtual const Opts &opts() const=0;
+		virtual Opts opts() const=0;
 		virtual size_t start_pc() const=0;
 	};
+
+	inline Target::Opts& operator |=(Target::Opts& lhs, Target::Opts rhs) {
+    lhs = (Target::Opts)(static_cast<int>(lhs) | static_cast<int>(rhs));
+    return lhs;
+	}
+
+	inline bool operator &(Target::Opts lhs, Target::Opts rhs) {
+    return static_cast<int>(lhs) & static_cast<int>(rhs);
+	}
 }
 
 #endif

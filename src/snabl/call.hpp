@@ -20,12 +20,12 @@ namespace snabl {
 
 		Call(Scope &scope, Pos pos, const FimpPtr &fimp, optional<PC> return_pc=nullopt):
 			scope(scope), pos(pos), target(fimp), return_pc(return_pc) {
-			if (fimp->opt(Target::Opt::Recalls)) { _state.emplace(scope.env); }
+			if (fimp->opts() & Target::Opts::Recalls) { _state.emplace(scope.env); }
 		}
 	
 		Call(Scope &scope, Pos pos, const LambdaPtr &lambda, PC return_pc):
 			scope(scope), pos(pos), target(lambda), return_pc(return_pc) {
-			if (lambda->opt(Target::Opt::Recalls)) { _state.emplace(scope.env); }
+			if (lambda->opts() & Target::Opts::Recalls) { _state.emplace(scope.env); }
 		}
 
 		void recall() const;

@@ -74,7 +74,7 @@ namespace snabl {
 		}
 	op_fimp:
 		auto &fimp(*pc->as<ops::Fimp>().ptr);
-		if (fimp.opt(Target::Opt::Vars)) { fimp._parent_scope = scope(); }
+		if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = scope(); }
 		pc += pc->as<ops::Fimp>().ptr->nops()+1;
 		SNABL_DISPATCH();
 	op_fimpret: {
@@ -128,9 +128,7 @@ namespace snabl {
 			const auto &op(pc->as<ops::Lambda>());
 
 			push(lambda_type,
-					 make_shared<Lambda>((op.opts.find(Target::Opt::Vars) == op.opts.end())
-															 ? nullptr
-															 : scope(),
+					 make_shared<Lambda>((op.opts & Target::Opts::Vars) ? scope() : nullptr,
 															 *op.start_pc, *op.nops,
 															 op.opts));
 			pc += *op.nops+1;
@@ -138,8 +136,8 @@ namespace snabl {
 		}
 	op_lambdaret: {
 			const auto &c(call());
-			const auto &opts(dynamic_pointer_cast<Lambda>(c.target)->opts());
-			if (opts.find(Target::Opt::Vars) != opts.end()) { end_scope(); }
+			const auto &l(dynamic_pointer_cast<Lambda>(c.target));
+			if (l->opts() & Target::Opts::Vars) { end_scope(); }
 			pc = *c.return_pc;
 			end_call();
 			SNABL_DISPATCH();

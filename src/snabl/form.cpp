@@ -142,11 +142,11 @@ namespace snabl {
 					 bop != env.ops.end();
 					 bop++) {
 				if (&bop->type == &ops::Get::type || &bop->type == &ops::Let::type) {
-					op.opts.insert(Target::Opt::Vars);
+					op.opts |= Target::Opts::Vars;
 				}
 				
 				if (&bop->type == &ops::Recall::type) {
-					op.opts.insert(Target::Opt::Recalls);
+					op.opts |= Target::Opts::Recalls;
 				}
 			}
 			

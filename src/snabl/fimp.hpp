@@ -35,7 +35,7 @@ namespace snabl {
 				 Forms::const_iterator begin,
 				 Forms::const_iterator end);
 
-		const Opts &opts() const override { return _opts; }
+		Opts opts() const override { return _opts; }
 		size_t start_pc() const override { return *_start_pc; }
 		size_t nops() const { return _nops; }
 		optional<size_t> score(const Stack &stack) const;

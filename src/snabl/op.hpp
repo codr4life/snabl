@@ -121,6 +121,7 @@ namespace snabl {
 			static const OpType<Lambda> type;
 			optional<size_t> start_pc, nops;
 			Target::Opts opts;
+			Lambda(): opts(Target::Opts::None) { }
 		};
 
 		struct LambdaRet {

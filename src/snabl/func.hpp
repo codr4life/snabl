@@ -50,7 +50,7 @@ namespace snabl {
 
 		void clear() { _fimps.clear(); }
 	private:
-		map<Sym, FimpPtr> _fimps;
+		unordered_map<Sym, FimpPtr> _fimps;
 	};
 
 	template <typename... ImpT>

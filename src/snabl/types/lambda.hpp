@@ -20,7 +20,7 @@ namespace snabl {
 			_opts(opts),
 			_start_pc(start_pc) { }
 
-		const Opts &opts() const override { return _opts; }
+		Opts opts() const override { return _opts; }
 		size_t start_pc() const override { return _start_pc; }
 	private:
 		const Opts _opts;
