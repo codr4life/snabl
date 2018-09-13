@@ -1,6 +1,7 @@
 * add split
 ** 1 2 | 3 4 [..] => [1 2 [3 4]]
-** add env.splits
+** separator
+** add env._splits
 ** active until end of expression
 ** add env.stack_size() const
 *** adapt peek/pop

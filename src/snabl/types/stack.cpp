@@ -13,12 +13,12 @@ namespace snabl {
 
 	IterPtr StackType::iter(const Box &val) const {
 		const StackPtr s(val.as<StackPtr>());
-		size_t i(0);
+		auto i(s->begin());
 		
 		return make_shared<Iter>([s, i](Env &env) mutable {
-				return (i < s->size())
-					? make_optional<Box>((*s)[i])
-					: nullopt;
+				return (i == s->end())
+					? nullopt
+					: make_optional<Box>(*i++);
 			});
 	}
 

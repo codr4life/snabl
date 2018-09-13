@@ -10,17 +10,17 @@ namespace snabl {
 	bool StrType::as_bool(const Box &val) const { return !val.as<StrPtr>()->empty(); }
 
 	void StrType::dump(const Box &val, ostream &out) const {
-		out << '\'' << *val.as<StrPtr>() << '\'';
+		out << "''" << *val.as<StrPtr>() << "''";
 	}
 
 	IterPtr StrType::iter(const Box &val) const {
 		const StrPtr s(val.as<StrPtr>());
-		size_t i(0);
+		auto i(s->begin());
 		
 		return make_shared<Iter>([s, i](Env &env) mutable {
-				return (i < s->size())
-					? make_optional<Box>(env.int_type, Int((*s)[i]))
-					: nullopt;  
+				return (i == s->end())
+					? nullopt
+					: make_optional<Box>(env.int_type, Int(*i++));
 			});
 	}
 }
