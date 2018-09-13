@@ -1,3 +1,6 @@
+* add push<Sink> fn
+* add pop<Source> fn
+* rename Type.is_true to as_bool
 * add splat
 ** 3.. => [0 1 2]
 * add stash
@@ -11,9 +14,6 @@
 ** add env.stack_size() const
 *** adapt peek/pop
 *** adapt all stack ops
-* add push<Sink> fn
-* add pop<Source> fn
-* rename Type.is_true to as_bool
 * add for: loop
 ** Iter For ... Next
 ** store iterator in Iter op
