@@ -1,9 +1,9 @@
-* add stack literals
-** add Stack op
-*** alloc & push new stack on each exec
-*** set capacity
-** eval each form with push after
-*** add support for pushing to Stack op
+* add splat
+** 3.. => [0 1 2]
+* add stash
+** [..] => [[0 1 2]]
+** [1..] => [[1 2]]
+** [..2] => [[0 1]]
 * add push<Sink> fn
 * add pop<Source> fn
 * rename Type.is_true to as_bool
@@ -53,9 +53,6 @@
 ** call when called with args
 * add push ddrop rewrite
 ** pop two ops and compile drop
-* ---
-* wxwidgets
-* firebird
 
 vmacro: (drop drop) (ddrop 'ddrop)
 vmacro: (rot swap) (ddrop 'rswap)
