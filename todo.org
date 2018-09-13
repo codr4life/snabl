@@ -72,3 +72,6 @@ vmacro: (lambda drop) ddrop
 vmacro: (lambda ddrop) (ddrop 'drop)
 vmacro: (push drop) ddrop
 vmacro: (push ddrop) (ddrop 'drop)
+
+snax
+Snabl as a service
