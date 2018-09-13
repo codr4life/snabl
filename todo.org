@@ -4,6 +4,13 @@
 ** [..] => [[0 1 2]]
 ** [1..] => [[1 2]]
 ** [..2] => [[0 1]]
+* add split
+** 1 2 | 3 4 [..] => [1 2 [3 4]]
+** add env.splits
+** active until end of expression
+** add env.stack_size() const
+*** adapt peek/pop
+*** adapt all stack ops
 * add push<Sink> fn
 * add pop<Source> fn
 * rename Type.is_true to as_bool
