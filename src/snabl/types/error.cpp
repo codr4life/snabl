@@ -6,10 +6,6 @@
 namespace snabl {
 	ErrorType::ErrorType(Lib &lib, Sym id): Type<ErrorPtr>(lib, id) { }
 
-	bool ErrorType::is_true(const Box &val) const {
-		return val.as<ErrorPtr>()->val.is_true();
-	}
-
 	void ErrorType::dump(const Box &val, ostream &out) const {
 		out << "Error(" << val.as<ErrorPtr>()->what() << ')';
 	}

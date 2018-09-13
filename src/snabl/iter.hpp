@@ -10,20 +10,20 @@ namespace snabl {
 	public:
 		using Imp = function<optional<Box> (Env &env)>;
 		
-		Iter(Imp imp): _imp(imp), _done(false) { }
+		Iter(Imp imp): _imp(imp), _is_done(false) { }
 
 		optional<Box> call(Env &env) {
-			if (_done) { throw Error("Iter is done"); }
+			if (_is_done) { throw Error("Iter is done"); }
 			
 			auto v(_imp(env));
-			if (!v) { _done = true; }
+			if (!v) { _is_done = true; }
 			return v;
 		}
 
-		bool is_done() const { return _done; }
+		bool is_done() const { return _is_done; }
 	private:
 		Imp _imp;
-		bool _done;
+		bool _is_done;
 	};
 }
 

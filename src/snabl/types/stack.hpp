@@ -9,7 +9,8 @@ namespace snabl {
 	class StackType: public Type<StackPtr> {
 	public:
 		StackType(Lib &lib, Sym id);
-		bool is_true(const Box &val) const override;
+		bool as_bool(const Box &val) const override;
+		IterPtr iter(const Box &val) const;
 		void dump(const Box &val, ostream &out) const override;
 	};
 }

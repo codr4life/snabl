@@ -43,7 +43,7 @@ namespace snabl {
 		virtual bool equid(const Box &lhs, const Box &rhs) const=0;
 		virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
-		virtual bool is_true(const Box &val) const { return true; }
+		virtual bool as_bool(const Box &val) const { return true; }
 		virtual void call(const Box &val, Pos pos, bool now) const;
 
 		virtual IterPtr iter(const Box &val) const {

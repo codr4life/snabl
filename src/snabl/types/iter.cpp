@@ -6,7 +6,7 @@
 namespace snabl {
 	IterType::IterType(Lib &lib, Sym id): Type<IterPtr>(lib, id) { }
 
-	bool IterType::is_true(const Box &val) const {
+	bool IterType::as_bool(const Box &val) const {
 		return !val.as<IterPtr>()->is_done();
 	}
 

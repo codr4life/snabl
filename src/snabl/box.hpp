@@ -48,7 +48,7 @@ namespace snabl {
 		}
 
 		bool has_val() const { return _val.has_value(); }
-		bool is_true() const { return _type->is_true(*this); }
+		bool as_bool() const { return _type->as_bool(*this); }
 
 		void call(Pos pos, bool now) const { _type->call(*this, pos, now); }
 		IterPtr iter() const { return _type->iter(*this); }

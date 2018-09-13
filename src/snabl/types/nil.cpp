@@ -9,7 +9,7 @@ namespace snabl {
 
 	bool NilType::eqval(const Box &lhs, const Box &rhs) const { return true; }
 
-	bool NilType::is_true(const Box &val) const { return false; }
+	bool NilType::as_bool(const Box &val) const { return false; }
 
 	void NilType::call(const Box &val, Pos pos, bool now) const { }
 

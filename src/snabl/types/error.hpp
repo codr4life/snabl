@@ -8,7 +8,6 @@ namespace snabl {
 	class ErrorType: public Type<ErrorPtr> {
 	public:
 		ErrorType(Lib &lib, Sym id);
-		bool is_true(const Box &val) const override;
 		void dump(const Box &val, ostream &out) const override;
 	};
 }
