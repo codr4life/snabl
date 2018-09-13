@@ -173,6 +173,21 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
+		struct Stack: public Body {			
+			static const FormType<Stack> type;
+
+			Stack(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
 		struct TypeList: public FormImp {
 			using Ids = vector<Sym>;
 				

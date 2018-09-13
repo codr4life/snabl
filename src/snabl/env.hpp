@@ -63,7 +63,9 @@ namespace snabl {
 		Env():
 			_type_tag(1),
 			home(*this),
-			separators({' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}'}),
+			separators({
+					' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}', '[', ']'
+						}),
 			pc(ops.begin()),
 			main(begin_scope()) { begin_lib(home); }
 
@@ -161,7 +163,8 @@ namespace snabl {
 		}
 
 		const Stack &stack() { return _stack; }
-
+		void split(size_t offs) { _splits.push_back(_stack.size()-offs); }
+		
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
 			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
@@ -178,6 +181,7 @@ namespace snabl {
 		vector<Lib *> _libs;
 		deque<Call> _calls;
 		vector<ops::Try *> _tries;
+		vector<size_t> _splits;
 		
 		friend struct State;
 		friend struct RuntimeError;

@@ -1,11 +1,15 @@
 * add split
+** add | macro
+*** separator
 ** 1 2 | 3 4 [..] => [1 2 [3 4]]
-** separator
-** add env._splits
-** active until end of expression
-** add env.stack_size() const
-*** adapt peek/pop
-*** adapt stack ops
+** pop at end of expression
+** adapt peek/pop
+** adapt stack ops
+** pass Stack::const_iterator to get_best_fimp/score
+* raise error on recursive call
+** set/clear fimp flag on call/return
+** update benchmarks
+* add stack/str eqval
 * add push<Sink> fn
 * add pop<Source> fn
 * add splat

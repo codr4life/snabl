@@ -33,7 +33,8 @@ namespace snabl {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
 			&&op_fimp, &&op_fimp_end, &&op_funcall, &&op_get, &&op_isa, &&op_jump,
 			&&op_lambda, &&op_lambda_end, &&op_let, &&op_nop, &&op_push, &&op_recall,
-			&&op_rot, &&op_rswap, &&op_sdrop, &&op_skip, &&op_swap, &&op_try, &&op_try_end
+			&&op_rot, &&op_rswap, &&op_sdrop, &&op_skip, &&op_split, &&op_stack, &&op_swap,
+			&&op_try, &&op_try_end
 		};
 
 		try {
@@ -192,6 +193,24 @@ namespace snabl {
 		op_skip:
 			pc += *pc->as<ops::Skip>().nops+1;
 			SNABL_DISPATCH();
+		op_split:
+			_splits.push_back(_stack.size());
+			pc++;
+			SNABL_DISPATCH();
+		op_stack: {
+				const size_t offs(_splits.empty() ? 0 : _splits.back());
+				auto s(make_shared<Stack>());
+				
+				if (_stack.size() > offs) {
+					auto i(_stack.begin()+offs), j(_stack.end());
+					move(i, j, back_inserter(*s));
+					_stack.erase(i, j);
+				}
+				
+				push(stack_type, s);
+				pc++;
+				SNABL_DISPATCH();
+			}
 		op_swap: {
 				if (_stack.size() < 2) { throw Error("Nothing to swap"); }
 				auto i(_stack.size()-1);
@@ -215,10 +234,7 @@ namespace snabl {
 			if (_tries.empty()) { throw e; }
 			auto &t(*_tries.back());
 			_tries.pop_back();
-			t.state->restore_libs(*this);
-			t.state->restore_scopes(*this);
-			t.state->restore_calls(*this);
-			t.state->restore_stack(*this);
+			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
 			pc = start_pc+*t.start_pc;

@@ -197,6 +197,14 @@ namespace snabl {
 			Skip(optional<size_t> nops=nullopt): nops(nops) { }
 		};
 
+		struct Split {
+			static const OpType<Split> type;
+		};
+
+		struct Stack {
+			static const OpType<Stack> type;
+		};
+
 		struct Swap {
 			static const OpType<Swap> type;
 		};
@@ -236,8 +244,8 @@ namespace snabl {
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa, ops::Jump,
 						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
-						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Swap, ops::Try,
-						ops::TryEnd> _imp;
+						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::Stack,
+						ops::Swap, ops::Try, ops::TryEnd> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>

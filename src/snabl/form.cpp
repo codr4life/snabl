@@ -20,6 +20,7 @@ namespace snabl {
 		const FormType<Query> Query::type("Query");
 		const FormType<Semi> Semi::type("Semi");
 		const FormType<Sexpr> Sexpr::type("Sexpr");
+		const FormType<Stack> Stack::type("Stack");
 		const FormType<TypeList> TypeList::type("TypeList");
 
 		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
@@ -83,7 +84,8 @@ namespace snabl {
 
 						if (in != end && &in->type == &TypeList::type) {
 							auto &ids((in++)->as<TypeList>().ids);
-							Stack args;
+							snabl::Stack args;
+							
 							transform(ids.begin(), ids.end(), back_inserter(args),
 												[&form, &lib](Sym id) {
 													auto t(lib.get_type(id));
@@ -248,6 +250,30 @@ namespace snabl {
 			env.compile(sexpr.body);
 		}
 		
+
+		FormImp *Stack::clone() const { return new Stack(body.begin(), body.end()); }
+
+		void Stack::dump(ostream &out) const {
+			out << '[';
+			char sep(0);
+
+			for (auto &f: body) {
+				if (sep) { out << sep; }
+				f.imp->dump(out);
+				sep = ' ';
+			}
+			
+			out << ']';
+		}	
+
+		void Stack::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &f(*in++);
+			env.compile(f.as<Stack>().body);
+			env.emit(ops::Stack::type, f.pos);
+		}
+
 		TypeList::TypeList(Forms::const_iterator begin, Forms::const_iterator end) {
 			transform(begin, end, back_inserter(ids),
 								[](const Form &f) -> Sym { return f.as<Id>().id; });

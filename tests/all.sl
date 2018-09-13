@@ -35,6 +35,8 @@
 (test=, 1 3 swap -; 2)
 (test= (1 2 3 rot -; -) 4)
 
+(test=, [1 2 3] len; 3)
+
 (let: foo 42)
 (test=  @foo 42)
 (test=, {@foo} call 42)

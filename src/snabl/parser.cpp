@@ -50,6 +50,10 @@ namespace snabl {
 				_pos.col++;
 				parse_lambda(in, out);
 				break;
+			case '[':
+				_pos.col++;
+				parse_stack(in, out);
+				break;
 			default:
 				bool is_num = isdigit(c);
 
@@ -81,7 +85,7 @@ namespace snabl {
 	}
 	
 	void Parser::parse_id(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		const auto start_pos(_pos);
 		stringstream buf;
 		char c(0);
 		bool prev_sep(true);
@@ -122,7 +126,7 @@ namespace snabl {
 	}
 
 	void Parser::parse_lambda(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		const auto start_pos(_pos);
 
 		if (!parse_body<forms::Lambda>(in, '}', out)) {
 			throw SyntaxError(start_pos, "Open lambda");
@@ -130,7 +134,7 @@ namespace snabl {
 	}
 
 	void Parser::parse_num(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		const auto start_pos(_pos);
 		stringstream buf;
 		bool is_float(false);
 		char c;
@@ -155,15 +159,23 @@ namespace snabl {
 	}
 
 	void Parser::parse_sexpr(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		const auto start_pos(_pos);
 
 		if (!parse_body<forms::Sexpr>(in, ')', out)) {
 			throw SyntaxError(start_pos, "Open sexpr");
 		}
 	}
 
+	void Parser::parse_stack(istream &in, Forms &out) {
+		const auto start_pos(_pos);
+
+		if (!parse_body<forms::Stack>(in, ']', out)) {
+			throw SyntaxError(start_pos, "Open stack");
+		}
+	}
+
 	void Parser::parse_type_list(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		const auto start_pos(_pos);
 		Forms body;
 
 		if (!parse(in, start_pos, '>', body)) {

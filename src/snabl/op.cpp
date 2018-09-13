@@ -29,6 +29,8 @@ namespace snabl {
 		const OpType<RSwap> RSwap::type("rswap");
 		const OpType<SDrop> SDrop::type("sdrop");
 		const Skip::Type Skip::type("skip");
+		const OpType<Split> Split::type("split");
+		const OpType<Stack> Stack::type("stack");
 		const OpType<Swap> Swap::type("swap");
 		const OpType<Try> Try::type("try");
 		const OpType<TryEnd> TryEnd::type("try-end");

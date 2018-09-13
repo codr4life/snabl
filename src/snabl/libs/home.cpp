@@ -374,6 +374,20 @@ namespace snabl {
 								 cout << endl;
 							 });
 			
+			add_fimp(env.sym("len"),
+							 {Box(env.str_type)},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.int_type, env.pop().as<StrPtr>()->size());
+							 });
+
+			add_fimp(env.sym("len"),
+							 {Box(env.stack_type)},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.int_type, env.pop().as<StackPtr>()->size());
+							 });
+
 			add_fimp(env.sym("ns"),
 							 {Box(env.int_type)},
 							 [](Call &call) {
