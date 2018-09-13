@@ -76,11 +76,6 @@ namespace snabl {
 										env.ops.pop_back();
 										env.compile(Form(forms::Id::type, form.pos, env.sym("sdrop")),
 																func, fimp);
-									} else if (!env.ops.empty() &&
-														 &env.ops.back().type == &ops::Try::type) {
-										env.note(in->pos, "Rewriting (try: drop) as (try:)");
-										auto &try_op(env.ops.back().as<ops::Try>());
-										try_op.push = false;
 									} else {
 										env.emit(ops::Drop::type, form.pos);
 									}
@@ -119,9 +114,14 @@ namespace snabl {
 									auto &op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
 									op.start_pc = env.ops.size();
 									env.compile(in++, in+1);
+									auto &body_skip(env.emit(ops::Skip::type, form.pos)
+																	.as<ops::Skip>());
 									op.body_pc = env.ops.size();
 									env.compile(in++, in+1);
-									op.body_nops = env.ops.size()-*op.body_pc;
+									env.emit(ops::Push::type, form.pos, env.nil_type);
+									env.emit(ops::Jump::type, form.pos, op.start_pc);
+									env.emit(ops::TryEnd::type, form.pos);
+									body_skip.nops = env.ops.size()-*op.body_pc;
 								});
 			
 			add_macro(env.sym("let:"),

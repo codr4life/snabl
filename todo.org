@@ -1,6 +1,6 @@
+* rename Type.is_true to as_bool
 * add push<Sink> fn
 * add pop<Source> fn
-* rename Type.is_true to as_bool
 * add splat
 ** 3.. => [0 1 2]
 * add stash
@@ -16,13 +16,9 @@
 *** adapt all stack ops
 * add for: loop
 ** Iter For ... Next
-** store iterator in Iter op
+** alloc iter in op like Try.state
 ** For takes Iter op as arg
 ** Next takes For op as arg and jumps if more
-** add Type.iter
-* replace nested try: run with run try block
-** keep stack of tries in env
-** pop on error and jump directly
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list

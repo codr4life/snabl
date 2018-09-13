@@ -56,7 +56,7 @@ namespace snabl {
 		unordered_set<char> separators;
 
 		Ops ops;
-		PC pc;
+		Ops::iterator pc;
 
 		const ScopePtr &main;
 		
@@ -100,7 +100,7 @@ namespace snabl {
 		
 		void run(string_view in);
 		void run(istream &in);
-		void run(optional<PC> end_pc=nullopt);
+		void run(optional<Ops::iterator> end_pc=nullopt);
 
 		void begin_lib(Lib &lib) { _libs.push_back(&lib); }
 	
@@ -177,6 +177,7 @@ namespace snabl {
 	private:
 		vector<Lib *> _libs;
 		deque<Call> _calls;
+		vector<ops::Try *> _tries;
 		
 		friend struct State;
 		friend struct RuntimeError;

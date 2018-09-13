@@ -5,6 +5,7 @@
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/scope.hpp"
+#include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/target.hpp"
@@ -32,7 +33,6 @@ namespace snabl {
 	};
 	
 	using Ops = deque<Op>;
-	using PC = Ops::iterator;
 
 	namespace ops {
 		struct Call {				
@@ -79,10 +79,10 @@ namespace snabl {
 			Fimp(const FimpPtr &ptr): ptr(ptr) { }
 		};
 
-		struct FimpRet {
-			static const OpType<FimpRet> type;
+		struct FimpEnd {
+			static const OpType<FimpEnd> type;
 			const bool end_scope;
-			FimpRet(bool end_scope): end_scope(end_scope) { }
+			FimpEnd(bool end_scope): end_scope(end_scope) { }
 		};
 
 		struct Funcall {
@@ -117,6 +117,20 @@ namespace snabl {
 			Isa(const ATypePtr &rhs): rhs(rhs) { }
 		};
 
+		struct Jump {
+			struct Type: public OpType<Jump> {
+				Type(const string &id): OpType<Jump>(id) { }
+
+				void dump(const Jump &op, ostream &out) const override {
+					out << ' ' << *op.pc;
+				}
+			};
+
+			static const Type type;
+			optional<size_t> pc;
+			Jump(optional<size_t> pc=nullopt): pc(pc) { }
+		};
+
 		struct Lambda {
 			static const OpType<Lambda> type;
 			optional<size_t> start_pc, nops;
@@ -124,8 +138,8 @@ namespace snabl {
 			Lambda(): opts(Target::Opts::None) { }
 		};
 
-		struct LambdaRet {
-			static const OpType<LambdaRet> type;
+		struct LambdaEnd {
+			static const OpType<LambdaEnd> type;
 		};
 
 		struct Let {
@@ -189,10 +203,12 @@ namespace snabl {
 
 		struct Try {
 			static const OpType<Try> type;
-			optional<size_t> start_pc, body_pc, body_nops;
-			bool push;
+			optional<size_t> start_pc, body_pc;
+			optional<State> state;
+		};
 
-			Try(): push(true) { }
+		struct TryEnd {
+			static const OpType<TryEnd> type;
 		};
 	}
 	
@@ -218,9 +234,10 @@ namespace snabl {
 		}
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::Fimp, ops::FimpRet, ops::Funcall, ops::Get, ops::Isa, ops::Lambda,
-						ops::LambdaRet, ops::Let, ops::Nop, ops::Push, ops::Recall, ops::Rot,
-						ops::RSwap, ops::SDrop, ops::Skip, ops::Swap, ops::Try> _imp;
+					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa, ops::Jump,
+						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
+						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Swap, ops::Try,
+						ops::TryEnd> _imp;
 	};
 	
 	template <typename ImpT, typename... ArgsT>

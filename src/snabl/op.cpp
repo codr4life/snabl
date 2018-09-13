@@ -14,12 +14,13 @@ namespace snabl {
 		const OpType<Else> Else::type("else");
 		const Eqval::Type Eqval::type("eqval");
 		const Fimp::Type Fimp::type("fimp");
-		const OpType<FimpRet> FimpRet::type("fimpret");
+		const OpType<FimpEnd> FimpEnd::type("fimp-end");
 		const Funcall::Type Funcall::type("funcall");
 		const OpType<Get> Get::type("get");
 		const Isa::Type Isa::type("isa");
+		const Jump::Type Jump::type("jump");
 		const OpType<Lambda> Lambda::type("lambda");
-		const OpType<LambdaRet> LambdaRet::type("lambdaret");
+		const OpType<LambdaEnd> LambdaEnd::type("lambda-end");
 		const OpType<Let> Let::type("let");
 		const OpType<Nop> Nop::type("nop");
 		const Push::Type Push::type("push");
@@ -30,6 +31,7 @@ namespace snabl {
 		const Skip::Type Skip::type("skip");
 		const OpType<Swap> Swap::type("swap");
 		const OpType<Try> Try::type("try");
+		const OpType<TryEnd> TryEnd::type("try-end");
 
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }

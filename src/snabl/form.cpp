@@ -150,7 +150,7 @@ namespace snabl {
 				}
 			}
 			
-			env.emit(ops::LambdaRet::type, f.pos);
+			env.emit(ops::LambdaEnd::type, f.pos);
 			op.nops = env.ops.size()-*op.start_pc;
 		}
 		
