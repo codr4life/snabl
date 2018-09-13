@@ -1,7 +1,6 @@
 #ifndef SNABL_TYPE_INT_HPP
 #define SNABL_TYPE_INT_HPP
 
-#include <cstdint>
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
 
@@ -12,6 +11,7 @@ namespace snabl {
 	public:
 		IntType(Lib &lib, Sym id);
 		bool is_true(const Box &val) const override;
+		IterPtr iter(const Box &val) const override;
 		void dump(const Box &val, ostream &out) const override;
 	};
 }

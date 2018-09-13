@@ -59,3 +59,5 @@ func: closure<> @result
 (test= (try: (drop 7) 42 -) 35)
 (test= (try: (catch; ++), throw 41) 42)
 (test= (try: (catch; ++), try: throw, throw 41) 42)
+
+(test= (3 iter; dup call swap dup call swap call +; +) 3)

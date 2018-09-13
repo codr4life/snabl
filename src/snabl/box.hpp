@@ -51,6 +51,7 @@ namespace snabl {
 		bool is_true() const { return _type->is_true(*this); }
 
 		void call(Pos pos, bool now) const { _type->call(*this, pos, now); }
+		IterPtr iter() const { return _type->iter(*this); }
 		void dump(ostream &out) const { _type->dump(*this, out); }
 		void print(ostream &out) const { _type->print(*this, out); }
 		void write(ostream &out) const { _type->write(*this, out); }

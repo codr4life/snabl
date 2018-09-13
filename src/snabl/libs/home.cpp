@@ -21,10 +21,16 @@ namespace snabl {
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
 			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
-			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type});
+			env.int_type = add_type<IntType>(env.sym("Int"), {env.num_type, env.seq_type});
+
+			env.iter_type =
+				add_type<IterType>(env.sym("Iter"),
+					{env.seq_type, env.source_type});
+			
 			env.stack_type =
 				add_type<StackType>(env.sym("Stack"), {
 						env.seq_type, env.source_type, env.sink_type});
+
 			env.str_type = add_type<StrType>(env.sym("Str"), {env.root_type});
 			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.root_type});
 			env.time_type = add_type<TimeType>(env.sym("Time"), {env.root_type});
@@ -343,6 +349,13 @@ namespace snabl {
 								 env.push(env.bool_type, env.pop().is_true());
 							 });
 
+			add_fimp(env.sym("iter"),
+							 {Box(env.seq_type)},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 env.push(env.iter_type, env.pop().iter());
+							 });
+			
 			add_fimp(env.sym("dump"),
 							 {Box(env.maybe_type)},
 							 [](Call &call) {

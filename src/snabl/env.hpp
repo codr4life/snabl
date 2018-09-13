@@ -14,6 +14,7 @@
 #include "snabl/types/error.hpp"
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
+#include "snabl/types/iter.hpp"
 #include "snabl/types/lambda.hpp"
 #include "snabl/types/meta.hpp"
 #include "snabl/types/nil.hpp"
@@ -43,6 +44,7 @@ namespace snabl {
 		TypePtr<ErrorPtr> error_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
+		TypePtr<IterPtr> iter_type;
 		TypePtr<LambdaPtr> lambda_type;
 		TypePtr<Nil> nil_type;
 		TypePtr<StackPtr> stack_type;

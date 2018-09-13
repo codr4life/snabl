@@ -1,23 +1,31 @@
-* add push<Sink> fn
-* add pop<Source> fn
 * add stack literals
 ** add Stack op
 *** alloc & push new stack on each exec
 *** set capacity
 ** eval each form with push after
 *** add support for pushing to Stack op
+* add push<Sink> fn
+* add pop<Source> fn
+* rename Type.is_true to as_bool
 * add for: loop
 ** Iter For ... Next
 ** store iterator in Iter op
 ** For takes Iter op as arg
 ** Next takes For op as arg and jumps if more
 ** add Type.iter
+* replace nested try: run with run try block
+** keep stack of tries in env
+** pop on error and jump directly
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
 * add Type.clone
 ** push clone of arg
 ** clone pushed values in Push/Get ops
+* add Quote form
+** contain quoted like Query
+** push quoted ids as syms
+** push quoted literals as is
 * change forms::TypeList to contain form like Query
 ** rename to Fimp
 ** remove no_type
@@ -29,11 +37,7 @@
 ** load all files into ops
 ** add bench/all.sl
 * add Str literal support
-** 'foo\''
-* add Source
-** add pop fn
-* add Seq/Iter
-** add for fn
+** ''\'foo''
 * add [] indexing support
 ** parse as func '[]' and call with args
 * add support for func/fimp refs with &

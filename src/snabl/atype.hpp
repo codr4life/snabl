@@ -3,6 +3,8 @@
 
 #include "snabl/cmp.hpp"
 #include "snabl/def.hpp"
+#include "snabl/error.hpp"
+#include "snabl/fmt.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/std.hpp"
@@ -44,6 +46,10 @@ namespace snabl {
 		virtual bool is_true(const Box &val) const { return true; }
 		virtual void call(const Box &val, Pos pos, bool now) const;
 
+		virtual IterPtr iter(const Box &val) const {
+			throw Error(fmt("Invalid seq: %0", {val}));
+		}
+		
 		virtual void dump(const Box &val, ostream &out) const {
 			out << id.name() << "(n/a)";
 		}

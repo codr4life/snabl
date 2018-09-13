@@ -34,6 +34,9 @@ namespace snabl {
 	class Lambda;
 	using LambdaPtr = shared_ptr<Lambda>;
 
+	class Iter;
+	using IterPtr = shared_ptr<Iter>;
+
 	class UserError;
 	using ErrorPtr = shared_ptr<UserError>;
 }
