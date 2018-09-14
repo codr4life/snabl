@@ -43,7 +43,7 @@ Snabl supports strong, first class Types. The root type ```T``` may be used to a
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap closures and tail recursion. The following example implements a tail recursive fibonacci, `recall` jumps to the start of the current function/lambda.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci, `recall` jumps to the start of the current function or lambda.
 
 ```
 func: my-fib<Int Int Int> (
