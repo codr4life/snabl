@@ -53,25 +53,23 @@ namespace snabl {
 	void Fimp::call(const FimpPtr &fimp, Pos pos) {
 		const auto &func(fimp->func);
 		auto &env(func->lib.env);
-
-		if (fimp->_is_calling) {
-			throw RuntimeError(env, pos, fmt("Recursive call: %0", {fimp->id}));
-		}
-		
-		fimp->_is_calling = true;
 		
 		if (fimp->imp) {
 			auto &call(env.begin_call(*env.scope(), pos, fimp));
 			(*fimp->imp)(call);
 			env.end_call();
-			fimp->_is_calling=false;
 		} else {
+			if (fimp->_is_calling) {
+				throw RuntimeError(env, pos, fmt("Recursive call: %0", {fimp->id}));
+			}
+
 			fimp->compile(fimp, pos);
 			auto &scope((fimp->_opts & Opts::Vars)
 									? env.begin_scope(fimp->_parent_scope)
 									: env.scope());
 			env.begin_call(*scope, pos, fimp, env.pc);
-			env.split(func->nargs);
+			env.split(func->nargs);		
+			fimp->_is_calling = true;
 			env.pc = env.ops.begin() + *fimp->_start_pc;
 		}
 	}
