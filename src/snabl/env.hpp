@@ -68,7 +68,8 @@ namespace snabl {
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			pc(ops.begin()),
-			main(begin_scope()) { begin_lib(home); }
+			main(begin_scope()),
+			_stack_offs(0) { begin_lib(home); }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
@@ -155,17 +156,30 @@ namespace snabl {
 			_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
 		}
 
-		Box &peek() { return _stack.back(); }
+		Box &peek() {
+			if (_stack.size() <= _stack_offs) { throw Error("Nothing to peek"); }
+			return _stack.back();
+		}
 
 		Box pop() {
+			if (_stack.size() <= _stack_offs) { throw Error("Nothing to pop"); }
 			Box v(_stack.back());
 			_stack.pop_back();
 			return v;
 		}
 
 		const Stack &stack() { return _stack; }
-		void split(size_t offs) { _splits.push_back(_stack.size()-offs); }
 		
+		void split(size_t offs=0) {
+			_stack_offs = _stack.size()-offs;
+			_splits.push_back(_stack_offs);
+		}
+
+		void unsplit() {
+			_splits.pop_back();
+			_stack_offs = _splits.empty() ? 0 : _splits.back();
+		}
+
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
 			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
@@ -183,6 +197,7 @@ namespace snabl {
 		deque<Call> _calls;
 		vector<ops::Try *> _tries;
 		vector<size_t> _splits;
+		size_t _stack_offs;
 		
 		friend struct State;
 		friend struct RuntimeError;

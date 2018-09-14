@@ -102,6 +102,7 @@ namespace snabl {
 
 			pc = c;
 			pc_sep = c_sep;
+			c = 0;
 		}
 
 		const auto id(buf.str());

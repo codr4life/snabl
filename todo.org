@@ -1,7 +1,3 @@
-* finish splits
-** adapt peek/pop
-** adapt stack ops
-** pass Stack::const_iterator to get_best_fimp/score
 * raise error on recursive call
 ** set is-called flag on call
 *** clear in fimp-end
@@ -9,8 +5,9 @@
 ** update benchmarks
 ** reddit
 * add stack/str eqval
-* add push<Sink> fn
-* add pop<Source> fn
+* add push/pop fns
+** stack/str
+** add pop for iter
 * add for: loop
 ** Iter For ... Next
 ** alloc iter in op like Try.state
@@ -40,8 +37,6 @@
 ** add bench/all.sl
 * add Str literal support
 ** ''\'foo''
-* add [] indexing support
-** parse as func '[]' and call with args
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add use: macro
@@ -53,6 +48,11 @@
 *** use for local defs
 * add load func
 ** call when called with args
+* add type: Foo Int macro
+** derive new type from parent
+** generate constructor 
+* add trait: Foo (Bar Baz) macro
+** derive children from type
 * add push ddrop rewrite
 ** pop two ops and compile drop
 
@@ -67,6 +67,3 @@ vmacro: (lambda drop) ddrop
 vmacro: (lambda ddrop) (ddrop 'drop)
 vmacro: (push drop) ddrop
 vmacro: (push ddrop) (ddrop 'drop)
-
-snax
-Snabl as a service

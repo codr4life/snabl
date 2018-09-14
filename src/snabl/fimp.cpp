@@ -79,15 +79,15 @@ namespace snabl {
 		Def(get_id(*func, args)), func(func), args(args), forms(begin, end),
 		_start_pc(nullopt), _nops(0), _opts(Opts::None) { }
 
-	optional<size_t> Fimp::score(const Stack &stack) const {
-		if (!func->nargs) { return 0; }
-		if (stack.size() < func->nargs) { return nullopt; }
+	optional<size_t> Fimp::score(Stack::const_iterator begin,
+															 Stack::const_iterator end) const {
 		auto &env(func->lib.env);
-		auto i(stack.begin()+stack.size()-func->nargs);
-		auto j(args.begin());
+		auto i(begin), j(args.begin());
 		size_t score(0);
 
 		for (; j != args.end(); i++, j++) {
+			if (i == end) { return nullopt; }
+			
 			auto &iv(*i), &jv(*j);
 			auto &it(iv.type()), &jt(jv.type());
 			if (it == env.no_type) { continue; }

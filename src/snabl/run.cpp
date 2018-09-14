@@ -46,18 +46,18 @@ namespace snabl {
 				SNABL_DISPATCH();
 			}
 		op_ddrop:
-			if (_stack.size() < 2) { throw Error("Nothing to ddrop"); }
+			if (_stack.size() <= _stack_offs) { throw Error("Nothing to ddrop"); }
 			_stack.pop_back();
 			_stack.pop_back();
 			pc++;
 			SNABL_DISPATCH();
 		op_drop:
-			if (_stack.empty()) { throw Error("Nothing to drop"); }
+			if (_stack.size() <= _stack_offs) { throw Error("Nothing to drop"); }
 			_stack.pop_back();
 			pc++;
 			SNABL_DISPATCH();
 		op_dup:
-			if (_stack.empty()) { throw Error("Nothing to dup"); }
+			if (_stack.size() <= _stack_offs) { throw Error("Nothing to dup"); }
 			push(_stack.back());
 			pc++;
 			SNABL_DISPATCH();
@@ -71,6 +71,11 @@ namespace snabl {
 			}
 		op_eqval: {
 				auto &op(pc->as<ops::Eqval>());
+
+				if (_stack.size() <= _stack_offs+(op.rhs ? 0 : 1)) {
+					throw Error("Nothing to eqval");
+				}
+				
 				const auto lhs(pop());
 				const auto rhs(op.rhs ? *op.rhs : pop());
 				push(bool_type, lhs.eqval(rhs)); 
@@ -89,20 +94,27 @@ namespace snabl {
 				const auto &c(call());
 				pc = *c.return_pc;
 				end_call();
-				_splits.pop_back();
+				unsplit();
 				SNABL_DISPATCH();
 			}
 		op_funcall: {
 				auto &op(pc->as<ops::Funcall>());
-				const FimpPtr *fimp(op.fimp ? &op.fimp : nullptr);
-			
-				if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
-			
-				if (fimp) {
-					if (!(*fimp)->score(_stack)) { fimp = nullptr; }
-				} else {
-					fimp = op.func->get_best_fimp(_stack);
-				}
+				const FimpPtr *fimp(nullptr);
+
+				if (_stack.size() >= _stack_offs+op.func->nargs) {
+					if (op.fimp) { fimp = &op.fimp; }
+					if (!fimp && op.prev_fimp) { fimp = &op.prev_fimp; }
+
+					if (fimp) {
+						if (op.func->nargs &&
+								!(*fimp)->score(_stack.begin()+(_stack.size()-op.func->nargs),
+																_stack.end())) { fimp = nullptr; }
+					} else {
+						fimp = op.func->get_best_fimp(_stack.begin()+
+																					(_stack.size()-op.func->nargs),
+																					_stack.end());
+					}
+				}	
 			
 				if (!fimp) {
 					throw RuntimeError(*this, pc->pos, fmt("Func not applicable: %0",
@@ -125,6 +137,7 @@ namespace snabl {
 				SNABL_DISPATCH();
 			}
 		op_isa: {
+				if (_stack.size() <= _stack_offs) { throw Error("Nothing to isa"); }
 				const auto lhs(pop());
 				push(bool_type, lhs.isa(pc->as<ops::Isa>().rhs)); 
 				pc++;
@@ -152,6 +165,7 @@ namespace snabl {
 				SNABL_DISPATCH();
 			}
 		op_let: {
+				if (_stack.size() <= _stack_offs) { throw Error("Nothing to let"); }
 				const auto &op(pc->as<ops::Let>());
 				auto &v(_stack.back());
 				scope()->let(op.id, v);
@@ -170,7 +184,7 @@ namespace snabl {
 			call().recall();
 			SNABL_DISPATCH();
 		op_rot: {
-				if (_stack.size() < 3) { throw Error("Nothing to rot"); }
+				if (_stack.size() <= _stack_offs+2) { throw Error("Nothing to rot"); }
 				auto i(_stack.size()-1);
 				swap(_stack[i], _stack[i-2]);
 				swap(_stack[i], _stack[i-1]);
@@ -178,14 +192,14 @@ namespace snabl {
 				SNABL_DISPATCH();
 			}
 		op_rswap: {
-				if (_stack.size() < 3) { throw Error("Nothing to rswap"); }
+				if (_stack.size() <= _stack_offs+2) { throw Error("Nothing to rswap"); }
 				auto i(_stack.size()-1);
 				swap(_stack[i], _stack[i-2]);
 				pc++;
 				SNABL_DISPATCH();
 			}
 		op_sdrop:
-			if (_stack.size() < 2) { throw Error("Nothing to sdrop"); }
+			if (_stack.size() <= _stack_offs+1) { throw Error("Nothing to sdrop"); }
 			const auto i(_stack.size()-1);
 			_stack[i-1] = _stack[i];	
 			_stack.pop_back();
@@ -195,17 +209,17 @@ namespace snabl {
 			pc += *pc->as<ops::Skip>().nops+1;
 			SNABL_DISPATCH();
 		op_split:
-			_splits.push_back(_stack.size());
+			split();
 			pc++;
 			SNABL_DISPATCH();
 		op_split_end:
-			_splits.pop_back();
+			unsplit();
 			pc++;
 			SNABL_DISPATCH();
 		op_stack: {
 				auto &op(pc->as<ops::Stack>());
-				const size_t offs(_splits.empty() ? 0 : _splits.back());
-				if (op.unsplit) { _splits.pop_back(); }
+				const size_t offs(_stack_offs);
+				if (op.unsplit) { unsplit(); }
 				auto s(make_shared<Stack>());
 				
 				if (_stack.size() > offs) {
@@ -219,7 +233,7 @@ namespace snabl {
 				SNABL_DISPATCH();
 			}
 		op_swap: {
-				if (_stack.size() < 2) { throw Error("Nothing to swap"); }
+				if (_stack.size() <= _stack_offs+1) { throw Error("Nothing to swap"); }
 				auto i(_stack.size()-1);
 				swap(_stack[i], _stack[i-1]);
 				pc++;

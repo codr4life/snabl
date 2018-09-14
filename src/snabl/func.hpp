@@ -24,13 +24,14 @@ namespace snabl {
 
 		const FimpPtr &get_fimp() const { return _fimps.begin()->second; }
 
-		const FimpPtr *get_best_fimp(const Stack &stack) const {
+		const FimpPtr *get_best_fimp(Stack::const_iterator begin,
+																 Stack::const_iterator end) const {
 			optional<size_t> best_score;
 			FimpPtr *best_fimp(nullptr);
 			
 			for (auto &fp: _fimps) {
 				auto &f(const_cast<FimpPtr &>(fp.second));
-				auto fs(f->score(stack));
+				auto fs(f->score(begin, end));
 				
 				if (fs) {
 					if (*fs == 0) { return &f; }

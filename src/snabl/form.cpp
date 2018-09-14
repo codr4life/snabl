@@ -100,7 +100,13 @@ namespace snabl {
 													return Box(*t);
 												});
 
-							auto fi((*fn)->get_best_fimp(args));
+
+							if (args.size() != (*fn)->nargs) {
+								throw CompileError(form.pos,
+																	 fmt("Wrong number of args: %0", {(*fn)->id}));
+							}
+							
+							auto fi((*fn)->get_best_fimp(args.begin(), args.end()));
 
 							if (!fi) {
 								throw CompileError(form.pos, fmt("Unknown fimp: %0", {(*fn)->id}));

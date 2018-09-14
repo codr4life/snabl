@@ -36,7 +36,8 @@ namespace snabl {
 		Opts opts() const override { return _opts; }
 		size_t start_pc() const override { return *_start_pc; }
 		size_t nops() const { return _nops; }
-		optional<size_t> score(const Stack &stack) const;
+		optional<size_t> score(Stack::const_iterator begin,
+													 Stack::const_iterator end) const;
 	private:
 		ScopePtr _parent_scope;
 		optional<size_t> _start_pc;
