@@ -207,7 +207,15 @@ namespace snabl {
 		auto &lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
 		return lhs->isa(rhs);
 	}
-	
+
+	inline void Call::recall() const {
+		auto &env(scope.env);
+		_state->restore_libs(env);
+		_state->restore_scopes(env);
+		scope.clear_vars();
+		env.pc = env.ops.begin() + target->start_pc();
+	}
+
 	template <typename ValT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id,
 																 const TypePtr<ValT> &type,
