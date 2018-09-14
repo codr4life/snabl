@@ -21,7 +21,7 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. ```;`
   43 -- dup
 [43 42]
 
-	43 --; dup
+  43 --; dup
 [42 42]
 ```
 
