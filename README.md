@@ -6,22 +6,23 @@ The following is a list of what could be considered defining features.
 #### Fixation
 Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
 
-Example 1
 ```
-func: naive-fib<Int> (
-  let: n _			
-  if: (@n < 2) @n, (naive-fib, @n --) + (naive-fib, @n - 2)
-)
+   1 + 2 * 3
+Compile error in row 1, col 6: Extra func: *
+	 
+   1 +, 2 * 3
+[7]
 ```
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. The following example currently runs around 30% faster than Example 1, mostly due to not requiring local variables. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
+Much like Forth, Snabl supports directly manipulating the parameter stack. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
-Example 2
 ```
-func: naive-fib<Int> (
-  dup if: (< 2) _, (naive-fib, --; dup) swap + (naive-fib, --)
-)
+  43 -- dup
+[43 42]
+
+	43 --; dup
+[42 42]
 ```
 
 #### Typing
@@ -44,19 +45,17 @@ Snabl supports strong, first class Types. The root type ```T``` may be used to a
 #### Function
 Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap closures and tail call optimization. The following example gets a 20% speed up from using explicit tail recursion.
 
-Example 3
 ```
-func: tail-fib<Int Int Int> (
+func: my-fib<Int Int Int> (
   let: (n a b) _
   switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
 )
 ```
 
-As before, the same algorithm may be implemented without variables.
+The same algorithm may be implemented entirely without variables by manipulating the stack directly.
 
-Example 4
 ```
-func: tail-fib<Int Int Int> (
+func: my-fib<Int Int Int> (
   rswap switch: _,
     0? sdrop
     1? drop,
@@ -100,7 +99,7 @@ Example 5
 snabl::Env env;
 
 env.home.add_fimp(
-  env.sym("iter-fib"),
+  env.sym("my-fib"),
   {snabl::Box(env.int_type)},
   [](snabl::Call &call) {
     snabl::Env &env(call.scope.env);

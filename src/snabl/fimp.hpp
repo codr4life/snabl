@@ -43,7 +43,8 @@ namespace snabl {
 		optional<size_t> _start_pc;
 		size_t _nops;
 		Opts _opts;
-
+		bool _is_calling;
+		
 		friend class Env;
 	};
 }

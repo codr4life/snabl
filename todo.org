@@ -1,9 +1,3 @@
-* raise error on recursive call
-** set is-called flag on call
-*** clear in fimp-end
-*** clear when restoring State
-** update benchmarks
-** reddit
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

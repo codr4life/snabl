@@ -1,6 +1,6 @@
-func: naive-fib<Int> (
-  let: n _			
-  if: (@n < 2) @n, (naive-fib, @n --) + (naive-fib, @n - 2)
+func: tail-fib<Int Int Int> (
+  let: (n a b) _
+  switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
 )
 
-say, bench 100 {naive-fib 20; drop}; ms
+say, bench 10000 {tail-fib 20 0 1; drop}; ms

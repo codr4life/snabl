@@ -2,6 +2,7 @@
 #include "snabl/env.hpp"
 #include "snabl/fimp.hpp"
 #include "snabl/lib.hpp"
+#include "snabl/run.hpp"
 
 namespace snabl {
 	Sym Fimp::get_id(const Func &func, const Args &args) {
@@ -52,11 +53,18 @@ namespace snabl {
 	void Fimp::call(const FimpPtr &fimp, Pos pos) {
 		const auto &func(fimp->func);
 		auto &env(func->lib.env);
+
+		if (fimp->_is_calling) {
+			throw RuntimeError(env, pos, fmt("Recursive call: %0", {fimp->id}));
+		}
+		
+		fimp->_is_calling = true;
 		
 		if (fimp->imp) {
 			auto &call(env.begin_call(*env.scope(), pos, fimp));
 			(*fimp->imp)(call);
 			env.end_call();
+			fimp->_is_calling=false;
 		} else {
 			fimp->compile(fimp, pos);
 			auto &scope((fimp->_opts & Opts::Vars)
@@ -70,14 +78,14 @@ namespace snabl {
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
 		Def(get_id(*func, args)), func(func), args(args), imp(imp),
-	  _start_pc(nullopt), _nops(0), _opts(Opts::None) { }
+	  _start_pc(nullopt), _nops(0), _opts(Opts::None), _is_calling(false) { }
 
 	Fimp::Fimp(const FuncPtr &func,
 						 const Args &args,
 						 Forms::const_iterator begin,
 						 Forms::const_iterator end):
 		Def(get_id(*func, args)), func(func), args(args), forms(begin, end),
-		_start_pc(nullopt), _nops(0), _opts(Opts::None) { }
+		_start_pc(nullopt), _nops(0), _opts(Opts::None), _is_calling(false) { }
 
 	optional<size_t> Fimp::score(Stack::const_iterator begin,
 															 Stack::const_iterator end) const {

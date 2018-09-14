@@ -1,6 +1,6 @@
 from bench import bench
 
-def fib(n):
-    return n if n < 2 else fib(n-1) + fib(n-2)
+def fib(n, a, b):
+    return a if n == 0 else b if n == 1 else fib(n-1, b, a+b)
 
-print(int(bench(100, 'fib', '(20)')))
+print(int(bench(10000, 'fib', '(20, 0, 1)')))
