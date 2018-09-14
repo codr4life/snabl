@@ -35,7 +35,9 @@
 (test=, 1 3 swap -; 2)
 (test= (1 2 3 rot -; -) 4)
 
-(test=, [1 2 3] len; 3)
+(test=, 1 2 [3 4 5] len; 3)
+(test=, (|1 2 [..3 4 5]) len; 5)
+(test=, 3..; -; -, -1)
 
 (let: foo 42)
 (test=  @foo 42)

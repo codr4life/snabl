@@ -357,6 +357,18 @@ namespace snabl {
 								 Env &env(call.scope.env);
 								 env.push(env.iter_type, env.pop().iter());
 							 });
+
+			add_fimp(env.sym(".."),
+							 {Box(env.seq_type)},
+							 [](Call &call) {
+								 Env &env(call.scope.env);
+								 auto i(env.pop().iter());
+
+								 while (!i->is_done()) {
+									 auto v(i->call(env));
+									 if (v) { env.push(*v); }
+								 }
+							 });
 			
 			add_fimp(env.sym("dump"),
 							 {Box(env.maybe_type)},

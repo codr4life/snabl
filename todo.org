@@ -1,14 +1,13 @@
-* add split
-** add | macro
-*** separator
-** 1 2 | 3 4 [..] => [1 2 [3 4]]
-** pop at end of expression
+* finish splits
 ** adapt peek/pop
 ** adapt stack ops
 ** pass Stack::const_iterator to get_best_fimp/score
 * raise error on recursive call
-** set/clear fimp flag on call/return
+** set is-called flag on call
+*** clear in fimp-end
+*** clear when restoring State
 ** update benchmarks
+** reddit
 * add stack/str eqval
 * add push<Sink> fn
 * add pop<Source> fn
@@ -37,8 +36,10 @@
 ** rename to Fimp
 ** remove no_type
 *** map _ to Maybe instead
-* add rewrite fence after if: and switch: when needed
+* add rewrite fence 
 ** use ops::Nop
+** after if: and switch: when needed
+** after each compile
 * add include: macro
 ** one arg
 ** load all files into ops

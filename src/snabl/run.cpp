@@ -33,8 +33,8 @@ namespace snabl {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
 			&&op_fimp, &&op_fimp_end, &&op_funcall, &&op_get, &&op_isa, &&op_jump,
 			&&op_lambda, &&op_lambda_end, &&op_let, &&op_nop, &&op_push, &&op_recall,
-			&&op_rot, &&op_rswap, &&op_sdrop, &&op_skip, &&op_split, &&op_stack, &&op_swap,
-			&&op_try, &&op_try_end
+			&&op_rot, &&op_rswap, &&op_sdrop, &&op_skip, &&op_split, &&op_split_end,
+			&&op_stack, &&op_swap, &&op_try, &&op_try_end
 		};
 
 		try {
@@ -89,6 +89,7 @@ namespace snabl {
 				const auto &c(call());
 				pc = *c.return_pc;
 				end_call();
+				_splits.pop_back();
 				SNABL_DISPATCH();
 			}
 		op_funcall: {
@@ -197,8 +198,14 @@ namespace snabl {
 			_splits.push_back(_stack.size());
 			pc++;
 			SNABL_DISPATCH();
+		op_split_end:
+			_splits.pop_back();
+			pc++;
+			SNABL_DISPATCH();
 		op_stack: {
+				auto &op(pc->as<ops::Stack>());
 				const size_t offs(_splits.empty() ? 0 : _splits.back());
+				if (op.unsplit) { _splits.pop_back(); }
 				auto s(make_shared<Stack>());
 				
 				if (_stack.size() > offs) {

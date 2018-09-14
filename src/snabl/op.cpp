@@ -30,6 +30,7 @@ namespace snabl {
 		const OpType<SDrop> SDrop::type("sdrop");
 		const Skip::Type Skip::type("skip");
 		const OpType<Split> Split::type("split");
+		const OpType<SplitEnd> SplitEnd::type("split-end");
 		const OpType<Stack> Stack::type("stack");
 		const OpType<Swap> Swap::type("swap");
 		const OpType<Try> Try::type("try");

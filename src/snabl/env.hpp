@@ -64,7 +64,8 @@ namespace snabl {
 			_type_tag(1),
 			home(*this),
 			separators({
-					' ', '\t', '\n', ',', ';', '?', '<', '>', '(', ')', '{', '}', '[', ']'
+					' ', '\t', '\n', ',', ';', '?', '.', '|',
+						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			pc(ops.begin()),
 			main(begin_scope()) { begin_lib(home); }

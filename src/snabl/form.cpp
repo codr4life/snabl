@@ -73,7 +73,9 @@ namespace snabl {
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
-					if (!fn) { throw CompileError(form.pos, "Unknown id: " + id.name()); }
+					if (!fn) {
+						throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
+					}
 					
 					if ((*fn)->nargs) {
 						if (func) {
@@ -246,11 +248,18 @@ namespace snabl {
 		void Sexpr::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
-			auto &sexpr((*in++).as<Sexpr>());
-			env.compile(sexpr.body);
+			auto &f(*in++);
+			auto &b(f.as<Sexpr>().body);
+
+			bool split(!b.empty() &&
+								 &b.front().type == &forms::Id::type &&
+								 b.front().as<forms::Id>().id == env.sym("|"));
+
+			if (split) { env.emit(ops::Split::type, f.pos); }
+			env.compile(split ? b.begin()+1 : b.begin(), b.end());
+			if (split) { env.emit(ops::SplitEnd::type, f.pos); }
 		}
 		
-
 		FormImp *Stack::clone() const { return new Stack(body.begin(), body.end()); }
 
 		void Stack::dump(ostream &out) const {
@@ -270,8 +279,15 @@ namespace snabl {
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
 			auto &f(*in++);
-			env.compile(f.as<Stack>().body);
-			env.emit(ops::Stack::type, f.pos);
+			auto &b(f.as<Stack>().body);
+
+			bool split(b.empty() ||
+								 &b.front().type != &forms::Id::type ||
+								 b.front().as<forms::Id>().id != env.sym(".."));
+			
+			if (split) { env.emit(ops::Split::type, f.pos); }
+			env.compile(split ? b.begin() : b.begin()+1, b.end());
+			env.emit(ops::Stack::type, f.pos, split);
 		}
 
 		TypeList::TypeList(Forms::const_iterator begin, Forms::const_iterator end) {

@@ -63,6 +63,7 @@ namespace snabl {
 									? env.begin_scope(fimp->_parent_scope)
 									: env.scope());
 			env.begin_call(*scope, pos, fimp, env.pc);
+			env.split(func->nargs);
 			env.pc = env.ops.begin() + *fimp->_start_pc;
 		}
 	}

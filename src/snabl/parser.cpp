@@ -87,21 +87,21 @@ namespace snabl {
 	void Parser::parse_id(istream &in, Forms &out) {
 		const auto start_pos(_pos);
 		stringstream buf;
-		char c(0);
-		bool prev_sep(true);
+		char c, pc(0);
+		bool pc_sep;
 		
 		while (in.get(c)) {
 			bool c_sep(env.separators.find(c) != env.separators.end());
 			
-			if (!c_sep || (isgraph(c) && prev_sep)) {
+			if (c != ' ' && c != '\n' && (!pc || (!c_sep && !pc_sep) || c == pc)) {
 				buf << c;
 				_pos.col++;
 			} else {
 				break;
 			}
 
-			prev_sep = c_sep;
-			c = 0;
+			pc = c;
+			pc_sep = c_sep;
 		}
 
 		const auto id(buf.str());
@@ -140,10 +140,22 @@ namespace snabl {
 		char c;
 		
 		while (in.get(c)) {
-			if (isdigit(c) || c == '-' || c == '.') {
+			if (c == '.') {
+				char nc;
+				
+				if (in.get(nc) && nc == '.') {
+					in.clear();
+					in.putback('.');
+					in.putback('.');
+					break;
+				}
+
+				is_float = true;
+				buf << '.';
+				_pos.col++;
+			} else if (isdigit(c) || c == '-') {
 				buf << c;
 				_pos.col++;
-				is_float |= c == '.';
 			} else {
 				in.clear();
 				in.putback(c);
