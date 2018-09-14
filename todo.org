@@ -11,12 +11,6 @@
 * add stack/str eqval
 * add push<Sink> fn
 * add pop<Source> fn
-* add splat
-** 3.. => [0 1 2]
-* add stash
-** [..] => [[0 1 2]]
-** [1..] => [[1 2]]
-** [..2] => [[0 1]]
 * add for: loop
 ** Iter For ... Next
 ** alloc iter in op like Try.state
