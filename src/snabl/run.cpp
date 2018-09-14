@@ -31,7 +31,7 @@ namespace snabl {
 		
 		static void* op_labels[] = {
 			&&op_call, &&op_ddrop, &&op_drop, &&op_dup, &&op_else, &&op_eqval,
-			&&op_fimp, &&op_fimp_end, &&op_funcall, &&op_get, &&op_isa, &&op_jump,
+			&&op_fimp, &&op_fimp_end, &&op_funcall, &&op_get, &&op_isa,
 			&&op_lambda, &&op_lambda_end, &&op_let, &&op_nop, &&op_push, &&op_recall,
 			&&op_rot, &&op_rswap, &&op_sdrop, &&op_skip, &&op_split, &&op_split_end,
 			&&op_stack, &&op_swap, &&op_try, &&op_try_end
@@ -144,9 +144,6 @@ namespace snabl {
 				pc++;
 				SNABL_DISPATCH();
 			}
-		op_jump:
-			pc = start_pc + *pc->as<ops::Jump>().pc;
-			SNABL_DISPATCH();
 		op_lambda: {
 				const auto &op(pc->as<ops::Lambda>());
 
@@ -244,7 +241,7 @@ namespace snabl {
 				auto &op(pc->as<ops::Try>());
 				op.state.emplace(*this);
 				_tries.push_back(&op);
-				pc = start_pc+*op.body_pc;
+				pc++;
 				SNABL_DISPATCH();
 			}
 		op_try_end:
@@ -269,7 +266,7 @@ namespace snabl {
 			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = start_pc+*t.start_pc;
+			pc = start_pc+*t.handler_pc;
 			SNABL_DISPATCH();				
 		}
 	}

@@ -18,7 +18,6 @@ namespace snabl {
 		const Funcall::Type Funcall::type("funcall");
 		const OpType<Get> Get::type("get");
 		const Isa::Type Isa::type("isa");
-		const Jump::Type Jump::type("jump");
 		const OpType<Lambda> Lambda::type("lambda");
 		const OpType<LambdaEnd> LambdaEnd::type("lambda-end");
 		const OpType<Let> Let::type("let");

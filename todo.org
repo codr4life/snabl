@@ -1,7 +1,3 @@
-* change internal try: order
-** put body first
-** one skip and one jump less for best case
-** remove Jump op
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

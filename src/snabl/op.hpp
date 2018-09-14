@@ -117,20 +117,6 @@ namespace snabl {
 			Isa(const ATypePtr &rhs): rhs(rhs) { }
 		};
 
-		struct Jump {
-			struct Type: public OpType<Jump> {
-				Type(const string &id): OpType<Jump>(id) { }
-
-				void dump(const Jump &op, ostream &out) const override {
-					out << ' ' << *op.pc;
-				}
-			};
-
-			static const Type type;
-			optional<size_t> pc;
-			Jump(optional<size_t> pc=nullopt): pc(pc) { }
-		};
-
 		struct Lambda {
 			static const OpType<Lambda> type;
 			optional<size_t> start_pc, nops;
@@ -217,7 +203,7 @@ namespace snabl {
 
 		struct Try {
 			static const OpType<Try> type;
-			optional<size_t> start_pc, body_pc;
+			optional<size_t> handler_pc;
 			optional<State> state;
 		};
 
@@ -248,7 +234,7 @@ namespace snabl {
 		}
 	private:
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa, ops::Jump,
+					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
 						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
 						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::SplitEnd,
 						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _imp;

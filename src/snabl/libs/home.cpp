@@ -114,16 +114,15 @@ namespace snabl {
 									 Env &env) {
 									auto &form(*in++);
 									auto &op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
-									op.start_pc = env.ops.size();
+									if (in == end) { throw SyntaxError(form.pos, "Missing handler"); }
+									auto handler(in++);
+									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
 									env.compile(in++, in+1);
-									auto &body_skip(env.emit(ops::Skip::type, form.pos)
-																	.as<ops::Skip>());
-									op.body_pc = env.ops.size();
-									env.compile(in++, in+1);
-									env.emit(ops::Push::type, form.pos, env.nil_type);
-									env.emit(ops::Jump::type, form.pos, op.start_pc);
 									env.emit(ops::TryEnd::type, form.pos);
-									body_skip.nops = env.ops.size()-*op.body_pc;
+									env.emit(ops::Push::type, form.pos, env.nil_type);
+									env.emit(ops::Nop::type, form.pos);
+									op.handler_pc = env.ops.size();
+									env.compile(handler, handler+1);
 								});
 			
 			add_macro(env.sym("let:"),
@@ -135,10 +134,10 @@ namespace snabl {
 									auto &p(*in++);
 
 									if (&p.type != &forms::Id::type && &p.type != &forms::Sexpr::type) {
-										throw SyntaxError(p.pos, "Invalid let: place");
+										throw SyntaxError(p.pos, "Invalid place");
 									}
 
-									if (in == end) { throw Error("Missing let: value"); }
+									if (in == end) { throw Error("Missing value"); }
 									env.compile(in++, in+1);
 									
 									if (&p.type == &forms::Id::type) {
