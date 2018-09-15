@@ -12,7 +12,7 @@ namespace snabl {
 		auto offs(ops.size());
 		compile(in);
 		pc = ops.begin()+offs;		
-		run2();
+		run();
 	}
 
 	void Env::run(istream &in) {
@@ -21,9 +21,10 @@ namespace snabl {
 		auto offs(ops.size());
 		compile(fs.begin(), fs.end());
 		pc = ops.begin()+offs;		
-		run2();
+		run();
 	}
 
+	/*
 	void Env::run(optional<Ops::iterator> _end_pc) {
 		const auto
 			start_pc(ops.begin()),
@@ -270,8 +271,9 @@ namespace snabl {
 			SNABL_DISPATCH();				
 		}
 	}
+	*/
 
-	void Env::run2(optional<Ops::iterator> _end_pc) {
+	void Env::run(optional<Ops::iterator> _end_pc) {
 		const auto start_pc(ops.begin()), end_pc(_end_pc ? *_end_pc : ops.end());
 		next = (pc == end_pc) ? nullopt : make_optional(pc->lambda);
 		
