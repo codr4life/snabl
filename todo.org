@@ -1,6 +1,7 @@
 * pass lambdas to op constructor
 ** remove make_lambda
 ** move constructors to op.cpp
+* inline ops in separate header
 * convert remaining Ops to lambdas
 * add stack/str eqval
 * add push/pop fns
