@@ -277,7 +277,8 @@ namespace snabl {
 			end_pc(_end_pc ? *_end_pc : ops.end());
 
 		optional<function<void ()>> next([this, &end_pc, &next] {
-				next = (pc == end_pc) ? nullopt : pc->type.run(*pc, next, end_pc, *this);
+				next = (pc == end_pc)
+					? nullopt : make_optional(pc->make_lambda(next, end_pc, *this));
 			});
 		
 	enter:
@@ -302,7 +303,8 @@ namespace snabl {
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
 			pc = start_pc+*t.handler_pc;
-			next = (pc == end_pc) ? nullopt : pc->type.run(*pc, next, end_pc, *this);
+			next = (pc == end_pc)
+				? nullopt : make_optional(pc->make_lambda(next, end_pc, *this));
 			goto enter;
 		}
 	}

@@ -1,3 +1,8 @@
+* pass lambdas to op constructor
+** remove make_lambda
+** move constructors to op.cpp
+* convert remaining Ops to lambdas
+* remove deprecated run
 * add stack/str eqval
 * add push/pop fns
 ** stack/str
