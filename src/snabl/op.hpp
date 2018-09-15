@@ -13,19 +13,15 @@
 namespace snabl {
 	struct Op;
 	using Ops = deque<Op>;
-
+	using OpLambda = function<void (Ops::const_iterator end_pc, Env &env)>;
+	
 	struct AOpType {
 		const string id;
 		const size_t label_offs;
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
-
-		virtual function<void (Op &op,
-													 optional<function<void ()>> &next,
-													 Ops::const_iterator end_pc,
-													 Env &env)> make_lambda() const;
-		
+		virtual OpLambda make_lambda(Op &op) const;
 		virtual void dump(const Op &op, ostream &out) const { }
 	private:
 		static size_t next_label_offs;
@@ -50,10 +46,7 @@ namespace snabl {
 		struct Drop {
 			struct Type: public OpType<Drop> {
 				Type(const string &id): OpType<Drop>(id) { }
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 
 			static const Type type;
@@ -101,10 +94,7 @@ namespace snabl {
 			struct Type: public OpType<Funcall> {
 				Type(const string &id): OpType<Funcall>(id) { }
 				void dump(const Funcall &op, ostream &out) const override;
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 			
 			static const Type type;
@@ -136,10 +126,7 @@ namespace snabl {
 		struct Lambda {
 			struct Type: public OpType<Lambda> {
 				Type(const string &id): OpType<Lambda>(id) { }
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 
 			static const Type type;
@@ -151,10 +138,7 @@ namespace snabl {
 		struct LambdaEnd {
 			struct Type: public OpType<LambdaEnd> {
 				Type(const string &id): OpType<LambdaEnd>(id) { }
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 
 			static const Type type;
@@ -174,10 +158,7 @@ namespace snabl {
 			struct Type: public OpType<Push> {
 				Type(const string &id): OpType<Push>(id) { }
 				void dump(const Push &op, ostream &out) const override;
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 				
 			static const Type type;			
@@ -240,10 +221,7 @@ namespace snabl {
 		struct Try {
 			struct Type: public OpType<Try> {
 				Type(const string &id): OpType<Try>(id) { }
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 
 			static const Type type;
@@ -254,10 +232,7 @@ namespace snabl {
 		struct TryEnd {
 			struct Type: public OpType<TryEnd> {
 				Type(const string &id): OpType<TryEnd>(id) { }
-				function<void (Op &op,
-											 optional<function<void ()>> &next,
-											 Ops::const_iterator end_pc,
-											 Env &env)> make_lambda() const override;
+				OpLambda make_lambda(Op &op) const override;
 			};
 			
 			static const Type type;
@@ -267,6 +242,7 @@ namespace snabl {
 	struct Op {
 		const AOpType &type;
 		const Pos pos;
+		const OpLambda lambda;
 		
 		template <typename ImpT, typename... ArgsT>
 		Op(const OpType<ImpT> &type, Pos pos, ArgsT &&... args);
@@ -284,19 +260,7 @@ namespace snabl {
 			type.dump(*this, out);
 			out << endl;
 		}
-
-		function<void ()> make_lambda(optional<function<void ()>> &next,
-																	Ops::const_iterator end_pc,
-																	Env &env) {
-			return [this, &next, end_pc, &env]() { _lambda(*this, next, end_pc, env); };
-		}
-		
-	private:
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> _lambda;
-		
+	private:		
 		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
 					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
 						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
@@ -308,7 +272,7 @@ namespace snabl {
 	Op::Op(const OpType<ImpT> &type, Pos pos, ArgsT &&... args):
 		type(type),
 		pos(pos),
-		_lambda(type.make_lambda()),
+		lambda(type.make_lambda(*this)),
 		_imp(ImpT(forward<ArgsT>(args)...)) { }
 
 	template <typename ImpT>

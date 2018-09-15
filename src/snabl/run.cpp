@@ -272,19 +272,13 @@ namespace snabl {
 	}
 
 	void Env::run2(optional<Ops::iterator> _end_pc) {
-		const auto
-			start_pc(ops.begin()),
-			end_pc(_end_pc ? *_end_pc : ops.end());
-
-		optional<function<void ()>> next([this, &end_pc, &next] {
-				next = (pc == end_pc)
-					? nullopt : make_optional(pc->make_lambda(next, end_pc, *this));
-			});
+		const auto start_pc(ops.begin()), end_pc(_end_pc ? *_end_pc : ops.end());
+		next = (pc == end_pc) ? nullopt : make_optional(pc->lambda);
 		
 	enter:
 		
 		try {
-			while (next) { (*next)(); }
+			while (next) { (*next)(end_pc, *this); }
 		} catch (const UserError &e) {
 			if (_tries.empty()) { throw e; }
 			auto &t(*_tries.back());
@@ -303,8 +297,7 @@ namespace snabl {
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
 			pc = start_pc+*t.handler_pc;
-			next = (pc == end_pc)
-				? nullopt : make_optional(pc->make_lambda(next, end_pc, *this));
+			next = (pc == end_pc) ? nullopt : make_optional(pc->lambda);
 			goto enter;
 		}
 	}

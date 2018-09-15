@@ -7,16 +7,9 @@
 namespace snabl {
 	size_t AOpType::next_label_offs(0);
 
-  function<void (Op &op,
-								 optional<function<void ()>> &next,
-								 Ops::const_iterator end_pc,
-								 Env &env)> AOpType::make_lambda() const {
-		return [](Op &op,
-							optional<function<void ()>> &next,
-							Ops::const_iterator end_pc,
-							Env &env) {
-			next = (++env.pc == end_pc)
-				? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+	OpLambda AOpType::make_lambda(Op &op) const {
+		return [](Ops::const_iterator end_pc, Env &env) {
+			env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 		};
 	}
 
@@ -49,19 +42,11 @@ namespace snabl {
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> Drop::Type::make_lambda() const {
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda Drop::Type::make_lambda(Op &op) const {
+			return [](Ops::const_iterator end_pc, Env &env) {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to drop"); }
 				env._stack.pop_back();
-				
-				next = (++env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
@@ -84,14 +69,8 @@ namespace snabl {
 			if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
 		}
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> Funcall::Type::make_lambda() const {
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda Funcall::Type::make_lambda(Op &op) const {
+			return [&op](Ops::const_iterator end_pc, Env &env) {
 				auto &o(op.as<ops::Funcall>());
 				const FimpPtr *fimp(nullptr);
 
@@ -120,9 +99,7 @@ namespace snabl {
 			
 				env.pc++;
 				snabl::Fimp::call(*fimp, pos);
-				
-				next = (env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
@@ -130,14 +107,8 @@ namespace snabl {
 			out << ' ' << op.rhs->id;
 		}
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> Lambda::Type::make_lambda() const {			
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda Lambda::Type::make_lambda(Op &op) const {			
+			return [&op](Ops::const_iterator end_pc, Env &env) {
 				auto &o(op.as<ops::Lambda>());
 
 				env.push(env.lambda_type,
@@ -147,30 +118,19 @@ namespace snabl {
 																						*o.start_pc, *o.nops,
 																						o.opts));
 				env.pc += *o.nops+1;
-
-				next = (env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
-		function<void (Op &op,
-									 optional<function<void ()>>
-									 &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> LambdaEnd::Type::make_lambda() const {
-			return [](Op &op,
-								optional<function<void ()>>
-								&next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda LambdaEnd::Type::make_lambda(Op &op) const {
+			return [](Ops::const_iterator end_pc, Env &env) {
 				const auto &c(env.call());
 				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
 				if (l.opts() & Target::Opts::Vars) { env.end_scope(); }
 				env.pc = *c.return_pc;
 				env.end_call();
 
-				next = (env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
@@ -179,51 +139,27 @@ namespace snabl {
 			op.val.dump(out);
 		}
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> Push::Type::make_lambda() const {
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
-				env.push(op.as<ops::Push>().val); 
-				
-				next = (++env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+		OpLambda Push::Type::make_lambda(Op &op) const {
+			return [&op](Ops::const_iterator end_pc, Env &env) {
+				env.push(op.as<ops::Push>().val);
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> Try::Type::make_lambda() const {			
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda Try::Type::make_lambda(Op &op) const {			
+			return [&op](Ops::const_iterator end_pc, Env &env) {
 				auto &o(op.as<ops::Try>());
 				o.state.emplace(env);
 				env._tries.push_back(&o);
-				
-				next = (++env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 
-		function<void (Op &op,
-									 optional<function<void ()>> &next,
-									 Ops::const_iterator end_pc,
-									 Env &env)> TryEnd::Type::make_lambda() const {
-			return [](Op &op,
-								optional<function<void ()>> &next,
-								Ops::const_iterator end_pc,
-								Env &env) {
+		OpLambda TryEnd::Type::make_lambda(Op &op) const {
+			return [](Ops::const_iterator end_pc, Env &env) {
 				env._tries.back()->state.reset();
 				env._tries.pop_back();
-				
-				next = (++env.pc == end_pc)
-					? nullopt : make_optional(env.pc->make_lambda(next, end_pc, env));
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
 			};
 		};
 	}

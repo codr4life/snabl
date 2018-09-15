@@ -58,7 +58,8 @@ namespace snabl {
 
 		Ops ops;
 		Ops::iterator pc;
-
+		optional<OpLambda> next;
+		
 		const ScopePtr &main;
 		
 		Env():
