@@ -12,6 +12,7 @@
 
 namespace snabl {
 	struct Op;
+	
 	using Ops = deque<Op>;
 	using OpImp = function<void (Ops::const_iterator end_pc)>;
 	
@@ -53,11 +54,21 @@ namespace snabl {
 		};
 
 		struct Dup {
-			static const OpType<Dup> type;
+			struct Type: public OpType<Dup> {
+				Type(const string &id): OpType<Dup>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Else {
-			static const OpType<Else> type;
+			struct Type: public OpType<Else> {
+				Type(const string &id): OpType<Else>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 			optional<size_t> nops;
 		};
 		
@@ -65,6 +76,7 @@ namespace snabl {
 			struct Type: public OpType<Eqval> {
 				Type(const string &id): OpType<Eqval>(id) { }
 				void dump(const Eqval &op, ostream &out) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -76,6 +88,7 @@ namespace snabl {
 			struct Type: public OpType<Fimp> {
 				Type(const string &id): OpType<Fimp>(id) { }
 				void dump(const Fimp &op, ostream &out) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -178,11 +191,21 @@ namespace snabl {
 		};
 
 		struct RSwap {
-			static const OpType<RSwap> type;
+			struct Type: public OpType<RSwap> {
+				Type(const string &id): OpType<RSwap>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct SDrop {
-			static const OpType<SDrop> type;
+			struct Type: public OpType<SDrop> {
+				Type(const string &id): OpType<SDrop>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Skip {

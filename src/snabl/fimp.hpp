@@ -44,8 +44,9 @@ namespace snabl {
 		size_t _nops;
 		Opts _opts;
 		bool _is_calling;
-		
-		friend class Env;
+
+		friend Env;
+		friend ops::Fimp;
 	};
 }
 
