@@ -88,7 +88,7 @@ namespace snabl {
 			};
 		};
 
-		void Eqval::Type::dump(const Eqval &op, ostream &out) const {
+		void Eqval::Type::dump_data(const Eqval &op, ostream &out) const {
 			if (op.rhs) {
 				out << ' ';
 				op.rhs->dump(out);
@@ -110,7 +110,7 @@ namespace snabl {
 			};
 		};
 		
-		void Fimp::Type::dump(const Fimp &op, ostream &out) const {
+		void Fimp::Type::dump_data(const Fimp &op, ostream &out) const {
 			out << ' ' << op.ptr->id << ' ' << op.ptr->nops();
 		}
 
@@ -141,7 +141,7 @@ namespace snabl {
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
-		void Funcall::Type::dump(const Funcall &op, ostream &out) const {
+		void Funcall::Type::dump_data(const Funcall &op, ostream &out) const {
 			out << ' ' << (op.fimp ? op.fimp->id : op.func->id);
 			if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
 		}
@@ -192,7 +192,7 @@ namespace snabl {
 			};
 		};
 
-		void Isa::Type::dump(const Isa &op, ostream &out) const {
+		void Isa::Type::dump_data(const Isa &op, ostream &out) const {
 			out << ' ' << op.rhs->id;
 		}
 
@@ -247,7 +247,7 @@ namespace snabl {
 			};
 		};
 
-		void Push::Type::dump(const Push &op, ostream &out) const {
+		void Push::Type::dump_data(const Push &op, ostream &out) const {
 			out << ' ';
 			op.val.dump(out);
 		}

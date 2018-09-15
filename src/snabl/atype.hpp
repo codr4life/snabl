@@ -34,6 +34,8 @@ namespace snabl {
 			}
 		}
 
+		virtual ~AType() { }
+		
 		bool isa(const ATypePtr &parent) const {
 			return
 				parent.get() == this ||

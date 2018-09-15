@@ -7,6 +7,7 @@ namespace snabl {
 	class Def {
 	public:
 		const Sym id;
+		virtual ~Def() { }
 	protected:
 		Def(Sym id): id(id) { }
 	};

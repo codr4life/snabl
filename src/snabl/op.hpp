@@ -32,7 +32,7 @@ namespace snabl {
 	struct OpType: public AOpType {
 		OpType(const string &id): AOpType(id) { }		
 		void dump(const Op &op, ostream &out) const override;
-		virtual void dump(const DataT &op, ostream &out) const { }
+		virtual void dump_data(const DataT &op, ostream &out) const { }
 	};
 	
 	namespace ops {
@@ -85,7 +85,7 @@ namespace snabl {
 		struct Eqval {
 			struct Type: public OpType<Eqval> {
 				Type(const string &id): OpType<Eqval>(id) { }
-				void dump(const Eqval &op, ostream &out) const override;
+				void dump_data(const Eqval &op, ostream &out) const override;
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
@@ -97,7 +97,7 @@ namespace snabl {
 		struct Fimp {
 			struct Type: public OpType<Fimp> {
 				Type(const string &id): OpType<Fimp>(id) { }
-				void dump(const Fimp &op, ostream &out) const override;
+				void dump_data(const Fimp &op, ostream &out) const override;
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
@@ -121,7 +121,7 @@ namespace snabl {
 		struct Funcall {
 			struct Type: public OpType<Funcall> {
 				Type(const string &id): OpType<Funcall>(id) { }
-				void dump(const Funcall &op, ostream &out) const override;
+				void dump_data(const Funcall &op, ostream &out) const override;
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 			
@@ -148,7 +148,7 @@ namespace snabl {
 		struct Isa {
 			struct Type: public OpType<Isa> {
 				Type(const string &id): OpType<Isa>(id) { }
-				void dump(const Isa &op, ostream &out) const override;
+				void dump_data(const Isa &op, ostream &out) const override;
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
@@ -196,7 +196,7 @@ namespace snabl {
 		struct Push {
 			struct Type: public OpType<Push> {
 				Type(const string &id): OpType<Push>(id) { }
-				void dump(const Push &op, ostream &out) const override;
+				void dump_data(const Push &op, ostream &out) const override;
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 				
@@ -248,7 +248,7 @@ namespace snabl {
 			struct Type: public OpType<Skip> {
 				Type(const string &id): OpType<Skip>(id) { }
 
-				void dump(const Skip &op, ostream &out) const override {
+				void dump_data(const Skip &op, ostream &out) const override {
 					out << ' ' << *op.nops;
 				}
 
@@ -319,8 +319,6 @@ namespace snabl {
 			pos(pos),
 			imp(type.make_imp(env, *this)) { }
 
-		virtual ~Op() { }
-
 		template <typename DataT>
 		const DataT &as() const { return get<DataT>(_data); }
 
@@ -336,7 +334,7 @@ namespace snabl {
 	
 	template <typename DataT>
 	void OpType<DataT>::dump(const Op &op, ostream &out) const {
-		dump(op.as<DataT>(), out);
+		dump_data(op.as<DataT>(), out);
 	}
 }
 

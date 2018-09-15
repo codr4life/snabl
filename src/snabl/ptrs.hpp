@@ -31,7 +31,7 @@ namespace snabl {
 	class Func;
 	using FuncPtr = shared_ptr<Func>;
 
-	class Lambda;
+	struct Lambda;
 	using LambdaPtr = shared_ptr<Lambda>;
 
 	class Iter;

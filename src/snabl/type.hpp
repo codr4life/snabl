@@ -9,7 +9,7 @@ namespace snabl {
 	class Type: public AType {
 	public:
 		Type(Lib &lib, Sym id): AType(lib, id, sizeof(T)) { }
-
+		
 		bool equid(const Box &lhs, const Box &rhs) const override {
 			return eqval(lhs, rhs);
 		}

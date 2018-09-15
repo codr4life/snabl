@@ -1,4 +1,6 @@
 * change Call.return pc to OpImp
+** add Op.pc, init in emit
+*** update Env.pc where needed
 * convert remaining Ops to lambdas
 * add stack/str eqval
 * add push/pop fns
