@@ -1,5 +1,5 @@
+* change Call.return pc to OpImp
 * convert remaining Ops to lambdas
-* unroll run-loop using if(optional?)-ladder
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

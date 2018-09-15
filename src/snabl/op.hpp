@@ -37,11 +37,21 @@ namespace snabl {
 	
 	namespace ops {
 		struct Call {				
-			static const OpType<Call> type;
+			struct Type: public OpType<Call> {
+				Type(const string &id): OpType<Call>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct DDrop {
-			static const OpType<DDrop> type;
+			struct Type: public OpType<DDrop> {
+				Type(const string &id): OpType<DDrop>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Drop {
@@ -98,7 +108,12 @@ namespace snabl {
 		};
 
 		struct FimpEnd {
-			static const OpType<FimpEnd> type;
+			struct Type: public OpType<FimpEnd> {
+				Type(const string &id): OpType<FimpEnd>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 			const bool end_scope;
 			FimpEnd(bool end_scope): end_scope(end_scope) { }
 		};
@@ -120,7 +135,12 @@ namespace snabl {
 		};
 		
 		struct Get {
-			static const OpType<Get> type;
+			struct Type: public OpType<Get> {
+				Type(const string &id): OpType<Get>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 			const Sym id;
 			Get(Sym id): id(id) { }
 		};
@@ -129,6 +149,7 @@ namespace snabl {
 			struct Type: public OpType<Isa> {
 				Type(const string &id): OpType<Isa>(id) { }
 				void dump(const Isa &op, ostream &out) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -158,7 +179,12 @@ namespace snabl {
 		};
 
 		struct Let {
-			static const OpType<Let> type;
+			struct Type: public OpType<Let> {
+				Type(const string &id): OpType<Let>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 			const Sym id;
 			Let(Sym id): id(id) { }
 		};
@@ -183,11 +209,21 @@ namespace snabl {
 		};
 
 		struct Recall {
-			static const OpType<Recall> type;
+			struct Type: public OpType<Recall> {
+				Type(const string &id): OpType<Recall>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Rot {
-			static const OpType<Rot> type;
+			struct Type: public OpType<Rot> {
+				Type(const string &id): OpType<Rot>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct RSwap {
@@ -215,6 +251,8 @@ namespace snabl {
 				void dump(const Skip &op, ostream &out) const override {
 					out << ' ' << *op.nops;
 				}
+
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -263,16 +301,23 @@ namespace snabl {
 	}
 	
 	struct Op {
+	private:		
+		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
+					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
+						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
+						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::SplitEnd,
+						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _data;
+	public:
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
 		
 		template <typename DataT, typename... ArgsT>
 		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
+			_data(DataT(forward<ArgsT>(args)...)),
 			type(type),
 			pos(pos),
-			imp(type.make_imp(env, *this)),
-			_data(DataT(forward<ArgsT>(args)...)) { }
+			imp(type.make_imp(env, *this)) { }
 
 		virtual ~Op() { }
 
@@ -287,12 +332,6 @@ namespace snabl {
 			type.dump(*this, out);
 			out << endl;
 		}
-	private:		
-		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
-						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
-						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::SplitEnd,
-						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _data;
 	};
 	
 	template <typename DataT>

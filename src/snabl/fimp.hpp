@@ -47,6 +47,7 @@ namespace snabl {
 
 		friend Env;
 		friend ops::Fimp;
+		friend ops::FimpEnd;
 	};
 }
 

@@ -203,11 +203,15 @@ namespace snabl {
 		
 		friend State;
 		friend RuntimeError;
+		friend ops::DDrop::Type;
 		friend ops::Drop::Type;
 		friend ops::Dup::Type;
 		friend ops::Eqval::Type;
 		friend ops::Fimp::Type;
 		friend ops::Funcall::Type;
+		friend ops::Isa::Type;
+		friend ops::Let::Type;
+		friend ops::Rot::Type;
 		friend ops::RSwap::Type;
 		friend ops::SDrop::Type;
 		friend ops::Try::Type;
