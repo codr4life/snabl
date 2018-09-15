@@ -1,8 +1,10 @@
+* rename OpImp/_imp to OpData/data
+* rename OpLambda to OpImp/imp
 * pass lambdas to op constructor
 ** remove make_lambda
-** move constructors to op.cpp
-* inline ops in separate header
+** inline constructors in separate header
 * convert remaining Ops to lambdas
+* unroll run-loop using if(optional?)-ladder
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

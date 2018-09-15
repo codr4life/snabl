@@ -13,7 +13,7 @@
 namespace snabl {
 	struct Op;
 	using Ops = deque<Op>;
-	using OpLambda = function<void (Ops::const_iterator end_pc)>;
+	using OpImp = function<void (Ops::const_iterator end_pc)>;
 	
 	struct AOpType {
 		const string id;
@@ -21,17 +21,17 @@ namespace snabl {
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
-		virtual OpLambda make_lambda(Env &env, Op &op) const;
+		virtual OpImp make_imp(Env &env, Op &op) const;
 		virtual void dump(const Op &op, ostream &out) const { }
 	private:
 		static size_t next_label_offs;
 	};
 
-	template <typename ImpT>
+	template <typename DataT>
 	struct OpType: public AOpType {
 		OpType(const string &id): AOpType(id) { }		
 		void dump(const Op &op, ostream &out) const override;
-		virtual void dump(const ImpT &op, ostream &out) const { }
+		virtual void dump(const DataT &op, ostream &out) const { }
 	};
 	
 	namespace ops {
@@ -46,7 +46,7 @@ namespace snabl {
 		struct Drop {
 			struct Type: public OpType<Drop> {
 				Type(const string &id): OpType<Drop>(id) { }
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -94,7 +94,7 @@ namespace snabl {
 			struct Type: public OpType<Funcall> {
 				Type(const string &id): OpType<Funcall>(id) { }
 				void dump(const Funcall &op, ostream &out) const override;
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 			
 			static const Type type;
@@ -126,7 +126,7 @@ namespace snabl {
 		struct Lambda {
 			struct Type: public OpType<Lambda> {
 				Type(const string &id): OpType<Lambda>(id) { }
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -138,7 +138,7 @@ namespace snabl {
 		struct LambdaEnd {
 			struct Type: public OpType<LambdaEnd> {
 				Type(const string &id): OpType<LambdaEnd>(id) { }
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -158,7 +158,7 @@ namespace snabl {
 			struct Type: public OpType<Push> {
 				Type(const string &id): OpType<Push>(id) { }
 				void dump(const Push &op, ostream &out) const override;
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 				
 			static const Type type;			
@@ -221,7 +221,7 @@ namespace snabl {
 		struct Try {
 			struct Type: public OpType<Try> {
 				Type(const string &id): OpType<Try>(id) { }
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
@@ -232,7 +232,7 @@ namespace snabl {
 		struct TryEnd {
 			struct Type: public OpType<TryEnd> {
 				Type(const string &id): OpType<TryEnd>(id) { }
-				OpLambda make_lambda(Env &env, Op &op) const override;
+				OpImp make_imp(Env &env, Op &op) const override;
 			};
 			
 			static const Type type;
@@ -242,18 +242,22 @@ namespace snabl {
 	struct Op {
 		const AOpType &type;
 		const Pos pos;
-		const OpLambda lambda;
+		const OpImp imp;
 		
-		template <typename ImpT, typename... ArgsT>
-		Op(Env &env, const OpType<ImpT> &type, Pos pos, ArgsT &&... args);
+		template <typename DataT, typename... ArgsT>
+		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
+			type(type),
+			pos(pos),
+			imp(type.make_imp(env, *this)),
+			_data(DataT(forward<ArgsT>(args)...)) { }
 
 		virtual ~Op() { }
 
-		template <typename ImpT>
-		const ImpT &as() const;
+		template <typename DataT>
+		const DataT &as() const { return get<DataT>(_data); }
 
-		template <typename ImpT>
-		ImpT &as();
+		template <typename DataT>
+		DataT &as() { return get<DataT>(_data); }
 
 		void dump(ostream &out) const {
 			out << type.id;
@@ -265,25 +269,12 @@ namespace snabl {
 					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
 						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
 						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::SplitEnd,
-						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _imp;
+						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _data;
 	};
 	
-	template <typename ImpT, typename... ArgsT>
-	Op::Op(Env &env, const OpType<ImpT> &type, Pos pos, ArgsT &&... args):
-		type(type),
-		pos(pos),
-		lambda(type.make_lambda(env, *this)),
-		_imp(ImpT(forward<ArgsT>(args)...)) { }
-
-	template <typename ImpT>
-	const ImpT &Op::as() const { return get<ImpT>(_imp); }
-
-	template <typename ImpT>
-	ImpT &Op::as() { return get<ImpT>(_imp); }
-
-	template <typename ImpT>
-	void OpType<ImpT>::dump(const Op &op, ostream &out) const {
-		dump(op.as<ImpT>(), out);
+	template <typename DataT>
+	void OpType<DataT>::dump(const Op &op, ostream &out) const {
+		dump(op.as<DataT>(), out);
 	}
 }
 

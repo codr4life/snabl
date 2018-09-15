@@ -7,9 +7,9 @@
 namespace snabl {
 	size_t AOpType::next_label_offs(0);
 
-	OpLambda AOpType::make_lambda(Env &env, Op &op) const {
+	OpImp AOpType::make_imp(Env &env, Op &op) const {
 		return [&env](Ops::const_iterator end_pc) {
-			env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+			env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 		};
 	}
 
@@ -42,11 +42,11 @@ namespace snabl {
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
 
-		OpLambda Drop::Type::make_lambda(Env &env, Op &op) const {
+		OpImp Drop::Type::make_imp(Env &env, Op &op) const {
 			return [&env](Ops::const_iterator end_pc) {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to drop"); }
 				env._stack.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
@@ -69,7 +69,7 @@ namespace snabl {
 			if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
 		}
 
-		OpLambda Funcall::Type::make_lambda(Env &env, Op &op) const {
+		OpImp Funcall::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op](Ops::const_iterator end_pc) {
 				auto &o(op.as<ops::Funcall>());
 				const FimpPtr *fimp(nullptr);
@@ -99,7 +99,7 @@ namespace snabl {
 			
 				env.pc++;
 				snabl::Fimp::call(*fimp, pos);
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
@@ -107,7 +107,7 @@ namespace snabl {
 			out << ' ' << op.rhs->id;
 		}
 
-		OpLambda Lambda::Type::make_lambda(Env &env, Op &op) const {			
+		OpImp Lambda::Type::make_imp(Env &env, Op &op) const {			
 			return [&env, &op](Ops::const_iterator end_pc) {
 				auto &o(op.as<ops::Lambda>());
 
@@ -118,11 +118,11 @@ namespace snabl {
 																						*o.start_pc, *o.nops,
 																						o.opts));
 				env.pc += *o.nops+1;
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
-		OpLambda LambdaEnd::Type::make_lambda(Env &env, Op &op) const {
+		OpImp LambdaEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env](Ops::const_iterator end_pc) {
 				const auto &c(env.call());
 				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
@@ -130,7 +130,7 @@ namespace snabl {
 				env.pc = *c.return_pc;
 				env.end_call();
 
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
@@ -139,27 +139,27 @@ namespace snabl {
 			op.val.dump(out);
 		}
 
-		OpLambda Push::Type::make_lambda(Env &env, Op &op) const {
+		OpImp Push::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op](Ops::const_iterator end_pc) {
 				env.push(op.as<ops::Push>().val);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
-		OpLambda Try::Type::make_lambda(Env &env, Op &op) const {			
+		OpImp Try::Type::make_imp(Env &env, Op &op) const {			
 			return [&env, &op](Ops::const_iterator end_pc) {
 				auto &o(op.as<ops::Try>());
 				o.state.emplace(env);
 				env._tries.push_back(&o);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 
-		OpLambda TryEnd::Type::make_lambda(Env &env, Op &op) const {
+		OpImp TryEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env](Ops::const_iterator end_pc) {
 				env._tries.back()->state.reset();
 				env._tries.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->lambda);
+				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
 		};
 	}

@@ -58,7 +58,7 @@ namespace snabl {
 
 		Ops ops;
 		Ops::iterator pc;
-		optional<OpLambda> next;
+		optional<OpImp> next;
 		
 		const ScopePtr &main;
 		
