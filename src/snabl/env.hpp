@@ -5,6 +5,7 @@
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/pos.hpp"
+#include "snabl/run.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
 #include "snabl/state.hpp"
@@ -105,6 +106,7 @@ namespace snabl {
 		void run(string_view in);
 		void run(istream &in);
 		void run(optional<Ops::iterator> end_pc=nullopt);
+		void run2(optional<Ops::iterator> end_pc=nullopt);
 
 		void begin_lib(Lib &lib) { _libs.push_back(&lib); }
 	
@@ -199,8 +201,12 @@ namespace snabl {
 		vector<size_t> _splits;
 		size_t _stack_offs;
 		
-		friend struct State;
-		friend struct RuntimeError;
+		friend State;
+		friend RuntimeError;
+		friend ops::Drop::Type;
+		friend ops::Funcall::Type;
+		friend ops::Try::Type;
+		friend ops::TryEnd::Type;
 	};
 
 	inline bool Box::isa(const ATypePtr &rhs) const {

@@ -12,6 +12,7 @@
 
 namespace snabl {
 	struct Op;
+	using Ops = deque<Op>;
 
 	struct AOpType {
 		const string id;
@@ -20,6 +21,11 @@ namespace snabl {
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
 
+		virtual optional<function<void ()>> run(Op &op,
+																						optional<function<void ()>> &next,
+																						Ops::const_iterator end_pc,
+																						Env &env) const;
+		
 		virtual void dump(const Op &op, ostream &out) const { }
 	private:
 		static size_t next_label_offs;
@@ -27,13 +33,11 @@ namespace snabl {
 
 	template <typename ImpT>
 	struct OpType: public AOpType {
-		OpType(const string &id): AOpType(id) { }
+		OpType(const string &id): AOpType(id) { }		
 		void dump(const Op &op, ostream &out) const override;
 		virtual void dump(const ImpT &op, ostream &out) const { }
 	};
 	
-	using Ops = deque<Op>;
-
 	namespace ops {
 		struct Call {				
 			static const OpType<Call> type;
@@ -44,7 +48,15 @@ namespace snabl {
 		};
 
 		struct Drop {
-			static const OpType<Drop> type;
+			struct Type: public OpType<Drop> {
+				Type(const string &id): OpType<Drop>(id) { }
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Dup {
@@ -89,6 +101,10 @@ namespace snabl {
 			struct Type: public OpType<Funcall> {
 				Type(const string &id): OpType<Funcall>(id) { }
 				void dump(const Funcall &op, ostream &out) const override;
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
 			};
 			
 			static const Type type;
@@ -118,14 +134,30 @@ namespace snabl {
 		};
 
 		struct Lambda {
-			static const OpType<Lambda> type;
+			struct Type: public OpType<Lambda> {
+				Type(const string &id): OpType<Lambda>(id) { }
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
+			};
+
+			static const Type type;
 			optional<size_t> start_pc, nops;
 			Target::Opts opts;
 			Lambda(): opts(Target::Opts::None) { }
 		};
 
 		struct LambdaEnd {
-			static const OpType<LambdaEnd> type;
+			struct Type: public OpType<LambdaEnd> {
+				Type(const string &id): OpType<LambdaEnd>(id) { }
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Let {
@@ -142,6 +174,10 @@ namespace snabl {
 			struct Type: public OpType<Push> {
 				Type(const string &id): OpType<Push>(id) { }
 				void dump(const Push &op, ostream &out) const override;
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
 			};
 				
 			static const Type type;			
@@ -202,13 +238,29 @@ namespace snabl {
 		};
 
 		struct Try {
-			static const OpType<Try> type;
+			struct Type: public OpType<Try> {
+				Type(const string &id): OpType<Try>(id) { }
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
+			};
+
+			static const Type type;
 			optional<size_t> handler_pc;
 			optional<State> state;
 		};
 
 		struct TryEnd {
-			static const OpType<TryEnd> type;
+			struct Type: public OpType<TryEnd> {
+				Type(const string &id): OpType<TryEnd>(id) { }
+				optional<function<void ()>> run(Op &op,
+																				optional<function<void ()>> &next,
+																				Ops::const_iterator end_pc,
+																				Env &env) const override;
+			};
+			
+			static const Type type;
 		};
 	}
 	

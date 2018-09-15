@@ -20,7 +20,6 @@ namespace snabl {
 		const Box val;
 		UserError(Env &env, Pos pos, const Box &_val);
 	};
-
 }
 
 #endif

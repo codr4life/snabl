@@ -12,7 +12,7 @@ namespace snabl {
 		auto offs(ops.size());
 		compile(in);
 		pc = ops.begin()+offs;		
-		run();
+		run2();
 	}
 
 	void Env::run(istream &in) {
@@ -21,7 +21,7 @@ namespace snabl {
 		auto offs(ops.size());
 		compile(fs.begin(), fs.end());
 		pc = ops.begin()+offs;		
-		run();
+		run2();
 	}
 
 	void Env::run(optional<Ops::iterator> _end_pc) {
@@ -271,6 +271,42 @@ namespace snabl {
 		}
 	}
 
+	void Env::run2(optional<Ops::iterator> _end_pc) {
+		const auto
+			start_pc(ops.begin()),
+			end_pc(_end_pc ? *_end_pc : ops.end());
+
+		optional<function<void ()>> next([this, &end_pc, &next] {
+				next = (pc == end_pc) ? nullopt : pc->type.run(*pc, next, end_pc, *this);
+			});
+		
+	enter:
+		
+		try {
+			while (next) { (*next)(); }
+		} catch (const UserError &e) {
+			if (_tries.empty()) { throw e; }
+			auto &t(*_tries.back());
+			_tries.pop_back();
+
+			if (t.state->ncalls < _calls.size()) {
+				for (auto c(_calls.begin()+t.state->ncalls);
+						 c != _calls.end();
+						 c++) {
+					auto fi(dynamic_pointer_cast<Fimp>(c->target));
+					if (fi) { fi->_is_calling = false; }
+				}
+			}
+
+			t.state->restore_all(*this);
+			t.state.reset();
+			push(error_type, make_shared<UserError>(e));
+			pc = start_pc+*t.handler_pc;
+			next = (pc == end_pc) ? nullopt : pc->type.run(*pc, next, end_pc, *this);
+			goto enter;
+		}
+	}
+	
 	RuntimeError::RuntimeError(Env &env, Pos pos, const string &msg) {
 		stringstream buf;
 				
