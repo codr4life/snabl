@@ -90,9 +90,12 @@ namespace snabl {
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
 			const auto prev_offs(pc-ops.begin());
+		  Op *prev(ops.empty() ? nullptr : &ops.back());
 			ops.emplace_back(*this, type, args...);
+			auto &op(ops.back());
+			if (prev) { prev->next = &op.imp; }
 			pc = ops.begin()+prev_offs;
-			return ops.back();
+			return op;
 		}
 
 		void emit(Pos pos, FuncPtr &func, FimpPtr &fimp);

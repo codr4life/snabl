@@ -72,6 +72,7 @@ namespace snabl {
 										env.note(form.pos, fmt("Rewriting (%0 drop) as ()",
 																					 {env.ops.back().type.id}));
 										env.ops.pop_back();
+										if (!env.ops.empty()) { env.ops.back().next = nullptr; }
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Swap::type) {
 										env.note(form.pos, "Rewriting (swap drop) as (sdrop)");

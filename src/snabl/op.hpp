@@ -39,13 +39,15 @@ namespace snabl {
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
+		const OpImp *next;
 		
 		template <typename DataT, typename... ArgsT>
 		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
 			_data(DataT(forward<ArgsT>(args)...)),
 			type(type),
 			pos(pos),
-			imp(type.make_imp(env, *this)) { }
+			imp(type.make_imp(env, *this)),
+			next(nullptr) { }
 
 		template <typename DataT>
 		const DataT &as() const { return any_cast<const DataT &>(_data); }

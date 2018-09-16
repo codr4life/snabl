@@ -1,5 +1,4 @@
-* hardcode next (OpImp) in every op on emit
-** remove OpImp end_pc param
+* remove OpImp end_pc param
 * try removing Env.pc entirely
 ** remove pc
 ** rename env.next to pc
