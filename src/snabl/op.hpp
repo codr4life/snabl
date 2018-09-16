@@ -22,7 +22,7 @@ namespace snabl {
 		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
-		virtual OpImp make_imp(Env &env, Op &op) const;
+		virtual OpImp make_imp(Env &env, Op &op) const=0;
 		virtual void dump(const Op &op, ostream &out) const { }
 	private:
 		static size_t next_label_offs;
@@ -223,7 +223,12 @@ namespace snabl {
 		};
 
 		struct Nop {
-			static const OpType<Nop> type;
+			struct Type: public OpType<Nop> {
+				Type(const string &id): OpType<Nop>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Push {
@@ -295,21 +300,41 @@ namespace snabl {
 		};
 
 		struct Split {
-			static const OpType<Split> type;
+			struct Type: public OpType<Split> {
+				Type(const string &id): OpType<Split>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct SplitEnd {
-			static const OpType<SplitEnd> type;
+			struct Type: public OpType<SplitEnd> {
+				Type(const string &id): OpType<SplitEnd>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Stack {
-			static const OpType<Stack> type;
+			struct Type: public OpType<Stack> {
+				Type(const string &id): OpType<Stack>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 			const bool unsplit;
 			Stack(bool unsplit): unsplit(unsplit) { }
 		};
 
 		struct Swap {
-			static const OpType<Swap> type;
+			struct Type: public OpType<Swap> {
+				Type(const string &id): OpType<Swap>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Try {

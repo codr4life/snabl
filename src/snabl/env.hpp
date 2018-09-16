@@ -216,6 +216,8 @@ namespace snabl {
 		friend ops::Rot::Type;
 		friend ops::RSwap::Type;
 		friend ops::SDrop::Type;
+		friend ops::Stack::Type;
+		friend ops::Swap::Type;
 		friend ops::Try::Type;
 		friend ops::TryEnd::Type;
 	};

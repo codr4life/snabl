@@ -1,4 +1,3 @@
-* convert remaining Ops to lambdas
 * try removing Env.pc
 ** rename env.next to next_op
 ** hardcode next in every op on emit

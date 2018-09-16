@@ -37,6 +37,7 @@ namespace snabl {
 		FimpPtr fimp;
 
 		i->imp->compile(i, i+1, func, fimp, *this);
+		emit(form.pos, func, fimp);
 	}
 
 	void Env::compile(const Form &form, FuncPtr &func, FimpPtr &fimp) {

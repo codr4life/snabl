@@ -7,12 +7,6 @@
 namespace snabl {
 	size_t AOpType::next_label_offs(0);
 
-	OpImp AOpType::make_imp(Env &env, Op &op) const {
-		return [&env](Ops::const_iterator end_pc) {
-			env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
-		};
-	}
-
 	namespace ops {
 		const Call::Type Call::type("call");
 		const DDrop::Type DDrop::type("ddrop");
@@ -28,17 +22,17 @@ namespace snabl {
 		const Lambda::Type Lambda::type("lambda");
 		const LambdaEnd::Type LambdaEnd::type("lambda-end");
 		const Let::Type Let::type("let");
-		const OpType<Nop> Nop::type("nop");
+		const Nop::Type Nop::type("nop");
 		const Push::Type Push::type("push");
 		const Recall::Type Recall::type("recall");
 		const Rot::Type Rot::type("rot");
 		const RSwap::Type RSwap::type("rswap");
 		const SDrop::Type SDrop::type("sdrop");
 		const Skip::Type Skip::type("skip");
-		const OpType<Split> Split::type("split");
-		const OpType<SplitEnd> SplitEnd::type("split-end");
-		const OpType<Stack> Stack::type("stack");
-		const OpType<Swap> Swap::type("swap");
+		const Split::Type Split::type("split");
+		const SplitEnd::Type SplitEnd::type("split-end");
+		const Stack::Type Stack::type("stack");
+		const Swap::Type Swap::type("swap");
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
 
@@ -252,6 +246,12 @@ namespace snabl {
 			};
 		};
 
+		OpImp Nop::Type::make_imp(Env &env, Op &op) const {
+			return [&env](Ops::const_iterator end_pc) {
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
+			};
+		}
+
 		void Push::Type::dump_data(const Push &op, ostream &out) const {
 			out << ' ';
 			op.val.dump(out);
@@ -317,6 +317,51 @@ namespace snabl {
 			};
 		};
 
+		OpImp Split::Type::make_imp(Env &env, Op &op) const {
+			return [&env](Ops::const_iterator end_pc) {
+				env.split();
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
+			};
+		};
+
+		OpImp SplitEnd::Type::make_imp(Env &env, Op &op) const {
+			return [&env](Ops::const_iterator end_pc) {
+				env.unsplit();
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
+			};
+		};
+
+		OpImp Stack::Type::make_imp(Env &env, Op &op) const {
+			auto unsplit(op.as<Stack>().unsplit);
+			
+			return [&env, unsplit](Ops::const_iterator end_pc) {
+				const size_t offs(env._stack_offs);
+				if (unsplit) { env.unsplit(); }
+				auto s(make_shared<snabl::Stack>());
+				
+				if (env._stack.size() > offs) {
+					const auto i(env._stack.begin()+offs), j(env._stack.end());
+					move(i, j, back_inserter(*s));
+					env._stack.erase(i, j);
+				}
+				
+				env.push(env.stack_type, s);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
+			};
+		};
+
+		OpImp Swap::Type::make_imp(Env &env, Op &op) const {
+			return [&env](Ops::const_iterator end_pc) {
+				if (env._stack.size() <= env._stack_offs+1) {
+					throw Error("Nothing to swap");
+				}
+				
+				const auto i(env._stack.size()-1);
+				swap(env._stack[i], env._stack[i-1]);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
+			};
+		};
+		
 		OpImp Try::Type::make_imp(Env &env, Op &op) const {			
 			auto &o(op.as<ops::Try>());
 

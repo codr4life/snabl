@@ -112,17 +112,17 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
-									auto &form(*in++);
+									const auto &form(*in++);
 									auto &op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
 									if (in == end) { throw SyntaxError(form.pos, "Missing handler"); }
-									auto handler(in++);
+									const auto &handler(*in++);
 									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos);
 									env.emit(ops::Push::type, form.pos, env.nil_type);
 									env.emit(ops::Nop::type, form.pos);
 									op.handler_pc = env.ops.size();
-									env.compile(*handler);
+									env.compile(handler);
 								});
 			
 			add_macro(env.sym("let:"),
