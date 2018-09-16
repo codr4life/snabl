@@ -1,8 +1,6 @@
-* remove OpImp end_pc param
-* try removing Env.pc entirely
-** remove pc
-** rename env.next to pc
-** Call.return_pc/Fimp.start_pc/Lambda.start_pc/ops to OpImp
+* Switch Env.pc to size_t
+** rename next to next_op
+** switch Call.return_pc/Fimp.start_pc/Lambda.start_pc/ops to const OpImp*
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

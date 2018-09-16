@@ -150,7 +150,7 @@ namespace snabl {
 		OpImp Funcall::Type::make_imp(Env &env, Op &op) const {
 			auto &o(op.as<ops::Funcall>());
 
-			return [&env, &o]() {
+			return [&env, &op, &o]() {
 				const FimpPtr *fimp(nullptr);
 
 				if (env._stack.size() >= env._stack_offs+o.func->nargs) {
@@ -169,15 +169,13 @@ namespace snabl {
 				}	
 			
 				if (!fimp) {
-					throw RuntimeError(env, env.pc->pos, fmt("Func not applicable: %0",
-																									 {o.func->id}));
+					throw RuntimeError(env, op.pos, fmt("Func not applicable: %0",
+																							{o.func->id}));
 				}
 			
 				if (!o.fimp) { o.prev_fimp = *fimp; }
-				const auto pos(env.pc->pos);
-			
 				env.pc++;
-				snabl::Fimp::call(*fimp, pos);
+				snabl::Fimp::call(*fimp, op.pos);
 				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
