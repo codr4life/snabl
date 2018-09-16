@@ -27,9 +27,7 @@ namespace snabl {
 	enter:
 		
 		try {
-			while (next) {
-				(*next)(end_pc);
-			}
+			while (next) { (*next)(); }
 		} catch (const UserError &e) {
 			if (_tries.empty()) { throw e; }
 			auto &t(*_tries.back());

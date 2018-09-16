@@ -14,7 +14,7 @@ namespace snabl {
 	struct Op;
 	
 	using Ops = deque<Op>;
-	using OpImp = function<void (Ops::const_iterator end_pc)>;
+	using OpImp = function<void ()>;
 	
 	struct AOpType {
 		const string id;
