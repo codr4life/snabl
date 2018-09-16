@@ -30,6 +30,15 @@ namespace snabl {
 	
 	void Env::compile(const Forms &forms) { compile(forms.begin(), forms.end()); }
 	
+	void Env::compile(const Form &form) {
+		Forms fs {form};
+		auto i(fs.cbegin());
+		FuncPtr func;
+		FimpPtr fimp;
+
+		i->imp->compile(i, i+1, func, fimp, *this);
+	}
+
 	void Env::compile(const Form &form, FuncPtr &func, FimpPtr &fimp) {
 		Forms fs {form};
 		auto i(fs.cbegin());

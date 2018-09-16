@@ -62,8 +62,13 @@ namespace snabl {
 		};
 
 		OpImp Drop::Type::make_imp(Env &env, Op &op) const {
-			return [&env](Ops::const_iterator end_pc) {
-				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to drop"); }
+			return [&env, &op](Ops::const_iterator end_pc) {
+				if (env._stack.size() <= env._stack_offs) {
+					throw RuntimeError(env, op.pos,
+														 fmt("Nothing to drop: %0/%1",
+																 {env._stack.size(), env._stack_offs}));
+				}
+				
 				env._stack.pop_back();
 				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
 			};
@@ -131,7 +136,7 @@ namespace snabl {
 				if (o.end_scope) { env.end_scope(); }
 				const auto &c(env.call());
 				dynamic_pointer_cast<snabl::Fimp>(c.target)->_is_calling = false;				
-				env.pc = *c.return_pc;
+				env.pc = env.ops.begin()+*c.return_pc;
 				env.end_call();
 				env.unsplit();
 				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
@@ -228,7 +233,7 @@ namespace snabl {
 				const auto &c(env.call());
 				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
 				if (l.opts() & Target::Opts::Vars) { env.end_scope(); }
-				env.pc = *c.return_pc;
+				env.pc = env.ops.begin()+*c.return_pc;
 				env.end_call();
 
 				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);

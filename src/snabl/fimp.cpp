@@ -33,7 +33,7 @@ namespace snabl {
 		if (fimp->_start_pc) { return false; }
 		env.emit(ops::Fimp::type, pos, fimp);
 		fimp->_start_pc = env.ops.size();
-		env.compile(fimp->forms);
+		env.compile(*fimp->form);
 
 		for (auto op(env.ops.begin() + *fimp->_start_pc);
 				 op != env.ops.end();
@@ -67,7 +67,7 @@ namespace snabl {
 			auto &scope((fimp->_opts & Opts::Vars)
 									? env.begin_scope(fimp->_parent_scope)
 									: env.scope());
-			env.begin_call(*scope, pos, fimp, env.pc);
+			env.begin_call(*scope, pos, fimp, env.pc-env.ops.begin());
 			env.split(func->nargs);		
 			fimp->_is_calling = true;
 			env.pc = env.ops.begin() + *fimp->_start_pc;
@@ -76,14 +76,11 @@ namespace snabl {
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
 		Def(get_id(*func, args)), func(func), args(args), imp(imp),
-	  _start_pc(nullopt), _nops(0), _opts(Opts::None), _is_calling(false) { }
+	  _nops(0), _opts(Opts::None), _is_calling(false) { }
 
-	Fimp::Fimp(const FuncPtr &func,
-						 const Args &args,
-						 Forms::const_iterator begin,
-						 Forms::const_iterator end):
-		Def(get_id(*func, args)), func(func), args(args), forms(begin, end),
-		_start_pc(nullopt), _nops(0), _opts(Opts::None), _is_calling(false) { }
+	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
+		Def(get_id(*func, args)), func(func), args(args), form(form),
+		_nops(0), _opts(Opts::None), _is_calling(false) { }
 
 	optional<size_t> Fimp::score(Stack::const_iterator begin,
 															 Stack::const_iterator end) const {

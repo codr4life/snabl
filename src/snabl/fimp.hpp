@@ -19,7 +19,7 @@ namespace snabl {
 		
 		const FuncPtr func;
 		const Args args;
-		const Forms forms;
+		const optional<Form> form;
 		const optional<Imp> imp;
 
 		static Sym get_id(const Func &func, const Args &args);
@@ -27,11 +27,7 @@ namespace snabl {
 		static void call(const FimpPtr &fimp, Pos pos);
 
 		Fimp(const FuncPtr &func, const Args &args, Imp imp);
-		
-		Fimp(const FuncPtr &func,
-				 const Args &args,
-				 Forms::const_iterator begin,
-				 Forms::const_iterator end);
+		Fimp(const FuncPtr &func, const Args &args, const Form &form);
 
 		Opts opts() const override { return _opts; }
 		size_t start_pc() const override { return *_start_pc; }

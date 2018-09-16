@@ -60,7 +60,7 @@ namespace snabl {
 									
 									if (!env.ops.empty() &&
 											&env.ops.back().type == &ops::Drop::type) {
-										env.note(in->pos, "Rewriting (drop drop) as (ddrop)");
+										env.note(form.pos, "Rewriting (drop drop) as (ddrop)");
 										env.ops.pop_back();
 										env.compile(Form(forms::Id::type, form.pos, env.sym("ddrop")),
 																func, fimp);
@@ -74,7 +74,7 @@ namespace snabl {
 										env.ops.pop_back();
 									} else if (!env.ops.empty() &&
 														 &env.ops.back().type == &ops::Swap::type) {
-										env.note(in->pos, "Rewriting (swap drop) as (sdrop)");
+										env.note(form.pos, "Rewriting (swap drop) as (sdrop)");
 										env.ops.pop_back();
 										env.compile(Form(forms::Id::type, form.pos, env.sym("sdrop")),
 																func, fimp);
@@ -98,7 +98,7 @@ namespace snabl {
 
 									if (!env.ops.empty() &&
 											&env.ops.back().type == &ops::Rot::type) {
-										env.note(in->pos, "Rewriting (rot swap) as (rswap)");
+										env.note(form.pos, "Rewriting (rot swap) as (rswap)");
 										env.ops.pop_back();
 										env.compile(Form(forms::Id::type, form.pos, env.sym("rswap")),
 																func, fimp);
@@ -117,12 +117,12 @@ namespace snabl {
 									if (in == end) { throw SyntaxError(form.pos, "Missing handler"); }
 									auto handler(in++);
 									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos);
 									env.emit(ops::Push::type, form.pos, env.nil_type);
 									env.emit(ops::Nop::type, form.pos);
 									op.handler_pc = env.ops.size();
-									env.compile(handler, handler+1);
+									env.compile(*handler);
 								});
 			
 			add_macro(env.sym("let:"),
@@ -138,7 +138,7 @@ namespace snabl {
 									}
 
 									if (in == end) { throw Error("Missing value"); }
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									
 									if (&p.type == &forms::Id::type) {
 										env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
@@ -157,14 +157,14 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
 									size_t start_pc(env.ops.size());								
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									auto &if_skip(env.emit(ops::Skip::type, form.pos));
 									else_skip.as<ops::Else>().nops = env.ops.size()-start_pc;
 									start_pc = env.ops.size();
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									if_skip.as<ops::Skip>().nops = env.ops.size()-start_pc;
 								});	
 
@@ -175,7 +175,7 @@ namespace snabl {
 									 Env &env) {
 									auto &form(*in++);
 									if (in == end) { throw Error("Missing value"); }
-									env.compile(in++, in+1);
+									env.compile(*in++);
 									vector<ops::Skip *> skips;
 									auto &cases((in++)->as<forms::Body>());;
 
@@ -184,14 +184,14 @@ namespace snabl {
 											env.emit(ops::Dup::type, form.pos);
 										}
 										
-										env.compile(f++, f+1);
+										env.compile(*f++);
 
 										if (f != cases.body.end()) {
 											auto &else_op(env.emit(ops::Else::type,
 																							form.pos).as<ops::Else>());
 											auto start_pc = env.ops.size();
 											env.emit(ops::Drop::type, form.pos);
-											env.compile(f++, f+1);
+											env.compile(*f++);
 
 											if (f != cases.body.end()) {
 												skips.push_back(&env.emit(ops::Skip::type,
@@ -232,7 +232,7 @@ namespace snabl {
 																					{args_form.type.id}));
 									}
 
-									auto fi = lib.add_fimp(id_form.id, args, in++, in+1);
+									auto fi = lib.add_fimp(id_form.id, args, *in++);
 									Fimp::compile(fi, form.pos);
 								});
 
