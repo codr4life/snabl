@@ -1,7 +1,8 @@
-* change Call.return pc to OpImp
-** add Op.pc, init in emit
-*** update Env.pc where needed
 * convert remaining Ops to lambdas
+* try removing Env.pc
+** rename env.next to next_op
+** hardcode next in every op on emit
+** Call.return_pc/Fimp.start_pc/Lambda.start_pc/ops to OpImp
 * add stack/str eqval
 * add push/pop fns
 ** stack/str

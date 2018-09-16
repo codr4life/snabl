@@ -58,7 +58,7 @@ namespace snabl {
 
 		Ops ops;
 		Ops::iterator pc;
-		optional<OpImp> next;
+		const OpImp *next;
 		
 		const ScopePtr &main;
 		
@@ -70,6 +70,7 @@ namespace snabl {
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			pc(ops.begin()),
+			next(nullptr),
 			main(begin_scope()),
 			_stack_offs(0) { begin_lib(home); }
 

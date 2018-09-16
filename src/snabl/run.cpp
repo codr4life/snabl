@@ -94,7 +94,7 @@ namespace snabl {
 				if (op.end_scope) { end_scope(); }
 				const auto &c(call());
 				dynamic_pointer_cast<Fimp>(c.target)->_is_calling = false;				
-				pc = *c.return_pc;
+				pc = ops.begin()+*c.return_pc;
 				end_call();
 				unsplit();
 				SNABL_DISPATCH();
@@ -159,7 +159,7 @@ namespace snabl {
 				const auto &c(call());
 				const auto &l(*dynamic_pointer_cast<Lambda>(c.target));
 				if (l.opts() & Target::Opts::Vars) { end_scope(); }
-				pc = *c.return_pc;
+				pc = ops.begin()+*c.return_pc;
 				end_call();
 				SNABL_DISPATCH();
 			}
@@ -275,7 +275,7 @@ namespace snabl {
 
 	void Env::run(optional<Ops::iterator> _end_pc) {
 		const auto start_pc(ops.begin()), end_pc(_end_pc ? *_end_pc : ops.end());
-		next = (pc == end_pc) ? nullopt : make_optional(pc->imp);
+		next = (pc == end_pc) ? nullptr : &pc->imp;
 		
 	enter:
 		
@@ -301,7 +301,7 @@ namespace snabl {
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
 			pc = start_pc+*t.handler_pc;
-			next = (pc == end_pc) ? nullopt : make_optional(pc->imp);
+			next = (pc == end_pc) ? nullptr : &pc->imp;
 			goto enter;
 		}
 	}

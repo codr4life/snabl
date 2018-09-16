@@ -9,7 +9,7 @@ namespace snabl {
 
 	OpImp AOpType::make_imp(Env &env, Op &op) const {
 		return [&env](Ops::const_iterator end_pc) {
-			env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+			env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 		};
 	}
 
@@ -48,7 +48,7 @@ namespace snabl {
 			return [&env, &pos](Ops::const_iterator end_pc) {
 				env.pc++;
 				env.pop().call(pos, false);
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -57,7 +57,7 @@ namespace snabl {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to ddrop"); }
 				env._stack.pop_back();
 				env._stack.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -70,7 +70,7 @@ namespace snabl {
 				}
 				
 				env._stack.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -78,7 +78,7 @@ namespace snabl {
 			return [&env](Ops::const_iterator end_pc) {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to dup"); }
 				env.push(env._stack.back());
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -89,7 +89,7 @@ namespace snabl {
 				const auto &v(env.peek());
 				if (!v.as<bool>()) { env.pc += *nops; }
 				env.pop();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -111,7 +111,7 @@ namespace snabl {
 				const auto lhs(env.pop());
 				const auto rhs(o.rhs ? *o.rhs : env._stack.back());
 				env.push(env.bool_type, lhs.eqval(rhs)); 
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 		
@@ -125,7 +125,7 @@ namespace snabl {
 			return [&env, &fimp](Ops::const_iterator end_pc) {
 				if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
 				env.pc += fimp.nops()+1;
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 		
@@ -139,7 +139,7 @@ namespace snabl {
 				env.pc = env.ops.begin()+*c.return_pc;
 				env.end_call();
 				env.unsplit();
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -182,7 +182,7 @@ namespace snabl {
 			
 				env.pc++;
 				snabl::Fimp::call(*fimp, pos);
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -193,7 +193,7 @@ namespace snabl {
 				auto v(env.scope()->get(id));
 				if (!v) { throw Error("Unknown var"); }
 				env.push(*v);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -209,7 +209,7 @@ namespace snabl {
 				const bool ok(env._stack.back().isa(rhs));
 				env._stack.pop_back();
 				env.push(env.bool_type, ok);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -224,7 +224,7 @@ namespace snabl {
 																						*o.start_pc, *o.nops,
 																						o.opts));
 				env.pc += *o.nops+1;
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -236,7 +236,7 @@ namespace snabl {
 				env.pc = env.ops.begin()+*c.return_pc;
 				env.end_call();
 
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -248,7 +248,7 @@ namespace snabl {
 				auto &v(env._stack.back());
 				env.scope()->let(id, v);
 				env._stack.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -262,14 +262,14 @@ namespace snabl {
 			
 			return [&env, &v](Ops::const_iterator end_pc) {
 				env.push(v);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
 			return [&env](Ops::const_iterator end_pc) {
 				env.call().recall();
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -279,7 +279,7 @@ namespace snabl {
 				auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
 				swap(env._stack[i], env._stack[i-1]);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -291,7 +291,7 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -304,7 +304,7 @@ namespace snabl {
 				const auto i(env._stack.size()-1);
 				env._stack[i-1] = env._stack[i];	
 				env._stack.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 		
@@ -313,7 +313,7 @@ namespace snabl {
 			
 			return [&env, &nops](Ops::const_iterator end_pc) {
 				env.pc += *nops+1;
-				env.next = (env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -323,7 +323,7 @@ namespace snabl {
 			return [&env, &o](Ops::const_iterator end_pc) {
 				o.state.emplace(env);
 				env._tries.push_back(&o);
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -331,7 +331,7 @@ namespace snabl {
 			return [&env](Ops::const_iterator end_pc) {
 				env._tries.back()->state.reset();
 				env._tries.pop_back();
-				env.next = (++env.pc == end_pc) ? nullopt : make_optional(env.pc->imp);
+				env.next = (++env.pc == end_pc) ? nullptr : &env.pc->imp;
 			};
 		};
 	}
