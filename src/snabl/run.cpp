@@ -21,8 +21,7 @@ namespace snabl {
 	}
 
 	void Env::run() {
-		const auto start_pc(ops.begin()), end_pc(ops.end());
-		next = (pc == end_pc) ? nullptr : &pc->imp;
+		next = (pc == ops.end()) ? nullptr : &pc->imp;
 		
 	enter:
 		
@@ -45,8 +44,8 @@ namespace snabl {
 			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = start_pc+*t.handler_pc;
-			next = (pc == end_pc) ? nullptr : &pc->imp;
+			pc = ops.begin()+*t.handler_pc;
+			next = (pc == ops.end()) ? nullptr : &pc->imp;
 			goto enter;
 		}
 	}
