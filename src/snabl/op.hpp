@@ -34,7 +34,40 @@ namespace snabl {
 		void dump(const Op &op, ostream &out) const override;
 		virtual void dump_data(const DataT &op, ostream &out) const { }
 	};
+		
+	struct Op {
+	private:		
+		any _data;
+	public:
+		const AOpType &type;
+		const Pos pos;
+		const OpImp imp;
+		
+		template <typename DataT, typename... ArgsT>
+		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
+			_data(DataT(forward<ArgsT>(args)...)),
+			type(type),
+			pos(pos),
+			imp(type.make_imp(env, *this)) { }
+
+		template <typename DataT>
+		const DataT &as() const { return any_cast<const DataT &>(_data); }
+
+		template <typename DataT>
+		DataT &as() { return any_cast<DataT &>(_data); }
+
+		void dump(ostream &out) const {
+			out << type.id;
+			type.dump(*this, out);
+			out << endl;
+		}
+	};
 	
+	template <typename DataT>
+	void OpType<DataT>::dump(const Op &op, ostream &out) const {
+		dump_data(op.as<DataT>(), out);
+	}
+
 	namespace ops {
 		struct Call {				
 			struct Type: public OpType<Call> {
@@ -298,44 +331,7 @@ namespace snabl {
 			
 			static const Type type;
 		};
-	}
-	
-	struct Op {
-	private:		
-		variant<ops::Call, ops::DDrop, ops::Drop, ops::Dup, ops::Else, ops::Eqval,
-					  ops::Fimp, ops::FimpEnd, ops::Funcall, ops::Get, ops::Isa,
-						ops::Lambda, ops::LambdaEnd, ops::Let, ops::Nop, ops::Push, ops::Recall,
-						ops::Rot, ops::RSwap, ops::SDrop, ops::Skip, ops::Split, ops::SplitEnd,
-						ops::Stack, ops::Swap, ops::Try, ops::TryEnd> _data;
-	public:
-		const AOpType &type;
-		const Pos pos;
-		const OpImp imp;
-		
-		template <typename DataT, typename... ArgsT>
-		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
-			_data(DataT(forward<ArgsT>(args)...)),
-			type(type),
-			pos(pos),
-			imp(type.make_imp(env, *this)) { }
-
-		template <typename DataT>
-		const DataT &as() const { return get<DataT>(_data); }
-
-		template <typename DataT>
-		DataT &as() { return get<DataT>(_data); }
-
-		void dump(ostream &out) const {
-			out << type.id;
-			type.dump(*this, out);
-			out << endl;
-		}
-	};
-	
-	template <typename DataT>
-	void OpType<DataT>::dump(const Op &op, ostream &out) const {
-		dump_data(op.as<DataT>(), out);
-	}
+	}	
 }
 
 #endif

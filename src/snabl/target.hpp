@@ -6,6 +6,7 @@ namespace snabl {
 	public:
 		enum class Opts: int {None=0, Vars=1, Recalls=2};
 
+		virtual ~Target() { }
 		virtual Opts opts() const=0;
 		virtual size_t start_pc() const=0;
 	};
