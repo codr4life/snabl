@@ -18,14 +18,11 @@ namespace snabl {
 	
 	struct AOpType {
 		const string id;
-		const size_t label_offs;
-		AOpType(const string &id): id(id), label_offs(next_label_offs++) { }
+		AOpType(const string &id): id(id) { }
 		AOpType(const AOpType &) = delete;
 		const AOpType &operator=(const AOpType &) = delete;
 		virtual OpImp make_imp(Env &env, Op &op) const=0;
 		virtual void dump(const Op &op, ostream &out) const { }
-	private:
-		static size_t next_label_offs;
 	};
 
 	template <typename DataT>

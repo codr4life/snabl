@@ -5,8 +5,6 @@
 #include "snabl/op.hpp"
 
 namespace snabl {
-	size_t AOpType::next_label_offs(0);
-
 	namespace ops {
 		const Call::Type Call::type("call");
 		const DDrop::Type DDrop::type("ddrop");
