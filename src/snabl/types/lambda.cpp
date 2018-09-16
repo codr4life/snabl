@@ -18,11 +18,19 @@ namespace snabl {
 								? env.begin_scope(l->parent_scope)
 								: env.scope());
 
-		auto &call(env.begin_call(*scope, pos, l, env.pc-env.ops.begin()));
-		env.pc = env.ops.begin()+l->start_pc();
-		if (now) { env.run(env.ops.begin()+*call.return_pc); }
+		
+		if (now) {
+			const auto prev_pc(env.pc);
+			env.begin_call(*scope, pos, l, env.ops.size());
+			env.pc = env.ops.begin()+l->start_pc();
+			env.run();
+			env.pc = prev_pc;
+		} else {
+			env.begin_call(*scope, pos, l, env.pc-env.ops.begin());
+			env.pc = env.ops.begin()+l->start_pc();
+		}
 	}
-
+	
 	void LambdaType::dump(const Box &val, ostream &out) const {
 		auto &l(val.as<LambdaPtr>());
 		out << "Lambda(" << l->start_pc() << ')';

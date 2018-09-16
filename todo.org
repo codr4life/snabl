@@ -1,6 +1,8 @@
-* try removing Env.pc
-** rename env.next to next_op
-** hardcode next in every op on emit
+* hardcode next (OpImp) in every op on emit
+** remove OpImp end_pc param
+* try removing Env.pc entirely
+** remove pc
+** rename env.next to pc
 ** Call.return_pc/Fimp.start_pc/Lambda.start_pc/ops to OpImp
 * add stack/str eqval
 * add push/pop fns

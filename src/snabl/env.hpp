@@ -108,7 +108,7 @@ namespace snabl {
 		
 		void run(string_view in);
 		void run(istream &in);
-		void run(optional<Ops::iterator> end_pc=nullopt);
+		void run();
 
 		void begin_lib(Lib &lib) { _libs.push_back(&lib); }
 	
