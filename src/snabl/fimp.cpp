@@ -46,8 +46,13 @@ namespace snabl {
 		}
 		
 		auto &end(env.emit(ops::FimpEnd::type, pos, fimp->_opts & Opts::Vars));
-		fimp->_start_pc = *start.next;		
-		fimp->_end_pc = [&env, &end]() { env.pc = end.next; };
+		fimp->_start_pc = *start.next;
+		
+		fimp->_end_pc = [&env, &end, fimp]() {
+				env.pc = end.next;
+				if (env.pc) { fimp->_end_pc = *env.pc; }
+		};
+
 		return true;
 	}
 

@@ -1,8 +1,10 @@
-* optimize next lambdas
-** update field from nested lambda
 * remove Scope ptr from Call
 ** remove Call arg from Fimp imp
 ** capture env by ref int fimp lambdas
+* add env.jump_pc ptr
+** fill in on jump
+** update on repeated jumps
+** inject code into ops
 * capture ntries in State
 ** restore on recall
 ** remove restore_all

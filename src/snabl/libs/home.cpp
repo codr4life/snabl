@@ -68,7 +68,11 @@ namespace snabl {
 									env.emit(ops::TryEnd::type, form.pos);
 									auto &prev_op(env.emit(ops::Push::type, form.pos, env.nil_type));
 									env.compile(handler);
-									op.handler_pc = [&env, &prev_op]() { env.pc = prev_op.next; };
+									
+									op.handler_pc = [&env, &prev_op, &op]() {
+										env.pc = prev_op.next;
+										if (env.pc) { op.handler_pc = *env.pc; }
+									};
 								});
 			
 			add_macro(env.sym("let:"),
@@ -109,9 +113,11 @@ namespace snabl {
 									auto &if_skip(env.emit(ops::Skip::type, form.pos));
 									env.compile(*in++, func, fimp);
 									else_skip.as<ops::Else>().skip_pc = *if_skip.next;
-									auto &end_op(env.ops.back());									
-									if_skip.as<ops::Skip>().end_pc = [&env, &end_op]() {
+									auto &end_op(env.ops.back());
+									auto &ifs(if_skip.as<ops::Skip>());
+									ifs.end_pc = [&env, &end_op, &ifs]() {
 										env.pc = end_op.next;
+										if (env.pc) { ifs.end_pc = *env.pc; }
 									};
 								});	
 
@@ -145,13 +151,19 @@ namespace snabl {
 											}
 
 											auto &end_op(env.ops.back());											
-											else_op.skip_pc = [&env, &end_op]() { env.pc = end_op.next; };
+											else_op.skip_pc = [&env, &end_op, &else_op]() {
+												env.pc = end_op.next;
+												if (env.pc) { else_op.skip_pc = *env.pc; }
+											};
 										}
 									}
 
 									auto &end_op(env.ops.back());
 									for (auto &s: skips) {
-										s->end_pc = [&env, &end_op]() { env.pc = end_op.next; };
+										s->end_pc = [&env, &end_op, s]() {
+											env.pc = end_op.next;
+											if (env.pc) { s->end_pc = *env.pc; }
+										};
 									}
 								});	
 			

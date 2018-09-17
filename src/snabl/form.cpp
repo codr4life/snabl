@@ -163,7 +163,11 @@ namespace snabl {
 			
 			auto &end_op(env.emit(ops::LambdaEnd::type, f.pos));
 			start.start_pc = *start_op.next;
-			start.end_pc = [&env, &end_op]() { env.pc = end_op.next; };
+			
+			start.end_pc = [&env, &end_op, &start]() {
+				env.pc = end_op.next;
+				if (env.pc) { start.end_pc = *env.pc; }
+			};
 		}
 		
 		Lit::Lit(const Box &val): val(val) { }
