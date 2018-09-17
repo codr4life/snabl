@@ -5,28 +5,27 @@
 
 namespace snabl {
 	void Env::run(string_view in) {
-		auto offs(ops.size());
-		compile(in);
-		pc = ops.begin()+offs;		
-		run();
+		const string s(in);
+		istringstream ss(s);
+		run(ss);
 	}
 
 	void Env::run(istream &in) {
 		Forms fs;
 		Parser(*this).parse(in, fs);
-		auto offs(ops.size());
+		Op *prev_op(ops.empty() ? nullptr : &ops.back());
 		compile(fs.begin(), fs.end());
-		pc = ops.begin()+offs;		
-		run();
+		
+		if (!ops.empty()) {
+			pc = prev_op ? prev_op->next : &ops.front().imp;
+			run();
+		}
 	}
 
 	void Env::run() {
-		next = (pc == ops.end()) ? nullptr : &pc->imp;
-		
-	enter:
-		
+	enter:		
 		try {
-			while (next) { (*next)(); }
+			while (pc) { (*pc)(); }
 		} catch (const UserError &e) {
 			if (_tries.empty()) { throw e; }
 			auto &t(*_tries.back());
@@ -44,8 +43,7 @@ namespace snabl {
 			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = ops.begin()+*t.handler_pc;
-			next = (pc == ops.end()) ? nullptr : &pc->imp;
+			pc = &*t.handler_pc;
 			goto enter;
 		}
 	}

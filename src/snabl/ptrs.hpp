@@ -39,6 +39,9 @@ namespace snabl {
 
 	class UserError;
 	using ErrorPtr = shared_ptr<UserError>;
+
+	using OpImp = function<void ()>;
+	using PC = const OpImp *;
 }
 
 #endif

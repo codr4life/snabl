@@ -21,13 +21,13 @@ namespace snabl {
 		
 		if (now) {
 			const auto prev_pc(env.pc);
-			env.begin_call(*scope, pos, l, env.ops.size());
-			env.pc = env.ops.begin()+l->start_pc();
+			env.begin_call(*scope, pos, l, nullptr);
+			env.pc = l->start_pc();
 			env.run();
 			env.pc = prev_pc;
 		} else {
-			env.begin_call(*scope, pos, l, env.pc-env.ops.begin());
-			env.pc = env.ops.begin()+l->start_pc();
+			env.begin_call(*scope, pos, l, env.pc);
+			env.pc = l->start_pc();
 		}
 	}
 	

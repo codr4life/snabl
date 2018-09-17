@@ -45,6 +45,7 @@ int main(int argc, const char *argv[]) {
 		repl(env, cin, cout);
 		break;
 	case Mode::Run:
+		if (!env.ops.empty()) { env.pc = &env.ops.front().imp; }
 		env.run();
 		break;
 	}

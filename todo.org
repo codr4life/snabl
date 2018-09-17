@@ -1,6 +1,12 @@
-* Switch Env.pc to size_t
-** rename next to next_op
-** switch Call.return_pc/Fimp.start_pc/Lambda.start_pc/ops to const OpImp*
+* optimize next lambdas
+** update field from nested lambda
+* remove Scope ptr from Call
+** remove Call arg from Fimp imp
+** capture env by ref int fimp lambdas
+* capture ntries in State
+** restore on recall
+** remove restore_all
+*** replace with individual calls
 * add stack/str eqval
 * add push/pop fns
 ** stack/str
@@ -52,15 +58,3 @@
 ** derive children from type
 * add push ddrop rewrite
 ** pop two ops and compile drop
-
-vmacro: (drop drop) (ddrop 'ddrop)
-vmacro: (rot swap) (ddrop 'rswap)
-vmacro: (swap drop) (ddrop 'sdrop)
-vmacro: (dup drop) ddrop
-vmacro: (dup ddrop) (ddrop 'drop)
-vmacro: (get drop) ddrop
-vmacro: (get ddrop) (ddrop 'drop)
-vmacro: (lambda drop) ddrop
-vmacro: (lambda ddrop) (ddrop 'drop)
-vmacro: (push drop) ddrop
-vmacro: (push ddrop) (ddrop 'drop)

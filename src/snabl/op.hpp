@@ -14,7 +14,6 @@ namespace snabl {
 	struct Op;
 	
 	using Ops = deque<Op>;
-	using OpImp = function<void ()>;
 	
 	struct AOpType {
 		const string id;
@@ -36,10 +35,11 @@ namespace snabl {
 	private:		
 		any _data;
 	public:
+		static OpImp eof;
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
-		const OpImp *next;
+		PC next;
 		
 		template <typename DataT, typename... ArgsT>
 		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
@@ -111,7 +111,8 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<size_t> nops;
+			optional<OpImp> skip_pc;
+			Else(optional<OpImp> skip_pc=nullopt): skip_pc(skip_pc) { }
 		};
 		
 		struct Eqval {
@@ -196,7 +197,7 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<size_t> start_pc, nops;
+			optional<OpImp> start_pc, end_pc;
 			Target::Opts opts;
 			Lambda(): opts(Target::Opts::None) { }
 		};
@@ -284,18 +285,13 @@ namespace snabl {
 		struct Skip {
 			struct Type: public OpType<Skip> {
 				Type(const string &id): OpType<Skip>(id) { }
-
-				void dump_data(const Skip &op, ostream &out) const override {
-					out << ' ' << *op.nops;
-				}
-
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 
 			static const Type type;
-			optional<size_t> nops;
+			optional<OpImp> end_pc;
 
-			Skip(optional<size_t> nops=nullopt): nops(nops) { }
+			Skip(optional<OpImp> end_pc=nullopt): end_pc(end_pc) { }
 		};
 
 		struct Split {
@@ -343,7 +339,7 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<size_t> handler_pc;
+			optional<OpImp> handler_pc;
 			optional<State> state;
 		};
 

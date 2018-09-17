@@ -8,21 +8,21 @@
 namespace snabl {
 	struct Lambda: public Target {
 		const ScopePtr parent_scope;
-		const size_t nops;
+		const PC end_pc;
 
 		Lambda(const ScopePtr &parent_scope,
-					 size_t start_pc, size_t nops,
+					 PC start_pc, PC end_pc,
 					 Opts opts):
 			parent_scope(parent_scope),
-			nops(nops),
+			end_pc(end_pc),
 			_opts(opts),
 			_start_pc(start_pc) { }
 
 		Opts opts() const override { return _opts; }
-		size_t start_pc() const override { return _start_pc; }
+		PC start_pc() const override { return _start_pc; }
 	private:
 		const Opts _opts;
-		const size_t _start_pc;
+		const PC _start_pc;
 
 		friend bool operator ==(const Lambda &, const Lambda &);
 		friend bool operator <(const Lambda &, const Lambda &);

@@ -27,7 +27,7 @@
 namespace snabl {
 	template <typename ValT>
 	class Type;
-
+	
 	class Env {
 	public:
 	private:
@@ -57,8 +57,7 @@ namespace snabl {
 		unordered_set<char> separators;
 
 		Ops ops;
-		Ops::iterator pc;
-		const OpImp *next;
+		PC pc;
 		
 		const ScopePtr &main;
 		
@@ -69,8 +68,7 @@ namespace snabl {
 					' ', '\t', '\n', ',', ';', '?', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
-			pc(ops.begin()),
-			next(nullptr),
+			pc(nullptr),
 			main(begin_scope()),
 			_stack_offs(0) { begin_lib(home); }
 
@@ -89,12 +87,10 @@ namespace snabl {
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-			const auto prev_offs(pc-ops.begin());
 		  Op *prev(ops.empty() ? nullptr : &ops.back());
 			ops.emplace_back(*this, type, args...);
 			auto &op(ops.back());
 			if (prev) { prev->next = &op.imp; }
-			pc = ops.begin()+prev_offs;
 			return op;
 		}
 
@@ -235,7 +231,7 @@ namespace snabl {
 		_state->restore_libs(env);
 		_state->restore_scopes(env);
 		scope.clear_vars();
-		env.pc = env.ops.begin() + target->start_pc();
+		env.pc = target->start_pc();
 	}
 
 	template <typename ValT, typename... ArgsT>

@@ -42,71 +42,17 @@ namespace snabl {
 			add_macro(env.sym("f"), env.bool_type, false);			
 			add_macro(env.sym("nil"), env.nil_type);			
 
-			add_macro(env.sym("_"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) { env.emit(ops::Nop::type, (in++)->pos); });
-			
+			add_macro(env.sym("_"), ops::Nop::type);
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("ddrop"), ops::DDrop::type);
-
-			add_macro(env.sym("drop"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-									
-									if (!env.ops.empty() &&
-											&env.ops.back().type == &ops::Drop::type) {
-										env.note(form.pos, "Rewriting (drop drop) as (ddrop)");
-										env.ops.pop_back();
-										env.compile(Form(forms::Id::type, form.pos, env.sym("ddrop")),
-																func, fimp);
-									} else if (!env.ops.empty() &&
-														 (&env.ops.back().type == &ops::Dup::type ||
-															&env.ops.back().type == &ops::Get::type ||
-															&env.ops.back().type == &ops::Lambda::type ||
-															&env.ops.back().type == &ops::Push::type)) {
-										env.note(form.pos, fmt("Rewriting (%0 drop) as ()",
-																					 {env.ops.back().type.id}));
-										env.ops.pop_back();
-										if (!env.ops.empty()) { env.ops.back().next = nullptr; }
-									} else if (!env.ops.empty() &&
-														 &env.ops.back().type == &ops::Swap::type) {
-										env.note(form.pos, "Rewriting (swap drop) as (sdrop)");
-										env.ops.pop_back();
-										env.compile(Form(forms::Id::type, form.pos, env.sym("sdrop")),
-																func, fimp);
-									} else {
-										env.emit(ops::Drop::type, form.pos);
-									}
-								});
+			add_macro(env.sym("drop"), ops::Drop::type);
 
 			add_macro(env.sym("dup"), ops::Dup::type);
 			add_macro(env.sym("recall"), ops::Recall::type);
 			add_macro(env.sym("rot"), ops::Rot::type);
 			add_macro(env.sym("rswap"), ops::RSwap::type);
 			add_macro(env.sym("sdrop"), ops::SDrop::type);
-
-			add_macro(env.sym("swap"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-
-									if (!env.ops.empty() &&
-											&env.ops.back().type == &ops::Rot::type) {
-										env.note(form.pos, "Rewriting (rot swap) as (rswap)");
-										env.ops.pop_back();
-										env.compile(Form(forms::Id::type, form.pos, env.sym("rswap")),
-																func, fimp);
-									} else {
-										env.emit(ops::Swap::type, form.pos);
-									}
-								});
+			add_macro(env.sym("swap"), ops::Swap::type);
 
 			add_macro(env.sym("try:"),
 								[](Forms::const_iterator &in,
@@ -120,10 +66,9 @@ namespace snabl {
 									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos);
-									env.emit(ops::Push::type, form.pos, env.nil_type);
-									env.emit(ops::Nop::type, form.pos);
-									op.handler_pc = env.ops.size();
+									auto &prev_op(env.emit(ops::Push::type, form.pos, env.nil_type));
 									env.compile(handler);
+									op.handler_pc = [&env, &prev_op]() { env.pc = prev_op.next; };
 								});
 			
 			add_macro(env.sym("let:"),
@@ -158,15 +103,16 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									env.compile(*in++);
+									env.compile(*in++, func, fimp);
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
-									size_t start_pc(env.ops.size());								
-									env.compile(*in++);
+									env.compile(*in++, func, fimp);
 									auto &if_skip(env.emit(ops::Skip::type, form.pos));
-									else_skip.as<ops::Else>().nops = env.ops.size()-start_pc;
-									start_pc = env.ops.size();
-									env.compile(*in++);
-									if_skip.as<ops::Skip>().nops = env.ops.size()-start_pc;
+									env.compile(*in++, func, fimp);
+									else_skip.as<ops::Else>().skip_pc = *if_skip.next;
+									auto &end_op(env.ops.back());									
+									if_skip.as<ops::Skip>().end_pc = [&env, &end_op]() {
+										env.pc = end_op.next;
+									};
 								});	
 
 			add_macro(env.sym("switch:"),
@@ -190,21 +136,23 @@ namespace snabl {
 										if (f != cases.body.end()) {
 											auto &else_op(env.emit(ops::Else::type,
 																							form.pos).as<ops::Else>());
-											auto start_pc = env.ops.size();
 											env.emit(ops::Drop::type, form.pos);
 											env.compile(*f++);
 
 											if (f != cases.body.end()) {
 												skips.push_back(&env.emit(ops::Skip::type,
-																									form.pos,
-																									env.ops.size()+1).as<ops::Skip>());
+																									form.pos).as<ops::Skip>());
 											}
-											
-											else_op.nops = env.ops.size()-start_pc;
+
+											auto &end_op(env.ops.back());											
+											else_op.skip_pc = [&env, &end_op]() { env.pc = end_op.next; };
 										}
 									}
 
-									for (auto &s: skips) { s->nops = env.ops.size()-*s->nops; }
+									auto &end_op(env.ops.back());
+									for (auto &s: skips) {
+										s->end_pc = [&env, &end_op]() { env.pc = end_op.next; };
+									}
 								});	
 			
 			add_macro(env.sym("func:"),

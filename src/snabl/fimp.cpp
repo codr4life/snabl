@@ -29,13 +29,13 @@ namespace snabl {
 	}
 
 	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
-		auto &env(fimp->func->lib.env);
 		if (fimp->_start_pc) { return false; }
-		env.emit(ops::Fimp::type, pos, fimp);
-		fimp->_start_pc = env.ops.size();
+		auto &env(fimp->func->lib.env);
+		auto &start(env.emit(ops::Fimp::type, pos, fimp));
+		const auto start_offs(env.ops.size());
 		env.compile(*fimp->form);
 
-		for (auto op(env.ops.begin() + *fimp->_start_pc);
+		for (auto op(env.ops.begin()+start_offs);
 				 op != env.ops.end();
 				 op++) {
 			if (&op->type == &ops::Get::type || &op->type == &ops::Let::type) {
@@ -45,8 +45,9 @@ namespace snabl {
 			if (&op->type == &ops::Recall::type) { fimp->_opts |= Opts::Recalls; }
 		}
 		
-		env.emit(ops::FimpEnd::type, pos, fimp->_opts & Opts::Vars);
-		fimp->_nops = env.ops.size() - *fimp->_start_pc;
+		auto &end(env.emit(ops::FimpEnd::type, pos, fimp->_opts & Opts::Vars));
+		fimp->_start_pc = *start.next;		
+		fimp->_end_pc = [&env, &end]() { env.pc = end.next; };
 		return true;
 	}
 
@@ -67,20 +68,20 @@ namespace snabl {
 			auto &scope((fimp->_opts & Opts::Vars)
 									? env.begin_scope(fimp->_parent_scope)
 									: env.scope());
-			env.begin_call(*scope, pos, fimp, env.pc-env.ops.begin());
+			env.begin_call(*scope, pos, fimp, env.pc);
 			env.split(func->nargs);		
 			fimp->_is_calling = true;
-			env.pc = env.ops.begin() + *fimp->_start_pc;
+			env.pc = &*fimp->_start_pc;
 		}
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
 		Def(get_id(*func, args)), func(func), args(args), imp(imp),
-	  _nops(0), _opts(Opts::None), _is_calling(false) { }
+	  _opts(Opts::None), _is_calling(false) { }
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
 		Def(get_id(*func, args)), func(func), args(args), form(form),
-		_nops(0), _opts(Opts::None), _is_calling(false) { }
+		_opts(Opts::None), _is_calling(false) { }
 
 	optional<size_t> Fimp::score(Stack::const_iterator begin,
 															 Stack::const_iterator end) const {

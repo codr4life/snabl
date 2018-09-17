@@ -35,12 +35,9 @@ namespace snabl {
 		const TryEnd::Type TryEnd::type("try-end");
 
 		OpImp Call::Type::make_imp(Env &env, Op &op) const {
-			const auto &pos(op.pos);
-				
-			return [&env, &pos]() {
-				env.pc++;
-				env.pop().call(pos, false);
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
+			return [&env, &op]() {
+				env.pc = op.next;
+				env.pop().call(op.pos, false);
 			};
 		};
 
@@ -49,8 +46,7 @@ namespace snabl {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to ddrop"); }
 				env._stack.pop_back();
 				env._stack.pop_back();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -63,8 +59,7 @@ namespace snabl {
 				}
 				
 				env._stack.pop_back();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -72,19 +67,22 @@ namespace snabl {
 			return [&env, &op]() {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to dup"); }
 				env.push(env._stack.back());
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
 		OpImp Else::Type::make_imp(Env &env, Op &op) const {
-			const auto &nops(op.as<ops::Else>().nops);
+			const auto &skip_pc(op.as<ops::Else>().skip_pc);
 
-			return [&env, &nops]() {
+			return [&env, &op, &skip_pc]() {
 				const auto &v(env.peek());
-				if (!v.as<bool>()) { env.pc += *nops; }
+
+				if (v.type() != env.bool_type) {
+					throw RuntimeError(env, op.pos, fmt("Invalid else cond: %0", {v}));
+				}
+				
+				env.pc = v.as<bool>() ? op.next : &*skip_pc;
 				env.pop();
-				env.next = (++env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -106,13 +104,12 @@ namespace snabl {
 				const auto lhs(env.pop());
 				const auto rhs(o.rhs ? *o.rhs : env._stack.back());
 				env.push(env.bool_type, lhs.eqval(rhs));
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 		
 		void Fimp::Type::dump_data(const Fimp &op, ostream &out) const {
-			out << ' ' << op.ptr->id << ' ' << op.ptr->nops();
+			out << ' ' << op.ptr->id;
 		}
 
 		OpImp Fimp::Type::make_imp(Env &env, Op &op) const {
@@ -120,8 +117,7 @@ namespace snabl {
 
 			return [&env, &fimp]() {
 				if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
-				env.pc += fimp.nops()+1;
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
+				env.pc = &*fimp._end_pc;
 			};
 		};
 		
@@ -130,12 +126,11 @@ namespace snabl {
 
 			return [&env, &o]() {
 				if (o.end_scope) { env.end_scope(); }
-				const auto &c(env.call());
+				auto &c(env.call());
 				dynamic_pointer_cast<snabl::Fimp>(c.target)->_is_calling = false;				
-				env.pc = env.ops.begin()+*c.return_pc;
+				env.pc = c.return_pc;
 				env.end_call();
 				env.unsplit();
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -174,9 +169,8 @@ namespace snabl {
 				}
 			
 				if (!o.fimp) { o.prev_fimp = *fimp; }
-				env.pc++;
+				env.pc = op.next;
 				snabl::Fimp::call(*fimp, op.pos);
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -187,8 +181,7 @@ namespace snabl {
 				auto v(env.scope()->get(id));
 				if (!v) { throw Error("Unknown var"); }
 				env.push(*v);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -204,8 +197,7 @@ namespace snabl {
 				const bool ok(env._stack.back().isa(rhs));
 				env._stack.pop_back();
 				env.push(env.bool_type, ok);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -217,10 +209,9 @@ namespace snabl {
 								 make_shared<snabl::Lambda>((o.opts & Target::Opts::Vars)
 																						? env.scope()
 																						: nullptr,
-																						*o.start_pc, *o.nops,
+																						&*o.start_pc, &*o.end_pc,
 																						o.opts));
-				env.pc += *o.nops+1;
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
+				env.pc = &*o.end_pc;
 			};
 		};
 
@@ -229,9 +220,8 @@ namespace snabl {
 				const auto &c(env.call());
 				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
 				if (l.opts() & Target::Opts::Vars) { env.end_scope(); }
-				env.pc = env.ops.begin()+*c.return_pc;
+				env.pc = c.return_pc;
 				env.end_call();
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -243,16 +233,12 @@ namespace snabl {
 				auto &v(env._stack.back());
 				env.scope()->let(id, v);
 				env._stack.pop_back();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
 		OpImp Nop::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				env.next = op.next;
-				env.pc++;
-			};
+			return [&env, &op]() { env.pc = op.next; };
 		}
 
 		void Push::Type::dump_data(const Push &op, ostream &out) const {
@@ -265,15 +251,13 @@ namespace snabl {
 			
 			return [&env, &op, &v]() {
 				env.push(v);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
 			return [&env]() {
 				env.call().recall();
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
 			};
 		};
 
@@ -283,8 +267,7 @@ namespace snabl {
 				auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
 				swap(env._stack[i], env._stack[i-1]);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -296,8 +279,7 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -310,33 +292,26 @@ namespace snabl {
 				const auto i(env._stack.size()-1);
 				env._stack[i-1] = env._stack[i];	
 				env._stack.pop_back();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 		
 		OpImp Skip::Type::make_imp(Env &env, Op &op) const {
-			const auto &nops(op.as<ops::Skip>().nops);
-			
-			return [&env, &nops]() {
-				env.pc += *nops+1;
-				env.next = (env.pc == env.ops.end()) ? nullptr : &env.pc->imp;
-			};
+			const auto &end_pc(op.as<ops::Skip>().end_pc);
+			return [&env, &end_pc]() { env.pc = &*end_pc; };
 		};
 
 		OpImp Split::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.split();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
 		OpImp SplitEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.unsplit();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -355,8 +330,7 @@ namespace snabl {
 				}
 				
 				env.push(env.stack_type, s);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -368,8 +342,7 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-1]);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 		
@@ -379,8 +352,7 @@ namespace snabl {
 			return [&env, &op, &o]() {
 				o.state.emplace(env);
 				env._tries.push_back(&o);
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 
@@ -388,8 +360,7 @@ namespace snabl {
 			return [&env, &op]() {
 				env._tries.back()->state.reset();
 				env._tries.pop_back();
-				env.next = op.next;
-				env.pc++;
+				env.pc = op.next;
 			};
 		};
 	}
