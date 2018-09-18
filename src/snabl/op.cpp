@@ -202,7 +202,7 @@ namespace snabl {
 		};
 
 		OpImp Lambda::Type::make_imp(Env &env, Op &op) const {			
-			const auto &o(op.as<ops::Lambda>());
+			auto &o(op.as<ops::Lambda>());
 			
 			return [&env, &o]() {
 				env.push(env.lambda_type,

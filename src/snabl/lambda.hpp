@@ -11,7 +11,7 @@ namespace snabl {
 		const OpImp &end_pc;
 
 		Lambda(const ScopePtr &parent_scope,
-					 const OpImp &start_pc, const OpImp &end_pc,
+					 OpImp &start_pc, OpImp &end_pc,
 					 Opts opts):
 			parent_scope(parent_scope),
 			end_pc(end_pc),
