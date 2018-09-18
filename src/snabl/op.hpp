@@ -197,7 +197,7 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<OpImp> start_pc, end_pc;
+			OpImp start_pc, end_pc;
 			Target::Opts opts;
 			Lambda(): opts(Target::Opts::None) { }
 		};

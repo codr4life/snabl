@@ -1,6 +1,5 @@
-* remove optional from fimp.imp
-* switch PC's from ptr/optional to OpImp
-** all but env.pc && op.next
+* switch ops from ptr/optional to OpImp
+** Skip/Else/Try
 * remove Scope ptr from Call
 ** remove Call arg from Fimp imp
 ** capture env by ref int fimp lambdas
@@ -17,6 +16,8 @@
 ** alloc iter in op like Try.state
 ** For takes Iter op as arg
 ** Next takes For op as arg and jumps if more
+* add bench: macro
+** replaces fn
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list

@@ -209,9 +209,9 @@ namespace snabl {
 								 make_shared<snabl::Lambda>((o.opts & Target::Opts::Vars)
 																						? env.scope()
 																						: nullptr,
-																						&*o.start_pc, &*o.end_pc,
+																						o.start_pc, o.end_pc,
 																						o.opts));
-				env.pc = &*o.end_pc;
+				env.pc = &o.end_pc;
 			};
 		};
 
