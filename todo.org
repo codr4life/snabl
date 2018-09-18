@@ -1,3 +1,5 @@
+* switch pc/return_pc to OpImp
+** swap pc to local var before manipulating in ops
 * remove Scope ptr from Call
 ** remove Call arg from Fimp imp
 ** capture env by ref int fimp lambdas
@@ -5,7 +7,6 @@
 ** restore on recall
 ** remove restore_all
 *** replace with individual calls
-* add stack/str eqval
 * add push/pop fns
 ** stack/str
 ** add pop for iter
@@ -30,6 +31,7 @@
 ** rename to Fimp
 ** remove no_type
 *** map _ to Maybe instead
+* add stack/str eqval
 * add include: macro
 ** one arg
 ** load all files into ops
