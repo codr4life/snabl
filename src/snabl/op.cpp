@@ -117,7 +117,7 @@ namespace snabl {
 
 			return [&env, &fimp]() {
 				if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
-				env.pc = &*fimp._end_pc;
+				env.pc = &fimp._end_pc;
 			};
 		};
 		

@@ -20,7 +20,7 @@ namespace snabl {
 		const FuncPtr func;
 		const Args args;
 		const optional<Form> form;
-		const optional<Imp> imp;
+		const Imp imp;
 
 		static Sym get_id(const Func &func, const Args &args);
 		static bool compile(const FimpPtr &fimp, Pos pos);
@@ -30,12 +30,12 @@ namespace snabl {
 		Fimp(const FuncPtr &func, const Args &args, const Form &form);
 
 		Opts opts() const override { return _opts; }
-		PC start_pc() const override { return &*_start_pc; }
+		PC start_pc() const override { return &_start_pc; }
 		optional<size_t> score(Stack::const_iterator begin,
 													 Stack::const_iterator end) const;
 	private:
 		ScopePtr _parent_scope;
-		optional<OpImp> _start_pc, _end_pc;
+		OpImp _start_pc, _end_pc;
 		Opts _opts;
 		bool _is_calling;
 

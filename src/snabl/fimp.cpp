@@ -62,7 +62,7 @@ namespace snabl {
 		
 		if (fimp->imp) {
 			auto &call(env.begin_call(*env.scope(), pos, fimp));
-			(*fimp->imp)(call);
+			fimp->imp(call);
 			env.end_call();
 		} else {
 			if (fimp->_is_calling) {
@@ -76,7 +76,7 @@ namespace snabl {
 			env.begin_call(*scope, pos, fimp, env.pc);
 			env.split(func->nargs);		
 			fimp->_is_calling = true;
-			env.pc = &*fimp->_start_pc;
+			env.pc = &fimp->_start_pc;
 		}
 	}
 

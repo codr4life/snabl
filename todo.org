@@ -1,7 +1,6 @@
-* switch PC & next from ptr to OpImp
-** remove PC type
-** assign null pointer to clear
-** switch optionals/pointers in ops/lambdas/fimpsx
+* remove optional from fimp.imp
+* switch PC's from ptr/optional to OpImp
+** all but env.pc && op.next
 * remove Scope ptr from Call
 ** remove Call arg from Fimp imp
 ** capture env by ref int fimp lambdas
@@ -58,5 +57,4 @@
 ** generate constructor 
 * add trait: Foo (Bar Baz) macro
 ** derive children from type
-* add push ddrop rewrite
-** pop two ops and compile drop
+
