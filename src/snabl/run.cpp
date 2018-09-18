@@ -43,7 +43,7 @@ namespace snabl {
 			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = &*t.handler_pc;
+			pc = &t.handler_pc;
 			goto enter;
 		}
 	}

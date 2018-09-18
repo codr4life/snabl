@@ -72,16 +72,16 @@ namespace snabl {
 		};
 
 		OpImp Else::Type::make_imp(Env &env, Op &op) const {
-			const auto &skip_pc(op.as<ops::Else>().skip_pc);
+			const auto skip_pc(&op.as<ops::Else>().skip_pc);
 
-			return [&env, &op, &skip_pc]() {
+			return [&env, &op, skip_pc]() {
 				const auto &v(env.peek());
 
 				if (v.type() != env.bool_type) {
 					throw RuntimeError(env, op.pos, fmt("Invalid else cond: %0", {v}));
 				}
 				
-				env.pc = v.as<bool>() ? op.next : &*skip_pc;
+				env.pc = v.as<bool>() ? op.next : skip_pc;
 				env.pop();
 			};
 		};
@@ -297,8 +297,8 @@ namespace snabl {
 		};
 		
 		OpImp Skip::Type::make_imp(Env &env, Op &op) const {
-			const auto &end_pc(op.as<ops::Skip>().end_pc);
-			return [&env, &end_pc]() { env.pc = &*end_pc; };
+			const auto end_pc(&op.as<ops::Skip>().end_pc);
+			return [&env, end_pc]() { env.pc = end_pc; };
 		};
 
 		OpImp Split::Type::make_imp(Env &env, Op &op) const {

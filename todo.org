@@ -1,5 +1,3 @@
-* switch ops from ptr/optional to OpImp
-** Skip/Else/Try
 * remove Scope ptr from Call
 ** remove Call arg from Fimp imp
 ** capture env by ref int fimp lambdas

@@ -111,8 +111,8 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<OpImp> skip_pc;
-			Else(optional<OpImp> skip_pc=nullopt): skip_pc(skip_pc) { }
+			OpImp skip_pc;
+			Else(const OpImp &skip_pc=nullptr): skip_pc(skip_pc) { }
 		};
 		
 		struct Eqval {
@@ -289,9 +289,9 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<OpImp> end_pc;
+			OpImp end_pc;
 
-			Skip(optional<OpImp> end_pc=nullopt): end_pc(end_pc) { }
+			Skip(const OpImp &end_pc=nullptr): end_pc(end_pc) { }
 		};
 
 		struct Split {
@@ -339,7 +339,7 @@ namespace snabl {
 			};
 
 			static const Type type;
-			optional<OpImp> handler_pc;
+			OpImp handler_pc;
 			optional<State> state;
 		};
 
