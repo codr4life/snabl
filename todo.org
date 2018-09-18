@@ -47,4 +47,3 @@
 ** generate constructor 
 * add trait: Foo (Bar Baz) macro
 ** derive children from type
-
