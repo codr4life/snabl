@@ -1,8 +1,7 @@
 * switch pc/return_pc to OpImp
-** swap pc to local var before manipulating in ops
+** swap pc to local var in run loop
 * remove Scope ptr from Call
-** remove Call arg from Fimp imp
-** capture env by ref int fimp lambdas
+** replace Call arg with Fimp
 * capture ntries in State
 ** restore on recall
 ** remove restore_all
