@@ -15,7 +15,7 @@ namespace snabl {
 	class Fimp: public Def, public Target {
 	public:
 		using Args = vector<Box>;
-		using Imp = function<void (Call &)>;
+		using Imp = function<void (const FimpPtr &)>;
 		
 		const FuncPtr func;
 		const Args args;

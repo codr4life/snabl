@@ -137,8 +137,8 @@ namespace snabl {
 		}
 
 		template <typename... ArgsT>
-		Call &begin_call(Scope &scope, ArgsT &&... args) {
-			_calls.emplace_back(scope, forward<ArgsT>(args)...);
+		Call &begin_call(ArgsT &&... args) {
+			_calls.emplace_back(*this, forward<ArgsT>(args)...);
 			return _calls.back();
 		}
 		
@@ -226,11 +226,10 @@ namespace snabl {
 		return lhs->isa(rhs);
 	}
 
-	inline void Call::recall() const {
-		auto &env(scope.env);
+	inline void Call::recall(Env &env) const {
 		_state->restore_libs(env);
 		_state->restore_scopes(env);
-		scope.clear_vars();
+		if (target->opts() & Target::Opts::Vars) { env.scope()->clear_vars(); }
 		env.pc = target->start_pc();
 	}
 

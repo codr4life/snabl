@@ -61,8 +61,8 @@ namespace snabl {
 		auto &env(func->lib.env);
 		
 		if (fimp->imp) {
-			auto &call(env.begin_call(*env.scope(), pos, fimp));
-			fimp->imp(call);
+			env.begin_call(pos, fimp);
+			fimp->imp(fimp);
 			env.end_call();
 		} else {
 			if (fimp->_is_calling) {
@@ -70,10 +70,8 @@ namespace snabl {
 			}
 
 			fimp->compile(fimp, pos);
-			auto &scope((fimp->_opts & Opts::Vars)
-									? env.begin_scope(fimp->_parent_scope)
-									: env.scope());
-			env.begin_call(*scope, pos, fimp, env.pc);
+			if (fimp->_opts & Opts::Vars) { env.begin_scope(fimp->_parent_scope); }
+			env.begin_call(pos, fimp, env.pc);
 			env.split(func->nargs);		
 			fimp->_is_calling = true;
 			env.pc = &fimp->_start_pc;

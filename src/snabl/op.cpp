@@ -256,9 +256,7 @@ namespace snabl {
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
-			return [&env]() {
-				env.call().recall();
-			};
+			return [&env]() { env.call().recall(env); };
 		};
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {
