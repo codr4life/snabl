@@ -28,8 +28,6 @@
 ** push quoted literals as is
 * change forms::TypeList to contain form like Query
 ** rename to Fimp
-** remove no_type
-*** map _ to Maybe instead
 * add stack/str eqval
 * add include: macro
 ** one arg
