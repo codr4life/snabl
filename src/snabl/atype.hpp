@@ -8,7 +8,6 @@
 #include "snabl/ptrs.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/std.hpp"
-#include "snabl/var.hpp"
 
 namespace snabl {
 	class Box;
