@@ -30,10 +30,6 @@
 ** rename to Fimp
 ** remove no_type
 *** map _ to Maybe instead
-* add rewrite fence 
-** use ops::Nop
-** after if: and switch: when needed
-** after each compile
 * add include: macro
 ** one arg
 ** load all files into ops
