@@ -15,7 +15,7 @@ namespace snabl {
 	class Fimp: public Def, public Target {
 	public:
 		using Args = vector<Box>;
-		using Imp = function<void (const FimpPtr &)>;
+		using Imp = function<void (Fimp &)>;
 		
 		const FuncPtr func;
 		const Args args;
@@ -23,8 +23,8 @@ namespace snabl {
 		const Imp imp;
 
 		static Sym get_id(const Func &func, const Args &args);
-		static bool compile(const FimpPtr &fimp, Pos pos);
-		static void call(const FimpPtr &fimp, Pos pos);
+		static bool compile(const FimpPtr &fip, Pos pos);
+		static void call(const FimpPtr &fip, Pos pos);
 
 		Fimp(const FuncPtr &func, const Args &args, Imp imp);
 		Fimp(const FuncPtr &func, const Args &args, const Form &form);

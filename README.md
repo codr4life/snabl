@@ -101,7 +101,7 @@ snabl::Env env;
 env.home.add_fimp(
   env.sym("my-fib"),
   {snabl::Box(env.int_type)},
-  [](const snabl::FimpPtr &fimp) {
+  [](snabl::Fimp &fimp) {
     snabl::Env &env(call.scope.env);
     snabl::Box &v(env.peek());
     snabl::Int n(v.as<snabl::Int>()), a(0), b(1);

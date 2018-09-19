@@ -28,48 +28,51 @@ namespace snabl {
 		return func.lib.env.sym(buf.str());
 	}
 
-	bool Fimp::compile(const FimpPtr &fimp, Pos pos) {
-		if (fimp->_start_pc) { return false; }
-		auto &env(fimp->func->lib.env);
-		auto &start(env.emit(ops::Fimp::type, pos, fimp));
+	bool Fimp::compile(const FimpPtr &fip, Pos pos) {
+		auto &fi(*fip);
+		
+		if (fi._start_pc) { return false; }
+		auto &env(fi.func->lib.env);
+		auto &start(env.emit(ops::Fimp::type, pos, fip));
 		const auto start_offs(env.ops.size());
-		env.compile(*fimp->form);
+		env.compile(*fi.form);
 
 		for (auto op(env.ops.begin()+start_offs);
 				 op != env.ops.end();
 				 op++) {
 			if (&op->type == &ops::Get::type || &op->type == &ops::Let::type) {
-				fimp->_opts |= Opts::Vars;
+				fi._opts |= Opts::Vars;
 			}
 
-			if (&op->type == &ops::Recall::type) { fimp->_opts |= Opts::Recalls; }
+			if (&op->type == &ops::Recall::type) { fi._opts |= Opts::Recalls; }
 		}
 		
 		auto &end(env.emit(ops::Return::type, pos));
-		fimp->_start_pc = *start.next;
+		fi._start_pc = *start.next;
 		
-		fimp->_end_pc = [&env, &end, fimp]() {
+		fi._end_pc = [&env, &end, &fi]() {
 				env.pc = end.next;
-				if (env.pc) { fimp->_end_pc = *env.pc; }
+				if (env.pc) { fi._end_pc = *env.pc; }
 		};
 
 		return true;
 	}
 
-	void Fimp::call(const FimpPtr &fimp, Pos pos) {
-		const auto &func(fimp->func);
-		auto &env(func->lib.env);
+	void Fimp::call(const FimpPtr &fip, Pos pos) {
+		auto &fi(*fip);
+		const auto &fn(*fi.func);
+		auto &env(fn.lib.env);
 		
-		if (fimp->imp) {
-			Target::begin_call(fimp, env, pos);
-			fimp->imp(fimp);
-			fimp->end_call(env);
+		if (fi.imp) {
+			Target::begin_call(fip, env, pos);
+			fi.imp(fi);
+			fi.end_call(env);
 		} else {
-			fimp->compile(fimp, pos);
-			if (fimp->_opts & Opts::Vars) { env.begin_scope(fimp->_parent_scope); }
-			Target::begin_call(fimp, env, pos, env.pc);
-			env.split(func->nargs);		
-			env.pc = &fimp->_start_pc;
+			Fimp::compile(fip, pos);
+			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
+			Target::begin_call(fip, env, pos, env.pc);
+			env.split(fn.nargs);		
+			env.pc = &fi._start_pc;
 		}
 	}
 

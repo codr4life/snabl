@@ -2,19 +2,21 @@
 #include "snabl/target.hpp"
 
 namespace snabl {
-	void Target::begin_call(const TargetPtr &t, Env &env, Pos pos, PC return_pc) {
-		if (t->_call) {
-			throw RuntimeError(env, pos, fmt("Recursive call: %0", {t->target_id()}));
+	void Target::begin_call(const TargetPtr &tp, Env &env, Pos pos, PC return_pc) {
+		auto &t(*tp);
+		
+		if (t._call) {
+			throw RuntimeError(env, pos, fmt("Recursive call: %0", {t.target_id()}));
 		}
 
-		t->_call.emplace(env._target,
+		t._call.emplace(env._target,
 										 pos,
-										 (t->_opts & Target::Opts::Recalls)
+										 (t._opts & Target::Opts::Recalls)
 										   ? make_optional<State>(env)
 										   : nullopt,
 										 return_pc);
 		
-		env._target = t;
+		env._target = tp;
 	}
 
 	void Target::end_call(Env &env) {
