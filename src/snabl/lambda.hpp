@@ -14,6 +14,8 @@ namespace snabl {
 					 const OpImp &start_pc, const OpImp &end_pc,
 					 Opts opts):
 			Target(parent_scope, start_pc, end_pc, opts) { }
+
+		string target_id() const override { return fmt("Lambda(%0)", {this}); }		
 	private:
 		friend ops::LambdaEnd;
 

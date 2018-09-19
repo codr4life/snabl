@@ -29,11 +29,11 @@ namespace snabl {
 		Fimp(const FuncPtr &func, const Args &args, Imp imp);
 		Fimp(const FuncPtr &func, const Args &args, const Form &form);
 
+		string target_id() const override { return id.name(); }		
+
 		optional<size_t> score(Stack::const_iterator begin,
 													 Stack::const_iterator end) const;
 	private:
-		bool _is_calling;
-
 		friend Env;
 		friend ops::Fimp;
 		friend ops::FimpEnd;

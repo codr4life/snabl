@@ -1,7 +1,6 @@
 #ifndef SNABL_ENV_HPP
 #define SNABL_ENV_HPP
 
-#include "snabl/call.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/pos.hpp"
@@ -137,22 +136,6 @@ namespace snabl {
 			_scopes.pop_back();
 		}
 
-		template <typename... ArgsT>
-		Call &begin_call(ArgsT &&... args) {
-			_calls.emplace_back(*this, forward<ArgsT>(args)...);
-			return _calls.back();
-		}
-		
-		Call &call() {
-			if (_calls.empty()) { throw Error("No calls"); }
-			return _calls.back();
-		}
-
-		void end_call() {
-			if (_calls.empty()) { throw Error("No active calls"); }
-			_calls.pop_back();
-		}
-
 		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
@@ -184,6 +167,8 @@ namespace snabl {
 			_stack_offs = _splits.empty() ? 0 : _splits.back();
 		}
 
+		const TargetPtr &target() const { return _target; }
+		
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
 			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
@@ -198,21 +183,26 @@ namespace snabl {
 
 	private:
 		vector<Lib *> _libs;
-		deque<Call> _calls;
 		vector<ops::Try *> _tries;
 		vector<size_t> _splits;
 		size_t _stack_offs;
+		TargetPtr _target;
 		
-		friend State;
 		friend RuntimeError;
+		friend State;
+		friend Target;
+
 		friend ops::DDrop::Type;
 		friend ops::Drop::Type;
 		friend ops::Dup::Type;
 		friend ops::Eqval::Type;
 		friend ops::Fimp::Type;
+		friend ops::FimpEnd::Type;
 		friend ops::Funcall::Type;
 		friend ops::Isa::Type;
+		friend ops::LambdaEnd::Type;
 		friend ops::Let::Type;
+		friend ops::Recall::Type;
 		friend ops::Rot::Type;
 		friend ops::RSwap::Type;
 		friend ops::SDrop::Type;

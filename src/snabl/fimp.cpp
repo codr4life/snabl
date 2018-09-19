@@ -61,30 +61,23 @@ namespace snabl {
 		auto &env(func->lib.env);
 		
 		if (fimp->imp) {
-			env.begin_call(pos, fimp);
+			Target::begin_call(fimp, env, pos);
 			fimp->imp(fimp);
-			env.end_call();
+			fimp->end_call(env);
 		} else {
-			if (fimp->_is_calling) {
-				throw RuntimeError(env, pos, fmt("Recursive call: %0", {fimp->id}));
-			}
-
 			fimp->compile(fimp, pos);
 			if (fimp->_opts & Opts::Vars) { env.begin_scope(fimp->_parent_scope); }
-			fimp->begin_call(env);
-			env.begin_call(pos, fimp, env.pc);
+			Target::begin_call(fimp, env, pos, env.pc);
 			env.split(func->nargs);		
-			fimp->_is_calling = true;
 			env.pc = &fimp->_start_pc;
 		}
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
-		Def(get_id(*func, args)), func(func), args(args), imp(imp), _is_calling(false) { }
+		Def(get_id(*func, args)), func(func), args(args), imp(imp) { }
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
-		Def(get_id(*func, args)), func(func), args(args), form(form),
-		_is_calling(false) { }
+		Def(get_id(*func, args)), func(func), args(args), form(form) { }
 
 	optional<size_t> Fimp::score(Stack::const_iterator begin,
 															 Stack::const_iterator end) const {

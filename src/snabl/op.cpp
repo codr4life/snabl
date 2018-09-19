@@ -126,10 +126,9 @@ namespace snabl {
 
 			return [&env, &o]() {
 				if (o.end_scope) { env.end_scope(); }
-				auto &c(env.call());
-				dynamic_pointer_cast<snabl::Fimp>(c.target)->_is_calling = false;				
-				env.pc = c.return_pc;
-				env.end_call();
+				auto &t(*env._target);
+				env.pc = t.call()->return_pc;
+				t.end_call(env);
 				env.unsplit();
 			};
 		};
@@ -217,11 +216,10 @@ namespace snabl {
 
 		OpImp LambdaEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env]() {
-				const auto &c(env.call());
-				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
-				if (l._opts & Target::Opts::Vars) { env.end_scope(); }
-				env.pc = c.return_pc;
-				env.end_call();
+				auto &t(*env._target);
+				if (t.opts() & Target::Opts::Vars) { env.end_scope(); }
+				env.pc = t.call()->return_pc;
+				t.end_call(env);
 			};
 		};
 
@@ -256,7 +254,10 @@ namespace snabl {
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
-			return [&env]() { env.call().target->recall(env); };
+			return [&env, &op]() {
+				if (!env._target) { throw RuntimeError(env, op.pos, "Nothing to recall"); }
+				env._target->recall(env);
+			};
 		};
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {

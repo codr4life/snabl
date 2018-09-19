@@ -30,16 +30,6 @@ namespace snabl {
 			if (_tries.empty()) { throw e; }
 			auto &t(*_tries.back());
 			_tries.pop_back();
-
-			if (t.state->ncalls < _calls.size()) {
-				for (auto c(_calls.begin()+t.state->ncalls);
-						 c != _calls.end();
-						 c++) {
-					auto fi(dynamic_pointer_cast<Fimp>(c->target));
-					if (fi) { fi->_is_calling = false; }
-				}
-			}
-
 			t.state->restore_all(*this);
 			t.state.reset();
 			push(error_type, make_shared<UserError>(e));

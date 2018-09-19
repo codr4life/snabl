@@ -1,7 +1,5 @@
-* remove Call struct
-** move pos to Target._call_pos
-** store raw TargetPtrs in Env._calls
-* move recursive_check / _is_called to Target
+* join FimpEnd & LambdaEnd into Return
+** add return macro
 * replace libs stack with single Lib *
 ** init to &home
 * replace scopes stack with single ScopePtr
