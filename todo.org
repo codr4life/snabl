@@ -1,4 +1,5 @@
 * move Call.state to Target
+* move recursive_check / _is_called to Target
 * replace libs stack with single Lib *
 ** init to &home
 * replace scopes stack with single ScopePtr
@@ -7,7 +8,9 @@
 ** remember prev
 *** swap with ptr in Fimp/LambdaRet
 * replace tries stack with single ops::Try ptr
-* capture ntries in State
+* add bench: macro
+** replaces fn
+* capture tries in State
 ** restore on recall
 ** remove restore_all
 *** replace with individual calls
@@ -19,8 +22,6 @@
 ** alloc iter in op like Try.state
 ** For takes Iter op as arg
 ** Next takes For op as arg and jumps if more
-* add bench: macro
-** replaces fn
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
