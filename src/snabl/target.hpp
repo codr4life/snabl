@@ -2,15 +2,25 @@
 #define SNABL_TARGET_HPP
 
 #include "snabl/ptrs.hpp"
+#include "snabl/state.hpp"
 
 namespace snabl {
 	class Target {
 	public:
 		enum class Opts: int {None=0, Vars=1, Recalls=2};
 
+		Target(const OpImp start_pc=nullptr,
+					 const OpImp end_pc=nullptr,
+					 Opts opts=Opts::None):
+			_start_pc(start_pc), _end_pc(end_pc), _opts(opts) { }
 		virtual ~Target() { }
-		virtual Opts opts() const=0;
-		virtual PC start_pc() const=0;
+		void begin_call(Env &env);
+		void recall(Env &env) const;
+	protected:
+		OpImp _start_pc, _end_pc;
+		Opts _opts;
+	private:
+		optional<const State> _prev_state;
 	};
 
 	inline Target::Opts& operator |=(Target::Opts& lhs, Target::Opts rhs) {

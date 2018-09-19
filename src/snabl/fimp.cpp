@@ -71,6 +71,7 @@ namespace snabl {
 
 			fimp->compile(fimp, pos);
 			if (fimp->_opts & Opts::Vars) { env.begin_scope(fimp->_parent_scope); }
+			fimp->begin_call(env);
 			env.begin_call(pos, fimp, env.pc);
 			env.split(func->nargs);		
 			fimp->_is_calling = true;
@@ -79,12 +80,11 @@ namespace snabl {
 	}
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
-		Def(get_id(*func, args)), func(func), args(args), imp(imp),
-	  _opts(Opts::None), _is_calling(false) { }
+		Def(get_id(*func, args)), func(func), args(args), imp(imp), _is_calling(false) { }
 
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
 		Def(get_id(*func, args)), func(func), args(args), form(form),
-		_opts(Opts::None), _is_calling(false) { }
+		_is_calling(false) { }
 
 	optional<size_t> Fimp::score(Stack::const_iterator begin,
 															 Stack::const_iterator end) const {

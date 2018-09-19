@@ -18,18 +18,10 @@ namespace snabl {
 		const PC return_pc;
 
 		Call(Env &env, Pos pos, const FimpPtr &fimp, PC return_pc=nullptr):
-			pos(pos), target(fimp), return_pc(return_pc) {
-			if (fimp->opts() & Target::Opts::Recalls) { _state.emplace(env); }
-		}
+			pos(pos), target(fimp), return_pc(return_pc) { }
 	
 		Call(Env &env, Pos pos, const LambdaPtr &lambda, PC return_pc):
-			pos(pos), target(lambda), return_pc(return_pc) {
-			if (lambda->opts() & Target::Opts::Recalls) { _state.emplace(env); }
-		}
-
-		void recall(Env &env) const;
-	private:
-    optional<const State> _state;
+			pos(pos), target(lambda), return_pc(return_pc) { }
 	};
 }
 

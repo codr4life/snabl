@@ -227,13 +227,6 @@ namespace snabl {
 		return lhs->isa(rhs);
 	}
 
-	inline void Call::recall(Env &env) const {
-		_state->restore_libs(env);
-		_state->restore_scopes(env);
-		if (target->opts() & Target::Opts::Vars) { env.scope()->clear_vars(); }
-		env.pc = target->start_pc();
-	}
-
 	template <typename ValT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id,
 																 const TypePtr<ValT> &type,

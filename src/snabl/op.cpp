@@ -116,7 +116,7 @@ namespace snabl {
 			auto &fimp(*op.as<ops::Fimp>().ptr);
 
 			return [&env, &fimp]() {
-				if (fimp.opts() & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
+				if (fimp._opts & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
 				env.pc = &fimp._end_pc;
 			};
 		};
@@ -219,7 +219,7 @@ namespace snabl {
 			return [&env]() {
 				const auto &c(env.call());
 				const auto &l(*dynamic_pointer_cast<snabl::Lambda>(c.target));
-				if (l.opts() & Target::Opts::Vars) { env.end_scope(); }
+				if (l._opts & Target::Opts::Vars) { env.end_scope(); }
 				env.pc = c.return_pc;
 				env.end_call();
 			};
@@ -256,7 +256,7 @@ namespace snabl {
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
-			return [&env]() { env.call().recall(env); };
+			return [&env]() { env.call().target->recall(env); };
 		};
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {

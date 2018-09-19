@@ -29,14 +29,10 @@ namespace snabl {
 		Fimp(const FuncPtr &func, const Args &args, Imp imp);
 		Fimp(const FuncPtr &func, const Args &args, const Form &form);
 
-		Opts opts() const override { return _opts; }
-		PC start_pc() const override { return &_start_pc; }
 		optional<size_t> score(Stack::const_iterator begin,
 													 Stack::const_iterator end) const;
 	private:
 		ScopePtr _parent_scope;
-		OpImp _start_pc, _end_pc;
-		Opts _opts;
 		bool _is_calling;
 
 		friend Env;
