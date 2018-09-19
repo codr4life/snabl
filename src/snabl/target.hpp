@@ -9,14 +9,18 @@ namespace snabl {
 	public:
 		enum class Opts: int {None=0, Vars=1, Recalls=2};
 
-		Target(const OpImp start_pc=nullptr,
+		Target(const ScopePtr &parent_scope=nullptr,
+					 const OpImp start_pc=nullptr,
 					 const OpImp end_pc=nullptr,
 					 Opts opts=Opts::None):
-			_start_pc(start_pc), _end_pc(end_pc), _opts(opts) { }
+			_parent_scope(parent_scope),
+			_start_pc(start_pc), _end_pc(end_pc),
+			_opts(opts) { }
 		virtual ~Target() { }
 		void begin_call(Env &env);
 		void recall(Env &env) const;
 	protected:
+		ScopePtr _parent_scope;
 		OpImp _start_pc, _end_pc;
 		Opts _opts;
 	private:

@@ -8,15 +8,12 @@
 
 namespace snabl {
 	struct Lambda: public Target {
-		const ScopePtr parent_scope;
-
 		static void call(const LambdaPtr &l, Env &env, Pos pos, bool now);
 
 		Lambda(const ScopePtr &parent_scope,
 					 const OpImp &start_pc, const OpImp &end_pc,
 					 Opts opts):
-			Target(start_pc, end_pc, opts),
-			parent_scope(parent_scope) { }
+			Target(parent_scope, start_pc, end_pc, opts) { }
 	private:
 		friend ops::LambdaEnd;
 

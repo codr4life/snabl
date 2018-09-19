@@ -3,7 +3,7 @@
 
 namespace snabl {
 	void Lambda::call(const LambdaPtr &l, Env &env, Pos pos, bool now) {
-		if (l->_opts & Target::Opts::Vars) { env.begin_scope(l->parent_scope); }
+		if (l->_opts & Target::Opts::Vars) { env.begin_scope(l->_parent_scope); }
 		l->begin_call(env);
 		
 		if (now) {

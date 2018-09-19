@@ -179,7 +179,7 @@ namespace snabl {
 			
 			return [&env, &op, &id]() {
 				auto v(env.scope()->get(id));
-				if (!v) { throw Error("Unknown var"); }
+				if (!v) { throw RuntimeError(env, op.pos, fmt("Unknown var: %0", {id})); }
 				env.push(*v);
 				env.pc = op.next;
 			};

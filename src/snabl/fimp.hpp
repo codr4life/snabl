@@ -32,7 +32,6 @@ namespace snabl {
 		optional<size_t> score(Stack::const_iterator begin,
 													 Stack::const_iterator end) const;
 	private:
-		ScopePtr _parent_scope;
 		bool _is_calling;
 
 		friend Env;
