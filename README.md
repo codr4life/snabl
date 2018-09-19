@@ -101,7 +101,7 @@ snabl::Env env;
 env.home.add_fimp(
   env.sym("my-fib"),
   {snabl::Box(env.int_type)},
-  [](snabl::Call &call) {
+  [](const snabl::FimpPtr &fimp) {
     snabl::Env &env(call.scope.env);
     snabl::Box &v(env.peek());
     snabl::Int n(v.as<snabl::Int>()), a(0), b(1);
@@ -114,7 +114,7 @@ env.home.add_fimp(
     v.as<snabl::Int>() = b;
   });
 
-env.run("say, iter-fib 10");
+env.run("say, my-fib 10");
 ```
 
 #### Portability
