@@ -30,6 +30,8 @@
 (test= (1 + (3 * 2)) 7)
 (test= (1 +, 5 - 2) 4)
 
+(test= ''foo'bar'' ''foo'bar'')
+
 (test=, 1 3 5 drop +; 4)
 (test=, 21 dup +; 42)
 (test=, 1 3 swap -; 2)

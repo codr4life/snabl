@@ -1,3 +1,10 @@
+* replace libs stack with single Lib *
+** init to &home
+* replace scopes stack with single ScopePtr
+** init to main
+** capture in State
+** remember prev
+*** swap with ptr in Fimp/LambdaRet
 * capture ntries in State
 ** restore on recall
 ** remove restore_all
@@ -29,8 +36,6 @@
 ** one arg
 ** load all files into ops
 ** add bench/all.sl
-* add Str literal support
-** ''\'foo''
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add use: macro

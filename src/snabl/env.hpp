@@ -11,6 +11,7 @@
 #include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
+#include "snabl/types.hpp"
 #include "snabl/types/bool.hpp"
 #include "snabl/types/error.hpp"
 #include "snabl/types/float.hpp"

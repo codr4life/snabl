@@ -3,10 +3,9 @@
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
+#include "snabl/types.hpp"
 
-namespace snabl {
-	using Int = long long;
-	
+namespace snabl {	
 	class IntType: public Type<Int> {
 	public:
 		IntType(Lib &lib, Sym id);

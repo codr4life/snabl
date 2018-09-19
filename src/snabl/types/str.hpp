@@ -3,14 +3,14 @@
 
 #include "snabl/std.hpp"
 #include "snabl/type.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
-	using StrPtr = shared_ptr<string>;
-
 	class StrType: public Type<StrPtr> {
 	public:
 		StrType(Lib &lib, Sym id);
 		bool as_bool(const Box &val) const override;
+		bool eqval(const Box &lhs, const Box &rhs) const override;
 		IterPtr iter(const Box &val) const override;
 		void dump(const Box &val, ostream &out) const override;
 	};

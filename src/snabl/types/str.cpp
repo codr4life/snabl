@@ -9,6 +9,10 @@ namespace snabl {
 
 	bool StrType::as_bool(const Box &val) const { return !val.as<StrPtr>()->empty(); }
 
+	bool StrType::eqval(const Box &lhs, const Box &rhs) const {
+		return *lhs.as<StrPtr>() == *rhs.as<StrPtr>();
+	}
+
 	void StrType::dump(const Box &val, ostream &out) const {
 		out << "''" << *val.as<StrPtr>() << "''";
 	}

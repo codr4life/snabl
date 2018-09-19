@@ -1,6 +1,7 @@
 #include "snabl/env.hpp"
 #include "snabl/error.hpp"
 #include "snabl/parser.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
 	const Pos Parser::init_pos(1, 0);
@@ -54,6 +55,21 @@ namespace snabl {
 				_pos.col++;
 				parse_stack(in, out);
 				break;
+			case '\'': {
+				char nc(0);
+				
+				if (in.get(nc) && nc == '\'') {
+					_pos.col += 2;
+					parse_str(in,out);
+				} else {
+					in.clear();
+					if (nc) { in.putback(nc); }
+					in.putback(c);
+					parse_id(in, out);
+				}
+
+				break;
+			}
 			default:
 				bool is_num = isdigit(c);
 
@@ -185,6 +201,42 @@ namespace snabl {
 		if (!parse_body<forms::Stack>(in, ']', out)) {
 			throw SyntaxError(start_pos, "Open stack");
 		}
+	}
+
+	void Parser::parse_str(istream &in, Forms &out) {
+		auto start_pos(_pos);
+		stringstream s;
+		char c(0);
+		
+		while (in.get(c)) {
+			if (c == '\'') {
+				char nc(0);
+				
+				if (in.get(nc) && nc == '\'') {
+					_pos.col++;
+					break;
+				}
+				else {
+					s << c;
+					
+					if (nc) {
+						_pos.col++;
+						s << nc;
+					}
+				}
+
+				_pos.col++;
+			} else {
+				s << c;
+			}
+
+			_pos.col++;
+			c = 0;
+		}
+
+		if (!c) { throw SyntaxError(start_pos, "Open string"); }
+		out.emplace_back(forms::Lit::type, start_pos,
+										 Box(env.str_type, make_shared<Str>(s.str())));
 	}
 
 	void Parser::parse_type_list(istream &in, Forms &out) {
