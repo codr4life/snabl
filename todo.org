@@ -11,6 +11,7 @@
 ** remember prev
 *** swap with ptr in Fimp/LambdaRet
 * replace tries stack with single ops::Try ptr
+* ---
 * add bench: macro
 ** replaces fn
 * capture tries in State
