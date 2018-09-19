@@ -1,16 +1,3 @@
-* join FimpEnd & LambdaEnd into Return
-** add return macro
-* replace libs stack with single Lib *
-** init to &home
-* replace scopes stack with single ScopePtr
-** init to main
-** capture in State
-** remember prev
-*** swap with ptr in Fimp/LambdaRet
-* replace tries stack with single ops::Try ptr
-* ---
-* remove Lib.env
-** pass as arg where needed
 * add bench: macro
 ** replaces fn
 * capture tries in State

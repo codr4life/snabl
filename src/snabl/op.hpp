@@ -140,17 +140,6 @@ namespace snabl {
 			Fimp(const FimpPtr &ptr): ptr(ptr) { }
 		};
 
-		struct FimpEnd {
-			struct Type: public OpType<FimpEnd> {
-				Type(const string &id): OpType<FimpEnd>(id) { }
-				OpImp make_imp(Env &env, Op &op) const override;
-			};
-
-			static const Type type;
-			const bool end_scope;
-			FimpEnd(bool end_scope): end_scope(end_scope) { }
-		};
-
 		struct Funcall {
 			struct Type: public OpType<Funcall> {
 				Type(const string &id): OpType<Funcall>(id) { }
@@ -202,15 +191,6 @@ namespace snabl {
 			Lambda(): opts(Target::Opts::None) { }
 		};
 
-		struct LambdaEnd {
-			struct Type: public OpType<LambdaEnd> {
-				Type(const string &id): OpType<LambdaEnd>(id) { }
-				OpImp make_imp(Env &env, Op &op) const override;
-			};
-
-			static const Type type;
-		};
-
 		struct Let {
 			struct Type: public OpType<Let> {
 				Type(const string &id): OpType<Let>(id) { }
@@ -249,6 +229,15 @@ namespace snabl {
 		struct Recall {
 			struct Type: public OpType<Recall> {
 				Type(const string &id): OpType<Recall>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+		};
+
+		struct Return {
+			struct Type: public OpType<Return> {
+				Type(const string &id): OpType<Return>(id) { }
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 

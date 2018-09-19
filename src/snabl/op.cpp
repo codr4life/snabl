@@ -13,16 +13,15 @@ namespace snabl {
 		const Else::Type Else::type("else");
 		const Eqval::Type Eqval::type("eqval");
 		const Fimp::Type Fimp::type("fimp");
-		const FimpEnd::Type FimpEnd::type("fimp-end");
 		const Funcall::Type Funcall::type("funcall");
 		const Get::Type Get::type("get");
 		const Isa::Type Isa::type("isa");
 		const Lambda::Type Lambda::type("lambda");
-		const LambdaEnd::Type LambdaEnd::type("lambda-end");
 		const Let::Type Let::type("let");
 		const Nop::Type Nop::type("nop");
 		const Push::Type Push::type("push");
 		const Recall::Type Recall::type("recall");
+		const Return::Type Return::type("return");
 		const Rot::Type Rot::type("rot");
 		const RSwap::Type RSwap::type("rswap");
 		const SDrop::Type SDrop::type("sdrop");
@@ -121,18 +120,6 @@ namespace snabl {
 			};
 		};
 		
-		OpImp FimpEnd::Type::make_imp(Env &env, Op &op) const {
-			const auto &o(op.as<ops::FimpEnd>());
-
-			return [&env, &o]() {
-				if (o.end_scope) { env.end_scope(); }
-				auto &t(*env._target);
-				env.pc = t.call()->return_pc;
-				t.end_call(env);
-				env.unsplit();
-			};
-		};
-
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
@@ -214,15 +201,6 @@ namespace snabl {
 			};
 		};
 
-		OpImp LambdaEnd::Type::make_imp(Env &env, Op &op) const {
-			return [&env]() {
-				auto &t(*env._target);
-				if (t.opts() & Target::Opts::Vars) { env.end_scope(); }
-				env.pc = t.call()->return_pc;
-				t.end_call(env);
-			};
-		};
-
 		OpImp Let::Type::make_imp(Env &env, Op &op) const {
 			const auto &id(op.as<ops::Let>().id);
 			
@@ -257,6 +235,22 @@ namespace snabl {
 			return [&env, &op]() {
 				if (!env._target) { throw RuntimeError(env, op.pos, "Nothing to recall"); }
 				env._target->recall(env);
+			};
+		};
+
+		OpImp Return::Type::make_imp(Env &env, Op &op) const {
+			const auto &o(op.as<ops::Return>());
+			
+			return [&env, &op, &o]() {
+				if (!env._target) {
+					throw RuntimeError(env, op.pos, "Nothing to return from");
+				}
+				
+				auto &t(*env._target);
+				if (t.opts() & Target::Opts::Vars) { env.end_scope(); }
+				env.pc = t.call()->return_pc;
+				if (dynamic_pointer_cast<FimpPtr>(env._target)) { env.unsplit(); }
+				t.end_call(env);
 			};
 		};
 

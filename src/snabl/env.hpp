@@ -197,12 +197,11 @@ namespace snabl {
 		friend ops::Dup::Type;
 		friend ops::Eqval::Type;
 		friend ops::Fimp::Type;
-		friend ops::FimpEnd::Type;
 		friend ops::Funcall::Type;
 		friend ops::Isa::Type;
-		friend ops::LambdaEnd::Type;
 		friend ops::Let::Type;
 		friend ops::Recall::Type;
+		friend ops::Return::Type;
 		friend ops::Rot::Type;
 		friend ops::RSwap::Type;
 		friend ops::SDrop::Type;

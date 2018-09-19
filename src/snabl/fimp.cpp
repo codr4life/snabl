@@ -45,7 +45,7 @@ namespace snabl {
 			if (&op->type == &ops::Recall::type) { fimp->_opts |= Opts::Recalls; }
 		}
 		
-		auto &end(env.emit(ops::FimpEnd::type, pos, fimp->_opts & Opts::Vars));
+		auto &end(env.emit(ops::Return::type, pos));
 		fimp->_start_pc = *start.next;
 		
 		fimp->_end_pc = [&env, &end, fimp]() {

@@ -17,8 +17,6 @@ namespace snabl {
 
 		string target_id() const override { return fmt("Lambda(%0)", {this}); }		
 	private:
-		friend ops::LambdaEnd;
-
 		friend bool operator ==(const Lambda &, const Lambda &);
 		friend bool operator <(const Lambda &, const Lambda &);
 	};

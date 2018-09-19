@@ -161,7 +161,7 @@ namespace snabl {
 				}
 			}
 			
-			auto &end_op(env.emit(ops::LambdaEnd::type, f.pos));
+			auto &end_op(env.emit(ops::Return::type, f.pos));
 			start.start_pc = *start_op.next;
 			
 			start.end_pc = [&env, &end_op, &start]() {

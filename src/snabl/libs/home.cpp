@@ -46,9 +46,9 @@ namespace snabl {
 			add_macro(env.sym("call"), ops::Call::type);
 			add_macro(env.sym("ddrop"), ops::DDrop::type);
 			add_macro(env.sym("drop"), ops::Drop::type);
-
 			add_macro(env.sym("dup"), ops::Dup::type);
 			add_macro(env.sym("recall"), ops::Recall::type);
+			add_macro(env.sym("return"), ops::Return::type);
 			add_macro(env.sym("rot"), ops::Rot::type);
 			add_macro(env.sym("rswap"), ops::RSwap::type);
 			add_macro(env.sym("sdrop"), ops::SDrop::type);
