@@ -1,3 +1,4 @@
+* move Call.state to Target
 * replace libs stack with single Lib *
 ** init to &home
 * replace scopes stack with single ScopePtr
@@ -5,6 +6,7 @@
 ** capture in State
 ** remember prev
 *** swap with ptr in Fimp/LambdaRet
+* replace tries stack with single ops::Try ptr
 * capture ntries in State
 ** restore on recall
 ** remove restore_all
