@@ -13,15 +13,15 @@ namespace snabl {
 		imp(source.imp->clone()) { }
 
 	namespace forms {
-		const FormType<Comma> Comma::type("Comma");
-		const FormType<Id> Id::type("Id");
-		const FormType<Lambda> Lambda::type("Lambda");
-		const FormType<Lit> Lit::type("Lit");
-		const FormType<Query> Query::type("Query");
-		const FormType<Semi> Semi::type("Semi");
-		const FormType<Sexpr> Sexpr::type("Sexpr");
-		const FormType<Stack> Stack::type("Stack");
-		const FormType<TypeList> TypeList::type("TypeList");
+		const FormType<Comma> Comma::type("comma");
+		const FormType<Fimp> Fimp::type("fimp");
+		const FormType<Id> Id::type("id");
+		const FormType<Lambda> Lambda::type("lambda");
+		const FormType<Lit> Lit::type("lit");
+		const FormType<Query> Query::type("query");
+		const FormType<Semi> Semi::type("semi");
+		const FormType<Sexpr> Sexpr::type("sexpr");
+		const FormType<Stack> Stack::type("stack");
 
 		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
 
@@ -42,6 +42,34 @@ namespace snabl {
 			auto &sexpr((*in++).as<Comma>());
 			env.compile(sexpr.body);
 		}
+
+		Fimp::Fimp(Forms::const_iterator begin, Forms::const_iterator end) {
+			transform(begin, end, back_inserter(ids),
+								[](const Form &f) -> Sym { return f.as<Id>().id; });
+		}
+
+		Fimp::Fimp(const Ids &ids): ids(ids) { }
+
+		FormImp *Fimp::clone() const { return new Fimp(ids); }
+
+		void Fimp::dump(ostream &out) const {
+			out << '<';
+			char sep(0);
+
+			for (auto &id: ids) {
+				if (sep) { out << sep; }
+				out << id.name();
+				sep = ' ';
+			}
+			
+			out << '>';
+		}
+		
+		void Fimp::compile(Forms::const_iterator &in, Forms::const_iterator end,
+													 FuncPtr &func, FimpPtr &fimp,
+													 Env &env) const {
+			throw CompileError(in->pos, "Stray type list");
+		}		
 
 		Id::Id(Sym id): id(id) { }
 
@@ -84,8 +112,8 @@ namespace snabl {
 						
 						func = *fn;
 
-						if (in != end && &in->type == &TypeList::type) {
-							auto &ids((in++)->as<TypeList>().ids);
+						if (in != end && &in->type == &Fimp::type) {
+							auto &ids((in++)->as<Fimp>().ids);
 							snabl::Stack args;
 							
 							transform(ids.begin(), ids.end(), back_inserter(args),
@@ -116,7 +144,7 @@ namespace snabl {
 						}
 					} else {
 						auto &fi((*fn)->get_fimp());
-						if (!fi->imp) { Fimp::compile(fi, form.pos); }
+						if (!fi->imp) { snabl::Fimp::compile(fi, form.pos); }
 						env.emit(ops::Funcall::type, form.pos, fi);
 					}
 				}
@@ -301,33 +329,5 @@ namespace snabl {
 			env.compile(split ? b.begin() : b.begin()+1, b.end());
 			env.emit(ops::Stack::type, f.pos, split);
 		}
-
-		TypeList::TypeList(Forms::const_iterator begin, Forms::const_iterator end) {
-			transform(begin, end, back_inserter(ids),
-								[](const Form &f) -> Sym { return f.as<Id>().id; });
-		}
-
-		TypeList::TypeList(const Ids &ids): ids(ids) { }
-
-		FormImp *TypeList::clone() const { return new TypeList(ids); }
-
-		void TypeList::dump(ostream &out) const {
-			out << '<';
-			char sep(0);
-
-			for (auto &id: ids) {
-				if (sep) { out << sep; }
-				out << id.name();
-				sep = ' ';
-			}
-			
-			out << '>';
-		}
-		
-		void TypeList::compile(Forms::const_iterator &in, Forms::const_iterator end,
-													 FuncPtr &func, FimpPtr &fimp,
-													 Env &env) const {
-			throw CompileError(in->pos, "Stray type list");
-		}		
 	}
 }

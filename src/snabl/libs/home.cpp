@@ -179,8 +179,8 @@ namespace snabl {
 									auto &args_form(*in++);
 									vector<Box> args;
 									
-									if (&args_form.type == &forms::TypeList::type) {
-										auto &ids(args_form.as<forms::TypeList>().ids);
+									if (&args_form.type == &forms::Fimp::type) {
+										auto &ids(args_form.as<forms::Fimp>().ids);
 
 										for (const auto id: ids) {
 											const auto t(lib.get_type(id));

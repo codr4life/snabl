@@ -131,7 +131,7 @@ namespace snabl {
 			out.emplace_back(forms::Id::type, start_pos, env.sym(id));
 			
 			if (c == '<') {
-				parse_type_list(in, out);
+				parse_fimp(in, out);
 				c = 0;
 			}
 		}
@@ -239,7 +239,7 @@ namespace snabl {
 										 Box(env.str_type, make_shared<Str>(s.str())));
 	}
 
-	void Parser::parse_type_list(istream &in, Forms &out) {
+	void Parser::parse_fimp(istream &in, Forms &out) {
 		const auto start_pos(_pos);
 		Forms body;
 
@@ -247,7 +247,7 @@ namespace snabl {
 			throw SyntaxError(start_pos, "Open type list");
 		}
 
-		out.emplace_back(forms::TypeList::type, start_pos, body.cbegin(), body.cend());
+		out.emplace_back(forms::Fimp::type, start_pos, body.cbegin(), body.cend());
 	}
 
 }

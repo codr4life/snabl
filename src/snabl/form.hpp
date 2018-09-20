@@ -86,6 +86,23 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
+		struct Fimp: public FormImp {
+			using Ids = vector<Sym>;
+				
+			static const FormType<Fimp> type;
+			Ids ids;
+			
+			Fimp(Forms::const_iterator begin, Forms::const_iterator end);
+			Fimp(const Ids &ids);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;			
+		};
+		
 		struct Id: public FormImp {
 			static const FormType<Id> type;
 			const Sym id;
@@ -186,23 +203,6 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
-		};
-
-		struct TypeList: public FormImp {
-			using Ids = vector<Sym>;
-				
-			static const FormType<TypeList> type;
-			Ids ids;
-			
-			TypeList(Forms::const_iterator begin, Forms::const_iterator end);
-			TypeList(const Ids &ids);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
-
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) const override;			
 		};
 	}
 }

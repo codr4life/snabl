@@ -1,11 +1,3 @@
-* capture _try in State
-** restore on recall
-** remove restore_all
-*** replace with individual calls
-
-* change forms::TypeList to contain form like Query
-** rename to Fimp
-
 * add for: loop
 ** For ... Next
 ** keep iter in For
@@ -17,31 +9,18 @@
 ** add Timer op
 ** add TimerPush op
 *** push current time and reset
-* add push/pop fns
-** stack/str
-** add pop for iter
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
 * add Type.clone
 ** push clone of arg
 ** clone pushed values in Push/Get ops
-* add stack/str eqval
 * add include: macro
 ** one arg
 ** load all files into ops
 ** add bench/all.sl
 * add support for func/fimp refs with &
 ** add func/fimp type
-* add use: macro
-* add lib: macro
-** two args, id & body
-** allow anonymous, _
-*** push anonymous libs in current scope
-*** add lib op which contains the actual lib
-*** use for local defs
-* add load func
-** call when called with args
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 
