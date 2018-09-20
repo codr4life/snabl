@@ -342,15 +342,16 @@ namespace snabl {
 
 			return [&env, &op, &o]() {
 				o.state.emplace(env);
-				env._tries.push_back(&o);
+				o.parent = env._try;
+				env._try = &o;
 				env.pc = op.next;
 			};
 		};
 
 		OpImp TryEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				env._tries.back()->state.reset();
-				env._tries.pop_back();
+				env._try->state.reset();
+				env._try = env._try->parent;
 				env.pc = op.next;
 			};
 		};

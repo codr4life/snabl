@@ -71,7 +71,8 @@ namespace snabl {
 			pc(nullptr),
 			main(begin_scope()),
 			_lib(&home),
-			_stack_offs(0) { }
+			_stack_offs(0),
+			_try(nullptr) { }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
@@ -176,12 +177,12 @@ namespace snabl {
 		}
 
 	private:
-		vector<ops::Try *> _tries;
 		vector<size_t> _splits;
 
 		Lib *_lib;
 		size_t _stack_offs;
 		TargetPtr _target;
+		ops::Try *_try;
 		
 		friend RuntimeError;
 		friend State;

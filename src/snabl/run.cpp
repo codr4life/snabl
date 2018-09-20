@@ -27,13 +27,12 @@ namespace snabl {
 		try {
 			while (pc) { (*pc)(); }
 		} catch (const UserError &e) {
-			if (_tries.empty()) { throw e; }
-			auto &t(*_tries.back());
-			_tries.pop_back();
-			t.state->restore_all(*this);
-			t.state.reset();
+			if (!_try) { throw e; }
+			_try->state->restore_all(*this);
+			_try->state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = &t.handler_pc;
+			pc = &_try->handler_pc;
+			_try = _try->parent;
 			goto enter;
 		}
 	}

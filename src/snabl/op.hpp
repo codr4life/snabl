@@ -328,8 +328,11 @@ namespace snabl {
 			};
 
 			static const Type type;
+			Try *parent;
 			OpImp handler_pc;
 			optional<State> state;
+
+			Try(): parent(nullptr) { }
 		};
 
 		struct TryEnd {
