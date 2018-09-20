@@ -20,8 +20,9 @@ namespace snabl {
 	}
 
 	void Target::end_call(Env &env) {
+		const auto p(_call->parent);
 		_call.reset();
-		env._target = _call->parent;
+		env._target = p;
 	}
 
 	void Target::recall(Env &env) const {
