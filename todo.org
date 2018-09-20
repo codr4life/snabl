@@ -1,3 +1,11 @@
+* capture _try in State
+** restore on recall
+** remove restore_all
+*** replace with individual calls
+
+* change forms::TypeList to contain form like Query
+** rename to Fimp
+
 * add for: loop
 ** For ... Next
 ** keep iter in For
@@ -9,10 +17,6 @@
 ** add Timer op
 ** add TimerPush op
 *** push current time and reset
-* capture tries in State
-** restore on recall
-** remove restore_all
-*** replace with individual calls
 * add push/pop fns
 ** stack/str
 ** add pop for iter
@@ -22,8 +26,6 @@
 * add Type.clone
 ** push clone of arg
 ** clone pushed values in Push/Get ops
-* change forms::TypeList to contain form like Query
-** rename to Fimp
 * add stack/str eqval
 * add include: macro
 ** one arg

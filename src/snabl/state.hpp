@@ -6,19 +6,23 @@
 namespace snabl {
 	class Env;
 	class Lib;
+
+	namespace ops { class Try; }
 	
-	struct State {
-		Lib &lib;
-		const TargetPtr target;
-		const size_t nscopes, nstack, nsplits;
-		
+	class State {
+	public:
 		State(const Env &env);
-		void restore_all(Env &env) const;
 		void restore_lib(Env &env) const;
-		void restore_scopes(Env &env) const;
 		void restore_target(Env &env) const;
+		void restore_try(Env &env) const;
+		void restore_scopes(Env &env) const;
 		void restore_stack(Env &env) const;
 		void restore_splits(Env &env) const;
+	private:
+		Lib &_lib;
+		const TargetPtr _target;
+		ops::Try *const _try;
+		const size_t _nscopes, _nstack, _nsplits;
 	};
 }
 

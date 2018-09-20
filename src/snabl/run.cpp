@@ -28,7 +28,11 @@ namespace snabl {
 			while (pc) { (*pc)(); }
 		} catch (const UserError &e) {
 			if (!_try) { throw e; }
-			_try->state->restore_all(*this);
+			_try->state->restore_lib(*this);
+			_try->state->restore_target(*this);
+			_try->state->restore_scopes(*this);
+			_try->state->restore_stack(*this);
+			_try->state->restore_splits(*this);
 			_try->state.reset();
 			push(error_type, make_shared<UserError>(e));
 			pc = &_try->handler_pc;
