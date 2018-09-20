@@ -1,5 +1,14 @@
+* add for: loop
+** For ... Next
+** keep iter in For
+** step and jump to start in Next
 * add bench: macro
 ** replaces fn
+** use For/Next
+*** Box(env.int_type, n).iter()
+** add Timer op
+** add PushTime op
+*** push current time and reset
 * capture tries in State
 ** restore on recall
 ** remove restore_all
@@ -7,11 +16,6 @@
 * add push/pop fns
 ** stack/str
 ** add pop for iter
-* add for: loop
-** Iter For ... Next
-** alloc iter in op like Try.state
-** For takes Iter op as arg
-** Next takes For op as arg and jumps if more
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
