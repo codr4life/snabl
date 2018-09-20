@@ -3,23 +3,21 @@
 
 namespace snabl {
 	State::State(const Env &env):
+		lib(*env._lib),
 		target(env._target),
-		nlibs(env._libs.size()),
 		nscopes(env._scopes.size()),
 		nstack(env._stack.size()),
 		nsplits(env._splits.size()) { }
 
 	void State::restore_all(Env &env) const {
-		restore_libs(env);
+		restore_lib(env);
 		restore_scopes(env);
 		restore_target(env);
 		restore_stack(env);
 		restore_splits(env);
 	}
 
-	void State::restore_libs(Env &env) const {
-		if (env._libs.size() > nlibs) { env._libs.resize(nlibs); }
-	}
+	void State::restore_lib(Env &env) const { env._lib = &lib; }
 
 	void State::restore_scopes(Env &env) const {
 		if (env._scopes.size() > nscopes) { env._scopes.resize(nscopes); }

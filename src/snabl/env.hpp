@@ -70,7 +70,8 @@ namespace snabl {
 						}),
 			pc(nullptr),
 			main(begin_scope()),
-			_stack_offs(0) { begin_lib(home); }
+			_lib(&home),
+			_stack_offs(0) { }
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
@@ -109,16 +110,9 @@ namespace snabl {
 		void run(istream &in);
 		void run();
 
-		void begin_lib(Lib &lib) { _libs.push_back(&lib); }
-	
-		Lib &lib() {
-			if (_libs.empty()) { throw Error("No libs"); }
-			return *_libs.back();
-		}
-
-		void end_lib() {
-			if (_libs.empty()) { throw Error("No libs"); }
-			_libs.pop_back();
+		Lib &lib() const {
+			if (!_lib) { throw Error("No lib"); }
+			return *_lib;
 		}
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
@@ -182,9 +176,10 @@ namespace snabl {
 		}
 
 	private:
-		vector<Lib *> _libs;
 		vector<ops::Try *> _tries;
 		vector<size_t> _splits;
+
+		Lib *_lib;
 		size_t _stack_offs;
 		TargetPtr _target;
 		

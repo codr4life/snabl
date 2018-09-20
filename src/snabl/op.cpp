@@ -239,9 +239,7 @@ namespace snabl {
 		};
 
 		OpImp Return::Type::make_imp(Env &env, Op &op) const {
-			const auto &o(op.as<ops::Return>());
-			
-			return [&env, &op, &o]() {
+			return [&env, &op]() {
 				if (!env._target) {
 					throw RuntimeError(env, op.pos, "Nothing to return from");
 				}

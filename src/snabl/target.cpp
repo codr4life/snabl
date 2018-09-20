@@ -25,7 +25,7 @@ namespace snabl {
 	}
 
 	void Target::recall(Env &env) const {
-		_call->state->restore_libs(env);
+		_call->state->restore_lib(env);
 		_call->state->restore_scopes(env);
 		if (_opts & Target::Opts::Vars) { env.scope()->clear_vars(); }
 		env.pc = &_start_pc;
