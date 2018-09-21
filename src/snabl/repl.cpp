@@ -19,23 +19,26 @@ namespace snabl {
 		
 		stringstream buf;
 		std::string l;
-		cout << "   ";
-	
+		cout << " 1 ";
+		int row(1);
+		
 		while (std::getline(in, l)) {
 			if (l == "") {
 				try {
 					env.run(buf.str());
-					out << env.stack() << endl;
+					out << env.stack() << endl << endl;
 				} catch (const exception &e) {
 					out << e.what() << endl;
 				}
 				
 				stringstream().swap(buf);
-				cout << "   ";
+				row = 1;
 			} else {
 				buf << l << endl;
-				cout << ".. ";
+				row++;
 			}
+			
+			cout << setw(2) << row << ' ';
 		} 
 	}
 }
