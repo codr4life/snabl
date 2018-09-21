@@ -74,36 +74,28 @@ namespace snabl {
 			auto pos(in->pos);
 			auto &form((in++)->as<Fimp>());
 			env.compile(Form(Id::type, pos, form.id), func, fimp);
-
-			if (func) {	
-				snabl::Stack args;
+			if (!func) { throw CompileError(pos, "Missing func"); }
+			snabl::Stack args;
 				
-				transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
-									[&lib, &form, pos](Sym id) {
-										auto t(lib.get_type(id));
-										
-										if (!t) {
-											throw CompileError(pos, "Unknown type: " + id.name());
-										}
-										
-										return Box(*t);
-									});
+			transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
+								[&lib, &form, pos](Sym id) {
+									auto t(lib.get_type(id));
+									
+									if (!t) {
+										throw CompileError(pos, "Unknown type: " + id.name());
+									}
+									
+									return Box(*t);
+								});
 			
 			
-				if (args.size() != func->nargs) {
-					throw CompileError(pos, fmt("Wrong number of args: %0", {func->id}));
-				}
-				
-				auto fi(func->get_best_fimp(args.begin(), args.end()));
-				
-				if (!fi) {
-					throw CompileError(pos, fmt("Unknown fimp: %0", {func->id}));
-				}
-				
-				fimp = *fi;
-			} else if (!form.type_ids.empty()) {
-				throw CompileError(pos, "Missing fimp id");
+			if (args.size() != func->nargs) {
+				throw CompileError(pos, fmt("Wrong number of args: %0", {func->id}));
 			}
+			
+			auto fi(func->get_best_fimp(args.begin(), args.end()));
+			if (!fi) { throw CompileError(pos, fmt("Unknown fimp: %0", {func->id})); }
+			fimp = *fi;
 		}
 
 		Id::Id(Sym id): id(id) { }
@@ -141,17 +133,11 @@ namespace snabl {
 						throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
 					}
 					
-					if ((*fn)->nargs) {
-						if (func) {
-							throw CompileError(form.pos,fmt("Extra func: %0", {(*fn)->id}));
-						}
-						
-						func = *fn;
-					} else {
-						auto &fi((*fn)->get_fimp());
-						if (!fi->imp) { snabl::Fimp::compile(fi, form.pos); }
-						env.emit(ops::Funcall::type, form.pos, fi);
+					if (func) {
+						throw CompileError(form.pos,fmt("Extra func: %0", {(*fn)->id}));
 					}
+						
+					func = *fn;
 				}
 			}
 		}

@@ -18,10 +18,10 @@ Compile error in row 1, col 6: Extra func: *
 Much like Forth, Snabl supports directly manipulating the parameter stack. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
 ```
-  43 -- dup
+  43 -- dup!
 [43 42]
 
-  43 --; dup
+  43 --; dup!
 [42 42]
 ```
 
@@ -48,7 +48,7 @@ Snabl embraces but does not mandate functional programming. It supports first cl
 ```
 func: my-fib<Int Int Int> (
   let: (n a b) _
-  switch: @n, 0? @a 1? @b, --; @b dup @a +; recall
+  switch: @n, 0? @a 1? @b, --; @b dup! @a +; recall!
 )
 ```
 
@@ -56,10 +56,10 @@ The same algorithm may be implemented entirely without variables by manipulating
 
 ```
 func: my-fib<Int Int Int> (
-  rswap switch: _,
-    0? sdrop
-    1? drop,
-    --; rswap dup rot +; recall
+  rswap! switch: _,
+    0? sdrop!
+    1? drop!,
+    --; rswap! dup! rot! +; recall!
 )
 ```
 

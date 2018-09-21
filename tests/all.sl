@@ -32,12 +32,12 @@
 
 (test= ''foo'bar'' ''foo'bar'')
 
-(test=, ''abc'' iter; call #a)
+(test=, ''abc'' iter; call! #a)
 
-(test=, 1 3 5 drop +; 4)
-(test=, 21 dup +; 42)
-(test=, 1 3 swap -; 2)
-(test= (1 2 3 rot -; -) 4)
+(test=, 1 3 5 drop! +; 4)
+(test=, 21 dup! +; 42)
+(test=, 1 3 swap! -; 2)
+(test= (1 2 3 rot! -; -) 4)
 
 (test=, 1 2 [3 4 5] len; 3)
 (test=, (|1 2 [..3 4 5]) len; 5)
@@ -47,30 +47,30 @@
 
 (let: foo 42)
 (test=  @foo 42)
-(test=, {@foo} call 42)
+(test=, {@foo} call! 42)
 
 (test=, 1 +<_ Int> 3; 4)
 
 (test= if: (1 < 3) 5 7 5)
 (test= if: (3 < 1) 5 7 7)
 
-(test= (switch: 7, (drop t) 'foo) 'foo)
-(test= (switch: 35, (< 42) 'foo, drop 'bar) 'foo)
-(test= (switch: 35, (< 7) 'foo, drop 'bar) 'bar)
-(test= (switch: 35, (< 7) 'foo (< 42) 'bar, drop 'baz) 'bar) 
+(test= (switch: 7, (drop! t) 'foo) 'foo)
+(test= (switch: 35, (< 42) 'foo, drop! 'bar) 'foo)
+(test= (switch: 35, (< 7) 'foo, drop! 'bar) 'bar)
+(test= (switch: 35, (< 7) 'foo (< 42) 'bar, drop! 'baz) 'bar) 
 
 func: double<T> (* 2)
 (test=, 21 double; 42)
 
 let: result 42
 func: closure<> @result
-(test= closure 42)
+(test=, closure; 42)
 
-func: early<> (1 return 3)
-(test= early 1)
+func: early<> (1 return! 3)
+(test=, early; 1)
 
-(test= (try: (drop 7) 42 -) 35)
+(test= (try: (drop! 7) 42 -) 35)
 (test= (try: (catch; ++), throw 41) 42)
 (test= (try: (catch; ++), try: throw, throw 41) 42)
 
-(test= (3 iter; dup call swap dup call swap call +; +) 3)
+(test= (3 iter; dup! call! swap! dup! call! swap! call! +; +) 3)
