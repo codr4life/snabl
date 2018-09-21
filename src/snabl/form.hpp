@@ -90,10 +90,11 @@ namespace snabl {
 			using Ids = vector<Sym>;
 				
 			static const FormType<Fimp> type;
-			Ids ids;
+			const Sym id;
+			Ids type_ids;
 			
-			Fimp(Forms::const_iterator begin, Forms::const_iterator end);
-			Fimp(const Ids &ids);
+			Fimp(Sym id, Forms::const_iterator begin, Forms::const_iterator end);
+			Fimp(Sym id, const Ids &type_ids);
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 

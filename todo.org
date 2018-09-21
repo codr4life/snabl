@@ -1,3 +1,13 @@
+* add Char type
+** unsigned char
+** parse ~n/~r/~t/~e/~s etc as chars
+** add env.special_chars
+** change str iter to return chars
+** parse #a/#A as chars
+* remove env.scopes
+** add is_child arg/field
+*** change get logic
+** update env._scope like _try
 * add for: loop
 ** For ... Next
 ** keep iter in For

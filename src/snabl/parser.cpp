@@ -36,7 +36,7 @@ namespace snabl {
 				_pos.col++;
 				return parse_body<forms::Semi>(in, end, out);
 			case '?': {
-				if (out.empty()) { throw Error("Nothing to query"); }
+				if (out.empty()) { throw CompileError(start_pos, "Nothing to query"); }
 				auto form(out.back());
 				out.pop_back();
 				out.emplace_back(forms::Query::type, _pos, form);
@@ -127,13 +127,11 @@ namespace snabl {
 			out.emplace_back(forms::Lit::type,
 											 start_pos,
 											 Box(env.sym_type, env.sym(id.substr(1))));
+		} else if (c == '<') {
+			parse_fimp(start_pos, env.sym(buf.str()), in, out);
+			c = 0;
 		} else {
 			out.emplace_back(forms::Id::type, start_pos, env.sym(id));
-			
-			if (c == '<') {
-				parse_fimp(in, out);
-				c = 0;
-			}
 		}
 
 		if (c) {
@@ -239,15 +237,10 @@ namespace snabl {
 										 Box(env.str_type, make_shared<Str>(s.str())));
 	}
 
-	void Parser::parse_fimp(istream &in, Forms &out) {
-		const auto start_pos(_pos);
+	void Parser::parse_fimp(Pos pos, Sym id, istream &in, Forms &out) {
 		Forms body;
-
-		if (!parse(in, start_pos, '>', body)) {
-			throw SyntaxError(start_pos, "Open type list");
-		}
-
-		out.emplace_back(forms::Fimp::type, start_pos, body.cbegin(), body.cend());
+		if (!parse(in, pos, '>', body)) { throw SyntaxError(pos, "Open fimp"); }
+		out.emplace_back(forms::Fimp::type, pos, id, body.cbegin(), body.cend());
 	}
 
 }

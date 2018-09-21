@@ -43,20 +43,22 @@ namespace snabl {
 			env.compile(sexpr.body);
 		}
 
-		Fimp::Fimp(Forms::const_iterator begin, Forms::const_iterator end) {
-			transform(begin, end, back_inserter(ids),
+		Fimp::Fimp(Sym id,
+							 Forms::const_iterator begin,
+							 Forms::const_iterator end): id(id) {
+			transform(begin, end, back_inserter(type_ids),
 								[](const Form &f) -> Sym { return f.as<Id>().id; });
 		}
 
-		Fimp::Fimp(const Ids &ids): ids(ids) { }
+		Fimp::Fimp(Sym id, const Ids &type_ids): id(id), type_ids(type_ids) { }
 
-		FormImp *Fimp::clone() const { return new Fimp(ids); }
+		FormImp *Fimp::clone() const { return new Fimp(id, type_ids); }
 
 		void Fimp::dump(ostream &out) const {
-			out << '<';
+			out << id << '<';
 			char sep(0);
 
-			for (auto &id: ids) {
+			for (auto &id: type_ids) {
 				if (sep) { out << sep; }
 				out << id.name();
 				sep = ' ';
@@ -66,10 +68,43 @@ namespace snabl {
 		}
 		
 		void Fimp::compile(Forms::const_iterator &in, Forms::const_iterator end,
-													 FuncPtr &func, FimpPtr &fimp,
-													 Env &env) const {
-			throw CompileError(in->pos, "Stray type list");
-		}		
+											 FuncPtr &func, FimpPtr &fimp,
+											 Env &env) const {
+			auto &lib(env.lib());
+			auto pos(in->pos);
+			auto &form((in++)->as<Fimp>());
+			env.compile(Form(Id::type, pos, form.id), func, fimp);
+
+			if (func) {	
+				snabl::Stack args;
+				
+				transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
+									[&lib, &form, pos](Sym id) {
+										auto t(lib.get_type(id));
+										
+										if (!t) {
+											throw CompileError(pos, "Unknown type: " + id.name());
+										}
+										
+										return Box(*t);
+									});
+			
+			
+				if (args.size() != func->nargs) {
+					throw CompileError(pos, fmt("Wrong number of args: %0", {func->id}));
+				}
+				
+				auto fi(func->get_best_fimp(args.begin(), args.end()));
+				
+				if (!fi) {
+					throw CompileError(pos, fmt("Unknown fimp: %0", {func->id}));
+				}
+				
+				fimp = *fi;
+			} else if (!form.type_ids.empty()) {
+				throw CompileError(pos, "Missing fimp id");
+			}
+		}
 
 		Id::Id(Sym id): id(id) { }
 
@@ -101,6 +136,7 @@ namespace snabl {
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
+
 					if (!fn) {
 						throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
 					}
@@ -111,37 +147,6 @@ namespace snabl {
 						}
 						
 						func = *fn;
-
-						if (in != end && &in->type == &Fimp::type) {
-							auto &ids((in++)->as<Fimp>().ids);
-							snabl::Stack args;
-							
-							transform(ids.begin(), ids.end(), back_inserter(args),
-												[&form, &lib](Sym id) {
-													auto t(lib.get_type(id));
-
-													if (!t) {
-														throw CompileError(form.pos,
-																							 "Unknown type: " + id.name());
-													}
-													
-													return Box(*t);
-												});
-
-
-							if (args.size() != (*fn)->nargs) {
-								throw CompileError(form.pos,
-																	 fmt("Wrong number of args: %0", {(*fn)->id}));
-							}
-							
-							auto fi((*fn)->get_best_fimp(args.begin(), args.end()));
-
-							if (!fi) {
-								throw CompileError(form.pos, fmt("Unknown fimp: %0", {(*fn)->id}));
-							}
-							
-							fimp = *fi;
-						}
 					} else {
 						auto &fi((*fn)->get_fimp());
 						if (!fi->imp) { snabl::Fimp::compile(fi, form.pos); }

@@ -174,25 +174,22 @@ namespace snabl {
 									 Env &env) {
 									auto &lib(env.lib());
 									const auto &form(*in++);
-									const auto &id_form((in++)->as<forms::Id>());
-
-									auto &args_form(*in++);
-									vector<Box> args;
 									
-									if (&args_form.type == &forms::Fimp::type) {
-										auto &ids(args_form.as<forms::Fimp>().ids);
-
-										for (const auto id: ids) {
-											const auto t(lib.get_type(id));
-											if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
-											args.emplace_back(*t);
-										}
-									} else {
-										throw SyntaxError(args_form.pos,
-																			fmt("Invalid func args: %0",
-																					{args_form.type.id}));
+									if (&in->type != &forms::Fimp::type) {
+										throw SyntaxError(form.pos,
+																			fmt("Invalid func: %0",
+																					{in->type.id}));
 									}
 
+									auto &id_form((in++)->as<forms::Fimp>());
+									vector<Box> args;
+									
+									for (const auto id: id_form.type_ids) {
+										const auto t(lib.get_type(id));
+										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+										args.emplace_back(*t);
+									}
+									
 									auto fi = lib.add_fimp(id_form.id, args, *in++);
 									Fimp::compile(fi, form.pos);
 								});
