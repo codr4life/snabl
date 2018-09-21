@@ -32,6 +32,8 @@ namespace snabl {
 		void parse_num(istream &in, Forms &out);
 		void parse_sexpr(istream &in, Forms &out);
 		void parse_stack(istream &in, Forms &out);
+		void parse_special_char(istream &in, Forms &out);
+		void parse_char(istream &in, Forms &out);
 		void parse_str(istream &in, Forms &out);
 		void parse_fimp(Pos pos, Sym id, istream &in, Forms &out);
 	};

@@ -12,6 +12,7 @@
 #include "snabl/sym.hpp"
 #include "snabl/types.hpp"
 #include "snabl/types/bool.hpp"
+#include "snabl/types/char.hpp"
 #include "snabl/types/error.hpp"
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
@@ -42,6 +43,7 @@ namespace snabl {
 		
 		TypePtr<ATypePtr> meta_type;
 		TypePtr<bool> bool_type;
+		TypePtr<Char> char_type;
 		TypePtr<ErrorPtr> error_type;
 		TypePtr<Float> float_type;
 		TypePtr<Int> int_type;
@@ -54,8 +56,8 @@ namespace snabl {
 		TypePtr<Time> time_type;
 		
 		libs::Home home;
-		unordered_set<char> separators;
-
+		set<char> separators;
+		
 		Ops ops;
 		PC pc;
 		
@@ -72,13 +74,34 @@ namespace snabl {
 			main(begin_scope()),
 			_lib(&home),
 			_stack_offs(0),
-			_try(nullptr) { }
+			_try(nullptr) {
+			add_special_char('t', 8);
+			add_special_char('n', 10);
+			add_special_char('r', 13);
+			add_special_char('e', 27);
+			add_special_char('s', 32);
+		}
 
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
 
 		size_t next_type_tag() { return _type_tag++; }
 
+		void add_special_char(char in, Char out) {
+			_special_chars.emplace(in, out);
+			_char_specials.emplace(out, in);
+		}
+
+		optional<Char> find_special_char(char in) {
+			auto found(_special_chars.find(in));
+			return (found == _special_chars.end()) ? nullopt : make_optional(found->second);
+		}
+
+		optional<char> find_char_special(Char in) {
+			auto found(_char_specials.find(in));
+			return (found == _char_specials.end()) ? nullopt : make_optional(found->second);
+		}
+		
 		Sym sym(const string &name) {
 			const auto found(_sym_table.find(name));
 			if (found != _sym_table.end()) { return found->second; }
@@ -151,7 +174,7 @@ namespace snabl {
 		}
 
 		const Stack &stack() { return _stack; }
-		
+
 		void split(size_t offs=0) {
 			_stack_offs = _stack.size()-offs;
 			_splits.push_back(_stack_offs);
@@ -177,6 +200,8 @@ namespace snabl {
 		}
 
 	private:
+		map<char, Char> _special_chars;
+		map<Char, char> _char_specials;
 		vector<size_t> _splits;
 
 		Lib *_lib;

@@ -24,7 +24,7 @@ namespace snabl {
 		return make_shared<Iter>([s, i](Env &env) mutable {
 				return (i == s->end())
 					? nullopt
-					: make_optional<Box>(env.int_type, Int(*i++));
+					: make_optional<Box>(env.char_type, Char(*i++));
 			});
 	}
 }

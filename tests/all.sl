@@ -32,6 +32,8 @@
 
 (test= ''foo'bar'' ''foo'bar'')
 
+(test=, ''abc'' iter; call #a)
+
 (test=, 1 3 5 drop +; 4)
 (test=, 21 dup +; 42)
 (test=, 1 3 swap -; 2)

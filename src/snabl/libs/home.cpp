@@ -19,6 +19,7 @@ namespace snabl {
 
 			env.meta_type = add_type<MetaType>(env.sym("Type"), {env.root_type});	
 			env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
+			env.char_type = add_type<CharType>(env.sym("Char"), {env.root_type});
 			env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
 			env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
 			

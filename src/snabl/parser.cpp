@@ -55,6 +55,14 @@ namespace snabl {
 				_pos.col++;
 				parse_stack(in, out);
 				break;
+			case '~':
+				_pos.col++;
+				parse_special_char(in, out);
+				break;
+			case '#':
+				_pos.col++;
+				parse_char(in, out);
+				break;
 			case '\'': {
 				char nc(0);
 				
@@ -200,9 +208,30 @@ namespace snabl {
 			throw SyntaxError(start_pos, "Open stack");
 		}
 	}
+	
+	void Parser::parse_special_char(istream &in, Forms &out) {
+		auto p(_pos);
+		p.col--;
+
+		char c(0);
+		if (!in.get(c)) { throw SyntaxError(p, "Missing special char"); }
+		auto sc(env.find_special_char(c));
+		if (!sc) { throw SyntaxError(p, fmt("Unknown special char: %0", {c})); }
+		out.emplace_back(forms::Lit::type, p, Box(env.char_type, *sc));
+	}
+
+	void Parser::parse_char(istream &in, Forms &out) {
+		auto p(_pos);
+		p.col--;
+
+		char c(0);
+		if (!in.get(c)) { throw SyntaxError(p, "Missing char"); }
+		out.emplace_back(forms::Lit::type, p, Box(env.char_type, Char(c)));
+	}
 
 	void Parser::parse_str(istream &in, Forms &out) {
-		auto start_pos(_pos);
+		auto p(_pos);
+		p.col--;
 		stringstream s;
 		char c(0);
 		
@@ -232,8 +261,9 @@ namespace snabl {
 			c = 0;
 		}
 
-		if (!c) { throw SyntaxError(start_pos, "Open string"); }
-		out.emplace_back(forms::Lit::type, start_pos,
+		if (!c) { throw SyntaxError(p, "Open string"); }
+		
+		out.emplace_back(forms::Lit::type, p,
 										 Box(env.str_type, make_shared<Str>(s.str())));
 	}
 
