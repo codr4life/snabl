@@ -1,12 +1,8 @@
 * add support for str special chars
-* remove env.scopes
-** add is_child arg/field
-*** change get logic
-** update env._scope like _try
 * add for: loop
-** For ... Next
-** keep iter in For
-** step and jump to start in Next
+** Iter ... IterNext
+** keep iter in Iter op
+** step and jump to start in IterNext
 * add bench: macro
 ** replaces fn
 ** use For/Next

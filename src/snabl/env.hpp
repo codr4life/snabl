@@ -35,8 +35,8 @@ namespace snabl {
 		list<SymImp> _syms;
 		unordered_map<string, Sym> _sym_table;
 		size_t _type_tag;
-		vector<ScopePtr> _scopes;
 		Stack _stack;
+		ScopePtr _scope;
 	public:
 		TraitPtr root_type, maybe_type, no_type, num_type, seq_type, sink_type, 
 			source_type;
@@ -134,25 +134,16 @@ namespace snabl {
 		void run(istream &in);
 		void run();
 
-		Lib &lib() const {
-			if (!_lib) { throw Error("No lib"); }
-			return *_lib;
-		}
+		Lib &lib() const { return *_lib; }
 
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-			_scopes.push_back(make_shared<Scope>(*this, parent));
-			return _scopes.back();
+			_scope = make_shared<Scope>(_scope, parent);
+			return _scope;
 		}
 
-		const ScopePtr &scope() const {
-			if (_scopes.empty()) { throw Error("No open scopes"); }
-			return _scopes.back();
-		}
+		const ScopePtr &scope() const { return _scope; }
 
-		void end_scope() {
-			if (_scopes.empty()) { throw Error("No open scopes"); }
-			_scopes.pop_back();
-		}
+		void end_scope() { _scope = _scope->prev; }
 
 		void push(const Box &val) { _stack.push_back(val); }
 

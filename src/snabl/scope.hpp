@@ -11,17 +11,18 @@ namespace snabl {
 
 	class Scope {
 	public:
-		Env &env;
-		const ScopePtr parent;
+		const ScopePtr prev, source;
 		
-		Scope(Env &env, const ScopePtr &parent): env(env), parent(parent) { }
+		Scope(const ScopePtr &prev, const ScopePtr &source):
+			prev(prev), source(source) { }
+
 		Scope(const Scope &) = delete;
 		const Scope &operator=(const Scope &) = delete;
 		
 		const Box *get(Sym id) const {
 			const auto found(_vars.find(id));
 			if (found != _vars.end()) { return &found->second; }
-			return parent ? parent->get(id) : nullptr;
+			return source ? source->get(id) : nullptr;
 		}
 
 		void let(Sym id, const Box &val) {
