@@ -19,7 +19,6 @@ namespace snabl {
 		
 		stringstream buf;
 		std::string l;
-		cout << " 1 ";
 		int row(1);
 		
 		while (std::getline(in, l)) {
@@ -37,8 +36,6 @@ namespace snabl {
 				buf << l << endl;
 				row++;
 			}
-			
-			cout << setw(2) << row << ' ';
 		} 
 	}
 }

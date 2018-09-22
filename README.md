@@ -132,8 +132,8 @@ Snabl v0.1
 
 Press Return on empty line to eval.
 
- 1 1 + 2
- 2 
+1 + 2
+ 
 [3]
 ```
 
