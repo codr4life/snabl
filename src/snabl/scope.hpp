@@ -11,7 +11,8 @@ namespace snabl {
 
 	class Scope {
 	public:
-		const ScopePtr prev, source;
+		ScopePtr prev;
+		const ScopePtr source;
 		
 		Scope(const ScopePtr &prev, const ScopePtr &source):
 			prev(prev), source(source) { }

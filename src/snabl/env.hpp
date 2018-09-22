@@ -143,7 +143,11 @@ namespace snabl {
 
 		const ScopePtr &scope() const { return _scope; }
 
-		void end_scope() { _scope = _scope->prev; }
+		void end_scope() {
+			auto prev(_scope->prev);
+			_scope->prev = nullptr;
+			_scope = prev;
+		}
 
 		void push(const Box &val) { _stack.push_back(val); }
 
