@@ -7,10 +7,12 @@ The following is a list of what could be considered defining features.
 Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
 
 ```
-   1 + 2 * 3
+1 + 2 * 3
+
 Compile error in row 1, col 6: Extra func: *
 	 
-   1 +, 2 * 3
+1 +, 2 * 3
+
 [7]
 ```
 
@@ -18,10 +20,12 @@ Compile error in row 1, col 6: Extra func: *
 Much like Forth, Snabl supports directly manipulating the parameter stack. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
 ```
-  43 -- dup!
+43 -- dup!
+
 [43 42]
 
-  43 --; dup!
+43 --; dup!
+
 [42 42]
 ```
 
@@ -29,16 +33,20 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. ```;`
 Snabl supports strong, first class Types. The root type ```T``` may be used to allow any type except ```Nil```.
 
 ```
-   42 Int?
+42 Int?
+
 [t]
 
-   Int T?
+Int T?
+
 [t]
 
-   42 Nil?
+42 Nil?
+
 [f]
 
-   nil T?
+nil T?
+
 [f]
 ```
 
@@ -67,27 +75,32 @@ func: my-fib<Int Int Int> (
 Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
 
 ```
-   func: foo<T> _
-   foo 42
+func: foo<T> _
+foo 42
+
 [42]
 
-   foo nil
+foo nil
+
 [nil]
 Error in row 1, col 0:
 'Func not applicable: foo'
 
-   func: bar<Maybe> _
-   bar 42
+func: bar<Maybe> _
+bar 42
+
 [42]
 
-   bar nil
+bar nil
+
 [nil]
 ```
 
 Any value may be thrown. ```try:``` runs its first argument with the error or ```nil``` on the stack depending on what happened while running the second, ```catch``` may be used to retrieve the thrown value.
 
 ```
-   try: (catch; ++), throw 41
+try: (catch; ++), throw 41
+
 [42]
 ```
 
