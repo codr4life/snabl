@@ -1,4 +1,9 @@
-* add support for str special chars
+* add Fiber
+** move ops/pc
+** add env._fibers deque
+** add env._fiber pointer
+* move Calls from target to Fiber
+* ---
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
@@ -13,6 +18,7 @@
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
+* add support for str special chars
 * add Type.clone
 ** push clone of arg
 ** clone pushed values in Push/Get ops
