@@ -140,7 +140,14 @@ namespace snabl {
 		PC pc() const { return _task->_pc; }
 		
 		TaskPtr spawn() {
+			const bool is_main(!_task);
 			_task = make_shared<Task>(_task);
+
+			if (!is_main) {
+				copy(main_task->_ops.begin(), main_task->_ops.end(),
+						 back_inserter(_task->_ops));
+			}
+																		 
 			return _task;
 		}
 		
