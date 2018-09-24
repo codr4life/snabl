@@ -1,6 +1,5 @@
 * move Calls from target to Task
 ** update state
-* ---
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
@@ -16,6 +15,8 @@
 ** push/pop range of ints
 ** wrap each int in nested stack/list
 * remove call now arg
+* add task: macro
+** run ops in separate task
 * add support for str special chars
 * add Type.clone
 ** push clone of arg
