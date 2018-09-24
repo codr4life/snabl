@@ -27,6 +27,8 @@
 ** add bench/all.sl
 * add support for func/fimp refs with &
 ** add func/fimp type
+* add Pair type
+** use std::pair<Box, Box>
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 

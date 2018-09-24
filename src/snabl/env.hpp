@@ -36,8 +36,9 @@ namespace snabl {
 		list<SymImp> _syms;
 		unordered_map<string, Sym> _sym_table;
 		size_t _type_tag;
-		Stack _stack;
+		TaskPtr _task;
 		ScopePtr _scope;
+		Stack _stack;
 	public:
 		set<char> separators;
 
@@ -58,8 +59,9 @@ namespace snabl {
 		TypePtr<Sym> sym_type;
 		TypePtr<Time> time_type;
 		
-		libs::Home home;
-		const ScopePtr &main;
+		libs::Home home_lib;
+		const TaskPtr main_task;
+		const ScopePtr &root_scope;
 		
 		Env():
 			_type_tag(1),
@@ -67,10 +69,10 @@ namespace snabl {
 					' ', '\t', '\n', ',', ';', '?', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
-			home(*this),
-			main(begin_scope()),
-			_lib(&home),
-			_task(&new_task()),
+			home_lib(*this),
+			main_task(spawn()),
+			root_scope(begin_scope()),
+			_lib(&home_lib),
 			_stack_offs(0),
 			_try(nullptr) {
 			add_special_char('t', 8);
@@ -137,9 +139,9 @@ namespace snabl {
 		const Ops &ops() const { return _task->_ops; }
 		PC pc() const { return _task->_pc; }
 		
-		Task &new_task() {
-			_tasks.emplace_back();
-			return _tasks.back();
+		TaskPtr spawn() {
+			_task = make_shared<Task>(_task);
+			return _task;
 		}
 		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
@@ -204,11 +206,9 @@ namespace snabl {
 	private:
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
-		deque<Task> _tasks;
 		vector<size_t> _splits;
 		
 		Lib *_lib;
-		Task *_task;
 		size_t _stack_offs;
 		TargetPtr _target;
 		ops::Try *_try;
