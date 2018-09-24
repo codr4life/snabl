@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
 	switch (mode) {
 	case Mode::Compile: {
 		size_t row(0);
-		for (const auto &op: env.ops) {
+		for (const auto &op: env.ops()) {
 			cout << row++ << '\t';
 			op.dump(cout);
 		}
@@ -45,7 +45,7 @@ int main(int argc, const char *argv[]) {
 		repl(env, cin, cout);
 		break;
 	case Mode::Run:
-		if (!env.ops.empty()) { env.pc = &env.ops.front().imp; }
+		if (!env.ops().empty()) { env.jump(&env.ops().front().imp); }
 		env.run();
 		break;
 	}

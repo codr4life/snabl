@@ -10,6 +10,7 @@
 #include "snabl/state.hpp"
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
+#include "snabl/task.hpp"
 #include "snabl/types.hpp"
 #include "snabl/types/bool.hpp"
 #include "snabl/types/char.hpp"
@@ -38,6 +39,8 @@ namespace snabl {
 		Stack _stack;
 		ScopePtr _scope;
 	public:
+		set<char> separators;
+
 		TraitPtr root_type, maybe_type, no_type, num_type, seq_type, sink_type, 
 			source_type;
 		
@@ -56,23 +59,18 @@ namespace snabl {
 		TypePtr<Time> time_type;
 		
 		libs::Home home;
-		set<char> separators;
-		
-		Ops ops;
-		PC pc;
-		
 		const ScopePtr &main;
 		
 		Env():
 			_type_tag(1),
-			home(*this),
 			separators({
 					' ', '\t', '\n', ',', ';', '?', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
-			pc(nullptr),
+			home(*this),
 			main(begin_scope()),
 			_lib(&home),
+			_task(&new_task()),
 			_stack_offs(0),
 			_try(nullptr) {
 			add_special_char('t', 8);
@@ -112,6 +110,7 @@ namespace snabl {
 
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
+			Ops &ops(_task->_ops);
 		  Op *prev(ops.empty() ? nullptr : &ops.back());
 			ops.emplace_back(*this, type, args...);
 			auto &op(ops.back());
@@ -135,7 +134,14 @@ namespace snabl {
 		void run();
 
 		Lib &lib() const { return *_lib; }
-
+		const Ops &ops() const { return _task->_ops; }
+		PC pc() const { return _task->_pc; }
+		
+		Task &new_task() {
+			_tasks.emplace_back();
+			return _tasks.back();
+		}
+		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
 			_scope = make_shared<Scope>(_scope, parent);
 			return _scope;
@@ -149,6 +155,7 @@ namespace snabl {
 			_scope = prev;
 		}
 
+		void jump(PC pc) { _task->_pc = pc; }
 		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
@@ -197,9 +204,11 @@ namespace snabl {
 	private:
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
+		deque<Task> _tasks;
 		vector<size_t> _splits;
-
+		
 		Lib *_lib;
+		Task *_task;
 		size_t _stack_offs;
 		TargetPtr _target;
 		ops::Try *_try;

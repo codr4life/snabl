@@ -165,11 +165,11 @@ namespace snabl {
 			auto &l(f.as<Lambda>());
 			auto &start_op(env.emit(ops::Lambda::type, f.pos));
 			auto &start(start_op.as<ops::Lambda>());
-			const auto start_offs(env.ops.size());
+			const auto start_offs(env.ops().size());
 			env.compile(l.body);
 
-			for (auto bop(env.ops.begin()+start_offs);
-					 bop != env.ops.end();
+			for (auto bop(env.ops().begin()+start_offs);
+					 bop != env.ops().end();
 					 bop++) {
 				if (&bop->type == &ops::Get::type || &bop->type == &ops::Let::type) {
 					start.opts |= Target::Opts::Vars;
@@ -184,8 +184,9 @@ namespace snabl {
 			start.start_pc = *start_op.next;
 			
 			start.end_pc = [&env, &end_op, &start]() {
-				env.pc = end_op.next;
-				if (env.pc) { start.end_pc = *env.pc; }
+				auto pc(end_op.next);
+				env.jump(pc);
+				if (pc) { start.end_pc = *pc; }
 			};
 		}
 		

@@ -13,11 +13,13 @@ namespace snabl {
 	void Env::run(istream &in) {
 		Forms fs;
 		Parser(*this).parse(in, fs);
+
+		Ops &ops(_task->_ops);
 		Op *prev_op(ops.empty() ? nullptr : &ops.back());
 		compile(fs.begin(), fs.end());
 		
 		if (!ops.empty()) {
-			pc = prev_op ? prev_op->next : &ops.front().imp;
+			jump(prev_op ? prev_op->next : &ops.front().imp);
 			run();
 		}
 	}
@@ -25,7 +27,7 @@ namespace snabl {
 	void Env::run() {
 	enter:		
 		try {
-			while (pc) { (*pc)(); }
+			while (_task->_pc) { (*_task->_pc)(); }
 		} catch (const UserError &e) {
 			if (!_try) { throw e; }
 			_try->state->restore_lib(*this);
@@ -35,7 +37,7 @@ namespace snabl {
 			_try->state->restore_splits(*this);
 			_try->state.reset();
 			push(error_type, make_shared<UserError>(e));
-			pc = &_try->handler_pc;
+			jump(&_try->handler_pc);
 			_try = _try->parent;
 			goto enter;
 		}

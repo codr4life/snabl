@@ -35,7 +35,7 @@ namespace snabl {
 
 		OpImp Call::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				env.pc = op.next;
+				env.jump(op.next);
 				env.pop().call(op.pos, false);
 			};
 		};
@@ -45,7 +45,7 @@ namespace snabl {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to ddrop"); }
 				env._stack.pop_back();
 				env._stack.pop_back();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -58,7 +58,7 @@ namespace snabl {
 				}
 				
 				env._stack.pop_back();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -66,7 +66,7 @@ namespace snabl {
 			return [&env, &op]() {
 				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to dup"); }
 				env.push(env._stack.back());
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -80,7 +80,7 @@ namespace snabl {
 					throw RuntimeError(env, op.pos, fmt("Invalid else cond: %0", {v}));
 				}
 				
-				env.pc = v.as<bool>() ? op.next : skip_pc;
+				env.jump(v.as<bool>() ? op.next : skip_pc);
 				env.pop();
 			};
 		};
@@ -103,7 +103,7 @@ namespace snabl {
 				const auto lhs(env.pop());
 				const auto rhs(o.rhs ? *o.rhs : env._stack.back());
 				env.push(env.bool_type, lhs.eqval(rhs));
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 		
@@ -116,7 +116,7 @@ namespace snabl {
 
 			return [&env, &fimp]() {
 				if (fimp._opts & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
-				env.pc = &fimp._end_pc;
+				env.jump(&fimp._end_pc);
 			};
 		};
 		
@@ -155,7 +155,7 @@ namespace snabl {
 				}
 			
 				if (!o.fimp) { o.prev_fimp = *fimp; }
-				env.pc = op.next;
+				env.jump(op.next);
 				snabl::Fimp::call(*fimp, op.pos);
 			};
 		};
@@ -167,7 +167,7 @@ namespace snabl {
 				auto v(env.scope()->get(id));
 				if (!v) { throw RuntimeError(env, op.pos, fmt("Unknown var: %0", {id})); }
 				env.push(*v);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -183,7 +183,7 @@ namespace snabl {
 				const bool ok(env._stack.back().isa(rhs));
 				env._stack.pop_back();
 				env.push(env.bool_type, ok);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -197,7 +197,7 @@ namespace snabl {
 																						: nullptr,
 																						o.start_pc, o.end_pc,
 																						o.opts));
-				env.pc = &o.end_pc;
+				env.jump(&o.end_pc);
 			};
 		};
 
@@ -209,12 +209,12 @@ namespace snabl {
 				auto &v(env._stack.back());
 				env.scope()->let(id, v);
 				env._stack.pop_back();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
 		OpImp Nop::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() { env.pc = op.next; };
+			return [&env, &op]() { env.jump(op.next); };
 		}
 
 		void Push::Type::dump_data(const Push &op, ostream &out) const {
@@ -227,7 +227,7 @@ namespace snabl {
 			
 			return [&env, &op, &v]() {
 				env.push(v);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -246,7 +246,7 @@ namespace snabl {
 				
 				auto &t(*env._target);
 				if (t.opts() & Target::Opts::Vars) { env.end_scope(); }
-				env.pc = t.call()->return_pc;
+				env.jump(t.call()->return_pc);
 				if (dynamic_pointer_cast<FimpPtr>(env._target)) { env.unsplit(); }
 				t.end_call(env);
 			};
@@ -258,7 +258,7 @@ namespace snabl {
 				auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
 				swap(env._stack[i], env._stack[i-1]);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -270,7 +270,7 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -283,26 +283,26 @@ namespace snabl {
 				const auto i(env._stack.size()-1);
 				env._stack[i-1] = env._stack[i];	
 				env._stack.pop_back();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 		
 		OpImp Skip::Type::make_imp(Env &env, Op &op) const {
 			const auto end_pc(&op.as<ops::Skip>().end_pc);
-			return [&env, end_pc]() { env.pc = end_pc; };
+			return [&env, end_pc]() { env.jump(end_pc); };
 		};
 
 		OpImp Split::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.split();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
 		OpImp SplitEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.unsplit();
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -321,7 +321,7 @@ namespace snabl {
 				}
 				
 				env.push(env.stack_type, s);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -333,7 +333,7 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-1]);
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 		
@@ -344,7 +344,7 @@ namespace snabl {
 				o.state.emplace(env);
 				o.parent = env._try;
 				env._try = &o;
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 
@@ -352,7 +352,7 @@ namespace snabl {
 			return [&env, &op]() {
 				env._try->state.reset();
 				env._try = env._try->parent;
-				env.pc = op.next;
+				env.jump(op.next);
 			};
 		};
 	}

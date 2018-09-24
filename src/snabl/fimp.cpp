@@ -34,11 +34,11 @@ namespace snabl {
 		if (fi._start_pc) { return false; }
 		auto &env(fi.func->lib.env);
 		auto &start(env.emit(ops::Fimp::type, pos, fip));
-		const auto start_offs(env.ops.size());
+		const auto start_offs(env.ops().size());
 		env.compile(*fi.form);
 
-		for (auto op(env.ops.begin()+start_offs);
-				 op != env.ops.end();
+		for (auto op(env.ops().begin()+start_offs);
+				 op != env.ops().end();
 				 op++) {
 			if (&op->type == &ops::Get::type || &op->type == &ops::Let::type) {
 				fi._opts |= Opts::Vars;
@@ -51,8 +51,9 @@ namespace snabl {
 		fi._start_pc = *start.next;
 		
 		fi._end_pc = [&env, &end, &fi]() {
-				env.pc = end.next;
-				if (env.pc) { fi._end_pc = *env.pc; }
+			auto pc(end.next);
+			env.jump(pc);
+			if (pc) { fi._end_pc = *pc; }
 		};
 
 		return true;
@@ -70,9 +71,9 @@ namespace snabl {
 		} else {
 			Fimp::compile(fip, pos);
 			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
-			Target::begin_call(fip, env, pos, env.pc);
+			Target::begin_call(fip, env, pos, env.pc());
 			env.split(fn.nargs);		
-			env.pc = &fi._start_pc;
+			env.jump(&fi._start_pc);
 		}
 	}
 

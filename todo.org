@@ -1,8 +1,5 @@
-* add Fiber
-** move ops/pc
-** add env._fibers deque
-** add env._fiber pointer
-* move Calls from target to Fiber
+* move Calls from target to Task
+** update state
 * ---
 * add for: loop
 ** Iter ... IterNext
@@ -18,6 +15,7 @@
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
+* remove call now arg
 * add support for str special chars
 * add Type.clone
 ** push clone of arg
