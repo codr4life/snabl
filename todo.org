@@ -1,5 +1,6 @@
 * move Calls from target to Task
 ** update state
+* move main scope into Task
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
