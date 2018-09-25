@@ -60,7 +60,6 @@ namespace snabl {
 		TypePtr<Time> time_type;
 		
 		libs::Home home_lib;
-		const TaskPtr main_task;
 		const ScopePtr &root_scope;
 		
 		Env():
@@ -70,7 +69,6 @@ namespace snabl {
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			home_lib(*this),
-			main_task(spawn()),
 			root_scope(begin_scope()),
 			_lib(&home_lib),
 			_stack_offs(0),
@@ -80,6 +78,7 @@ namespace snabl {
 			add_special_char('r', 13);
 			add_special_char('e', 27);
 			add_special_char('s', 32);
+			_task = start_task();
 		}
 
 		Env(const Env &) = delete;
@@ -139,17 +138,7 @@ namespace snabl {
 		const Ops &ops() const { return _task->_ops; }
 		PC pc() const { return _task->_pc; }
 		
-		TaskPtr spawn() {
-			const bool is_main(!_task);
-			_task = make_shared<Task>(_task);
-
-			if (!is_main) {
-				copy(main_task->_ops.begin(), main_task->_ops.end(),
-						 back_inserter(_task->_ops));
-			}
-																		 
-			return _task;
-		}
+		TaskPtr start_task() { return make_shared<Task>(_task); }
 		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
 			_scope = make_shared<Scope>(_scope, parent);
@@ -223,7 +212,6 @@ namespace snabl {
 		friend RuntimeError;
 		friend State;
 		friend Target;
-
 		friend ops::DDrop::Type;
 		friend ops::Drop::Type;
 		friend ops::Dup::Type;

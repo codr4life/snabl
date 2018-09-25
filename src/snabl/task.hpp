@@ -11,14 +11,24 @@ namespace snabl {
 	using TaskPtr = shared_ptr<Task>;
 
 	struct Task {
-		Task(const TaskPtr &next): _next(next), _pc(nullptr) { }
+		enum class State {New, Running, Yielding, Done};
+		
+		Task(const TaskPtr &next):
+			_prev(nullptr), _next(next), _pc(nullptr), _state(State::New) {
+			if (next) {
+				_prev = next->_prev;
+				next->_prev = this;
+				copy(next->_ops.begin(), next->_ops.end(), back_inserter(_ops));
+			}
+		}
 	private:
+		Task *_prev;
 		TaskPtr _next;
 		
-		optional<State> _state;
 		Ops _ops;
 		PC _pc;
 
+		State _state;
 		friend Env;
 	};
 }
