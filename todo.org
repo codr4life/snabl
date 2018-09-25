@@ -21,6 +21,10 @@
 ** push/pop range of ints
 ** wrap each int in nested stack/list
 * remove call now arg
+* switch let: default to stack split
+** add form.first_child()
+*** override to recurse for body
+*** use to search for ..
 * add support for str special chars
 * add Type.clone
 ** push clone of arg
