@@ -9,21 +9,19 @@ namespace snabl {
 
 	namespace ops { class Try; }
 	
-	class State {
-	public:
+	struct State {
 		State(const Env &env);
 		void restore_lib(Env &env) const;
 		void restore_scope(Env &env) const;
 		void restore_try(Env &env) const;
-		void restore_target(Env &env) const;
+		void restore_calls(Env &env) const;
 		void restore_stack(Env &env) const;
 		void restore_splits(Env &env) const;
 	private:
 		Lib &_lib;
 		const ScopePtr _scope;
 		ops::Try *const _try;
-		const TargetPtr _target;
-		const size_t _nstack, _nsplits;
+		const size_t _ncalls, _nstack, _nsplits;
 	};
 }
 

@@ -65,13 +65,13 @@ namespace snabl {
 		auto &env(fn.lib.env);
 		
 		if (fi.imp) {
-			Target::begin_call(fip, env, pos);
+			env.begin_call(fip, pos, env.pc());
 			fi.imp(fi);
-			fi.end_call(env);
+			env.end_call();
 		} else {
 			Fimp::compile(fip, pos);
 			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
-			Target::begin_call(fip, env, pos, env.pc());
+			env.begin_call(fip, pos, env.pc());
 			env.split(fn.nargs);		
 			env.jump(fi._start_pc);
 		}

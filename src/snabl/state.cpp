@@ -6,7 +6,7 @@ namespace snabl {
 		_lib(*env._lib),
 		_scope(env._scope),
 		_try(env._try),
-		_target(env._target),
+		_ncalls(env._task->_calls.size()),
 		_nstack(env._stack.size()),
 		_nsplits(env._splits.size()) { }
 
@@ -16,8 +16,9 @@ namespace snabl {
 
 	void State::restore_try(Env &env) const { env._try = _try; }
 
-	void State::restore_target(Env &env) const {
-		while (env._target != _target) { env._target->end_call(env); }
+	void State::restore_calls(Env &env) const {
+		auto &calls(env._task->_calls);
+		while (calls.size() > _ncalls) { calls.pop_back(); }
 	}
 	
 	void State::restore_stack(Env &env) const {

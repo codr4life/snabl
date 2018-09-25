@@ -154,6 +154,49 @@ namespace snabl {
 		}
 
 		void jump(PC pc) { _task->_pc = pc; }
+
+		void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
+			_task->_calls.emplace_back(*this, target, pos, return_pc);
+		}
+		
+		const Call &call() const { return _task->_calls.back(); }
+		void end_call() { _task->_calls.pop_back(); }
+		
+		void recall(Pos pos) {
+			auto &calls(_task->_calls);
+
+			if (calls.empty()) {
+				throw RuntimeError(*this, pos, "Nothing to recall");
+			}
+
+			const auto &c(calls.back());
+			const auto &t(*c.target);
+			const auto &s(c.state);
+			
+			s.restore_lib(*this);
+			s.restore_scope(*this);
+			s.restore_try(*this);
+
+			if (t.opts() & Target::Opts::Vars) { _scope->clear_vars(); }
+			jump(t.start_pc());
+		}
+
+		void _return(Pos pos) {
+			auto &calls(_task->_calls);
+			
+			if (calls.empty()) {
+				throw RuntimeError(*this, pos, "Nothing to return from");
+			}
+			
+			auto &c(calls.back());
+			const auto &t(c.target);
+			
+			if (t->opts() & Target::Opts::Vars) { end_scope(); }
+			jump(c.return_pc);
+			if (dynamic_pointer_cast<FimpPtr>(t)) { unsplit(); }
+			end_call();
+		}
+		
 		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
@@ -185,8 +228,6 @@ namespace snabl {
 			_stack_offs = _splits.empty() ? 0 : _splits.back();
 		}
 
-		const TargetPtr &target() const { return _target; }
-		
 		template <typename... ArgsT>
 		void note(Pos pos, const string &msg, ArgsT &&... args) {
 			cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
@@ -206,7 +247,6 @@ namespace snabl {
 		
 		Lib *_lib;
 		size_t _stack_offs;
-		TargetPtr _target;
 		ops::Try *_try;
 		
 		friend RuntimeError;

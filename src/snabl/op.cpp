@@ -232,24 +232,11 @@ namespace snabl {
 		};
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				if (!env._target) { throw RuntimeError(env, op.pos, "Nothing to recall"); }
-				env._target->recall(env);
-			};
+			return [&env, &op]() { env.recall(op.pos); };
 		};
 
 		OpImp Return::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				if (!env._target) {
-					throw RuntimeError(env, op.pos, "Nothing to return from");
-				}
-				
-				auto &t(*env._target);
-				if (t.opts() & Target::Opts::Vars) { env.end_scope(); }
-				env.jump(t.call()->return_pc);
-				if (dynamic_pointer_cast<FimpPtr>(env._target)) { env.unsplit(); }
-				t.end_call(env);
-			};
+			return [&env, &op]() { env._return(op.pos); };
 		};
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {

@@ -32,7 +32,7 @@ namespace snabl {
 			if (!_try) { throw e; }
 			_try->state->restore_lib(*this);
 			_try->state->restore_scope(*this);
-			_try->state->restore_target(*this);
+			_try->state->restore_calls(*this);
 			_try->state->restore_stack(*this);
 			_try->state->restore_splits(*this);
 			_try->state.reset();

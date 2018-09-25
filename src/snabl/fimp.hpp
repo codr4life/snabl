@@ -10,8 +10,6 @@
 #include "snabl/target.hpp"
 
 namespace snabl {
-	class Call;
-
 	class Fimp: public Def, public Target {
 	public:
 		using Args = vector<Box>;

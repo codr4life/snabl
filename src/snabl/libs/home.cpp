@@ -202,7 +202,7 @@ namespace snabl {
 			add_fimp(env.sym("throw"),
 							 {Box(env.root_type)},
 							 [&env](Fimp &fimp) {
-								 throw UserError(env, env.target()->call()->pos, env.pop());
+								 throw UserError(env, env.call().pos, env.pop());
 							 });
 
 			add_fimp(env.sym("throw"),
@@ -381,7 +381,7 @@ namespace snabl {
 							 [&env](Fimp &fimp) {
 								 const Box target(env.pop());
 								 const Int reps(env.pop().as<Int>());
-								 Pos pos(env.target()->call()->pos);								 
+								 Pos pos(env.call().pos);								 
 								 for (int i(0); i < reps/2; i++) { target.call(pos, true); }
 								 
 								 Timer t;

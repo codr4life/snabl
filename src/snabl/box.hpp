@@ -8,8 +8,7 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-	class Box {
-	public:
+	struct Box {
 		Box(const ATypePtr &type): _type(type) { }
 		
 		template <typename ValT>

@@ -1,9 +1,8 @@
-* move Calls from target to Task
 * move main scope into Task
 * move scope ptr into Task
 * move stack/splits into Task
-* move lib ptr into Task
-* remove Task state
+* move _lib ptr into Task
+* move _try ptr into Task
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda

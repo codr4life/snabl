@@ -7,18 +7,17 @@
 #include "snabl/std.hpp"
 
 namespace snabl {	
-	class Call {
-	public:
-		const TargetPtr parent;
+	struct Call {
+		const TargetPtr target;
 		const Pos pos;
-		const optional<const State> state;
+		const State state;
 		const PC return_pc;
 
-		Call(const TargetPtr &parent,
+		Call(Env &env,
+				 const TargetPtr &target,
 				 Pos pos,
-				 const optional<State> &state=nullopt,
 				 PC return_pc=nullptr):
-			parent(parent), pos(pos), state(state), return_pc(return_pc) { }
+			target(target), pos(pos), state(env), return_pc(return_pc) { }
 	};
 }
 

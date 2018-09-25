@@ -7,12 +7,12 @@ namespace snabl {
 		
 		if (now) {
 			const auto prev_pc(env.pc());
-			Target::begin_call(l, env, pos, nullptr);
+			env.begin_call(l, pos, nullptr);
 			env.jump(l->_start_pc);
 			env.run();
 			env.jump(prev_pc);
 		} else {
-			Target::begin_call(l, env, pos, env.pc());
+			env.begin_call(l, pos, env.pc());
 			env.jump(l->_start_pc);
 		}
 	}
