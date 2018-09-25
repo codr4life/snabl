@@ -16,7 +16,7 @@ namespace snabl {
 													 PC return_pc=nullptr);
 
 		Target(const ScopePtr &parent_scope=nullptr,
-					 const OpImp start_pc=nullptr,
+					 PC start_pc=nullptr,
 					 const OpImp end_pc=nullptr,
 					 Opts opts=Opts::None):
 			_parent_scope(parent_scope),
@@ -30,7 +30,8 @@ namespace snabl {
 		void recall(Env &env) const;
 	protected:
 		ScopePtr _parent_scope;
-		OpImp _start_pc, _end_pc;
+		PC _start_pc;
+		OpImp _end_pc;
 		Opts _opts;
 		optional<const Call> _call;
 	};

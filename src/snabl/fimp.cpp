@@ -48,7 +48,7 @@ namespace snabl {
 		}
 		
 		auto &end(env.emit(ops::Return::type, pos));
-		fi._start_pc = *start.next;
+		fi._start_pc = start.next;
 		
 		fi._end_pc = [&env, &end, &fi]() {
 			auto pc(end.next);
@@ -73,7 +73,7 @@ namespace snabl {
 			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
 			Target::begin_call(fip, env, pos, env.pc());
 			env.split(fn.nargs);		
-			env.jump(&fi._start_pc);
+			env.jump(fi._start_pc);
 		}
 	}
 

@@ -11,7 +11,7 @@ namespace snabl {
 		static void call(const LambdaPtr &l, Env &env, Pos pos, bool now);
 
 		Lambda(const ScopePtr &parent_scope,
-					 const OpImp &start_pc, const OpImp &end_pc,
+					 PC start_pc, const OpImp &end_pc,
 					 Opts opts):
 			Target(parent_scope, start_pc, end_pc, opts) { }
 
