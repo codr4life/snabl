@@ -45,24 +45,24 @@
 
 (test=, (|3.. [..]) 3)
 
-(let: foo 42)
+(42 let: foo)
 (test=  @foo 42)
 (test=, {@foo} call! 42)
 
 (test=, 1 +<_ Int> 3; 4)
 
-(test= if: (1 < 3) 5 7 5)
-(test= if: (3 < 1) 5 7 7)
+(test= (1 < 3) if: 5 7 5)
+(test= (3 < 1) if: 5 7 7)
 
-(test= (switch: 7, (drop! t) 'foo) 'foo)
-(test= (switch: 35, (< 42) 'foo, drop! 'bar) 'foo)
-(test= (switch: 35, (< 7) 'foo, drop! 'bar) 'bar)
-(test= (switch: 35, (< 7) 'foo (< 42) 'bar, drop! 'baz) 'bar) 
+(test= (7 switch:, (drop! t) 'foo) 'foo)
+(test= (35 switch:, (< 42) 'foo, drop! 'bar) 'foo)
+(test= (35 switch:, (< 7) 'foo, drop! 'bar) 'bar)
+(test= (35 switch:, (< 7) 'foo (< 42) 'bar, drop! 'baz) 'bar) 
 
 func: double<T> (* 2)
 (test=, 21 double; 42)
 
-let: result 42
+42 let: result
 func: closure<> @result
 (test=, closure; 42)
 

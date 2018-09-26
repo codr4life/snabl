@@ -1,5 +1,3 @@
-* remove dummy let:/if:/switch: arg
-** use whatever is on stack
 * switch _pc fields to ssize_t
 ** ops/fimp/lambda
 ** init to -1

@@ -55,9 +55,9 @@ Snabl embraces but does not mandate functional programming. It supports first cl
 
 ```
 func: my-fib<Int Int Int> (
-  let: (n a b) _
+  let: (n a b)
 
-  switch: @n,
+  @n switch:,
     0? @a
     1? @b,
     --; @b dup! @a +; recall!
@@ -68,7 +68,7 @@ The same algorithm may be implemented entirely without variables by manipulating
 
 ```
 func: my-fib<Int Int Int> (
-  rswap! switch: _,
+  rswap! switch:,
     0? sdrop!
     1? drop!,
     --; rswap! dup! rot! +; recall!

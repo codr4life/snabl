@@ -85,19 +85,12 @@ namespace snabl {
 									auto &form(*in++);
 									auto &p(*in++);
 
-									if (&p.type != &forms::Id::type && &p.type != &forms::Sexpr::type) {
-										throw SyntaxError(p.pos, "Invalid place");
-									}
-
-									if (in == end) { throw Error("Missing value"); }
-									env.compile(*in++);
-									
 									if (&p.type == &forms::Id::type) {
 										env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
 									} else {
-										auto &body(p.as<forms::Sexpr>().body);
-										
-										for (auto pp = body.rbegin(); pp != body.rend(); pp++) {
+										auto &b(p.as<forms::Body>().body);
+
+										for (auto pp = b.rbegin(); pp != b.rend(); pp++) {
 											env.emit(ops::Let::type, form.pos, pp->as<forms::Id>().id);
 										}
 									}
@@ -109,7 +102,6 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									env.compile(*in++, func, fimp);
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
 									env.compile(*in++, func, fimp);
 									auto &if_skip(env.emit(ops::Skip::type, form.pos));
@@ -130,8 +122,7 @@ namespace snabl {
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
-									if (in == end) { throw Error("Missing value"); }
-									env.compile(*in++);
+
 									vector<ops::Skip *> skips;
 									auto &cases((in++)->as<forms::Body>());;
 
@@ -191,7 +182,11 @@ namespace snabl {
 									
 									for (const auto id: id_form.type_ids) {
 										const auto t(lib.get_type(id));
-										if (!t) { throw Error(fmt("Unknown type: %0", {id})); }
+
+										if (!t) {
+											throw CompileError(form.pos, fmt("Unknown type: %0", {id}));
+										}
+										
 										args.emplace_back(*t);
 									}
 									
@@ -372,7 +367,9 @@ namespace snabl {
 								 Box y(env.pop()), x(env.pop());
 								 
 								 if (!x.eqval(y)) {
-									 throw Error(fmt("Expected (%0), was (%1)", {y, x}));
+									 throw RuntimeError(env,
+																			env.call().pos,
+																			fmt("Expected (%0), was (%1)", {y, x}));
 								 }
 							 });
 
