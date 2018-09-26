@@ -1,11 +1,15 @@
+* switch _pc fields to ssize_t
+** ops/fimp/lambda
+** init to -1
+
+* eval fimps at compile time
+** use stack as args
 * move main scope into Task
+* ---
 * move scope ptr into Task
 * move stack/splits into Task
 * move _lib ptr into Task
 * move _try ptr into Task
-* switch _pc fields to ssize_t
-** ops/fimp/lambda
-** init to -1
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda
