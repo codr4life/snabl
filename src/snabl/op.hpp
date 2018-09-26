@@ -35,11 +35,13 @@ namespace snabl {
 	private:		
 		any _data;
 	public:
-		static OpImp eof;
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
 		PC next;
+
+		Op(const Op &src):
+			_data(src._data), type(src.type), pos(src.pos), imp(src.imp), next(nullptr) { }
 		
 		template <typename DataT, typename... ArgsT>
 		Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):

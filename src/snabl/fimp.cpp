@@ -83,23 +83,22 @@ namespace snabl {
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
 		Def(get_id(*func, args)), func(func), args(args), form(form) { }
 
-	optional<size_t> Fimp::score(Stack::const_iterator begin,
-															 Stack::const_iterator end) const {
+	ssize_t Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
 		auto &env(func->lib.env);
 		auto i(begin), j(args.begin());
 		size_t score(0);
 
 		for (; j != args.end(); i++, j++) {
-			if (i == end) { return nullopt; }
+			if (i == end) { return -1; }
 			
 			auto &iv(*i), &jv(*j);
 			auto &it(iv.type()), &jt(jv.type());
 			if (it == env.no_type) { continue; }
 
 			if (jv.has_val()) {
-				if (!iv.has_val() || !iv.eqval(jv)) { return nullopt; }
-			} else {
-				if (!it->isa(jt)) { return nullopt; }
+				if (!iv.has_val() || !iv.eqval(jv)) { return -1; }
+			} else if (!it->isa(jt)) {
+				return -1;
 			}
 			
 			score += abs(static_cast<ssize_t>(it->tag-jt->tag));

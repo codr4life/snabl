@@ -140,8 +140,8 @@ namespace snabl {
 
 					if (fimp) {
 						if (o.func->nargs &&
-								!(*fimp)->score(env._stack.begin()+(env._stack.size()-o.func->nargs),
-																env._stack.end())) { fimp = nullptr; }
+								(*fimp)->score(env._stack.begin()+(env._stack.size()-o.func->nargs),
+															 env._stack.end()) == -1) { fimp = nullptr; }
 					} else {
 						fimp = o.func->get_best_fimp(env._stack.begin()+
 																				 (env._stack.size()-o.func->nargs),

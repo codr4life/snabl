@@ -26,17 +26,17 @@ namespace snabl {
 
 		const FimpPtr *get_best_fimp(Stack::const_iterator begin,
 																 Stack::const_iterator end) const {
-			optional<size_t> best_score;
+			ssize_t best_score(-1);
 			FimpPtr *best_fimp(nullptr);
 			
 			for (auto &fp: _fimps) {
 				auto &f(const_cast<FimpPtr &>(fp.second));
 				auto fs(f->score(begin, end));
 				
-				if (fs) {
-					if (*fs == 0) { return &f; }
+				if (fs != -1) {
+					if (fs == 0) { return &f; }
 					
-					if (!best_score || fs < best_score) {
+					if (best_score == -1 || fs < best_score) {
 						best_score = fs;
 						best_fimp = &f;
 					}

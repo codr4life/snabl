@@ -18,6 +18,10 @@ namespace snabl {
 				_prev = next->_prev;
 				next->_prev = this;
 				copy(next->_ops.begin(), next->_ops.end(), back_inserter(_ops));
+
+				for (auto i(_ops.begin()), j = i+1; j != _ops.end(); i++, j++) {
+					i->next = &j->imp;
+				}
 			}
 		}
 	private:

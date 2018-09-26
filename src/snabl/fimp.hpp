@@ -29,8 +29,7 @@ namespace snabl {
 
 		string target_id() const override { return id.name(); }		
 
-		optional<size_t> score(Stack::const_iterator begin,
-													 Stack::const_iterator end) const;
+		ssize_t score(Stack::const_iterator begin, Stack::const_iterator end) const;
 	private:
 		friend Env;
 		friend ops::Fimp;
