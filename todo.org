@@ -6,6 +6,8 @@
 
 * eval fimps at compile time
 ** use stack as args
+* add times: macro
+** 3 times: Int
 * move main scope into Task
 * ---
 * move scope ptr into Task

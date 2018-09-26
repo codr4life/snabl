@@ -52,12 +52,11 @@ namespace snabl {
 		}
 		
 		virtual void dump(const Box &val, ostream &out) const {
-			out << id.name() << "(n/a)";
+			out << '(' << id.name() << ')';
 		}
-
-		void print(const Box &val, ostream &out) const { dump(val, out); }
-
-		void write(const Box &val, ostream &out) const { print(val, out); }
+		
+		virtual void print(const Box &val, ostream &out) const { dump(val, out); }
+		virtual void write(const Box &val, ostream &out) const { print(val, out); }
 	protected:
 		AType(Lib &lib, Sym id, size_t size);
 	private:

@@ -21,6 +21,6 @@ namespace snabl {
 	}
 
 	void IterType::dump(const Box &val, ostream &out) const {
-		out << "Iter(" << val.as<IterPtr>().get() << ')';
+		out << "(Iter " << val.as<IterPtr>().get() << ')';
 	}
 }

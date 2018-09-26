@@ -16,6 +16,6 @@ namespace snabl {
 	
 	void LambdaType::dump(const Box &val, ostream &out) const {
 		auto &l(val.as<LambdaPtr>());
-		out << "Lambda(" << l.get() << ')';
+		out << "(Lambda " << l.get() << ')';
 	}
 }
