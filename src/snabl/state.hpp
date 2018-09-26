@@ -21,7 +21,7 @@ namespace snabl {
 		Lib &_lib;
 		const ScopePtr _scope;
 		ops::Try *const _try;
-		const size_t _ncalls, _nstack, _nsplits;
+		const Int _ncalls, _nstack, _nsplits;
 	};
 }
 

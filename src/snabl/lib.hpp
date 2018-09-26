@@ -32,7 +32,7 @@ namespace snabl {
 															 initializer_list<ATypePtr> parent_types={},
 															 ArgsT &&... args);
 
-		const FuncPtr &add_func(Sym id, size_t nargs);
+		const FuncPtr &add_func(Sym id, Int nargs);
 
 		template <typename... ImpT>
 		const FimpPtr &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);

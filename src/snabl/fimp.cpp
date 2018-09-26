@@ -75,10 +75,10 @@ namespace snabl {
 	Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
 		Def(get_id(*func, args)), func(func), args(args), form(form) { }
 
-	ssize_t Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
+	Int Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
 		auto &env(func->lib.env);
 		auto i(begin), j(args.begin());
-		size_t score(0);
+		Int score(0);
 
 		for (; j != args.end(); i++, j++) {
 			if (i == end) { return -1; }
@@ -93,7 +93,7 @@ namespace snabl {
 				return -1;
 			}
 			
-			score += abs(static_cast<ssize_t>(it->tag-jt->tag));
+			score += abs(static_cast<Int>(it->tag-jt->tag));
 		}
 
 		return score;

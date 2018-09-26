@@ -1,14 +1,4 @@
-* switch ops _pc fields to ssize_t
-** init to -1
-** remove env.jump(PC)
-** change PC type to ssize_t
-*** grep replace
-* eval fimps at compile time
-** use stack as args
-* add times: macro
-** 3 times: Int
 * move main scope into Task
-* ---
 * move scope ptr into Task
 * move stack/splits into Task
 * move _lib ptr into Task
@@ -16,6 +6,9 @@
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda
+* add times: macro
+** 3 times: Int
+
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
@@ -27,10 +20,13 @@
 ** add Timer op
 ** add TimerPush op
 *** push current time and reset
+** remove call now arg
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
-* remove call now arg
+* eval fimps at compile time
+** begin/end_scope
+** use stack as args
 * add support for str special chars
 * add Type.clone
 ** push clone of arg

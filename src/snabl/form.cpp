@@ -89,7 +89,7 @@ namespace snabl {
 								});
 			
 			
-			if (args.size() != func->nargs) {
+			if (Int(args.size()) != func->nargs) {
 				throw CompileError(pos, fmt("Wrong number of args: %0", {func->id}));
 			}
 			

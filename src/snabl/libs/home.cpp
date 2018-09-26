@@ -60,21 +60,16 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
-									const auto &form(*in++);
+									const auto form(*in++);
 									auto &op(env.emit(ops::Try::type, form.pos).as<ops::Try>());
 									if (in == end) { throw SyntaxError(form.pos, "Missing handler"); }
 									const auto &handler(*in++);
 									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos);
-									auto &prev_op(env.emit(ops::Push::type, form.pos, env.nil_type));
+									env.emit(ops::Push::type, form.pos, env.nil_type);
+									op.handler_pc = env.ops().size();
 									env.compile(handler);
-									
-									op.handler_pc = [&env, &prev_op, &op]() {
-										auto pc(prev_op.next);
-										env.jump(pc);
-										if (pc) { op.handler_pc = *pc; }
-									};
 								});
 			
 			add_macro(env.sym("let:"),
@@ -105,15 +100,9 @@ namespace snabl {
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
 									env.compile(*in++, func, fimp);
 									auto &if_skip(env.emit(ops::Skip::type, form.pos));
+									else_skip.as<ops::Else>().skip_pc = env.ops().size();
 									env.compile(*in++, func, fimp);
-									else_skip.as<ops::Else>().skip_pc = *if_skip.next;
-									auto &end_op(env.ops().back());
-									auto &ifs(if_skip.as<ops::Skip>());
-									ifs.end_pc = [&env, &end_op, &ifs]() {
-										auto pc(end_op.next);
-										env.jump(pc);
-										if (pc) { ifs.end_pc = *pc; }
-									};
+									if_skip.as<ops::Skip>().end_pc = env.ops().size();
 								});	
 
 			add_macro(env.sym("switch:"),
@@ -138,29 +127,17 @@ namespace snabl {
 																							form.pos).as<ops::Else>());
 											env.emit(ops::Drop::type, form.pos);
 											env.compile(*f++);
-
+											
 											if (f != cases.body.end()) {
 												skips.push_back(&env.emit(ops::Skip::type,
 																									form.pos).as<ops::Skip>());
 											}
 
-											auto &end_op(env.ops().back());											
-											else_op.skip_pc = [&env, &end_op, &else_op]() {
-												auto pc(end_op.next);
-												env.jump(pc);
-												if (pc) { else_op.skip_pc = *pc; }
-											};
+											else_op.skip_pc = env.ops().size();
 										}
 									}
 
-									auto &end_op(env.ops().back());
-									for (auto &s: skips) {
-										s->end_pc = [&env, &end_op, s]() {
-											auto pc(end_op.next);
-											env.jump(pc);
-											if (pc) { s->end_pc = *pc; }
-										};
-									}
+									for (auto &s: skips) { s->end_pc = env.ops().size(); }
 								});	
 			
 			add_macro(env.sym("func:"),

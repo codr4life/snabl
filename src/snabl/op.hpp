@@ -9,6 +9,7 @@
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/target.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
 	struct Op;
@@ -113,8 +114,9 @@ namespace snabl {
 			};
 
 			static const Type type;
-			OpImp skip_pc;
-			Else(const OpImp &skip_pc=nullptr): skip_pc(skip_pc) { }
+			Int skip_pc;
+			
+			Else(Int skip_pc=-1): skip_pc(skip_pc) { }
 		};
 		
 		struct Eqval {
@@ -188,10 +190,10 @@ namespace snabl {
 			};
 
 			static const Type type;
-			ssize_t start_pc, end_pc;
+			Int start_pc, end_pc;
 			Target::Opts opts;
 			
-			Lambda(ssize_t start_pc):
+			Lambda(Int start_pc):
 				start_pc(start_pc), end_pc(-1), opts(Target::Opts::None) { }
 		};
 
@@ -282,9 +284,9 @@ namespace snabl {
 			};
 
 			static const Type type;
-			OpImp end_pc;
+			Int end_pc;
 
-			Skip(const OpImp &end_pc=nullptr): end_pc(end_pc) { }
+			Skip(Int end_pc=-1): end_pc(end_pc) { }
 		};
 
 		struct Split {
@@ -333,10 +335,10 @@ namespace snabl {
 
 			static const Type type;
 			Try *parent;
-			OpImp handler_pc;
+			Int handler_pc;
 			optional<State> state;
 
-			Try(): parent(nullptr) { }
+			Try(): parent(nullptr), handler_pc(-1) { }
 		};
 
 		struct TryEnd {

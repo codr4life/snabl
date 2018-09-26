@@ -35,7 +35,7 @@ namespace snabl {
 	private:
 		list<SymImp> _syms;
 		unordered_map<string, Sym> _sym_table;
-		size_t _type_tag;
+		Int _type_tag;
 		TaskPtr _task;
 		ScopePtr _scope;
 		Stack _stack;
@@ -84,7 +84,7 @@ namespace snabl {
 		Env(const Env &) = delete;
 		const Env &operator=(const Env &) = delete;
 
-		size_t next_type_tag() { return _type_tag++; }
+		Int next_type_tag() { return _type_tag++; }
 
 		void add_special_char(char in, Char out) {
 			_special_chars.emplace(in, out);
@@ -154,7 +154,12 @@ namespace snabl {
 		}
 
 		void jump(PC pc) { _task->_pc = pc; }
-		void jump(ssize_t pc) { _task->_pc = &(_task->_ops.begin()+pc)->imp; }
+
+		void jump(Int pc) {
+			_task->_pc = (pc == Int(_task->_ops.size()))
+				? nullptr
+				: &(_task->_ops.begin()+pc)->imp;
+		}
 
 		void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
 			_task->_calls.emplace_back(*this, target, pos, return_pc);
@@ -193,7 +198,7 @@ namespace snabl {
 			const auto &t(c.target);
 			
 			if (t->opts() & Target::Opts::Vars) { end_scope(); }
-			jump(c.return_pc);
+			_task->_pc = c.return_pc;
 			if (dynamic_pointer_cast<FimpPtr>(t)) { unsplit(); }
 			end_call();
 		}
@@ -206,12 +211,12 @@ namespace snabl {
 		}
 
 		Box &peek() {
-			if (_stack.size() <= _stack_offs) { throw Error("Nothing to peek"); }
+			if (Int(_stack.size()) <= _stack_offs) { throw Error("Nothing to peek"); }
 			return _stack.back();
 		}
 
 		Box pop() {
-			if (_stack.size() <= _stack_offs) { throw Error("Nothing to pop"); }
+			if (Int(_stack.size()) <= _stack_offs) { throw Error("Nothing to pop"); }
 			Box v(_stack.back());
 			_stack.pop_back();
 			return v;
@@ -219,7 +224,7 @@ namespace snabl {
 
 		const Stack &stack() { return _stack; }
 
-		void split(size_t offs=0) {
+		void split(Int offs=0) {
 			_stack_offs = _stack.size()-offs;
 			_splits.push_back(_stack_offs);
 		}
@@ -244,10 +249,10 @@ namespace snabl {
 	private:
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
-		vector<size_t> _splits;
+		vector<Int> _splits;
 		
 		Lib *_lib;
-		size_t _stack_offs;
+		Int _stack_offs;
 		ops::Try *_try;
 		
 		friend RuntimeError;

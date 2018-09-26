@@ -32,7 +32,7 @@ int main(int argc, const char *argv[]) {
 	
 	switch (mode) {
 	case Mode::Compile: {
-		size_t row(0);
+		Int row(0);
 		for (const auto &op: env.ops()) {
 			cout << row++ << '\t';
 			op.dump(cout);
@@ -41,12 +41,15 @@ int main(int argc, const char *argv[]) {
 	}
 	case Mode::Default:
 	case Mode::Repl:
-		snabl::all_tests();
+		all_tests();
 		repl(env, cin, cout);
 		break;
 	case Mode::Run:
-		if (!env.ops().empty()) { env.jump(&env.ops().front().imp); }
-		env.run();
+		if (!env.ops().empty()) {
+			env.jump(Int(0));
+			env.run();
+		}
+		
 		break;
 	}
 	

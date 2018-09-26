@@ -4,7 +4,7 @@
 namespace snabl {
 	string fmt(string_view spec, const vector<fmt_conv> &args) {
 		stringstream out;
-		size_t i(0), j;
+		string::size_type i(0), j;
 		
 		while ((j = spec.find('%', i)) != string_view::npos) {
 			if (j < spec.length()-1 && spec[j+1] == '%') {

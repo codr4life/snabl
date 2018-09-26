@@ -13,7 +13,7 @@ namespace snabl {
 		return _macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
 	}
 	
-	const FuncPtr &Lib::add_func(Sym id, size_t nargs) {
+	const FuncPtr &Lib::add_func(Sym id, Int nargs) {
 		auto found(_funcs.find(id));
 		
 		if (found != _funcs.end()) {

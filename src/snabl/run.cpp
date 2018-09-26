@@ -37,7 +37,7 @@ namespace snabl {
 			_try->state->restore_splits(*this);
 			_try->state.reset();
 			push(error_type, make_shared<UserError>(e));
-			jump(&_try->handler_pc);
+			jump(_try->handler_pc);
 			_try = _try->parent;
 			goto enter;
 		}

@@ -16,11 +16,11 @@ namespace snabl {
 	class AType: public Def {
 	public:
 		Lib &lib;
-		const size_t size;
-		const size_t tag;
+		const Int size;
+		const Int tag;
 
 		static void derive(const ATypePtr &child, const ATypePtr &parent) {
-			if (child->_parent_types.size() <= parent->tag) {
+			if (Int(child->_parent_types.size()) <= parent->tag) {
 				child->_parent_types.resize(parent->tag+1);
 			}
 			
@@ -38,7 +38,7 @@ namespace snabl {
 		bool isa(const ATypePtr &parent) const {
 			return
 				parent.get() == this ||
-				(_parent_types.size() > parent->tag && _parent_types[parent->tag]);
+				(Int(_parent_types.size()) > parent->tag && _parent_types[parent->tag]);
 		}
 
 		virtual bool equid(const Box &lhs, const Box &rhs) const=0;
@@ -58,7 +58,7 @@ namespace snabl {
 		virtual void print(const Box &val, ostream &out) const { dump(val, out); }
 		virtual void write(const Box &val, ostream &out) const { print(val, out); }
 	protected:
-		AType(Lib &lib, Sym id, size_t size);
+		AType(Lib &lib, Sym id, Int size);
 	private:
 		vector<ATypePtr> _parent_types;
 		unordered_set<ATypePtr> _child_types;

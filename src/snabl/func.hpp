@@ -13,20 +13,20 @@ namespace snabl {
 	class Func: public Def {
 	public:
 		Lib &lib;
-		const size_t nargs;
+		const Int nargs;
 
 		template <typename... ImpT>
 		static const FimpPtr &add_fimp(const FuncPtr &func,
 																	 const Fimp::Args &args,
 																	 ImpT &&... imp);
 		
-		Func(Lib &lib, Sym id, size_t nargs): Def(id), lib(lib), nargs(nargs) { }
+		Func(Lib &lib, Sym id, Int nargs): Def(id), lib(lib), nargs(nargs) { }
 
 		const FimpPtr &get_fimp() const { return _fimps.begin()->second; }
 
 		const FimpPtr *get_best_fimp(Stack::const_iterator begin,
 																 Stack::const_iterator end) const {
-			ssize_t best_score(-1);
+			Int best_score(-1);
 			FimpPtr *best_fimp(nullptr);
 			
 			for (auto &fp: _fimps) {

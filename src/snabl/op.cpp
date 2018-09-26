@@ -42,7 +42,10 @@ namespace snabl {
 
 		OpImp DDrop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to ddrop"); }
+				if (Int(env._stack.size()) <= env._stack_offs) {
+					throw Error("Nothing to ddrop");
+				}
+				
 				env._stack.pop_back();
 				env._stack.pop_back();
 				env.jump(op.next);
@@ -51,7 +54,7 @@ namespace snabl {
 
 		OpImp Drop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs) {
+				if (Int(env._stack.size()) <= env._stack_offs) {
 					throw RuntimeError(env, op.pos,
 														 fmt("Nothing to drop: %0/%1",
 																 {env._stack.size(), env._stack_offs}));
@@ -64,23 +67,26 @@ namespace snabl {
 
 		OpImp Dup::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to dup"); }
+				if (Int(env._stack.size()) <= env._stack_offs) {
+					throw Error("Nothing to dup");
+				}
+				
 				env.push(env._stack.back());
 				env.jump(op.next);
 			};
 		};
 
 		OpImp Else::Type::make_imp(Env &env, Op &op) const {
-			const auto skip_pc(&op.as<ops::Else>().skip_pc);
+			const auto &skip_pc(op.as<ops::Else>().skip_pc);
 
-			return [&env, &op, skip_pc]() {
+			return [&env, &op, &skip_pc]() {
 				const auto &v(env.peek());
 
 				if (v.type() != env.bool_type) {
 					throw RuntimeError(env, op.pos, fmt("Invalid else cond: %0", {v}));
 				}
 				
-				env.jump(v.as<bool>() ? op.next : skip_pc);
+				env.jump(v.as<bool>() ? op.next : &(env.ops().begin()+skip_pc)->imp);
 				env.pop();
 			};
 		};
@@ -96,7 +102,7 @@ namespace snabl {
 			const auto &o(op.as<ops::Eqval>());
 			
 			return [&env, &op, &o]() {
-				if (env._stack.size() <= env._stack_offs+(o.rhs ? 0 : 1)) {
+				if (Int(env._stack.size()) <= env._stack_offs+(o.rhs ? 0 : 1)) {
 					throw Error("Nothing to eqval");
 				}
 				
@@ -134,7 +140,7 @@ namespace snabl {
 			return [&env, &op, &o]() {
 				const FimpPtr *fimp(nullptr);
 
-				if (env._stack.size() >= env._stack_offs+o.func->nargs) {
+				if (Int(env._stack.size()) >= env._stack_offs+o.func->nargs) {
 					if (o.fimp) { fimp = &o.fimp; }
 					if (!fimp && o.prev_fimp) { fimp = &o.prev_fimp; }
 
@@ -179,7 +185,10 @@ namespace snabl {
 			const auto &rhs(op.as<ops::Isa>().rhs);
 			
 			return [&env, &op, &rhs]() {
-				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to isa"); }
+				if (Int(env._stack.size()) <= env._stack_offs) {
+					throw Error("Nothing to isa");
+				}
+				
 				const bool ok(env._stack.back().isa(rhs));
 				env._stack.pop_back();
 				env.push(env.bool_type, ok);
@@ -205,7 +214,10 @@ namespace snabl {
 			const auto &id(op.as<ops::Let>().id);
 			
 			return [&env, &op, &id]() {
-				if (env._stack.size() <= env._stack_offs) { throw Error("Nothing to let"); }
+				if (Int(env._stack.size()) <= env._stack_offs) {
+					throw Error("Nothing to let");
+				}
+				
 				auto &v(env._stack.back());
 				env.scope()->let(id, v);
 				env._stack.pop_back();
@@ -241,7 +253,10 @@ namespace snabl {
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs+2) { throw Error("Nothing to rot"); }
+				if (Int(env._stack.size()) <= env._stack_offs+2) {
+					throw Error("Nothing to rot");
+				}
+				
 				auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
 				swap(env._stack[i], env._stack[i-1]);
@@ -251,7 +266,7 @@ namespace snabl {
 
 		OpImp RSwap::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs+2) {
+				if (Int(env._stack.size()) <= env._stack_offs+2) {
 					throw Error("Nothing to rswap");
 				}
 				
@@ -263,7 +278,7 @@ namespace snabl {
 
 		OpImp SDrop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs+1) {
+				if (Int(env._stack.size()) <= env._stack_offs+1) {
 					throw Error("Nothing to sdrop");
 				}
 				
@@ -275,8 +290,8 @@ namespace snabl {
 		};
 		
 		OpImp Skip::Type::make_imp(Env &env, Op &op) const {
-			const auto end_pc(&op.as<ops::Skip>().end_pc);
-			return [&env, end_pc]() { env.jump(end_pc); };
+			const auto &end_pc(op.as<ops::Skip>().end_pc);
+			return [&env, &end_pc]() { env.jump(end_pc); };
 		};
 
 		OpImp Split::Type::make_imp(Env &env, Op &op) const {
@@ -297,11 +312,11 @@ namespace snabl {
 			auto unsplit(op.as<Stack>().unsplit);
 			
 			return [&env, &op, unsplit]() {
-				const size_t offs(env._stack_offs);
+				const Int offs(env._stack_offs);
 				if (unsplit) { env.unsplit(); }
 				auto s(make_shared<snabl::Stack>());
 				
-				if (env._stack.size() > offs) {
+				if (Int(env._stack.size()) > offs) {
 					const auto i(env._stack.begin()+offs), j(env._stack.end());
 					move(i, j, back_inserter(*s));
 					env._stack.erase(i, j);
@@ -314,7 +329,7 @@ namespace snabl {
 
 		OpImp Swap::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
-				if (env._stack.size() <= env._stack_offs+1) {
+				if (Int(env._stack.size()) <= env._stack_offs+1) {
 					throw Error("Nothing to swap");
 				}
 				

@@ -18,16 +18,16 @@ namespace snabl {
 
 	void State::restore_calls(Env &env) const {
 		auto &calls(env._task->_calls);
-		while (calls.size() > _ncalls) { calls.pop_back(); }
+		while (Int(calls.size()) > _ncalls) { calls.pop_back(); }
 	}
 	
 	void State::restore_stack(Env &env) const {
-		if (env._stack.size() > _nstack) {
+		if (Int(env._stack.size()) > _nstack) {
 			env._stack.erase(env._stack.begin()+_nstack, env._stack.end());
 		}
 	}
 
 	void State::restore_splits(Env &env) const {
-		if (env._splits.size() > _nsplits) { env._splits.resize(_nsplits); }
+		if (Int(env._splits.size()) > _nsplits) { env._splits.resize(_nsplits); }
 	}
 }

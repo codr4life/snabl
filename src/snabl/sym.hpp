@@ -2,6 +2,7 @@
 #define SNABL_SYM_HPP
 
 #include "snabl/std.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
 	class Sym;
@@ -9,7 +10,7 @@ namespace snabl {
 	class SymImp {
 	public:
 		const string name;
-		const size_t hash;
+		const Int hash;
 
 		SymImp(const string &name): name(name), hash(std::hash<string>{}(name)) { }
 	};

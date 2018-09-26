@@ -2,11 +2,12 @@
 #define SNABL_POS_HPP
 
 #include "snabl/std.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
 	struct Pos {
-		Pos(size_t row, size_t col): row(row), col(col) { } 
-		size_t row, col;
+		Pos(Int row, Int col): row(row), col(col) { } 
+		Int row, col;
 	};
 }
 
