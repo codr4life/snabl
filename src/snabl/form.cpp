@@ -163,12 +163,11 @@ namespace snabl {
 												 Env &env) const {
 			auto &f(*in++);
 			auto &l(f.as<Lambda>());
-			auto &start_op(env.emit(ops::Lambda::type, f.pos));
+			auto &start_op(env.emit(ops::Lambda::type, f.pos, env.ops().size()+1));
 			auto &start(start_op.as<ops::Lambda>());
-			const auto start_offs(env.ops().size());
 			env.compile(l.body);
 
-			for (auto bop(env.ops().begin()+start_offs);
+			for (auto bop(env.ops().begin()+start.start_pc);
 					 bop != env.ops().end();
 					 bop++) {
 				if (&bop->type == &ops::Get::type || &bop->type == &ops::Let::type) {
@@ -180,14 +179,8 @@ namespace snabl {
 				}
 			}
 			
-			auto &end_op(env.emit(ops::Return::type, f.pos));
-			start.start_pc = start_op.next;
-			
-			start.end_pc = [&env, &end_op, &start]() {
-				auto pc(end_op.next);
-				env.jump(pc);
-				if (pc) { start.end_pc = *pc; }
-			};
+			env.emit(ops::Return::type, f.pos);
+			start.end_pc = env.ops().size();
 		}
 		
 		Lit::Lit(const Box &val): val(val) { }

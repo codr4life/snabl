@@ -116,7 +116,7 @@ namespace snabl {
 
 			return [&env, &fimp]() {
 				if (fimp._opts & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
-				env.jump(&fimp._end_pc);
+				env.jump(fimp._end_pc);
 			};
 		};
 		
@@ -197,7 +197,7 @@ namespace snabl {
 																						: nullptr,
 																						o.start_pc, o.end_pc,
 																						o.opts));
-				env.jump(&o.end_pc);
+				env.jump(o.end_pc);
 			};
 		};
 

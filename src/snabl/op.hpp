@@ -188,10 +188,11 @@ namespace snabl {
 			};
 
 			static const Type type;
-			PC start_pc;
-			OpImp end_pc;
+			ssize_t start_pc, end_pc;
 			Target::Opts opts;
-			Lambda(): start_pc(nullptr), opts(Target::Opts::None) { }
+			
+			Lambda(ssize_t start_pc):
+				start_pc(start_pc), end_pc(-1), opts(Target::Opts::None) { }
 		};
 
 		struct Let {

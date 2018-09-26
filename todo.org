@@ -1,7 +1,8 @@
-* switch _pc fields to ssize_t
-** ops/fimp/lambda
+* switch ops _pc fields to ssize_t
 ** init to -1
-
+** remove env.jump(PC)
+** change PC type to ssize_t
+*** grep replace
 * eval fimps at compile time
 ** use stack as args
 * add times: macro

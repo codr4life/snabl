@@ -154,6 +154,7 @@ namespace snabl {
 		}
 
 		void jump(PC pc) { _task->_pc = pc; }
+		void jump(ssize_t pc) { _task->_pc = &(_task->_ops.begin()+pc)->imp; }
 
 		void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
 			_task->_calls.emplace_back(*this, target, pos, return_pc);

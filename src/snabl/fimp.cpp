@@ -30,14 +30,13 @@ namespace snabl {
 
 	bool Fimp::compile(const FimpPtr &fip, Pos pos) {
 		auto &fi(*fip);
-		
-		if (fi._start_pc) { return false; }
+		if (fi._start_pc != -1) { return false; }
 		auto &env(fi.func->lib.env);
-		auto &start(env.emit(ops::Fimp::type, pos, fip));
-		const auto start_offs(env.ops().size());
+		env.emit(ops::Fimp::type, pos, fip);
+		fi._start_pc = env.ops().size();
 		env.compile(*fi.form);
 
-		for (auto op(env.ops().begin()+start_offs);
+		for (auto op(env.ops().begin()+fi._start_pc);
 				 op != env.ops().end();
 				 op++) {
 			if (&op->type == &ops::Get::type || &op->type == &ops::Let::type) {
@@ -47,15 +46,8 @@ namespace snabl {
 			if (&op->type == &ops::Recall::type) { fi._opts |= Opts::Recalls; }
 		}
 		
-		auto &end(env.emit(ops::Return::type, pos));
-		fi._start_pc = start.next;
-		
-		fi._end_pc = [&env, &end, &fi]() {
-			auto pc(end.next);
-			env.jump(pc);
-			if (pc) { fi._end_pc = *pc; }
-		};
-
+		env.emit(ops::Return::type, pos);
+		fi._end_pc = env.ops().size();
 		return true;
 	}
 
