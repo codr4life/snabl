@@ -1,4 +1,3 @@
-* convert _calls to Starray<Call, MaxCalls>
 * convert _stack to Starray<Box, MaxStack>
 * more regs
 ** convert times: to use regs

@@ -28,6 +28,7 @@ namespace snabl {
 
 		void trunc(Int new_size) {
 			assert(_size >= new_size);
+			
 			for (Int i(new_size); i < _size; i++) {
 				reinterpret_cast<T *>(&_items[i])->~T();
 			}
