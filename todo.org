@@ -1,5 +1,6 @@
-* add Scope.nregs/regs map
-** bind during compilation
+* add Env._next_reg/Scope.regs map
+** add Env.next_reg() fn
+*** bind during compilation
 ** convert Try & compare
 *** convert Times
 *** move ops back to Env
