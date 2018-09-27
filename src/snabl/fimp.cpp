@@ -34,7 +34,9 @@ namespace snabl {
 		auto &env(fi.func->lib.env);
 		env.emit(ops::Fimp::type, pos, fip);
 		fi._start_pc = env.ops().size();
+		env.begin_regs();
 		env.compile(*fi.form);
+		if (env.end_regs()) { fi._opts |= Opts::Regs; }
 
 		for (auto op(env.ops().begin()+fi._start_pc);
 				 op != env.ops().end();
@@ -62,7 +64,11 @@ namespace snabl {
 			env.end_call();
 		} else {
 			Fimp::compile(fip, pos);
-			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
+
+			if (fi._opts & Opts::Regs || fi._opts & Opts::Vars) {
+				env.begin_scope(fi._parent_scope);
+			}
+			
 			env.begin_call(fip, pos, env.pc());
 			env.begin_split(fn.nargs);		
 			env.jump(fi._start_pc);

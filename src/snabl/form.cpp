@@ -165,8 +165,10 @@ namespace snabl {
 			auto &l(f.as<Lambda>());
 			auto &start_op(env.emit(ops::Lambda::type, f.pos, env.ops().size()+1));
 			auto &start(start_op.as<ops::Lambda>());
+			env.begin_regs();
 			env.compile(l.body);
-
+			if (env.end_regs()) { start.opts |= Target::Opts::Regs; }
+			
 			for (auto bop(env.ops().begin()+start.start_pc);
 					 bop != env.ops().end();
 					 bop++) {

@@ -9,7 +9,7 @@
 namespace snabl {
 	class Target {
 	public:
-		enum class Opts: int {None=0, Vars=1, Recalls=2};
+		enum class Opts: int {None=0, Recalls, Regs, Vars};
 		
 		Target(const ScopePtr &parent_scope=nullptr,
 					 Int start_pc=-1, Int end_pc=-1,

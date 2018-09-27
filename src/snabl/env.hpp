@@ -78,6 +78,7 @@ namespace snabl {
 			add_special_char('r', 13);
 			add_special_char('e', 27);
 			add_special_char('s', 32);
+			begin_regs();
 			_task = start_task();
 		}
 
@@ -109,6 +110,21 @@ namespace snabl {
 			return _sym_table.emplace(name, Sym(imp)).first->second;
 		}
 
+		void begin_regs() { _nregs.push_back(0); }
+		
+		Int end_regs() {
+			const Int n(_nregs.back());
+			_nregs.pop_back();
+			return n;
+		}
+
+		Int begin_reg() { return _nregs.back()++; }
+		
+		void end_reg(Int reg) {
+			assert(Int(_nregs.size()) == reg+1);
+			_nregs.back()--;
+		}
+		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
 			Ops &ops(_task->_ops);
@@ -249,6 +265,7 @@ namespace snabl {
 	private:
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
+		vector<Int> _nregs;
 		vector<Int> _splits;
 		
 		Lib *_lib;

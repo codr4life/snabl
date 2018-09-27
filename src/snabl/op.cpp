@@ -136,7 +136,10 @@ namespace snabl {
 			auto &fimp(*op.as<ops::Fimp>().ptr);
 
 			return [&env, &fimp]() {
-				if (fimp._opts & Target::Opts::Vars) { fimp._parent_scope = env.scope(); }
+				if (fimp._opts & Target::Opts::Regs || fimp._opts & Target::Opts::Vars) {
+					fimp._parent_scope = env.scope();
+				}
+				
 				env.jump(fimp._end_pc);
 			};
 		};
@@ -221,7 +224,8 @@ namespace snabl {
 			
 			return [&env, &o]() {
 				env.push(env.lambda_type,
-								 make_shared<snabl::Lambda>((o.opts & Target::Opts::Vars)
+								 make_shared<snabl::Lambda>((o.opts & Target::Opts::Regs ||
+																						 o.opts & Target::Opts::Vars)
 																						? env.scope()
 																						: nullptr,
 																						o.start_pc, o.end_pc,

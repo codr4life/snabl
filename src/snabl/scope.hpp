@@ -11,6 +11,8 @@ namespace snabl {
 
 	class Scope {
 	public:
+		static const Int MaxRegs = 8;
+		
 		ScopePtr prev;
 		const ScopePtr source;
 		
@@ -33,6 +35,7 @@ namespace snabl {
 
 		void clear_vars() { _vars.clear(); }
 	private:
+		array<any, MaxRegs> _regs;
 		map<Sym, Box> _vars;
 	};
 }
