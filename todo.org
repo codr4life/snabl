@@ -1,3 +1,10 @@
+* add Scope.nregs/regs map
+** bind during compilation
+** convert Try & compare
+*** convert Times
+*** move ops back to Env
+**** skip task copy
+* ---
 * move main scope into Task
 * move scope ptr into Task
 * move stack/splits into Task
@@ -17,6 +24,7 @@
 ** push/pop range of ints
 ** wrap each int in nested stack/list
 * eval fimps at compile time
+** <3 times: Int>
 ** begin/end_scope
 ** use stack as args
 * add for: loop
