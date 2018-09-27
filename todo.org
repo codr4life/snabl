@@ -1,6 +1,3 @@
-* move ops back to Env
-** skip task copy
-* ---
 * move main scope into Task
 * move scope ptr into Task
 * move stack into Task
@@ -10,10 +7,13 @@
 ** capture parent scope like fimp/lambda
 * add bench: macro
 ** replaces fn
-** use Times/Dec
+** use Times
 ** add Timer op
-** add TimerPush op
-*** push current time and reset
+** add Type.clone(any)
+*** clone pushed values in Push/Get ops
+** add PushReg op
+*** reg & type
+*** push clone of value
 ** remove call now arg
 * add stack bench
 ** push/pop range of ints
@@ -27,9 +27,6 @@
 ** keep iter in Iter op
 ** step and jump to start in IterNext
 * add support for str special chars
-* add Type.clone
-** push clone of arg
-** clone pushed values in Push/Get ops
 * add include: macro
 ** one arg
 ** load all files into ops

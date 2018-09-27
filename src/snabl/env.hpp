@@ -141,10 +141,9 @@ namespace snabl {
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-			Ops &ops(_task->_ops);
-		  Op *prev(ops.empty() ? nullptr : &ops.back());
-			ops.emplace_back(*this, type, args...);
-			auto &op(ops.back());
+		  Op *prev(_ops.empty() ? nullptr : &_ops.back());
+			_ops.emplace_back(*this, type, args...);
+			auto &op(_ops.back());
 			if (prev) { prev->next = &op; }
 			return op;
 		}
@@ -165,7 +164,7 @@ namespace snabl {
 		void run();
 
 		Lib &lib() const { return *_lib; }
-		const Ops &ops() const { return _task->_ops; }
+		const Ops &ops() const { return _ops; }
 		PC pc() const { return _task->_pc; }
 		
 		TaskPtr start_task() { return make_shared<Task>(_task); }
@@ -186,9 +185,7 @@ namespace snabl {
 		void jump(PC pc) { _task->_pc = pc; }
 
 		void jump(Int pc) {
-			_task->_pc = (pc == Int(_task->_ops.size()))
-				? nullptr
-				: &(_task->_ops.begin()+pc)->imp;
+			_task->_pc = (pc == Int(_ops.size())) ? nullptr : &(_ops.begin()+pc)->imp;
 		}
 
 		void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
@@ -278,6 +275,7 @@ namespace snabl {
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
 		vector<Int> _nregs;
+		Ops _ops;
 		
 		Lib *_lib;
 		Int _stack_offs;

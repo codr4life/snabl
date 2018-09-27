@@ -14,11 +14,10 @@ namespace snabl {
 		Forms fs;
 		Parser(*this).parse(in, fs);
 
-		Ops &ops(_task->_ops);
-		const auto start_pc(ops.size());
+		const auto start_pc(_ops.size());
 		compile(fs.begin(), fs.end());
 		
-		if (!ops.empty()) {
+		if (!_ops.empty()) {
 			jump(start_pc);
 			run();
 		}
