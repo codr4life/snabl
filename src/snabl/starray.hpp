@@ -17,8 +17,8 @@ namespace snabl {
 		}
 		
 		template <typename...ArgsT>
-		T &emplace_back(ArgsT &&...args) {
-			return *new (&_items[_size++]) T(forward<ArgsT>(args)...);
+		void emplace_back(ArgsT &&...args) {
+			new (&_items[_size++]) T(forward<ArgsT>(args)...);
 		}
 
 		const T &back() const { return get(_size-1); }
