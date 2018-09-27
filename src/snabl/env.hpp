@@ -132,7 +132,7 @@ namespace snabl {
 		template <typename T>
 		const T &get_reg(Int idx) const { return _scope->get_reg<T>(idx); }
 
-		void let_reg(Int idx, const any &val) { _scope->let_reg(idx,val); }
+		void let_reg(Int idx, any &&val) { _scope->let_reg(idx, move(val)); }
 		void clear_reg(Int idx) const { _scope->clear_reg(idx); }
 		
 		template <typename ImpT, typename... ArgsT>
