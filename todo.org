@@ -1,17 +1,10 @@
-* add vector<Int> Env._regs stack
-** add fixed size Scope.regs array<any>
-** add Env.begin_regs()/end_regs()
-*** call around fimp/lambda call
-** add Int Env.begin_reg()/end_reg(Int)
-*** call around each times:/try: expansion
-** add Env.next_reg()
-*** bind during compilation
-** convert Try & compare
-*** convert Times
-**** add Jump.cond fn
-***** replaces TimesDec op
-*** move ops back to Env
-**** skip task copy
+* add regs
+** convert try: to use regs
+** convert times: to use regs
+** add Jump.cond fn
+*** replaces TimesDec op
+** move ops back to Env
+*** skip task copy
 * switch _calls to Starray<Call, 8>
 ** aligned_storage + size
 ** push_back/pop_back/back
