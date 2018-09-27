@@ -64,13 +64,9 @@ namespace snabl {
 			env.end_call();
 		} else {
 			Fimp::compile(fip, pos);
-
-			if (fi._parent_scope) {
-				env.begin_scope(fi._parent_scope);
-			}
-			
-			env.begin_call(fip, pos, env.pc());
+			if (fi._parent_scope) { env.begin_scope(fi._parent_scope); }
 			env.begin_split(fn.nargs);		
+			env.begin_call(fip, pos, env.pc());
 			env.jump(fi._start_pc);
 		}
 	}

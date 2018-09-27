@@ -204,7 +204,8 @@ namespace snabl {
 			s.restore_lib(*this);
 			s.restore_scope(*this);
 			s.restore_tries(*this);
-
+			s.restore_splits(*this);
+			
 			if (t.opts() & Target::Opts::Vars) { _scope->clear_vars(); }
 			jump(t.start_pc());
 		}
@@ -212,13 +213,12 @@ namespace snabl {
 		void _return(Pos pos) {
 			auto &calls(_task->_calls);
 			if (!calls.size) { throw RuntimeError(*this, pos, "Nothing to return from"); }
-			
 			auto &c(calls.back());
 			const auto &t(c.target);
-			
 			if (t->_parent_scope) { end_scope(); }
 			_task->_pc = c.return_pc;
-			if (dynamic_pointer_cast<FimpPtr>(t)) { end_split(); }
+			auto fi(dynamic_cast<Fimp *>(t.get()));
+			if (fi && !fi->imp) { end_split(); }
 			end_call();
 		}
 		
@@ -249,12 +249,12 @@ namespace snabl {
 
 		void begin_split(Int offs=0) {
 			_stack_offs = _stack.size()-offs;
-			_splits.push_back(_stack_offs);
+			_task->_splits.emplace_back(_stack_offs);
 		}
 
 		void end_split() {
-			_splits.pop_back();
-			_stack_offs = _splits.empty() ? 0 : _splits.back();
+			_task->_splits.pop_back();
+			_stack_offs = _task->_splits.size ? _task->_splits.back() : 0;
 		}
 
 		template <typename... ArgsT>
@@ -273,7 +273,6 @@ namespace snabl {
 		map<char, Char> _special_chars;
 		map<Char, char> _char_specials;
 		vector<Int> _nregs;
-		vector<Int> _splits;
 		
 		Lib *_lib;
 		Int _stack_offs;

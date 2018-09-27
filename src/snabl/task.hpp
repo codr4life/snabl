@@ -13,6 +13,7 @@ namespace snabl {
 	struct Task {
 		enum class Status {New, Running, Yielding, Done};
 		static const Int MaxCalls = 8;
+		static const Int MaxSplits = 8;
 		static const Int MaxTries = 8;
 		
 		Task(const TaskPtr &next):
@@ -37,6 +38,7 @@ namespace snabl {
 
 		Starray<Call, MaxCalls> _calls;
 		Starray<ops::Try *, MaxTries> _tries;
+		Starray<Int, MaxSplits> _splits;
 		
 		friend Env;
 		friend State;

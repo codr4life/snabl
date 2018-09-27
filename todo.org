@@ -1,13 +1,13 @@
 * more regs
 ** convert times: to use regs
-** add Jump.cond fn
-*** replaces TimesDec op
+** replace TimesDec with JumpIf
+*** optional cond fn
 ** move ops back to Env
 *** skip task copy
 * ---
 * move main scope into Task
 * move scope ptr into Task
-* move stack/splits into Task
+* move stack into Task
 * move _lib ptr into Task
 * add task: macro
 ** run ops in separate task
