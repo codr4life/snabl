@@ -1,9 +1,5 @@
-* more regs
-** convert times: to use regs
-** replace TimesDec with JumpIf
-*** optional cond fn
-** move ops back to Env
-*** skip task copy
+* move ops back to Env
+** skip task copy
 * ---
 * move main scope into Task
 * move scope ptr into Task

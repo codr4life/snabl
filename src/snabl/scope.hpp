@@ -34,15 +34,11 @@ namespace snabl {
 		}
 
 		void clear_vars() { _vars.clear(); }
-
-		template <typename T>
-		const T &get_reg(Int idx) const { return any_cast<const T &>(_regs[idx]); }
-
-		void let_reg(Int idx, any &&val) { _regs[idx] = val; }
-		void clear_reg(Int idx) { _regs[idx].reset(); }
 	private:
 		array<any, MaxRegs> _regs;
 		map<Sym, Box> _vars;
+
+		friend Env;
 	};
 }
 

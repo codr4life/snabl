@@ -25,6 +25,7 @@ namespace snabl {
 		const Get::Type Get::type("get");
 		const Isa::Type Isa::type("isa");
 		const Jump::Type Jump::type("jump");
+		const JumpIf::Type JumpIf::type("jump-if");
 		const Lambda::Type Lambda::type("lambda");
 		const Let::Type Let::type("let");
 		const Nop::Type Nop::type("nop");
@@ -39,7 +40,6 @@ namespace snabl {
 		const Stack::Type Stack::type("stack");
 		const Swap::Type Swap::type("swap");
 		const Times::Type Times::type("times");
-		const TimesDec::Type TimesDec::type("times-dec");
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
 
@@ -219,6 +219,18 @@ namespace snabl {
 			return [&env, &end_pc]() { env.jump(end_pc); };
 		};
 
+		OpImp JumpIf::Type::make_imp(Env &env, Op &op) const {
+			auto &o(op.as<ops::JumpIf>());
+			
+			return [&env, &op, &o]() {
+				if (o.cond()) {
+					env.jump(o.end_pc);
+				} else {
+					op.jump_next(env);
+				}
+			};
+		};
+
 		OpImp Lambda::Type::make_imp(Env &env, Op &op) const {			
 			auto &o(op.as<ops::Lambda>());
 			
@@ -359,22 +371,11 @@ namespace snabl {
 		};
 		
 		OpImp Times::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				auto &dec(op.next->as<ops::TimesDec>());
-				dec.i = env.pop().as<Int>();
-				env.jump(&op.next->imp);
-			};
-		};
+			auto &o(op.as<ops::Times>());
 
-		OpImp TimesDec::Type::make_imp(Env &env, Op &op) const {
-			auto &o(op.as<ops::TimesDec>());
-			
 			return [&env, &op, &o]() {
-				if (o.i--) {
-					op.jump_next(env);
-				} else {
-					env.jump(o.end_pc);
-				}
+				env.let_reg(o.i_reg, env.pop().as<Int>());
+				env.jump(&op.next->imp);
 			};
 		};
 

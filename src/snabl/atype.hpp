@@ -10,7 +10,7 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-	class Box;
+	struct Box;
 	class Lib;
 
 	class AType: public Def {

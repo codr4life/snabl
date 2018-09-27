@@ -129,10 +129,15 @@ namespace snabl {
 		}
 
 		template <typename T>
-		const T &get_reg(Int idx) const { return _scope->get_reg<T>(idx); }
+		T &get_reg(Int idx) { return any_cast<T &>(_scope->_regs[idx]); }
 
-		void let_reg(Int idx, any &&val) { _scope->let_reg(idx, move(val)); }
-		void clear_reg(Int idx) const { _scope->clear_reg(idx); }
+		template <typename T>
+		const T &get_reg(Int idx) const {
+			return any_cast<const T &>(_scope->_regs[idx]);
+		}
+
+		void let_reg(Int idx, any &&val) { _scope->_regs[idx] = move(val); }
+		void clear_reg(Int idx) const { _scope->_regs[idx].reset(); }
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {

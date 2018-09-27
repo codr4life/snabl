@@ -78,7 +78,7 @@ namespace snabl {
 			snabl::Stack args;
 				
 			transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
-								[&lib, &form, pos](Sym id) {
+								[&lib, pos](Sym id) {
 									auto t(lib.get_type(id));
 									
 									if (!t) {

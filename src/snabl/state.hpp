@@ -7,7 +7,7 @@ namespace snabl {
 	class Env;
 	class Lib;
 
-	namespace ops { class Try; }
+	namespace ops { struct Try; }
 	
 	struct State {
 		State(const Env &env);

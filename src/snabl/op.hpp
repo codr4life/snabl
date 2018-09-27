@@ -197,6 +197,20 @@ namespace snabl {
 			Jump(Int end_pc=-1): end_pc(end_pc) { }
 		};
 
+		struct JumpIf {
+			struct Type: public OpType<JumpIf> {
+				Type(const string &id): OpType<JumpIf>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+			function<bool ()> cond;
+			Int end_pc;
+			
+			JumpIf(function<bool ()> &&cond): cond(move(cond)), end_pc(-1) { } 
+		};
+
+
 		struct Lambda {
 			struct Type: public OpType<Lambda> {
 				Type(const string &id): OpType<Lambda>(id) { }
@@ -336,18 +350,9 @@ namespace snabl {
 			};
 
 			static const Type type;
-		};
-
-		struct TimesDec {
-			struct Type: public OpType<TimesDec> {
-				Type(const string &id): OpType<TimesDec>(id) { }
-				OpImp make_imp(Env &env, Op &op) const override;
-			};
-
-			static const Type type;
-			Int i, end_pc;
+			const Int i_reg;
 			
-			TimesDec(): i(-1), end_pc(-1) { } 
+			Times(Int i_reg): i_reg(i_reg) { }
 		};
 
 		struct Try {
