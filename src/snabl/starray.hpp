@@ -15,28 +15,15 @@ namespace snabl {
 		
 		template <typename...ArgsT>
 		T &emplace_back(ArgsT &&...args) {
-			assert(_size < MAX_SIZE);
 			const Int i(_size++);
 			return *new (&_items[i]) T(forward<ArgsT>(args)...);
 		}
 
-		const T &back() const {
-			assert(_size > 0);
-			return get(_size-1);
-		}
-		
-		T &back() {
-			assert(_size > 0);
-			return get(_size-1);
-		}
-		
-		void pop_back() {
-			assert(_size > 0);
-			get(--_size).~T();
-		}
+		const T &back() const { return get(_size-1); }
+		T &back() { return get(_size-1); }
+		void pop_back() { get(--_size).~T(); }
 
 		void trunc(Int new_size) {
-			assert(_size > new_size);
 			for (; _size > new_size; _size--) { get(_size-1).~T(); }
 		}
 	private:
