@@ -64,7 +64,7 @@ namespace snabl {
 			Fimp::compile(fip, pos);
 			if (fi._opts & Opts::Vars) { env.begin_scope(fi._parent_scope); }
 			env.begin_call(fip, pos, env.pc());
-			env.split(fn.nargs);		
+			env.begin_split(fn.nargs);		
 			env.jump(fi._start_pc);
 		}
 	}

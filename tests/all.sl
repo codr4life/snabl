@@ -59,6 +59,8 @@
 (test= (35 switch:, (< 7) 'foo, drop! 'bar) 'bar)
 (test= (35 switch:, (< 7) 'foo (< 42) 'bar, drop! 'baz) 'bar) 
 
+(test=, 2 3 times: ++ 5)
+
 func: double<T> (* 2)
 (test=, 21 double; 42)
 

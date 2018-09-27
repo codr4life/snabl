@@ -15,11 +15,11 @@ namespace snabl {
 		Parser(*this).parse(in, fs);
 
 		Ops &ops(_task->_ops);
-		Op *prev_op(ops.empty() ? nullptr : &ops.back());
+		const auto start_pc(ops.size());
 		compile(fs.begin(), fs.end());
 		
 		if (!ops.empty()) {
-			jump(prev_op ? prev_op->next : &ops.front().imp);
+			jump(start_pc);
 			run();
 		}
 	}

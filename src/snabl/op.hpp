@@ -39,7 +39,7 @@ namespace snabl {
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
-		PC next;
+		Op *next;
 
 		Op(const Op &src):
 			_data(src._data), type(src.type), pos(src.pos), imp(src.imp), next(nullptr) { }
@@ -58,6 +58,8 @@ namespace snabl {
 		template <typename DataT>
 		DataT &as() { return any_cast<DataT &>(_data); }
 
+		void jump_next(Env &env) const;
+		
 		void dump(ostream &out) const {
 			out << type.id;
 			type.dump(*this, out);
@@ -183,6 +185,18 @@ namespace snabl {
 			Isa(const ATypePtr &rhs): rhs(rhs) { }
 		};
 
+		struct Jump {
+			struct Type: public OpType<Jump> {
+				Type(const string &id): OpType<Jump>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+			Int end_pc;
+
+			Jump(Int end_pc=-1): end_pc(end_pc) { }
+		};
+
 		struct Lambda {
 			struct Type: public OpType<Lambda> {
 				Type(const string &id): OpType<Lambda>(id) { }
@@ -277,18 +291,6 @@ namespace snabl {
 			static const Type type;
 		};
 
-		struct Skip {
-			struct Type: public OpType<Skip> {
-				Type(const string &id): OpType<Skip>(id) { }
-				OpImp make_imp(Env &env, Op &op) const override;
-			};
-
-			static const Type type;
-			Int end_pc;
-
-			Skip(Int end_pc=-1): end_pc(end_pc) { }
-		};
-
 		struct Split {
 			struct Type: public OpType<Split> {
 				Type(const string &id): OpType<Split>(id) { }
@@ -314,8 +316,8 @@ namespace snabl {
 			};
 
 			static const Type type;
-			const bool unsplit;
-			Stack(bool unsplit): unsplit(unsplit) { }
+			const bool end_split;
+			Stack(bool end_split): end_split(end_split) { }
 		};
 
 		struct Swap {
@@ -325,6 +327,27 @@ namespace snabl {
 			};
 
 			static const Type type;
+		};
+
+		struct Times {
+			struct Type: public OpType<Times> {
+				Type(const string &id): OpType<Times>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+		};
+
+		struct TimesDec {
+			struct Type: public OpType<TimesDec> {
+				Type(const string &id): OpType<TimesDec>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+			Int i, end_pc;
+			
+			TimesDec(): i(-1), end_pc(-1) { } 
 		};
 
 		struct Try {

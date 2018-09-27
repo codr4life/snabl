@@ -99,10 +99,10 @@ namespace snabl {
 									auto &form(*in++);
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
 									env.compile(*in++, func, fimp);
-									auto &if_skip(env.emit(ops::Skip::type, form.pos));
+									auto &if_skip(env.emit(ops::Jump::type, form.pos));
 									else_skip.as<ops::Else>().skip_pc = env.ops().size();
 									env.compile(*in++, func, fimp);
-									if_skip.as<ops::Skip>().end_pc = env.ops().size();
+									if_skip.as<ops::Jump>().end_pc = env.ops().size();
 								});	
 
 			add_macro(env.sym("switch:"),
@@ -112,7 +112,7 @@ namespace snabl {
 									 Env &env) {
 									auto &form(*in++);
 
-									vector<ops::Skip *> skips;
+									vector<ops::Jump *> skips;
 									auto &cases((in++)->as<forms::Body>());;
 
 									for (auto f(cases.body.begin()); f != cases.body.end();) {
@@ -129,8 +129,8 @@ namespace snabl {
 											env.compile(*f++);
 											
 											if (f != cases.body.end()) {
-												skips.push_back(&env.emit(ops::Skip::type,
-																									form.pos).as<ops::Skip>());
+												skips.push_back(&env.emit(ops::Jump::type,
+																									form.pos).as<ops::Jump>());
 											}
 
 											else_op.skip_pc = env.ops().size();
@@ -138,6 +138,21 @@ namespace snabl {
 									}
 
 									for (auto &s: skips) { s->end_pc = env.ops().size(); }
+								});	
+
+			add_macro(env.sym("times:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									env.emit(ops::Times::type, form.pos);
+									const auto start_pc(env.ops().size());
+									auto &dec(env.emit(ops::TimesDec::type, form.pos)
+														.as<ops::TimesDec>());
+									env.compile(*in++);
+									env.emit(ops::Jump::type, form.pos, start_pc);
+									dec.end_pc = env.ops().size();
 								});	
 			
 			add_macro(env.sym("func:"),

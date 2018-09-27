@@ -115,7 +115,7 @@ namespace snabl {
 		  Op *prev(ops.empty() ? nullptr : &ops.back());
 			ops.emplace_back(*this, type, args...);
 			auto &op(ops.back());
-			if (prev) { prev->next = &op.imp; }
+			if (prev) { prev->next = &op; }
 			return op;
 		}
 
@@ -199,7 +199,7 @@ namespace snabl {
 			
 			if (t->opts() & Target::Opts::Vars) { end_scope(); }
 			_task->_pc = c.return_pc;
-			if (dynamic_pointer_cast<FimpPtr>(t)) { unsplit(); }
+			if (dynamic_pointer_cast<FimpPtr>(t)) { end_split(); }
 			end_call();
 		}
 		
@@ -224,12 +224,12 @@ namespace snabl {
 
 		const Stack &stack() { return _stack; }
 
-		void split(Int offs=0) {
+		void begin_split(Int offs=0) {
 			_stack_offs = _stack.size()-offs;
 			_splits.push_back(_stack_offs);
 		}
 
-		void unsplit() {
+		void end_split() {
 			_splits.pop_back();
 			_stack_offs = _splits.empty() ? 0 : _splits.back();
 		}

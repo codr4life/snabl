@@ -6,17 +6,9 @@
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda
-* add times: macro
-** 3 times: Int
-
-* add for: loop
-** Iter ... IterNext
-** keep iter in Iter op
-** step and jump to start in IterNext
 * add bench: macro
 ** replaces fn
-** use For/Next
-*** Box(env.int_type, n).iter()
+** use Times/Dec
 ** add Timer op
 ** add TimerPush op
 *** push current time and reset
@@ -27,6 +19,10 @@
 * eval fimps at compile time
 ** begin/end_scope
 ** use stack as args
+* add for: loop
+** Iter ... IterNext
+** keep iter in Iter op
+** step and jump to start in IterNext
 * add support for str special chars
 * add Type.clone
 ** push clone of arg
@@ -42,5 +38,4 @@
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 
-* add trait: Foo (Bar Baz) macro
-** derive children from type
+
