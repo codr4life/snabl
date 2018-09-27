@@ -17,9 +17,7 @@ namespace snabl {
 		T &emplace_back(ArgsT &&...args) {
 			assert(_size < MAX_SIZE);
 			const Int i(_size++);
-			T *const ptr(new (&_blocks[i]) T(forward<ArgsT>(args)...));
-			_items[i] = ptr;
-			return *ptr;
+			return *(_items[i] = new (&_blocks[i]) T(forward<ArgsT>(args)...));
 		}
 
 		const T &back() const {
@@ -39,8 +37,7 @@ namespace snabl {
 
 		void trunc(Int new_size) {
 			assert(_size >= new_size);
-			for (Int i(new_size); i < _size; i++) { _items[i]->~T(); }
-			_size = new_size;
+			for (; _size > new_size; _size--) { _items[_size-1]->~T(); }
 		}
 	private:
 		array<Block, MAX_SIZE> _blocks;		
