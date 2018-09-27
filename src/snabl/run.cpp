@@ -38,10 +38,10 @@ namespace snabl {
 			s.restore_stack(*this);
 			s.restore_splits(*this);
 			clear_reg(t->state_reg);
+			end_try();
 			
 			push(error_type, make_shared<UserError>(e));
 			jump(t->handler_pc);
-			end_try();
 			goto enter;
 		}
 	}
