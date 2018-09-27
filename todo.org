@@ -1,5 +1,4 @@
 * add regs
-** convert try: to use regs
 ** convert times: to use regs
 ** add Jump.cond fn
 *** replaces TimesDec op
@@ -8,6 +7,9 @@
 * switch _calls to Starray<Call, 8>
 ** aligned_storage + size
 ** push_back/pop_back/back
+** add trunc(n)
+*** use in State.restore_calls
+* switch _stack to Starray<Box, 64>
 * ---
 * move main scope into Task
 * move scope ptr into Task

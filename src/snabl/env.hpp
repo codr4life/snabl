@@ -118,12 +118,22 @@ namespace snabl {
 			return n;
 		}
 
-		Int begin_reg() { return _nregs.back()++; }
+		Int begin_reg() {
+			auto &n(_nregs.back());
+			assert(n < Scope::MaxRegs);
+			return n++;
+		}
 		
-		void end_reg(Int reg) {
-			assert(Int(_nregs.size()) == reg+1);
+		void end_reg(Int idx) {
+			assert(Int(_nregs.back()) == idx+1);
 			_nregs.back()--;
 		}
+
+		template <typename T>
+		const T &get_reg(Int idx) const { return _scope->get_reg<T>(idx); }
+
+		void let_reg(Int idx, const any &val) { _scope->let_reg(idx,val); }
+		void clear_reg(Int idx) const { _scope->clear_reg(idx); }
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
@@ -213,7 +223,7 @@ namespace snabl {
 			auto &c(calls.back());
 			const auto &t(c.target);
 			
-			if (t->opts() & Target::Opts::Vars) { end_scope(); }
+			if (t->_parent_scope) { end_scope(); }
 			_task->_pc = c.return_pc;
 			if (dynamic_pointer_cast<FimpPtr>(t)) { end_split(); }
 			end_call();

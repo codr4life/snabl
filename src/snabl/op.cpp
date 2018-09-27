@@ -378,21 +378,30 @@ namespace snabl {
 			};
 		};
 
+		Try::Try(Int parent_reg, Int state_reg):
+			parent_reg(parent_reg), state_reg(state_reg), handler_pc(-1) { }
+
 		OpImp Try::Type::make_imp(Env &env, Op &op) const {			
 			auto &o(op.as<ops::Try>());
 
 			return [&env, &op, &o]() {
-				o.state.emplace(env);
-				o.parent = env._try;
+				env.let_reg(o.parent_reg, env._try);
+				env.let_reg(o.state_reg, State(env));
 				env._try = &o;
 				op.jump_next(env);
 			};
 		};
 
+		TryEnd::TryEnd(Int parent_reg, Int state_reg):
+			parent_reg(parent_reg), state_reg(state_reg) { }
+
 		OpImp TryEnd::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				env._try->state.reset();
-				env._try = env._try->parent;
+			auto &o(op.as<ops::TryEnd>());
+
+			return [&env, &op, &o]() {
+				env.clear_reg(o.state_reg);
+				env._try = env.get_reg<Try *>(o.parent_reg);
+				env.clear_reg(o.parent_reg);
 				op.jump_next(env);
 			};
 		};

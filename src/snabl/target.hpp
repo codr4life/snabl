@@ -26,6 +26,8 @@ namespace snabl {
 		ScopePtr _parent_scope;
 		Int _start_pc, _end_pc;
 		Opts _opts;
+
+		friend Env;
 	};
 
 	inline Target::Opts& operator |=(Target::Opts& lhs, Target::Opts rhs) {

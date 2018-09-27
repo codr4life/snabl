@@ -357,11 +357,10 @@ namespace snabl {
 			};
 
 			static const Type type;
-			Try *parent;
+			const Int parent_reg, state_reg;
 			Int handler_pc;
-			optional<State> state;
 
-			Try(): parent(nullptr), handler_pc(-1) { }
+			Try(Int parent_reg, Int state_reg);
 		};
 
 		struct TryEnd {
@@ -371,6 +370,8 @@ namespace snabl {
 			};
 			
 			static const Type type;
+			const Int parent_reg, state_reg;
+			TryEnd(Int parent_reg, Int state_reg);
 		};
 	}	
 }

@@ -30,15 +30,20 @@ namespace snabl {
 			while (_task->_pc) { (*_task->_pc)(); }
 		} catch (const UserError &e) {
 			if (!_try) { throw e; }
-			_try->state->restore_lib(*this);
-			_try->state->restore_scope(*this);
-			_try->state->restore_calls(*this);
-			_try->state->restore_stack(*this);
-			_try->state->restore_splits(*this);
-			_try->state.reset();
+			auto &s(get_reg<State>(_try->state_reg));			
+			s.restore_lib(*this);
+			s.restore_scope(*this);
+			s.restore_calls(*this);
+			s.restore_stack(*this);
+			s.restore_splits(*this);
+			clear_reg(_try->state_reg);
+			
 			push(error_type, make_shared<UserError>(e));
 			jump(_try->handler_pc);
-			_try = _try->parent;
+			
+			const auto pr(_try->parent_reg);
+			_try = get_reg<ops::Try *>(pr);
+			clear_reg(pr);
 			goto enter;
 		}
 	}

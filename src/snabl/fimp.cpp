@@ -65,7 +65,7 @@ namespace snabl {
 		} else {
 			Fimp::compile(fip, pos);
 
-			if (fi._opts & Opts::Regs || fi._opts & Opts::Vars) {
+			if (fi._parent_scope) {
 				env.begin_scope(fi._parent_scope);
 			}
 			
