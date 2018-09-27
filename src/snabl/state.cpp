@@ -5,8 +5,8 @@ namespace snabl {
 	State::State(const Env &env):
 		_lib(*env._lib),
 		_scope(env._scope),
-		_try(env._try),
 		_ncalls(env._task->_calls.size()),
+		_ntries(env._task->_tries.size()),
 		_nstack(env._stack.size()),
 		_nsplits(env._splits.size()) { }
 
@@ -14,13 +14,17 @@ namespace snabl {
 
 	void State::restore_scope(Env &env) const { env._scope = _scope; }
 
-	void State::restore_try(Env &env) const { env._try = _try; }
-
 	void State::restore_calls(Env &env) const {
 		auto &calls(env._task->_calls);
 		while (Int(calls.size()) > _ncalls) { calls.pop_back(); }
 	}
 	
+	void State::restore_tries(Env &env) const {
+		if (Int(env._task->_tries.size()) > _ntries) {
+			env._task->_tries.resize(_ntries);
+		}
+	}
+
 	void State::restore_stack(Env &env) const {
 		if (Int(env._stack.size()) > _nstack) {
 			env._stack.erase(env._stack.begin()+_nstack, env._stack.end());

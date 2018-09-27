@@ -24,6 +24,8 @@ namespace snabl {
 				}
 			}
 		}
+
+		
 	private:
 		Task *_prev;
 		TaskPtr _next;
@@ -33,6 +35,7 @@ namespace snabl {
 		PC _pc;
 
 		vector<Call> _calls;
+		vector<ops::Try *> _tries;
 		
 		friend Env;
 		friend State;

@@ -71,8 +71,7 @@ namespace snabl {
 			home_lib(*this),
 			root_scope(begin_scope()),
 			_lib(&home_lib),
-			_stack_offs(0),
-			_try(nullptr) {
+			_stack_offs(0) {
 			add_special_char('t', 8);
 			add_special_char('n', 10);
 			add_special_char('r', 13);
@@ -207,7 +206,7 @@ namespace snabl {
 			
 			s.restore_lib(*this);
 			s.restore_scope(*this);
-			s.restore_try(*this);
+			s.restore_tries(*this);
 
 			if (t.opts() & Target::Opts::Vars) { _scope->clear_vars(); }
 			jump(t.start_pc());
@@ -229,6 +228,10 @@ namespace snabl {
 			end_call();
 		}
 		
+		void begin_try(ops::Try &op) { _task->_tries.push_back(&op); }
+		ops::Try *current_try() { return _task->_tries.back(); }
+		void end_try() { _task->_tries.pop_back(); }
+
 		void push(const Box &val) { _stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
@@ -280,7 +283,6 @@ namespace snabl {
 		
 		Lib *_lib;
 		Int _stack_offs;
-		ops::Try *_try;
 		
 		friend RuntimeError;
 		friend State;

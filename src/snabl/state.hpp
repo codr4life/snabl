@@ -13,15 +13,14 @@ namespace snabl {
 		State(const Env &env);
 		void restore_lib(Env &env) const;
 		void restore_scope(Env &env) const;
-		void restore_try(Env &env) const;
+		void restore_tries(Env &env) const;
 		void restore_calls(Env &env) const;
 		void restore_stack(Env &env) const;
 		void restore_splits(Env &env) const;
 	private:
 		Lib &_lib;
 		const ScopePtr _scope;
-		ops::Try *const _try;
-		const Int _ncalls, _nstack, _nsplits;
+		const Int _ncalls, _ntries, _nstack, _nsplits;
 	};
 }
 

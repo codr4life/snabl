@@ -1,5 +1,3 @@
-* convert _try into Task._tries vector
-** replaces parent_reg
 * convert _tries into Starray<Try *, MaxTries>
 * more regs
 ** convert times: to use regs
@@ -18,7 +16,6 @@
 * move scope ptr into Task
 * move stack/splits into Task
 * move _lib ptr into Task
-* move _try ptr into Task
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda
