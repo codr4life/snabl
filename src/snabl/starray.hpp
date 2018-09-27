@@ -8,15 +8,16 @@ namespace snabl {
 		const Int &size;
 		
 		Starray(): size(_size), _size(0) { }
-
+		Starray(const Starray &)=delete;
+		const Starray &operator =(const Starray &)=delete;
+		
 		~Starray() {
 			for (Int i(0); i < _size; i++) { get(i).~T(); }
 		}
 		
 		template <typename...ArgsT>
 		T &emplace_back(ArgsT &&...args) {
-			const Int i(_size++);
-			return *new (&_items[i]) T(forward<ArgsT>(args)...);
+			return *new (&_items[_size++]) T(forward<ArgsT>(args)...);
 		}
 
 		const T &back() const { return get(_size-1); }
