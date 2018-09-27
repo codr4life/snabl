@@ -2,6 +2,7 @@
 #define SNABL_TASK_HPP
 
 #include "snabl/op.hpp"
+#include "snabl/starray.hpp"
 
 namespace snabl {
 	class Env;
@@ -11,6 +12,7 @@ namespace snabl {
 
 	struct Task {
 		enum class Status {New, Running, Yielding, Done};
+		static const Int MaxTries = 8;
 		
 		Task(const TaskPtr &next):
 			_prev(nullptr), _next(next), _status(Status::New), _pc(nullptr) {
@@ -24,8 +26,6 @@ namespace snabl {
 				}
 			}
 		}
-
-		
 	private:
 		Task *_prev;
 		TaskPtr _next;
@@ -35,7 +35,7 @@ namespace snabl {
 		PC _pc;
 
 		vector<Call> _calls;
-		vector<ops::Try *> _tries;
+		Starray<ops::Try *, MaxTries> _tries;
 		
 		friend Env;
 		friend State;

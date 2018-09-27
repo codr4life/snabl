@@ -228,7 +228,7 @@ namespace snabl {
 			end_call();
 		}
 		
-		void begin_try(ops::Try &op) { _task->_tries.push_back(&op); }
+		void begin_try(ops::Try &op) { _task->_tries.emplace_back(&op); }
 		ops::Try *current_try() { return _task->_tries.back(); }
 		void end_try() { _task->_tries.pop_back(); }
 
