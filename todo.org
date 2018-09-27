@@ -1,16 +1,11 @@
-* convert _tries into Starray<Try *, MaxTries>
+* convert _calls to Starray<Call, MaxCalls>
+* convert _stack to Starray<Box, MaxStack>
 * more regs
 ** convert times: to use regs
 ** add Jump.cond fn
 *** replaces TimesDec op
 ** move ops back to Env
 *** skip task copy
-* switch _calls to Starray<Call, MaxCalls>
-** aligned_storage + size
-** push_back/pop_back/back
-** add trunc(n)
-*** use in State.restore_calls
-* switch _stack to Starray<Box, MaxStack>
 * ---
 * move main scope into Task
 * move scope ptr into Task
