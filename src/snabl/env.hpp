@@ -224,7 +224,7 @@ namespace snabl {
 			end_call();
 		}
 		
-		void begin_try(ops::Try &op) { _task->_tries.emplace_back(&op); }
+		void begin_try(ops::Try &op) { _task->_tries.push_back(&op); }
 		ops::Try *current_try() { return _task->_tries.back(); }
 		void end_try() { _task->_tries.pop_back(); }
 
@@ -251,12 +251,12 @@ namespace snabl {
 
 		void begin_split(Int offs=0) {
 			_stack_offs = _stack.size()-offs;
-			_task->_splits.emplace_back(_stack_offs);
+			_task->_splits.push_back(_stack_offs);
 		}
 
 		void end_split() {
 			_task->_splits.pop_back();
-			_stack_offs = _task->_splits.size ? _task->_splits.back() : 0;
+			_stack_offs = _task->_splits.size() ? _task->_splits.back() : 0;
 		}
 
 		template <typename... ArgsT>

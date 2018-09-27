@@ -6,9 +6,9 @@ namespace snabl {
 		_lib(*env._lib),
 		_scope(env._scope),
 		_ncalls(env._task->_calls.size),
-		_ntries(env._task->_tries.size),
+		_ntries(env._task->_tries.size()),
 		_nstack(env._stack.size()),
-		_nsplits(env._task->_splits.size) { }
+		_nsplits(env._task->_splits.size()) { }
 
 	void State::restore_lib(Env &env) const { env._lib = &_lib; }
 
@@ -20,7 +20,7 @@ namespace snabl {
 	}
 	
 	void State::restore_tries(Env &env) const {
-		if (env._task->_tries.size > _ntries) { env._task->_tries.trunc(_ntries); }
+		if (env._task->_tries.size() > _ntries) { env._task->_tries.trunc(_ntries); }
 	}
 
 	void State::restore_stack(Env &env) const {
@@ -30,6 +30,6 @@ namespace snabl {
 	}
 
 	void State::restore_splits(Env &env) const {
-		if (env._task->_splits.size > _nsplits) { env._task->_splits.trunc(_nsplits); }
+		if (env._task->_splits.size() > _nsplits) { env._task->_splits.trunc(_nsplits); }
 	}
 }

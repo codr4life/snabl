@@ -2,6 +2,7 @@
 #define SNABL_TASK_HPP
 
 #include "snabl/op.hpp"
+#include "snabl/sarray.hpp"
 #include "snabl/starray.hpp"
 
 namespace snabl {
@@ -30,8 +31,8 @@ namespace snabl {
 		PC _pc;
 
 		Starray<Call, MaxCalls> _calls;
-		Starray<ops::Try *, MaxTries> _tries;
-		Starray<Int, MaxSplits> _splits;
+		Sarray<ops::Try *, MaxTries> _tries;
+		Sarray<Int, MaxSplits> _splits;
 		
 		friend Env;
 		friend State;
