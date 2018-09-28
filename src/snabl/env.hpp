@@ -144,7 +144,7 @@ namespace snabl {
 		  Op *prev(_ops.empty() ? nullptr : &_ops.back());
 			_ops.emplace_back(*this, type, args...);
 			auto &op(_ops.back());
-			if (prev) { prev->next = &op.imp; }
+			if (prev) { prev->next = op.imp; }
 			return op;
 		}
 
@@ -181,6 +181,8 @@ namespace snabl {
 			_scope->prev = nullptr;
 			_scope = prev;
 		}
+
+		void jump(const OpImp &pc) { _task->_pc = pc ? &pc : nullptr; }
 
 		void jump(PC pc) { _task->_pc = pc; }
 
