@@ -144,7 +144,7 @@ namespace snabl {
 		  Op *prev(_ops.empty() ? nullptr : &_ops.back());
 			_ops.emplace_back(*this, type, args...);
 			auto &op(_ops.back());
-			if (prev) { prev->next = &op; }
+			if (prev) { prev->next = &op.imp; }
 			return op;
 		}
 

@@ -39,7 +39,7 @@ namespace snabl {
 		const AOpType &type;
 		const Pos pos;
 		const OpImp imp;
-		Op *next;
+		PC next;
 
 		Op(const Op &src):
 			_data(src._data), type(src.type), pos(src.pos), imp(src.imp), next(nullptr) { }
@@ -58,8 +58,6 @@ namespace snabl {
 		template <typename DataT>
 		DataT &as() { return any_cast<DataT &>(_data); }
 
-		void jump_next(Env &env) const;
-		
 		void dump(ostream &out) const {
 			out << type.id;
 			type.dump(*this, out);
