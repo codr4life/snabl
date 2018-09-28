@@ -5,12 +5,11 @@ namespace snabl {
 	template <typename T, Int MAX_SIZE>
 	struct Starray {
 		using Item = typename aligned_storage<sizeof(T), alignof(T)>::type;
-		const Int &size;
 
 		Starray(const Starray &)=delete;
 		const Starray &operator =(const Starray &)=delete;
 
-		Starray(): size(_size), _size(0) { }
+		Starray(): _size(0) { }
 		
 		~Starray() {
 			for (Int i(0); i < _size; i++) { get(i).~T(); }
@@ -21,6 +20,7 @@ namespace snabl {
 			new (&_items[_size++]) T(forward<ArgsT>(args)...);
 		}
 
+		Int size() const { return _size; }
 		const T &back() const { return get(_size-1); }
 		T &back() { return get(_size-1); }
 		void pop_back() { get(--_size).~T(); }
