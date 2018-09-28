@@ -1,5 +1,4 @@
-* move main scope into Task
-* move scope ptr into Task
+* move root scope/scope into Task
 * move stack into Task
 * move _lib ptr into Task
 * add task: macro
@@ -18,9 +17,6 @@
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
-* import Ptr
-** add Slab
-*** use as source
 * eval fimps at compile time
 ** <3 times: Int>
 ** begin/end_scope
