@@ -216,11 +216,12 @@ namespace snabl {
 			};
 
 			static const Type type;
-			Int start_pc, end_pc;
+			PC start_pc;
+			Int end_pc;
 			Target::Opts opts;
 			
-			Lambda(Int start_pc):
-				start_pc(start_pc), end_pc(-1), opts(Target::Opts::None) { }
+			Lambda():
+				start_pc(nullptr), end_pc(-1), opts(Target::Opts::None) { }
 		};
 
 		struct Let {

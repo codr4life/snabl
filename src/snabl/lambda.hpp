@@ -11,7 +11,7 @@ namespace snabl {
 		static void call(const LambdaPtr &l, Env &env, Pos pos, bool now);
 
 		Lambda(const ScopePtr &parent_scope,
-					 Int start_pc, Int end_pc,
+					 PC start_pc, Int end_pc,
 					 Opts opts): Target(parent_scope, start_pc, end_pc, opts) { }
 
 		string target_id() const override { return fmt("Lambda(%0)", {this}); }		
