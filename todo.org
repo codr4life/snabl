@@ -1,5 +1,3 @@
-* convert starray size to fn
-** compare
 * move main scope into Task
 * move scope ptr into Task
 * move stack into Task
