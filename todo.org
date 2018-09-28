@@ -1,3 +1,7 @@
+* switch Target.start_pc to OpImp
+* switch op.next
+* switch task pc
+** compare
 * move main scope into Task
 * move scope ptr into Task
 * move stack into Task

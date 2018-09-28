@@ -8,12 +8,12 @@ namespace snabl {
 		if (now) {
 			const auto prev_pc(env.pc());
 			env.begin_call(l, pos, nullptr);
-			env.jump(l->_start_pc);
+			env.jump(&l->_start_pc);
 			env.run();
 			env.jump(prev_pc);
 		} else {
 			env.begin_call(l, pos, env.pc());
-			env.jump(l->_start_pc);
+			env.jump(&l->_start_pc);
 		}
 	}
 

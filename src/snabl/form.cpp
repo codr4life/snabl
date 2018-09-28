@@ -183,7 +183,7 @@ namespace snabl {
 			}
 			
 			env.emit(ops::Return::type, f.pos);
-			start.start_pc = start_op.next;
+			start.start_pc = *start_op.next;
 			start.end_pc = env.ops().size();
 		}
 		

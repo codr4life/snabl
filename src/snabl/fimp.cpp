@@ -49,7 +49,7 @@ namespace snabl {
 		}
 		
 		env.emit(ops::Return::type, pos);
-		fi._start_pc = start_op.next;
+		fi._start_pc = *start_op.next;
 		fi._end_pc = env.ops().size();
 		return true;
 	}
@@ -68,7 +68,7 @@ namespace snabl {
 			if (fi._parent_scope) { env.begin_scope(fi._parent_scope); }
 			env.begin_split(fn.nargs);		
 			env.begin_call(fip, pos, env.pc());
-			env.jump(fi._start_pc);
+			env.jump(&fi._start_pc);
 		}
 	}
 

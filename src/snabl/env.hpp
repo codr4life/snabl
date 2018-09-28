@@ -209,7 +209,7 @@ namespace snabl {
 			s.restore_splits(*this);
 			
 			if (t.opts() & Target::Opts::Vars) { _scope->clear_vars(); }
-			jump(t.start_pc());
+			jump(&t.start_pc());
 		}
 
 		void _return(Pos pos) {
