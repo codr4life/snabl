@@ -1,1 +1,0 @@
-say, bench 100000 {fib 20; drop!}; ms
