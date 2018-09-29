@@ -29,6 +29,8 @@
 * add task: macro
 ** run ops in separate task
 ** capture parent scope like fimp/lambda
+* add Ref support
+** add bench/fib3.sl
 * add stack bench
 ** push/pop range of ints
 ** wrap each int in nested stack/list
