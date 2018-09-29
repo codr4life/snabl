@@ -21,14 +21,13 @@ namespace snabl {
 		const FormType<Query> Query::type("query");
 		const FormType<Semi> Semi::type("semi");
 		const FormType<Sexpr> Sexpr::type("sexpr");
+		const FormType<Split> Split::type("split");
 		const FormType<Stack> Stack::type("stack");
 
-		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
 
-		void Comma::dump(ostream &out) const {
-			out << ", ";
+		void Body::dump(ostream &out) const {
 			char sep(0);
-
+			
 			for (auto &f: body) {
 				if (sep) { out << sep; }
 				f.imp->dump(out);
@@ -36,11 +35,17 @@ namespace snabl {
 			}
 		}		
 
+		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
+
+		void Comma::dump(ostream &out) const {
+			out << ", ";
+			Body::dump(out);
+		}		
+
 		void Comma::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
-			auto &sexpr((*in++).as<Comma>());
-			env.compile(sexpr.body);
+			env.compile((in++)->as<Comma>().body);
 		}
 
 		Fimp::Fimp(Sym id,
@@ -57,7 +62,7 @@ namespace snabl {
 		void Fimp::dump(ostream &out) const {
 			out << id << '<';
 			char sep(0);
-
+			
 			for (auto &id: type_ids) {
 				if (sep) { out << sep; }
 				out << id.name();
@@ -146,14 +151,7 @@ namespace snabl {
 
 		void Lambda::dump(ostream &out) const {
 			out << '{';
-			char sep(0);
-
-			for (auto &f: body) {
-				if (sep) { out << sep; }
-				f.imp->dump(out);
-				sep = ' ';
-			}
-			
+			Body::dump(out);
 			out << '}';
 		}		
 
@@ -241,13 +239,7 @@ namespace snabl {
 
 		void Semi::dump(ostream &out) const {
 			out << "; ";
-			char sep(0);
-
-			for (auto &f: body) {
-				if (sep) { out << sep; }
-				f.imp->dump(out);
-				sep = ' ';
-			}
+			Body::dump(out);
 		}		
 
 		void Semi::compile(Forms::const_iterator &in, Forms::const_iterator end,
@@ -263,44 +255,38 @@ namespace snabl {
 
 		void Sexpr::dump(ostream &out) const {
 			out << '(';
-			char sep(0);
-
-			for (auto &f: body) {
-				if (sep) { out << sep; }
-				f.imp->dump(out);
-				sep = ' ';
-			}
-			
+			Body::dump(out);
 			out << ')';
 		}		
 
 		void Sexpr::compile(Forms::const_iterator &in, Forms::const_iterator end,
 												FuncPtr &func, FimpPtr &fimp,
 												Env &env) const {
-			auto &f(*in++);
-			auto &b(f.as<Sexpr>().body);
-
-			bool split(!b.empty() &&
-								 &b.front().type == &forms::Id::type &&
-								 b.front().as<forms::Id>().id == env.sym("|"));
-
-			if (split) { env.emit(ops::Split::type, f.pos); }
-			env.compile(split ? b.begin()+1 : b.begin(), b.end());
-			if (split) { env.emit(ops::SplitEnd::type, f.pos); }
+			env.compile((in++)->as<Sexpr>().body);
 		}
 		
+		FormImp *Split::clone() const { return new Split(body.begin(), body.end()); }
+
+		void Split::dump(ostream &out) const {
+			out << '|';
+			Body::dump(out);
+		}		
+
+		void Split::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &f(*in++);
+			auto &sf(f.as<Split>());
+			env.emit(ops::Split::type, f.pos, sf.offs);
+			env.compile(sf.body);
+			env.emit(ops::SplitEnd::type, f.pos);
+		}
+
 		FormImp *Stack::clone() const { return new Stack(body.begin(), body.end()); }
 
 		void Stack::dump(ostream &out) const {
 			out << '[';
-			char sep(0);
-
-			for (auto &f: body) {
-				if (sep) { out << sep; }
-				f.imp->dump(out);
-				sep = ' ';
-			}
-			
+			Body::dump(out);
 			out << ']';
 		}	
 

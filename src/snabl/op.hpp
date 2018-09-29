@@ -308,6 +308,8 @@ namespace snabl {
 			};
 
 			static const Type type;
+			const Int offs;
+			Split(Int offs=0): offs(offs) { }
 		};
 
 		struct SplitEnd {

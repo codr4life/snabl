@@ -35,6 +35,9 @@ namespace snabl {
 			case ';':
 				_pos.col++;
 				return parse_body<forms::Semi>(in, end, out);
+			case '|':
+				_pos.col++;
+				return parse_body<forms::Split>(in, end, out);
 			case '?': {
 				if (out.empty()) { throw CompileError(start_pos, "Nothing to query"); }
 				auto form(out.back());

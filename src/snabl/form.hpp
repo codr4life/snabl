@@ -69,6 +69,7 @@ namespace snabl {
 			const Forms body;
 			Body(Forms::const_iterator begin, Forms::const_iterator end):
 				body(begin, end) { }
+			void dump(ostream &out) const override;
 		};
 
 		struct Comma: public Body {			
@@ -180,6 +181,22 @@ namespace snabl {
 			static const FormType<Sexpr> type;
 
 			Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Split: public Body {			
+			static const FormType<Split> type;
+			Int offs=0;
+			
+			Split(Forms::const_iterator begin, Forms::const_iterator end):
 				Body(begin, end) { }
 			
 			FormImp *clone() const override;

@@ -40,7 +40,7 @@ namespace snabl {
 				env.jump(op.next);
 				env.pop().call(op.pos, false);
 			};
-		};
+		}
 
 		OpImp DDrop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -52,7 +52,7 @@ namespace snabl {
 				env._stack.pop_back();
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Drop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -65,7 +65,7 @@ namespace snabl {
 				env._stack.pop_back();
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Dup::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -76,7 +76,7 @@ namespace snabl {
 				env.push(env._stack.back());
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Else::Type::make_imp(Env &env, Op &op) const {
 			const auto &skip_pc(op.as<ops::Else>().skip_pc);
@@ -96,7 +96,7 @@ namespace snabl {
 
 				env.pop();
 			};
-		};
+		}
 
 		void Eqval::Type::dump_data(const Eqval &op, ostream &out) const {
 			if (op.rhs) {
@@ -118,7 +118,7 @@ namespace snabl {
 				env.push(env.bool_type, lhs.eqval(rhs));
 				env.jump(op.next);
 			};
-		};
+		}
 		
 		void Fimp::Type::dump_data(const Fimp &op, ostream &out) const {
 			out << ' ' << op.ptr->id;
@@ -134,7 +134,7 @@ namespace snabl {
 				
 				env.jump(fimp._end_pc);
 			};
-		};
+		}
 		
 		Funcall::Funcall(const FuncPtr &func): func(func) { }
 		Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
@@ -174,7 +174,7 @@ namespace snabl {
 				env.jump(op.next);
 				snabl::Fimp::call(*fimp, op.pos);
 			};
-		};
+		}
 
 		OpImp Get::Type::make_imp(Env &env, Op &op) const {
 			const auto &id(op.as<ops::Get>().id);
@@ -185,7 +185,7 @@ namespace snabl {
 				env.push(*v);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		void Isa::Type::dump_data(const Isa &op, ostream &out) const {
 			out << ' ' << op.rhs->id;
@@ -204,12 +204,12 @@ namespace snabl {
 				env.push(env.bool_type, ok);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Jump::Type::make_imp(Env &env, Op &op) const {
 			const auto &end_pc(op.as<ops::Jump>().end_pc);
 			return [&env, &end_pc]() { env.jump(end_pc); };
-		};
+		}
 
 		OpImp JumpIf::Type::make_imp(Env &env, Op &op) const {
 			auto &o(op.as<ops::JumpIf>());
@@ -221,7 +221,7 @@ namespace snabl {
 					env.jump(op.next);
 				}
 			};
-		};
+		}
 
 		OpImp Lambda::Type::make_imp(Env &env, Op &op) const {			
 			auto &o(op.as<ops::Lambda>());
@@ -236,7 +236,7 @@ namespace snabl {
 																						o.opts));
 				env.jump(o.end_pc);
 			};
-		};
+		}
 
 		OpImp Let::Type::make_imp(Env &env, Op &op) const {
 			const auto &id(op.as<ops::Let>().id);
@@ -251,7 +251,7 @@ namespace snabl {
 				env._stack.pop_back();
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Nop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() { env.jump(op.next); };
@@ -269,15 +269,15 @@ namespace snabl {
 				env.push(v);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Recall::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() { env.recall(op.pos); };
-		};
+		}
 
 		OpImp Return::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() { env._return(op.pos); };
-		};
+		}
 
 		OpImp Rot::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -290,7 +290,7 @@ namespace snabl {
 				swap(env._stack[i], env._stack[i-1]);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp RSwap::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -302,7 +302,7 @@ namespace snabl {
 				swap(env._stack[i], env._stack[i-2]);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp SDrop::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -315,21 +315,23 @@ namespace snabl {
 				env._stack.pop_back();
 				env.jump(op.next);
 			};
-		};
+		}
 		
 		OpImp Split::Type::make_imp(Env &env, Op &op) const {
-			return [&env, &op]() {
-				env.begin_split();
+			const auto offs(op.as<Split>().offs);
+			
+			return [&env, &op, offs]() {
+				env.begin_split(offs);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp SplitEnd::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.end_split();
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Stack::Type::make_imp(Env &env, Op &op) const {
 			const auto end_split(op.as<Stack>().end_split);
@@ -348,7 +350,7 @@ namespace snabl {
 				env.push(env.stack_type, s);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Swap::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
@@ -360,7 +362,7 @@ namespace snabl {
 				swap(env._stack[i], env._stack[i-1]);
 				env.jump(op.next);
 			};
-		};
+		}
 		
 		OpImp Times::Type::make_imp(Env &env, Op &op) const {
 			auto &o(op.as<ops::Times>());
@@ -369,7 +371,7 @@ namespace snabl {
 				env.let_reg(o.i_reg, env.pop().as<Int>());
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp Try::Type::make_imp(Env &env, Op &op) const {			
 			auto &o(op.as<ops::Try>());
@@ -379,7 +381,7 @@ namespace snabl {
 				env.begin_try(o);
 				env.jump(op.next);
 			};
-		};
+		}
 
 		OpImp TryEnd::Type::make_imp(Env &env, Op &op) const {
 			auto &o(op.as<ops::TryEnd>());
@@ -389,6 +391,6 @@ namespace snabl {
 				env.end_try();
 				env.jump(op.next);
 			};
-		};
+		}
 	}
 }
