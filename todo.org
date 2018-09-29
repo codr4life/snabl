@@ -1,3 +1,11 @@
+* explicit scopes
+** add Scope/ScopeEnd ops
+** add lambda: macro to create lambda from arbitrary form
+** rename Lambda form to Scope
+** drop scope magic from Lambda/Fimp
+*** Add Scope opt
+**** set if first op is Scope
+**** step pc on recall if set
 * add bench: macro
 ** replaces fn
 ** use Times
