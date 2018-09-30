@@ -119,21 +119,6 @@ namespace snabl {
 									 Env &env) const override;
 		};
 
-		struct Lambda: public Body {			
-			static const FormType<Lambda> type;
-
-			Lambda(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
-
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) const override;
-		};
-
 		struct Lit: public FormImp {			
 			static const FormType<Lit> type;
 			const Box val;
@@ -153,6 +138,35 @@ namespace snabl {
 			const Form form;
 			
 			Query(const Form &form);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Ref: public FormImp {			
+			static const FormType<Ref> type;
+			const Form form;
+			
+			Ref(const Form &form);
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct Scope: public Body {			
+			static const FormType<Scope> type;
+
+			Scope(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
 			FormImp *clone() const override;
 			void dump(ostream &out) const override;
 

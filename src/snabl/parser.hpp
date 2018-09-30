@@ -15,6 +15,7 @@ namespace snabl {
 		Parser(Env &env): env(env), _pos(init_pos) { }
 		void parse(istream &in, Forms &out);
 		bool parse(istream &in, Pos start_pos, char end, Forms &out);		
+		bool parse_form(istream &in, char end, Forms &out);
 	private:
 		Pos _pos;
 
@@ -28,8 +29,8 @@ namespace snabl {
 		}
 
 		void parse_id(istream &in, Forms &out);
-		void parse_lambda(istream &in, Forms &out);
 		void parse_num(istream &in, Forms &out);
+		void parse_scope(istream &in, Forms &out);
 		void parse_sexpr(istream &in, Forms &out);
 		void parse_stack(istream &in, Forms &out);
 		void parse_special_char(istream &in, Forms &out);

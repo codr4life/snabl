@@ -16,9 +16,10 @@ namespace snabl {
 		const FormType<Comma> Comma::type("comma");
 		const FormType<Fimp> Fimp::type("fimp");
 		const FormType<Id> Id::type("id");
-		const FormType<Lambda> Lambda::type("lambda");
 		const FormType<Lit> Lit::type("lit");
 		const FormType<Query> Query::type("query");
+		const FormType<Ref> Ref::type("ref");
+		const FormType<Scope> Scope::type("scope");
 		const FormType<Semi> Semi::type("semi");
 		const FormType<Sexpr> Sexpr::type("sexpr");
 		const FormType<Split> Split::type("split");
@@ -146,44 +147,6 @@ namespace snabl {
 				}
 			}
 		}
-
-		FormImp *Lambda::clone() const { return new Lambda(body.begin(), body.end()); }
-
-		void Lambda::dump(ostream &out) const {
-			out << '{';
-			Body::dump(out);
-			out << '}';
-		}		
-
-		void Lambda::compile(Forms::const_iterator &in,
-												 Forms::const_iterator end,
-												 FuncPtr &func, FimpPtr &fimp,
-												 Env &env) const {
-			auto &f(*in++);
-			auto &l(f.as<Lambda>());
-			auto &start_op(env.emit(ops::Lambda::type, f.pos));
-			auto &start(start_op.as<ops::Lambda>());
-			env.begin_regs();
-			const auto offs(env.ops().size());
-			env.compile(l.body);
-			if (env.end_regs()) { start.opts |= Target::Opts::Regs; }
-			
-			for (auto bop(env.ops().begin()+offs);
-					 bop != env.ops().end();
-					 bop++) {
-				if (&bop->type == &ops::Get::type || &bop->type == &ops::Let::type) {
-					start.opts |= Target::Opts::Vars;
-				}
-				
-				if (&bop->type == &ops::Recall::type) {
-					start.opts |= Target::Opts::Recalls;
-				}
-			}
-			
-			env.emit(ops::Return::type, f.pos);
-			start.start_pc = start_op.next;
-			start.end_pc = env.ops().size();
-		}
 		
 		Lit::Lit(const Box &val): val(val) { }
 
@@ -233,6 +196,58 @@ namespace snabl {
 			}
 
 			in++;
+		}
+
+		Ref::Ref(const Form &form): form(form) {}
+		
+		FormImp *Ref::clone() const {
+			return new Ref(form);
+		}
+
+		void Ref::dump(ostream &out) const {
+			out << '&';
+			form.imp->dump(out);
+		}		
+
+		void Ref::compile(Forms::const_iterator &in, Forms::const_iterator end,
+												FuncPtr &func, FimpPtr &fimp,
+												Env &env) const {
+			auto &f(*in++);
+			auto &rf(f.as<forms::Ref>().form);
+			
+			if (&rf.type == &Scope::type || &rf.type == &Sexpr::type) {
+				const auto is_scope(&rf.type == &Scope::type);
+				auto &start_op(env.emit(ops::Lambda::type, f.pos, is_scope));
+				auto &start(start_op.as<ops::Lambda>());
+				if (is_scope) { env.begin_regs(); }
+				env.compile(rf.as<Body>().body);
+				if (is_scope) { env.end_regs(); }
+				env.emit(ops::Return::type, f.pos);
+				start.start_pc = start_op.next;
+				start.end_pc = env.ops().size();
+			} else {
+				throw CompileError(rf.pos, fmt("Invalid ref: %0", {rf.type.id}));
+			}
+		}
+		
+		FormImp *Scope::clone() const { return new Scope(body.begin(), body.end()); }
+
+		void Scope::dump(ostream &out) const {
+			out << '{';
+			Body::dump(out);
+			out << '}';
+		}		
+
+		void Scope::compile(Forms::const_iterator &in,
+												 Forms::const_iterator end,
+												 FuncPtr &func, FimpPtr &fimp,
+												 Env &env) const {
+			auto &f(*in++);
+			auto &sf(f.as<Scope>());
+			env.emit(ops::Scope::type, f.pos);
+			env.begin_regs();
+			env.compile(sf.body);
+			env.end_regs();
 		}
 
 		FormImp *Semi::clone() const { return new Semi(body.begin(), body.end()); }

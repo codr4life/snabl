@@ -65,7 +65,7 @@ namespace snabl {
 		Env():
 			_type_tag(1),
 			separators({
-					' ', '\t', '\n', ',', ';', '?', '.', '|',
+					' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			home_lib(*this),
@@ -210,18 +210,18 @@ namespace snabl {
 			s.restore_tries(*this);
 			s.restore_splits(*this);
 			
-			if (t.opts() & Target::Opts::Vars) { _scope->clear_vars(); }
-			jump(&t.start_pc());
+			if (t._parent_scope) { _scope->clear_vars(); }
+			jump(&t._start_pc);
 		}
 
 		void _return(Pos pos) {
 			auto &calls(_task->_calls);
 			if (!calls.size()) { throw RuntimeError(*this, pos, "Nothing to return from"); }
 			auto &c(calls.back());
-			const auto &t(c.target);
-			if (t->_parent_scope) { end_scope(); }
+			auto &t(*c.target);
+			if (t._parent_scope) { end_scope(); }
 			_task->_pc = c.return_pc;
-			auto fi(dynamic_cast<Fimp *>(t.get()));
+			auto fi(dynamic_cast<Fimp *>(&t));
 			if (fi && !fi->imp) { end_split(); }
 			end_call();
 		}

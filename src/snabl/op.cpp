@@ -26,6 +26,8 @@ namespace snabl {
 		const Return::Type Return::type("return");
 		const Rot::Type Rot::type("rot");
 		const RSwap::Type RSwap::type("rswap");
+		const Scope::Type Scope::type("scope");
+		const ScopeEnd::Type ScopeEnd::type("scope-end");
 		const SDrop::Type SDrop::type("sdrop");
 		const Split::Type Split::type("split");
 		const SplitEnd::Type SplitEnd::type("split-end");
@@ -125,13 +127,11 @@ namespace snabl {
 		}
 
 		OpImp Fimp::Type::make_imp(Env &env, Op &op) const {
-			auto &fimp(*op.as<ops::Fimp>().ptr);
-
-			return [&env, &fimp]() {
-				if (fimp._opts & Target::Opts::Regs || fimp._opts & Target::Opts::Vars) {
-					fimp._parent_scope = env.scope();
-				}
-				
+			auto &o(op.as<ops::Fimp>());
+			auto &fimp(*o.ptr);
+			
+			return [&env, &o, &fimp]() {
+				if (o.is_scope) { fimp._parent_scope = env.scope(); }
 				env.jump(fimp._end_pc);
 			};
 		}
@@ -228,12 +228,8 @@ namespace snabl {
 			
 			return [&env, &o]() {
 				env.push(env.lambda_type,
-								 make_shared<snabl::Lambda>((o.opts & Target::Opts::Regs ||
-																						 o.opts & Target::Opts::Vars)
-																						? env.scope()
-																						: nullptr,
-																						o.start_pc, o.end_pc,
-																						o.opts));
+								 make_shared<snabl::Lambda>(o.is_scope ? env.scope() : nullptr,
+																						o.start_pc, o.end_pc));
 				env.jump(o.end_pc);
 			};
 		}
@@ -300,6 +296,20 @@ namespace snabl {
 				
 				const auto i(env._stack.size()-1);
 				swap(env._stack[i], env._stack[i-2]);
+				env.jump(op.next);
+			};
+		}
+
+		OpImp Scope::Type::make_imp(Env &env, Op &op) const {
+			return [&env, &op]() {
+				env.begin_scope(env.scope());
+				env.jump(op.next);
+			};
+		}
+
+		OpImp ScopeEnd::Type::make_imp(Env &env, Op &op) const {
+			return [&env, &op]() {
+				env.end_scope();
 				env.jump(op.next);
 			};
 		}

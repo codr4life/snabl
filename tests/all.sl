@@ -46,8 +46,8 @@
 (test=, (|3.. [..]) 3)
 
 (42 let: foo)
-(test=  @foo 42)
-(test=, {@foo} call! 42)
+(test= @foo 42)
+(test=, {21 let: foo &{@foo}} call! 21)
 
 (test=, 1 +<_ Int> 3; 4)
 
@@ -60,6 +60,7 @@
 (test= (35 switch:, (< 7) 'foo (< 42) 'bar, drop! 'baz) 'bar) 
 
 (test=, 2 3 times: ++ 5)
+(test=, &(1 + 2) call! 3)
 
 func: double<T> (* 2)
 (test=, 21 double; 42)

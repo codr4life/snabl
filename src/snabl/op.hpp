@@ -138,8 +138,9 @@ namespace snabl {
 
 			static const Type type;
 			const FimpPtr ptr;
+			const bool is_scope;
 			
-			Fimp(const FimpPtr &ptr): ptr(ptr) { }
+			Fimp(const FimpPtr &ptr, bool is_scope): ptr(ptr), is_scope(is_scope) { }
 		};
 
 		struct Funcall {
@@ -214,11 +215,11 @@ namespace snabl {
 			};
 
 			static const Type type;
+			const bool is_scope;
 			OpImp start_pc;
 			Int end_pc;
-			Target::Opts opts;
 			
-			Lambda(): end_pc(-1), opts(Target::Opts::None) { }
+			Lambda(bool is_scope): is_scope(is_scope), end_pc(-1) { }
 		};
 
 		struct Let {
@@ -286,6 +287,24 @@ namespace snabl {
 		struct RSwap {
 			struct Type: public OpType<RSwap> {
 				Type(const string &id): OpType<RSwap>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+		};
+
+		struct Scope {
+			struct Type: public OpType<Scope> {
+				Type(const string &id): OpType<Scope>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+			};
+
+		struct ScopeEnd {
+			struct Type: public OpType<ScopeEnd> {
+				Type(const string &id): OpType<ScopeEnd>(id) { }
 				OpImp make_imp(Env &env, Op &op) const override;
 			};
 

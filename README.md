@@ -54,14 +54,14 @@ nil T?
 Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci, `recall!` jumps to the start of the current function or lambda.
 
 ```
-func: my-fib<Int Int Int> (
+func: my-fib<Int Int Int> {
   let: (n a b)
 
   @n switch:,
     0? @a
     1? @b,
     --; @b dup! @a +; recall!
-)
+}
 ```
 
 The same algorithm may be implemented entirely without variables by manipulating the stack directly.

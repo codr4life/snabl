@@ -11,39 +11,56 @@ namespace snabl {
 	}
 
 	bool Parser::parse(istream &in, Pos start_pos, char end, Forms &out) {
-		_pos = start_pos;
+		while (!in.eof()) {
+			if (parse_form(in, end, out)) { return true; }
+		}
+
+		return false;
+	}
+	
+	bool Parser::parse_form(istream &in, char end, Forms &out) {
 		char c;
+		if (!in.get(c)) { return false; }
 		
-		while (in.get(c)) {
-			if (c == end) {
-				_pos.col++;
-				return true;
-			}
+		if (c == end) {
+			_pos.col++;
+			return true;
+		}
 			
-			switch(c) {
-			case ' ':
-			case '\t':
+		switch(c) {
+		case ' ':
+		case '\t':
+			_pos.col++;
+			break;	
+		case '\n':
+			_pos.row++;
+			_pos.col = init_pos.col;
+			break;
+		case ',':
+			_pos.col++;
+			return parse_body<forms::Comma>(in, end, out);
+		case ';':
+			_pos.col++;
+			return parse_body<forms::Semi>(in, end, out);
+		case '|':
+			_pos.col++;
+			return parse_body<forms::Split>(in, end, out);
+		case '?': {
+			if (out.empty()) { throw CompileError(_pos, "Nothing to query"); }
+			auto form(out.back());
+			out.pop_back();
+			out.emplace_back(forms::Query::type, _pos, form);
 				_pos.col++;
-				break;	
-			case '\n':
-				_pos.row++;
-				_pos.col = init_pos.col;
 				break;
-			case ',':
-				_pos.col++;
-				return parse_body<forms::Comma>(in, end, out);
-			case ';':
-				_pos.col++;
-				return parse_body<forms::Semi>(in, end, out);
-			case '|':
-				_pos.col++;
-				return parse_body<forms::Split>(in, end, out);
-			case '?': {
-				if (out.empty()) { throw CompileError(start_pos, "Nothing to query"); }
+			}
+			case '&': {
+				auto start(_pos);
+				_pos.col++;				
+				parse_form(in, end, out);
+				if (out.empty()) { throw CompileError(start, "Nothing to ref"); }
 				auto form(out.back());
 				out.pop_back();
-				out.emplace_back(forms::Query::type, _pos, form);
-				_pos.col++;
+				out.emplace_back(forms::Ref::type, start, form);
 				break;
 			}
 			case '(':
@@ -52,7 +69,7 @@ namespace snabl {
 				break;
 			case '{':
 				_pos.col++;
-				parse_lambda(in, out);
+				parse_scope(in, out);
 				break;
 			case '[':
 				_pos.col++;
@@ -106,8 +123,7 @@ namespace snabl {
 					throw Error("Invalid input");
 				}
 			}
-		}
-
+	
 		return false;
 	}
 	
@@ -151,11 +167,11 @@ namespace snabl {
 		}
 	}
 
-	void Parser::parse_lambda(istream &in, Forms &out) {
+	void Parser::parse_scope(istream &in, Forms &out) {
 		const auto start_pos(_pos);
 
-		if (!parse_body<forms::Lambda>(in, '}', out)) {
-			throw SyntaxError(start_pos, "Open lambda");
+		if (!parse_body<forms::Scope>(in, '}', out)) {
+			throw SyntaxError(start_pos, "Open scope");
 		}
 	}
 

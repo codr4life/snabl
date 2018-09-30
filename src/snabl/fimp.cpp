@@ -32,20 +32,16 @@ namespace snabl {
 		auto &fi(*fip);
 		if (fi._start_pc) { return false; }
 		auto &env(fi.func->lib.env);
-		auto &start_op(env.emit(ops::Fimp::type, pos, fip));
-		env.begin_regs();
-		const auto offs(env.ops().size());
-		env.compile(*fi.form);
-		if (env.end_regs()) { fi._opts |= Opts::Regs; }
+		bool is_scope(&fi.form->type == &forms::Scope::type);
+		auto &start_op(env.emit(ops::Fimp::type, pos, fip, is_scope));			
 
-		for (auto op(env.ops().begin()+offs);
-				 op != env.ops().end();
-				 op++) {
-			if (&op->type == &ops::Get::type || &op->type == &ops::Let::type) {
-				fi._opts |= Opts::Vars;
-			}
-
-			if (&op->type == &ops::Recall::type) { fi._opts |= Opts::Recalls; }
+		if (is_scope) {
+			env.begin_regs();
+			auto &b(fi.form->as<forms::Scope>().body);
+			env.compile(b);
+			env.end_regs();
+		} else {
+			env.compile(*fi.form);
 		}
 		
 		env.emit(ops::Return::type, pos);
