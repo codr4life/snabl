@@ -34,6 +34,7 @@ Snabl uses sigils to support local reasoning. Types start with uppcercase letter
 
 ```
 {41 let: foo @foo ++}
+
 [42]
 ```
 
