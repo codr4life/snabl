@@ -30,7 +30,7 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. ```;`
 ```
 
 #### Namespacing
-Snabl uses sigils to support local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix depending on arity. Apart from literals, anything else is most likely a function.
+Snabl uses sigils to simplify local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix depending on arity. Apart from literals; anything else is either a constant such as `t`, `f` and `nil`; or a function.
 
 ```
 {41 let: foo @foo ++}
