@@ -24,24 +24,24 @@ namespace snabl {
 	}
 
 	void Env::run() {
-	enter:		
+	start:		
 		try {
 			while (_task->_pc) { (*_task->_pc)(); }
 		} catch (const UserError &e) {
-			if (!_task->_tries.size()) { throw e; }
-			auto t(_task->_tries.back());
-			auto &s(get_reg<State>(t->state_reg));			
+			if (_task->_tries.empty()) { throw e; }
+			auto &t(*_task->_tries.back());
+			auto &s(get_reg<State>(t.state_reg));			
 			s.restore_lib(*this);
 			s.restore_scope(*this);
 			s.restore_calls(*this);
 			s.restore_stack(*this);
 			s.restore_splits(*this);
-			clear_reg(t->state_reg);
+			clear_reg(t.state_reg);
 			end_try();
 			
 			push(error_type, make_shared<UserError>(e));
-			jump(t->handler_pc);
-			goto enter;
+			jump(t.handler_pc);
+			goto start;
 		}
 	}
 	

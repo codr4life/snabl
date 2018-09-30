@@ -6,6 +6,7 @@ namespace snabl {
 	struct Sarray {
 		Sarray(): _size(0) { }
 		void push_back(T val) { _items[_size++] = val; }
+		bool empty() const { return !_size; }
 		Int size() const { return _size; }
 		T back() const { return _items[_size-1]; }
 		void pop_back() { _size--; }
