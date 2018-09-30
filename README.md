@@ -39,7 +39,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 #### Typing
-Snabl supports strong, first class Types. The root type ```T``` may be used to allow any type except ```Nil```.
+Snabl supports strong, first class Types. The root type ```T``` may be used to indicate any type except ```Nil```.
 
 ```
 42 Int?
