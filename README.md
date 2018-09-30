@@ -29,6 +29,14 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. ```;`
 [42 42]
 ```
 
+#### Namespacing
+Snabl uses sigils to support local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix depending on arity. Apart from literals, anything else is most likely a function.
+
+```
+{41 let: foo @foo ++}
+[42]
+```
+
 #### Typing
 Snabl supports strong, first class Types. The root type ```T``` may be used to allow any type except ```Nil```.
 
