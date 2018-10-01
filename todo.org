@@ -29,4 +29,3 @@
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 
-* convert _stack to Starray<Box, MaxStack>
