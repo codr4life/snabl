@@ -8,7 +8,7 @@
 
 namespace snabl {
 	struct Lambda: public Target {
-		static void call(const LambdaPtr &l, Env &env, Pos pos, bool now);
+		static void call(const LambdaPtr &l, Env &env, Pos pos);
 		
 		Lambda(const ScopePtr &parent_scope, const OpImp &start_pc, Int end_pc):
 			Target(parent_scope, start_pc, end_pc) { }

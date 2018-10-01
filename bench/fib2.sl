@@ -6,4 +6,4 @@ func: tail-fib<Int Int Int> (
 		--; rswap! dup! rot! +; recall!
 )
 
-say, bench 10000 &(tail-fib 20 0 1; drop!); ms
+say, (10000 bench:, tail-fib 20 0 1; drop!) ms

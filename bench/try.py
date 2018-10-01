@@ -1,9 +1,10 @@
 from bench import bench
 
 def test():
-    try:
-        raise 42
-    except Exception as e:
-        pass
+    for _ in range(10):
+        try:
+            raise 42
+        except Exception as e:
+            pass
 
-print(int(bench(100000, 'test', '()')))
+print(int(bench(10000, 'test', '()')))

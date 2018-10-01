@@ -10,7 +10,7 @@ namespace snabl {
 	public:
 		IterType(Lib &lib, Sym id);
 		bool as_bool(const Box &val) const override;
-		void call(const Box &val, Pos pos, bool now) const override;
+		void call(const Box &val, Pos pos) const override;
 		IterPtr iter(const Box &val) const override;
 		void dump(const Box &val, ostream &out) const override;
 	};

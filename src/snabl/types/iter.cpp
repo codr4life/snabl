@@ -10,7 +10,7 @@ namespace snabl {
 		return !val.as<IterPtr>()->is_done();
 	}
 
-	void IterType::call(const Box &val, Pos pos, bool now) const {
+	void IterType::call(const Box &val, Pos pos) const {
 		Env &env(val.type()->lib.env);
 		const auto v(val.as<IterPtr>()->call(env));
 		if (v) { env.push(*v); } else { env.push(env.nil_type); }

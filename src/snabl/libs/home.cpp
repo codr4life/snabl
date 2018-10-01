@@ -55,6 +55,22 @@ namespace snabl {
 			add_macro(env.sym("sdrop!"), ops::SDrop::type);
 			add_macro(env.sym("swap!"), ops::Swap::type);
 
+			add_macro(env.sym("bench:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									const auto form(*in++);									
+									auto &op(env.emit(ops::Bench::type, form.pos)
+													 .as<ops::Bench>());
+									if (in == end) {
+										throw SyntaxError(form.pos, "Missing bench form");
+									}
+									env.compile(*in++);
+									env.emit(ops::Stop::type, form.pos);
+									op.end_pc = env.ops().size();
+								});	
+
 			add_macro(env.sym("try:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -370,19 +386,6 @@ namespace snabl {
 																			env.call().pos,
 																			fmt("Expected (%0), was (%1)", {y, x}));
 								 }
-							 });
-
-			add_fimp(env.sym("bench"),
-							 {Box(env.int_type), Box(env.root_type)},
-							 [&env](Fimp &fimp) {
-								 const Box target(env.pop());
-								 const Int reps(env.pop().as<Int>());
-								 Pos pos(env.call().pos);								 
-								 for (int i(0); i < reps/2; i++) { target.call(pos, true); }
-								 
-								 Timer t;
-								 for (Int i(0); i < reps; i++) { target.call(pos, true); }
-								 env.push(env.time_type, t.ns());
 							 });
 
 			add_fimp(env.sym("fib"),

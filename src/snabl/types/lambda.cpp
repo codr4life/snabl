@@ -10,8 +10,8 @@
 namespace snabl {
 	LambdaType::LambdaType(Lib &lib, Sym id): Type<LambdaPtr>(lib, id) { }
 
-	void LambdaType::call(const Box &val, Pos pos, bool now) const {
-		Lambda::call(val.as<LambdaPtr>(), val.type()->lib.env, pos, now);
+	void LambdaType::call(const Box &val, Pos pos) const {
+		Lambda::call(val.as<LambdaPtr>(), val.type()->lib.env, pos);
 	}
 	
 	void LambdaType::dump(const Box &val, ostream &out) const {

@@ -3,9 +3,11 @@
 #include "snabl/func.hpp"
 #include "snabl/lambda.hpp"
 #include "snabl/op.hpp"
+#include "snabl/timer.hpp"
 
 namespace snabl {
 	namespace ops {
+		const Bench::Type Bench::type("bench");
 		const Call::Type Call::type("call");
 		const DDrop::Type DDrop::type("ddrop");
 		const Drop::Type Drop::type("drop");
@@ -32,15 +34,39 @@ namespace snabl {
 		const Split::Type Split::type("split");
 		const SplitEnd::Type SplitEnd::type("split-end");
 		const Stack::Type Stack::type("stack");
+		const Stop::Type Stop::type("stop");
 		const Swap::Type Swap::type("swap");
 		const Times::Type Times::type("times");
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
 
+		OpImp Bench::Type::make_imp(Env &env, Op &op) const {
+			auto &end_pc(op.as<Bench>().end_pc);
+			
+			return [&env, &op, &end_pc]() {
+				const Int reps(env.pop().as<Int>());
+
+				for (int i(0); i < reps; i++) {
+					env.jump(op.next);
+					env.run();
+				}
+
+				Timer t;
+
+				for (int i(0); i < reps; i++) {
+					env.jump(op.next);
+					env.run();
+				}
+
+				env.push(env.time_type, t.ns());
+				env.jump(end_pc);
+			};
+		}
+
 		OpImp Call::Type::make_imp(Env &env, Op &op) const {
 			return [&env, &op]() {
 				env.jump(op.next);
-				env.pop().call(op.pos, false);
+				env.pop().call(op.pos);
 			};
 		}
 
@@ -360,6 +386,10 @@ namespace snabl {
 				env.push(env.stack_type, s);
 				env.jump(op.next);
 			};
+		}
+
+		OpImp Stop::Type::make_imp(Env &env, Op &op) const {
+			return [&env]() { env.jump(nullptr); };
 		}
 
 		OpImp Swap::Type::make_imp(Env &env, Op &op) const {

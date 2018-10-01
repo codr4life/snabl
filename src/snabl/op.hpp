@@ -69,6 +69,17 @@ namespace snabl {
 	}
 
 	namespace ops {
+		struct Bench {				
+			struct Type: public OpType<Bench> {
+				Type(const string &id): OpType<Bench>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+			Int end_pc;
+			Bench(): end_pc(-1) { }
+		};
+
 		struct Call {				
 			struct Type: public OpType<Call> {
 				Type(const string &id): OpType<Call>(id) { }
@@ -349,6 +360,15 @@ namespace snabl {
 			static const Type type;
 			const bool end_split;
 			Stack(bool end_split): end_split(end_split) { }
+		};
+
+		struct Stop {
+			struct Type: public OpType<Stop> {
+				Type(const string &id): OpType<Stop>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
 		};
 
 		struct Swap {

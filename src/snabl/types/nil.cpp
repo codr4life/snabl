@@ -11,7 +11,7 @@ namespace snabl {
 
 	bool NilType::as_bool(const Box &val) const { return false; }
 
-	void NilType::call(const Box &val, Pos pos, bool now) const { }
+	void NilType::call(const Box &val, Pos pos) const { }
 
 	void NilType::dump(const Box &val, ostream &out) const {
 		out << "nil";

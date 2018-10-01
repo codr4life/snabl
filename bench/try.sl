@@ -1,1 +1,1 @@
-say, bench 100000 &(try: drop!, throw 42); ms
+say, (10000 bench:, 10 times:, try: drop!, throw 42) ms

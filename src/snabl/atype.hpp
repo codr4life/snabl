@@ -45,7 +45,7 @@ namespace snabl {
 		virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
 		virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
 		virtual bool as_bool(const Box &val) const { return true; }
-		virtual void call(const Box &val, Pos pos, bool now) const;
+		virtual void call(const Box &val, Pos pos) const;
 
 		virtual IterPtr iter(const Box &val) const {
 			throw Error(fmt("Invalid seq: %0", {val}));
