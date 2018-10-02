@@ -72,8 +72,9 @@ func: closure<> @result
 func: early<> (1 return! 3)
 (test=, early; 1)
 
-(test= (try: (drop! 7) 42 -) 35)
-(test= (try: (catch; ++), throw 41) 42)
-(test= (try: (catch; ++), try: throw, throw 41) 42)
+(test= try: 42 nil)
+(test= try: 42 drop! 42)
+(test=, (try:, throw 41) catch; ++; 42)
+(test=, (try:, (try: throw 41) throw) catch; ++; 42)
 
 (test= (3 iter; dup! call! swap! dup! call! swap! call! +; +) 3)

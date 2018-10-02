@@ -79,15 +79,12 @@ namespace snabl {
 									const auto form(*in++);
 									auto &op(env.emit(ops::Try::type, form.pos, env.begin_reg())
 													 .as<ops::Try>());
-									if (in == end) { throw SyntaxError(form.pos, "Missing handler"); }
-									const auto &handler(*in++);
 									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos, op.state_reg);
 									env.end_reg(op.state_reg);
 									env.emit(ops::Push::type, form.pos, env.nil_type);
-									op.handler_pc = env.ops().size();
-									env.compile(handler);
+									op.end_pc = env.ops().size();
 								});
 			
 			add_macro(env.sym("let:"),

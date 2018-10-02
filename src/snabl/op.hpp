@@ -400,9 +400,9 @@ namespace snabl {
 
 			static const Type type;
 			const Int state_reg;
-			Int handler_pc;
+			Int end_pc;
 
-			Try(Int state_reg): state_reg(state_reg), handler_pc(-1) { }
+			Try(Int state_reg): state_reg(state_reg), end_pc(-1) { }
 		};
 
 		struct TryEnd {

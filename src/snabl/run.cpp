@@ -40,7 +40,7 @@ namespace snabl {
 			end_try();
 			
 			push(error_type, make_shared<UserError>(e));
-			jump(t.handler_pc);
+			jump(t.end_pc);
 			goto start;
 		}
 	}

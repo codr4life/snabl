@@ -109,10 +109,10 @@ bar nil
 [nil]
 ```
 
-Any value may be thrown. ```try:``` runs its first argument with the error or ```nil``` on the stack depending on what happened while running the second, ```catch``` may be used to retrieve the thrown value.
+Any value may be thrown. ```try:``` runs its argument and pushes an error or ```nil``` on the stack, ```catch``` may be used to retrieve the thrown value.
 
 ```
-try: (catch; ++), throw 41
+(try:, throw 41) catch; ++
 
 [42]
 ```
