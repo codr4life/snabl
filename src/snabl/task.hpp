@@ -12,17 +12,33 @@ namespace snabl {
 	using TaskPtr = shared_ptr<Task>;
 
 	struct Task {
+	private:
+		ScopePtr _scope;
+	public:
 		enum class Status {New, Running, Yielding, Done};
 		static const Int MaxCalls = 8;
 		static const Int MaxSplits = 8;
 		static const Int MaxTries = 8;
+		const ScopePtr &root_scope;
 		
-		Task(const TaskPtr &next):
+		Task(Env &env, const TaskPtr &next):
+			root_scope(begin_scope()),
 			_prev(nullptr), _next(next), _status(Status::New), _pc(nullptr) {
 			if (next) {
 				_prev = next->_prev;
 				next->_prev = this;
 			}
+		}
+
+		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
+			_scope = make_shared<Scope>(_scope, parent);
+			return _scope;
+		}
+
+		void end_scope() {
+			auto prev(_scope->prev);
+			_scope->prev = nullptr;
+			_scope = prev;
 		}
 	private:
 		Task *_prev;

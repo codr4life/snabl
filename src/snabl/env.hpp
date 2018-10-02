@@ -37,7 +37,6 @@ namespace snabl {
 		unordered_map<string, Sym> _sym_table;
 		Int _type_tag;
 		TaskPtr _task;
-		ScopePtr _scope;
 		Stack _stack;
 	public:
 		set<char> separators;
@@ -60,7 +59,6 @@ namespace snabl {
 		TypePtr<Time> time_type;
 		
 		libs::Home home_lib;
-		const ScopePtr &root_scope;
 		
 		Env():
 			_type_tag(1),
@@ -69,7 +67,6 @@ namespace snabl {
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			home_lib(*this),
-			root_scope(begin_scope()),
 			_lib(&home_lib),
 			_stack_offs(0) {
 			add_special_char('t', 8);
@@ -129,15 +126,15 @@ namespace snabl {
 		}
 
 		template <typename T>
-		T &get_reg(Int idx) { return any_cast<T &>(_scope->_regs[idx]); }
+		T &get_reg(Int idx) { return any_cast<T &>(_task->_scope->_regs[idx]); }
 
 		template <typename T>
 		const T &get_reg(Int idx) const {
-			return any_cast<const T &>(_scope->_regs[idx]);
+			return any_cast<const T &>(_task->_scope->_regs[idx]);
 		}
 
-		void let_reg(Int idx, any &&val) { _scope->_regs[idx] = move(val); }
-		void clear_reg(Int idx) const { _scope->_regs[idx].reset(); }
+		void let_reg(Int idx, any &&val) { _task->_scope->_regs[idx] = move(val); }
+		void clear_reg(Int idx) const { _task->_scope->_regs[idx].reset(); }
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
@@ -167,20 +164,15 @@ namespace snabl {
 		const Ops &ops() const { return _ops; }
 		PC pc() const { return _task->_pc; }
 		
-		TaskPtr start_task() { return make_shared<Task>(_task); }
+		TaskPtr start_task() { return make_shared<Task>(*this, _task); }
 		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-			_scope = make_shared<Scope>(_scope, parent);
-			return _scope;
+			return _task->begin_scope(parent);
 		}
 
-		const ScopePtr &scope() const { return _scope; }
+		const ScopePtr &scope() const { return _task->_scope; }
 
-		void end_scope() {
-			auto prev(_scope->prev);
-			_scope->prev = nullptr;
-			_scope = prev;
-		}
+		void end_scope() { _task->end_scope(); }
 
 		void jump(const OpImp &pc) { _task->_pc = pc ? &pc : nullptr; }
 
@@ -210,7 +202,7 @@ namespace snabl {
 			s.restore_tries(*this);
 			s.restore_splits(*this);
 			
-			if (t._parent_scope) { _scope->clear_vars(); }
+			if (t._parent_scope) { _task->_scope->clear_vars(); }
 			jump(&t._start_pc);
 		}
 

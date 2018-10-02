@@ -1,4 +1,3 @@
-* move root scope/scope into Task
 * move stack into Task
 * move _lib ptr into Task
 * add task: macro

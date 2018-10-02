@@ -4,7 +4,7 @@
 namespace snabl {
 	State::State(const Env &env):
 		_lib(*env._lib),
-		_scope(env._scope),
+		_scope(env._task->_scope),
 		_ncalls(env._task->_calls.size()),
 		_ntries(env._task->_tries.size()),
 		_nstack(env._stack.size()),
@@ -12,7 +12,7 @@ namespace snabl {
 
 	void State::restore_lib(Env &env) const { env._lib = &_lib; }
 
-	void State::restore_scope(Env &env) const { env._scope = _scope; }
+	void State::restore_scope(Env &env) const { env._task->_scope = _scope; }
 
 	void State::restore_calls(Env &env) const {
 		auto &calls(env._task->_calls);
