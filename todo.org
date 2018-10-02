@@ -1,6 +1,3 @@
-* add Env.empty_stack/_empty_stack
-** push on empty literal
-** replace in push func
 * move root scope/scope into Task
 * move stack into Task
 * move _lib ptr into Task

@@ -39,8 +39,17 @@ namespace snabl {
 			clear_reg(t.state_reg);
 			end_try();
 			
-			push(error_type, make_shared<UserError>(e));
-			jump(t.end_pc);
+			bool push_error = (t.end_pc < Int(_ops.size()))
+			  ? &_ops[t.end_pc].type != &ops::Drop::type
+				: true;
+			
+			if (push_error) {
+				push(error_type, make_shared<UserError>(e));
+				jump(t.end_pc);
+			} else {
+				jump(t.end_pc+1);
+			}
+			
 			goto start;
 		}
 	}
