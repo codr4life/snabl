@@ -60,7 +60,7 @@ nil T?
 ```
 
 #### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci, `recall!` jumps to the start of the current function or lambda.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci.
 
 ```
 func: my-fib<Int Int Int> {
