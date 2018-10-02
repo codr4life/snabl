@@ -47,6 +47,16 @@ namespace snabl {
 		virtual bool as_bool(const Box &val) const { return true; }
 		virtual void call(const Box &val, Pos pos) const;
 
+		virtual void push(Box &sink, const Box &val) const {
+			throw Error(fmt("Invalid sink: %0", {sink}));
+		}
+
+		virtual optional<Box> peek(const Box &source) const;
+
+		virtual void pop(Box &source) const {
+			throw Error(fmt("Invalid source: %0", {source}));			
+		}
+
 		virtual IterPtr iter(const Box &val) const {
 			throw Error(fmt("Invalid seq: %0", {val}));
 		}

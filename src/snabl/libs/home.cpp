@@ -308,6 +308,26 @@ namespace snabl {
 								 env.push(env.bool_type, env.pop().as_bool());
 							 });
 
+			add_fimp(env.sym("push"),
+							 {Box(env.sink_type), Box(env.root_type)},
+							 [&env](Fimp &fimp) {
+								 auto v(env.pop());
+								 env.pop().push(v);
+							 });
+			
+			add_fimp(env.sym("peek"),
+							 {Box(env.source_type)},
+							 [&env](Fimp &fimp) {
+								 auto v(env.pop().peek());
+								 env.push(v ? *v : Box(env.nil_type));
+							 });
+
+			add_fimp(env.sym("pop"),
+							 {Box(env.source_type)},
+							 [&env](Fimp &fimp) {
+								 env.pop().pop();
+							 });
+
 			add_fimp(env.sym("iter"),
 							 {Box(env.seq_type)},
 							 [&env](Fimp &fimp) {

@@ -11,6 +11,17 @@ namespace snabl {
 		return !val.as<StackPtr>()->empty();
 	}
 
+	void StackType::push(Box &sink, const Box &val) const {
+		sink.as<StackPtr>()->push_back(val);
+	}
+
+	optional<Box> StackType::peek(const Box &source) const {
+		auto &s(*source.as<StackPtr>());
+		return s.empty() ? make_optional(s.back()) : nullopt;
+	}
+
+	void StackType::pop(Box &source) const { source.as<StackPtr>()->pop_back(); }
+
 	IterPtr StackType::iter(const Box &val) const {
 		const StackPtr s(val.as<StackPtr>());
 		auto i(s->begin());

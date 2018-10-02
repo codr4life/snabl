@@ -6,9 +6,6 @@
 ** capture parent scope like fimp/lambda
 * add Ref support
 ** add bench/fib3.sl
-* add stack bench
-** push/pop range of ints
-** wrap each int in nested stack/list
 * eval fimps at compile time
 ** <3 times: Int>
 ** begin/end_scope
@@ -29,3 +26,7 @@
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 
+* implement push for all sinks
+** Str
+* implement peek/pop for all sources
+** Str/Iter

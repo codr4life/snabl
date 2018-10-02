@@ -49,6 +49,9 @@ namespace snabl {
 		bool as_bool() const { return _type->as_bool(*this); }
 
 		void call(Pos pos) const { _type->call(*this, pos); }
+		void push(const Box &val) { _type->push(*this, val); }
+		optional<Box> peek() const { return _type->peek(*this); }
+		void pop() { _type->pop(*this); }
 		IterPtr iter() const { return _type->iter(*this); }
 		void dump(ostream &out) const { _type->dump(*this, out); }
 		void print(ostream &out) const { _type->print(*this, out); }
