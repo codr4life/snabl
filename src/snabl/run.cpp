@@ -48,7 +48,7 @@ namespace snabl {
 	RuntimeError::RuntimeError(Env &env, Pos pos, const string &msg) {
 		stringstream buf;
 				
-		buf << env._stack << endl
+		buf << env._task->_stack << endl
 				<< "Error in row " << pos.row << ", col " << pos.col << ":\n"
 				<< msg;
 		

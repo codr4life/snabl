@@ -14,6 +14,7 @@ namespace snabl {
 	struct Task {
 	private:
 		ScopePtr _scope;
+		Stack _stack;
 	public:
 		enum class Status {New, Running, Yielding, Done};
 		static const Int MaxCalls = 8;
@@ -22,8 +23,8 @@ namespace snabl {
 		const ScopePtr &root_scope;
 		
 		Task(Env &env, const TaskPtr &next):
-			root_scope(begin_scope()),
-			_prev(nullptr), _next(next), _status(Status::New), _pc(nullptr) {
+			root_scope(begin_scope()), _prev(nullptr), _next(next), _status(Status::New),
+			_stack_offs(0), _pc(nullptr) {
 			if (next) {
 				_prev = next->_prev;
 				next->_prev = this;
@@ -43,7 +44,8 @@ namespace snabl {
 	private:
 		Task *_prev;
 		TaskPtr _next;
-		Status _status;		
+		Status _status;
+		Int _stack_offs;
 		PC _pc;
 
 		Starray<Call, MaxCalls> _calls;
@@ -51,7 +53,26 @@ namespace snabl {
 		Sarray<Int, MaxSplits> _splits;
 		
 		friend Env;
+		friend RuntimeError;
 		friend State;
+
+		friend ops::DDrop::Type;
+		friend ops::Drop::Type;
+		friend ops::Dup::Type;
+		friend ops::Eqval::Type;
+		friend ops::Fimp::Type;
+		friend ops::Funcall::Type;
+		friend ops::Isa::Type;
+		friend ops::Let::Type;
+		friend ops::Recall::Type;
+		friend ops::Return::Type;
+		friend ops::Rot::Type;
+		friend ops::RSwap::Type;
+		friend ops::SDrop::Type;
+		friend ops::Stack::Type;
+		friend ops::Swap::Type;
+		friend ops::Try::Type;
+		friend ops::TryEnd::Type;		
 	};
 }
 

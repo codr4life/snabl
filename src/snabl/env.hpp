@@ -37,7 +37,6 @@ namespace snabl {
 		unordered_map<string, Sym> _sym_table;
 		Int _type_tag;
 		TaskPtr _task;
-		Stack _stack;
 	public:
 		set<char> separators;
 
@@ -67,8 +66,7 @@ namespace snabl {
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
 			home_lib(*this),
-			_lib(&home_lib),
-			_stack_offs(0) {
+			_lib(&home_lib) {
 			add_special_char('t', 8);
 			add_special_char('n', 10);
 			add_special_char('r', 13);
@@ -222,35 +220,41 @@ namespace snabl {
 		ops::Try *current_try() { return _task->_tries.back(); }
 		void end_try() { _task->_tries.pop_back(); }
 
-		void push(const Box &val) { _stack.push_back(val); }
+		void push(const Box &val) { _task->_stack.push_back(val); }
 
 		template <typename ValT, typename... ArgsT>
 		void push(const TypePtr<ValT> &type, ArgsT &&...args) {
-			_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
+			_task->_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
 		}
 
 		Box &peek() {
-			if (Int(_stack.size()) <= _stack_offs) { throw Error("Nothing to peek"); }
-			return _stack.back();
+			if (Int(_task->_stack.size()) <= _task->_stack_offs) {
+				throw Error("Nothing to peek");
+			}
+			
+			return _task->_stack.back();
 		}
 
 		Box pop() {
-			if (Int(_stack.size()) <= _stack_offs) { throw Error("Nothing to pop"); }
-			Box v(_stack.back());
-			_stack.pop_back();
+			if (Int(_task->_stack.size()) <= _task->_stack_offs) {
+				throw Error("Nothing to pop");
+			}
+			
+			Box v(_task->_stack.back());
+			_task->_stack.pop_back();
 			return v;
 		}
 
-		const Stack &stack() { return _stack; }
+		const Stack &stack() { return _task->_stack; }
 
 		void begin_split(Int offs=0) {
-			_stack_offs = _stack.size()-offs;
-			_task->_splits.push_back(_stack_offs);
+			_task->_stack_offs = _task->_stack.size()-offs;
+			_task->_splits.push_back(_task->_stack_offs);
 		}
 
 		void end_split() {
 			_task->_splits.pop_back();
-			_stack_offs = _task->_splits.size() ? _task->_splits.back() : 0;
+			_task->_stack_offs = _task->_splits.size() ? _task->_splits.back() : 0;
 		}
 
 		template <typename... ArgsT>
@@ -272,11 +276,11 @@ namespace snabl {
 		Ops _ops;
 		
 		Lib *_lib;
-		Int _stack_offs;
 		
 		friend RuntimeError;
 		friend State;
 		friend Target;
+
 		friend ops::DDrop::Type;
 		friend ops::Drop::Type;
 		friend ops::Dup::Type;
@@ -293,7 +297,7 @@ namespace snabl {
 		friend ops::Stack::Type;
 		friend ops::Swap::Type;
 		friend ops::Try::Type;
-		friend ops::TryEnd::Type;
+		friend ops::TryEnd::Type;		
 	};
 
 	inline bool Box::isa(const ATypePtr &rhs) const {
