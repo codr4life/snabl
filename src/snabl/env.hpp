@@ -24,6 +24,7 @@
 #include "snabl/types/stack.hpp"
 #include "snabl/types/str.hpp"
 #include "snabl/types/sym.hpp"
+#include "snabl/types/task.hpp"
 #include "snabl/types/time.hpp"
 
 namespace snabl {
@@ -55,25 +56,25 @@ namespace snabl {
 		TypePtr<StackPtr> stack_type;
 		TypePtr<StrPtr> str_type;
 		TypePtr<Sym> sym_type;
+		TypePtr<TaskPtr> task_type;
 		TypePtr<Time> time_type;
 		
 		libs::Home home_lib;
 		
 		Env():
 			_type_tag(1),
+			_task(make_shared<Task>(*this, nullptr)),
 			separators({
 					' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
-			home_lib(*this),
-			_lib(&home_lib) {
+			home_lib(*this) {
 			add_special_char('t', 8);
 			add_special_char('n', 10);
 			add_special_char('r', 13);
 			add_special_char('e', 27);
 			add_special_char('s', 32);
 			begin_regs();
-			_task = start_task();
 		}
 
 		Env(const Env &) = delete;
@@ -158,11 +159,9 @@ namespace snabl {
 		void run(istream &in);
 		void run();
 
-		Lib &lib() const { return *_lib; }
+		Lib &lib() const { return *_task->_lib; }
 		const Ops &ops() const { return _ops; }
 		PC pc() const { return _task->_pc; }
-		
-		TaskPtr start_task() { return make_shared<Task>(*this, _task); }
 		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
 			return _task->begin_scope(parent);
@@ -274,9 +273,7 @@ namespace snabl {
 		map<Char, char> _char_specials;
 		vector<Int> _nregs;
 		Ops _ops;
-		
-		Lib *_lib;
-		
+				
 		friend RuntimeError;
 		friend State;
 		friend Target;
@@ -296,6 +293,7 @@ namespace snabl {
 		friend ops::SDrop::Type;
 		friend ops::Stack::Type;
 		friend ops::Swap::Type;
+		friend ops::Task::Type;
 		friend ops::Try::Type;
 		friend ops::TryEnd::Type;		
 	};

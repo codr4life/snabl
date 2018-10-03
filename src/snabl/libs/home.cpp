@@ -36,6 +36,7 @@ namespace snabl {
 					env.seq_type, env.sink_type, env.source_type});
 			
 			env.sym_type = add_type<SymType>(env.sym("Sym"), {env.root_type});
+			env.task_type = add_type<TaskType>(env.sym("Task"), {env.root_type});
 			env.time_type = add_type<TimeType>(env.sym("Time"), {env.root_type});
 			env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.root_type});
 			
@@ -71,41 +72,6 @@ namespace snabl {
 									op.end_pc = env.ops().size();
 								});	
 
-			add_macro(env.sym("try:"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									const auto form(*in++);
-									auto &op(env.emit(ops::Try::type, form.pos, env.begin_reg())
-													 .as<ops::Try>());
-									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
-									env.compile(*in++);
-									env.emit(ops::TryEnd::type, form.pos, op.state_reg);
-									env.end_reg(op.state_reg);
-									env.emit(ops::Push::type, form.pos, env.nil_type);
-									op.end_pc = env.ops().size();
-								});
-			
-			add_macro(env.sym("let:"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-									auto &p(*in++);
-
-									if (&p.type == &forms::Id::type) {
-										env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
-									} else {
-										auto &b(p.as<forms::Body>().body);
-
-										for (auto pp = b.rbegin(); pp != b.rend(); pp++) {
-											env.emit(ops::Let::type, form.pos, pp->as<forms::Id>().id);
-										}
-									}
-								});
-
 			add_macro(env.sym("if:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -120,61 +86,6 @@ namespace snabl {
 									if_skip.as<ops::Jump>().end_pc = env.ops().size();
 								});	
 
-			add_macro(env.sym("switch:"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-
-									vector<ops::Jump *> skips;
-									auto &cases((in++)->as<forms::Body>());;
-
-									for (auto f(cases.body.begin()); f != cases.body.end();) {
-										if (f+1 != cases.body.end()) {
-											env.emit(ops::Dup::type, form.pos);
-										}
-										
-										env.compile(*f++);
-
-										if (f != cases.body.end()) {
-											auto &else_op(env.emit(ops::Else::type,
-																							form.pos).as<ops::Else>());
-											env.emit(ops::Drop::type, form.pos);
-											env.compile(*f++);
-											
-											if (f != cases.body.end()) {
-												skips.push_back(&env.emit(ops::Jump::type,
-																									form.pos).as<ops::Jump>());
-											}
-
-											else_op.skip_pc = env.ops().size();
-										}
-									}
-
-									for (auto &s: skips) { s->end_pc = env.ops().size(); }
-								});	
-
-			add_macro(env.sym("times:"),
-								[](Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) {
-									auto &form(*in++);
-									const Int i_reg(env.begin_reg());
-									env.emit(ops::Times::type, form.pos, i_reg);
-									const auto start_pc(env.ops().size());
-
-									auto &jump(env.emit(ops::JumpIf::type, form.pos, [&env, i_reg]() {
-												return !env.get_reg<Int>(i_reg)--;
-											}).as<ops::JumpIf>());
-									
-									env.compile(*in++);
-									env.end_reg(i_reg);
-									env.emit(ops::Jump::type, form.pos, start_pc);
-									jump.end_pc = env.ops().size();
-								});	
-			
 			add_macro(env.sym("func:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
@@ -204,6 +115,116 @@ namespace snabl {
 									
 									auto fi = lib.add_fimp(id_form.id, args, *in++);
 									Fimp::compile(fi, form.pos);
+								});
+
+			add_macro(env.sym("let:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									auto &p(*in++);
+
+									if (&p.type == &forms::Id::type) {
+										env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
+									} else {
+										auto &b(p.as<forms::Body>().body);
+
+										for (auto pp = b.rbegin(); pp != b.rend(); pp++) {
+											env.emit(ops::Let::type, form.pos, pp->as<forms::Id>().id);
+										}
+									}
+								});
+						
+			add_macro(env.sym("switch:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+
+									vector<ops::Jump *> skips;
+									auto &cases((in++)->as<forms::Body>());;
+
+									for (auto f(cases.body.begin()); f != cases.body.end();) {
+										if (f+1 != cases.body.end()) {
+											env.emit(ops::Dup::type, form.pos);
+										}
+										
+										env.compile(*f++);
+
+										if (f != cases.body.end()) {
+											auto &else_op(env.emit(ops::Else::type,
+																						 form.pos).as<ops::Else>());
+											env.emit(ops::Drop::type, form.pos);
+											env.compile(*f++);
+											
+											if (f != cases.body.end()) {
+												skips.push_back(&env.emit(ops::Jump::type,
+																									form.pos).as<ops::Jump>());
+											}
+
+											else_op.skip_pc = env.ops().size();
+										}
+									}
+
+									for (auto &s: skips) { s->end_pc = env.ops().size(); }
+								});	
+
+			add_macro(env.sym("task:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+
+									if (in == end) {
+										throw CompileError(form.pos, "Missing task body");
+									}
+									
+									auto &op(env.emit(ops::Task::type, form.pos,
+																		&in->type == &forms::Scope::type,
+																		env.ops().size())
+													 .as<ops::Task>());
+									
+									env.compile(*in++);
+									op.end_pc = env.ops().size();
+								});	
+
+			add_macro(env.sym("times:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									auto &form(*in++);
+									const Int i_reg(env.begin_reg());
+									env.emit(ops::Times::type, form.pos, i_reg);
+									const auto start_pc(env.ops().size());
+
+									auto &jump(env.emit(ops::JumpIf::type, form.pos, [&env, i_reg]() {
+												return !env.get_reg<Int>(i_reg)--;
+											}).as<ops::JumpIf>());
+									
+									env.compile(*in++);
+									env.end_reg(i_reg);
+									env.emit(ops::Jump::type, form.pos, start_pc);
+									jump.end_pc = env.ops().size();
+								});	
+
+			add_macro(env.sym("try:"),
+								[](Forms::const_iterator &in,
+									 Forms::const_iterator end,
+									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) {
+									const auto form(*in++);
+									auto &op(env.emit(ops::Try::type, form.pos, env.begin_reg())
+													 .as<ops::Try>());
+									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
+									env.compile(*in++);
+									env.emit(ops::TryEnd::type, form.pos, op.state_reg);
+									env.end_reg(op.state_reg);
+									env.emit(ops::Push::type, form.pos, env.nil_type);
+									op.end_pc = env.ops().size();
 								});
 
 			add_fimp(env.sym("throw"),

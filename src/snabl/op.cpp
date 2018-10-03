@@ -36,6 +36,7 @@ namespace snabl {
 		const Stack::Type Stack::type("stack");
 		const Stop::Type Stop::type("stop");
 		const Swap::Type Swap::type("swap");
+		const Task::Type Task::type("task");
 		const Times::Type Times::type("times");
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
@@ -410,7 +411,21 @@ namespace snabl {
 				env.jump(op.next);
 			};
 		}
-		
+
+		OpImp Task::Type::make_imp(Env &env, Op &op) const {			
+			auto &o(op.as<ops::Task>());
+			
+			return [&env, &o]() {
+				env.push(env.task_type,
+								 make_shared<snabl::Task>(env,
+																					env._task, 
+																					&(env._ops.begin() + o.start_pc)->imp,
+																					o.is_scope ? env._task->_scope : nullptr));
+								 
+				env.jump(o.end_pc);
+			};
+		}
+
 		OpImp Times::Type::make_imp(Env &env, Op &op) const {
 			auto &o(op.as<ops::Times>());
 

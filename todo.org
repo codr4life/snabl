@@ -1,7 +1,4 @@
-* move _lib ptr into Task
-* add task: macro
-** run ops in separate task
-** capture parent scope like fimp/lambda
+* add yield! macro
 * add Ref support
 ** add bench/fib3.sl
 * eval fimps at compile time
