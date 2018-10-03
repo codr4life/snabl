@@ -50,79 +50,79 @@ namespace snabl {
 			auto form(out.back());
 			out.pop_back();
 			out.emplace_back(forms::Query::type, _pos, form);
-				_pos.col++;
-				break;
-			}
-			case '&': {
-				auto start(_pos);
-				_pos.col++;				
-				parse_form(in, end, out);
-				if (out.empty()) { throw CompileError(start, "Nothing to ref"); }
-				auto form(out.back());
-				out.pop_back();
-				out.emplace_back(forms::Ref::type, start, form);
-				break;
-			}
-			case '(':
-				_pos.col++;
-				parse_sexpr(in, out);
-				break;
-			case '{':
-				_pos.col++;
-				parse_scope(in, out);
-				break;
-			case '[':
-				_pos.col++;
-				parse_stack(in, out);
-				break;
-			case '~':
-				_pos.col++;
-				parse_special_char(in, out);
-				break;
-			case '#':
-				_pos.col++;
-				parse_char(in, out);
-				break;
-			case '\'': {
-				char nc(0);
+			_pos.col++;
+			break;
+		}
+		case '&': {
+			auto start(_pos);
+			_pos.col++;				
+			parse_form(in, end, out);
+			if (out.empty()) { throw CompileError(start, "Nothing to ref"); }
+			auto form(out.back());
+			out.pop_back();
+			out.emplace_back(forms::Ref::type, start, form);
+			break;
+		}
+		case '(':
+			_pos.col++;
+			parse_sexpr(in, out);
+			break;
+		case '{':
+			_pos.col++;
+			parse_scope(in, out);
+			break;
+		case '[':
+			_pos.col++;
+			parse_stack(in, out);
+			break;
+		case '~':
+			_pos.col++;
+			parse_special_char(in, out);
+			break;
+		case '#':
+			_pos.col++;
+			parse_char(in, out);
+			break;
+		case '\'': {
+			char nc(0);
 				
-				if (in.get(nc) && nc == '\'') {
-					_pos.col += 2;
-					parse_str(in,out);
-				} else {
-					in.clear();
-					if (nc) { in.putback(nc); }
-					in.putback(c);
-					parse_id(in, out);
-				}
-
-				break;
+			if (in.get(nc) && nc == '\'') {
+				_pos.col += 2;
+				parse_str(in,out);
+			} else {
+				in.clear();
+				if (nc) { in.putback(nc); }
+				in.putback(c);
+				parse_id(in, out);
 			}
-			default:
-				bool is_num = isdigit(c);
 
-				if (c == '-') {
-					char nc;
+			break;
+		}
+		default:
+			bool is_num = isdigit(c);
+
+			if (c == '-') {
+				char nc;
 					
-					if (in.get(nc)) {
-						in.clear();
-						in.putback(nc);
-						is_num |= isdigit(nc);
-					}
-				}
-				
-				if (is_num) {
+				if (in.get(nc)) {
 					in.clear();
-					in.putback(c);
-					parse_num(in, out);
-				} else if (isgraph(c)) {
-					in.clear();
-					in.putback(c);
-					parse_id(in, out);
-				} else {
-					throw Error("Invalid input");
+					in.putback(nc);
+					is_num |= isdigit(nc);
 				}
 			}
+				
+			if (is_num) {
+				in.clear();
+				in.putback(c);
+				parse_num(in, out);
+			} else if (isgraph(c)) {
+				in.clear();
+				in.putback(c);
+				parse_id(in, out);
+			} else {
+				throw Error("Invalid input");
+			}
+		}
 	
 		return false;
 	}
