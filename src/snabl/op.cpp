@@ -418,8 +418,7 @@ namespace snabl {
 			
 			return [&env, &o]() {
 				auto start_pc(&(env._ops.begin() + o.start_pc)->imp);
-				auto parent_scope(o.is_scope ? env._task->_scope : nullptr);
-				env.push(env.task_type, env.start_task(start_pc, parent_scope));
+				env.push(env.task_type, env.start_task(start_pc, env._task->_scope));
 				env.jump(o.end_pc);
 			};
 		}

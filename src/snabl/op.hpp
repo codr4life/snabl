@@ -387,12 +387,10 @@ namespace snabl {
 			};
 
 			static const Type type;
-			const bool is_scope;
 			const Int start_pc;
 			Int end_pc;
 
-			Task(bool is_scope, Int start_pc):
-				is_scope(is_scope), start_pc(start_pc), end_pc(-1) { }
+			Task(Int start_pc): start_pc(start_pc), end_pc(-1) { }
 		};
 
 		struct Times {

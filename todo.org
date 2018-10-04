@@ -1,5 +1,3 @@
-* add bench/task.py
-* move root scope to env
 * rewrite throw as throw! macro
 ** add Throw op
 * convert task stack to Starray
