@@ -1,3 +1,9 @@
+* make task scope optional
+** add is_scope param
+** move root_scope to env 
+** remove end_reg
+** rename begin_reg to next_reg()
+** compare bench
 * drop mixfix
 ** drop Semi
 ** drop func/fimp compile params
