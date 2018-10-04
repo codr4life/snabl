@@ -3,19 +3,6 @@
 ### Features
 The following is a list of what could be considered defining features.
 
-#### Fixation
-Snabl allows reordering functions and arguments within expressions. Expressions may be enclosed in ```()```, which evaluates the enclosed expression separately; and divided using ```,```, which evaluates the rest separately.
-
-```
-1 + 2 * 3
-
-Compile error in row 1, col 6: Extra func: *
-	 
-1 +, 2 * 3
-
-[7]
-```
-
 #### Concatenation
 Much like Forth, Snabl supports directly manipulating the parameter stack. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
 
@@ -30,7 +17,7 @@ Much like Forth, Snabl supports directly manipulating the parameter stack. ```;`
 ```
 
 #### Namespacing
-Snabl uses sigils to simplify local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix depending on arity. Apart from literals; anything else is either a constant such as `t`, `f` and `nil`; or a function.
+Snabl uses sigils to simplify local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix. Apart from literals; anything else is either a constant such as `t`, `f` and `nil`; or a function.
 
 ```
 {41 let: foo @foo ++}
