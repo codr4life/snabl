@@ -1,4 +1,11 @@
-* convert task stack to Starray
+* add include: macro
+** one arg
+** load all files into ops
+** add bench/all.sl
+* add for: loop
+** Iter ... IterNext
+** keep iter in Iter op
+** step and jump to start in IterNext
 * eval fimps at compile time
 ** <3 times: Int>
 ** begin/end_scope
@@ -7,15 +14,7 @@
 ** like let but bind at runtime
 ** add lib.consts
 ** @ sigil
-* add for: loop
-** Iter ... IterNext
-** keep iter in Iter op
-** step and jump to start in IterNext
 * add support for str special chars
-* add include: macro
-** one arg
-** load all files into ops
-** add bench/all.sl
 * add support for func/fimp refs with &
 ** add func/fimp type
 * add Ref support
