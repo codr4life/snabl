@@ -7,4 +7,4 @@ def test():
         except Exception as e:
             pass
 
-print(int(bench(10000, 'test', '()')))
+print(int(bench(10000)))

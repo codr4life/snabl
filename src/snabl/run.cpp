@@ -27,6 +27,15 @@ namespace snabl {
 	start:		
 		try {
 			while (_task->_pc) { (*_task->_pc)(); }
+
+			if (_task != main_task) {
+				_task->_status = Task::Status::Done;
+				auto next(_task->_next);
+				_task->_prev->_next = _task->_next;
+				_task->_next->_prev = _task->_prev;
+				_task = next;
+				goto start;
+			}
 		} catch (const UserError &e) {
 			if (_task->_tries.empty()) { throw e; }
 			auto &t(*_task->_tries.back());

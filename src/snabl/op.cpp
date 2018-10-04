@@ -40,6 +40,7 @@ namespace snabl {
 		const Times::Type Times::type("times");
 		const Try::Type Try::type("try");
 		const TryEnd::Type TryEnd::type("try-end");
+		const Yield::Type Yield::type("yield");
 
 		OpImp Bench::Type::make_imp(Env &env, Op &op) const {
 			auto &end_pc(op.as<Bench>().end_pc);
@@ -416,12 +417,9 @@ namespace snabl {
 			auto &o(op.as<ops::Task>());
 			
 			return [&env, &o]() {
-				env.push(env.task_type,
-								 make_shared<snabl::Task>(env,
-																					env._task, 
-																					&(env._ops.begin() + o.start_pc)->imp,
-																					o.is_scope ? env._task->_scope : nullptr));
-								 
+				auto start_pc(&(env._ops.begin() + o.start_pc)->imp);
+				auto parent_scope(o.is_scope ? env._task->_scope : nullptr);
+				env.push(env.task_type, env.start_task(start_pc, parent_scope));
 				env.jump(o.end_pc);
 			};
 		}
@@ -452,6 +450,13 @@ namespace snabl {
 				env.clear_reg(o.state_reg);
 				env.end_try();
 				env.jump(op.next);
+			};
+		}
+
+		OpImp Yield::Type::make_imp(Env &env, Op &op) const {
+			return [&env, &op]() {
+				env.jump(op.next);
+				env.yield();
 			};
 		}
 	}

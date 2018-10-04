@@ -430,6 +430,15 @@ namespace snabl {
 			const Int state_reg;
 			TryEnd(Int state_reg): state_reg(state_reg) { }
 		};
+
+		struct Yield {
+			struct Type: public OpType<Yield> {
+				Type(const string &id): OpType<Yield>(id) { }
+				OpImp make_imp(Env &env, Op &op) const override;
+			};
+
+			static const Type type;
+		};
 	}	
 }
 

@@ -55,6 +55,7 @@ namespace snabl {
 			add_macro(env.sym("rswap!"), ops::RSwap::type);
 			add_macro(env.sym("sdrop!"), ops::SDrop::type);
 			add_macro(env.sym("swap!"), ops::Swap::type);
+			add_macro(env.sym("yield!"), ops::Yield::type);
 
 			add_macro(env.sym("bench:"),
 								[](Forms::const_iterator &in,
@@ -184,10 +185,11 @@ namespace snabl {
 									
 									auto &op(env.emit(ops::Task::type, form.pos,
 																		&in->type == &forms::Scope::type,
-																		env.ops().size())
+																		env.ops().size()+1)
 													 .as<ops::Task>());
 									
 									env.compile(*in++);
+									env.emit(ops::Stop::type, form.pos);
 									op.end_pc = env.ops().size();
 								});	
 

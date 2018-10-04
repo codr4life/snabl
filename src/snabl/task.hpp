@@ -22,10 +22,7 @@ namespace snabl {
 		static const Int MaxTries = 8;
 		const ScopePtr &root_scope;
 		
-		Task(Env &env,
-				 const TaskPtr &next,
-				 PC start_pc=nullptr,
-				 const ScopePtr &parent_scope=nullptr);
+		Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
 		
 		const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
 			_scope = make_shared<Scope>(_scope, parent);
@@ -38,13 +35,12 @@ namespace snabl {
 			_scope = prev;
 		}
 	private:
-		Task *_prev;
-		TaskPtr _next;
+		TaskPtr _prev, _next;
 		Status _status;
 		Int _stack_offs;
 		Lib *_lib;
 		PC _pc;
-
+		
 		Starray<Call, MaxCalls> _calls;
 		Sarray<ops::Try *, MaxTries> _tries;
 		Sarray<Int, MaxSplits> _splits;

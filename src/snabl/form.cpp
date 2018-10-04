@@ -25,7 +25,6 @@ namespace snabl {
 		const FormType<Split> Split::type("split");
 		const FormType<Stack> Stack::type("stack");
 
-
 		void Body::dump(ostream &out) const {
 			char sep(0);
 			

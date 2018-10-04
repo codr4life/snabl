@@ -60,21 +60,45 @@ namespace snabl {
 		TypePtr<Time> time_type;
 		
 		libs::Home home_lib;
-		
+		const TaskPtr main_task;
+
 		Env():
 			_type_tag(1),
-			_task(make_shared<Task>(*this, nullptr)),
+			_task(nullptr),
 			separators({
 					' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
 						'<', '>', '(', ')', '{', '}', '[', ']'
 						}),
-			home_lib(*this) {
+			home_lib(*this),
+		  main_task((_task = start_task())) {
 			add_special_char('t', 8);
 			add_special_char('n', 10);
 			add_special_char('r', 13);
 			add_special_char('e', 27);
 			add_special_char('s', 32);
 			begin_regs();
+		}
+
+		TaskPtr start_task(PC start_pc=nullptr,
+											 const ScopePtr &parent_scope=nullptr) {
+			auto t(make_shared<Task>(*this, start_pc, parent_scope));
+
+			if (_task) {
+				t->_next = _task;
+				t->_prev = _task->_prev;
+				t->_prev->_next = t;
+				_task->_prev = t;
+			} else {
+				t->_prev = t->_next = t;
+			}
+			
+			return t;
+		}
+
+		bool yield() { 
+			if (_task->_next == _task) { return false; }
+			_task = _task->_next; 
+			return true;
 		}
 
 		Env(const Env &) = delete;
