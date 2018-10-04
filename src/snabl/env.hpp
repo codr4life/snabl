@@ -340,7 +340,7 @@ namespace snabl {
 		return add_macro(id, [&type, args...](Forms::const_iterator &in,
 																					Forms::const_iterator end,
 																					Env &env) {
-											 env.emit(type, (in++)->pos, args...);			
+											 env.emit(type, (in++)->pos, args...);
 										 });
 	}
 }
