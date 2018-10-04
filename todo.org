@@ -1,3 +1,8 @@
+* drop mixfix
+** drop Semi
+** drop func/fimp compile params
+*** emit funcall immediately
+** update README/tests/bench
 * rewrite throw as throw! macro
 ** add Throw op
 * convert task stack to Starray
