@@ -75,6 +75,22 @@ func: my-fib<Int Int Int> (
 )
 ```
 
+#### Multitasking
+Snabl supports multitasking in the form of first class green threads. By default, all code runs in the main task. New tasks may be started using ```task:```.
+
+```
+  task: (3 times:, 'ping say yield!) drop!
+  task: (3 times:, 'pong say yield!) drop!
+  3 times: yield!
+
+ping
+pong
+ping
+pong
+ping
+pong
+```
+
 #### Failure
 Snabl offers two flavors of error handling, ```Maybe``` and ```throw!```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
 

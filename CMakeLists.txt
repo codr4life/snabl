@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(snabl)
 
-set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_CXX_COMPILER clang++)
 
 add_compile_options(-std=c++17 -Wall -Werror -O2 -g)
 

@@ -7,6 +7,7 @@
 namespace snabl {
   struct SymType: Type<Sym> {
     SymType(Lib &lib, Sym id);
+    void print(const Box &val, ostream &out) const override;
     void dump(const Box &val, ostream &out) const override;
   };
 }
