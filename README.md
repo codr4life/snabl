@@ -103,7 +103,8 @@ nil bar
 Any value may be thrown. ```try:``` runs its argument and pushes an error or ```nil``` on the stack, ```catch``` may be used to retrieve the thrown value.
 
 ```
-(try:, 41 throw) catch ++
+try: (41 throw)
+catch ++
 
 [42]
 ```
