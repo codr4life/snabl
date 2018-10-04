@@ -73,7 +73,7 @@ namespace snabl {
 				'<', '>', '(', ')', '{', '}', '[', ']'
 				},
 			home_lib(*this),
-		  main_task((_task = start_task())),
+			main_task((_task = start_task())),
 			root_scope(begin_scope()) {
 				add_special_char('t', 8);
 				add_special_char('n', 10);
@@ -163,7 +163,7 @@ namespace snabl {
 		
 		template <typename ImpT, typename... ArgsT>
 		Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-		  Op *prev(_ops.empty() ? nullptr : &_ops.back());
+			Op *prev(_ops.empty() ? nullptr : &_ops.back());
 			_ops.emplace_back(*this, type, args...);
 			auto &op(_ops.back());
 			if (prev) { prev->next = op.imp; }
