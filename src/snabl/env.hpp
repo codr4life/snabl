@@ -69,19 +69,19 @@ namespace snabl {
 			_type_tag(1),
 			_task(nullptr),
 			separators {
-			  ' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
+			' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
 				'<', '>', '(', ')', '{', '}', '[', ']'
-			},
+				},
 			home_lib(*this),
 		  main_task((_task = start_task())),
 			root_scope(begin_scope()) {
-			add_special_char('t', 8);
-			add_special_char('n', 10);
-			add_special_char('r', 13);
-			add_special_char('e', 27);
-			add_special_char('s', 32);
-			begin_regs();
-		}
+				add_special_char('t', 8);
+				add_special_char('n', 10);
+				add_special_char('r', 13);
+				add_special_char('e', 27);
+				add_special_char('s', 32);
+				begin_regs();
+			}
 
 		TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
 			auto t(make_shared<Task>(*this, start_pc, parent_scope));
