@@ -33,14 +33,11 @@ namespace snabl {
 
   const array<Int, 3> version {0, 2, 1};
 
-  class Env {
-  public:
-  private:
-    list<SymImp> _syms;
-    unordered_map<string, Sym> _sym_table;
-    Int _type_tag;
-    TaskPtr _task;
-  public:
+  struct Env {
+    list<SymImp> syms;
+    unordered_map<string, Sym> sym_table;
+    Int type_tag;
+    TaskPtr task;
     set<char> separators;
 
     TraitPtr root_type, maybe_type, no_type, num_type, seq_type, sink_type, 
@@ -65,15 +62,20 @@ namespace snabl {
     const TaskPtr main_task;
     const ScopePtr &root_scope;
 
+    map<char, Char> special_chars;
+    map<Char, char> char_specials;
+    vector<Int> nregs;
+    Ops ops;
+    
     Env():
-      _type_tag(1),
-      _task(nullptr),
+      type_tag(1),
+      task(nullptr),
       separators {
       ' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
         },
       home_lib(*this),
-      main_task((_task = start_task())),
+      main_task((task = start_task())),
       root_scope(begin_scope()) {
         add_special_char('t', 8);
         add_special_char('n', 10);
@@ -86,62 +88,62 @@ namespace snabl {
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
       auto t(make_shared<Task>(*this, start_pc, parent_scope));
 
-      if (_task) {
-        t->_next = _task;
-        t->_prev = _task->_prev;
-        t->_prev->_next = t;
-        _task->_prev = t;
+      if (task) {
+        t->next = task;
+        t->prev = task->prev;
+        t->prev->next = t;
+        task->prev = t;
       } else {
-        t->_prev = t->_next = t;
+        t->prev = t->next = t;
       }
       
       return t;
     }
 
     bool yield() { 
-      if (_task->_next == _task) { return false; }
-      _task = _task->_next; 
+      if (task->next == task) { return false; }
+      task = task->next; 
       return true;
     }
 
     Env(const Env &) = delete;
     const Env &operator=(const Env &) = delete;
 
-    Int next_type_tag() { return _type_tag++; }
+    Int next_type_tag() { return type_tag++; }
 
     void add_special_char(char in, Char out) {
-      _special_chars.emplace(in, out);
-      _char_specials.emplace(out, in);
+      special_chars.emplace(in, out);
+      char_specials.emplace(out, in);
     }
 
     optional<Char> find_special_char(char in) {
-      auto found(_special_chars.find(in));
-      return (found == _special_chars.end()) ? nullopt : make_optional(found->second);
+      auto found(special_chars.find(in));
+      return (found == special_chars.end()) ? nullopt : make_optional(found->second);
     }
 
     optional<char> find_char_special(Char in) {
-      auto found(_char_specials.find(in));
-      return (found == _char_specials.end()) ? nullopt : make_optional(found->second);
+      auto found(char_specials.find(in));
+      return (found == char_specials.end()) ? nullopt : make_optional(found->second);
     }
     
     Sym sym(const string &name) {
-      const auto found(_sym_table.find(name));
-      if (found != _sym_table.end()) { return found->second; }
-      _syms.emplace_back(name);
-      const auto imp(&_syms.back());
-      return _sym_table.emplace(name, Sym(imp)).first->second;
+      const auto found(sym_table.find(name));
+      if (found != sym_table.end()) { return found->second; }
+      syms.emplace_back(name);
+      const auto imp(&syms.back());
+      return sym_table.emplace(name, Sym(imp)).first->second;
     }
 
-    void begin_regs() { _nregs.push_back(0); }
+    void begin_regs() { nregs.push_back(0); }
     
     Int end_regs() {
-      const Int n(_nregs.back());
-      _nregs.pop_back();
+      const Int n(nregs.back());
+      nregs.pop_back();
       return n;
     }
 
     Int next_reg(Pos pos) {
-      auto &n(_nregs.back());
+      auto &n(nregs.back());
 
       if (n == Scope::MaxRegs) {
         throw CompileError(pos, "No more regs, consider adding additional scopes");
@@ -151,21 +153,21 @@ namespace snabl {
     }
     
     template <typename T>
-    T &get_reg(Int idx) { return any_cast<T &>(_task->_scope->_regs[idx]); }
+    T &get_reg(Int idx) { return any_cast<T &>(task->scope->_regs[idx]); }
 
     template <typename T>
     const T &get_reg(Int idx) const {
-      return any_cast<const T &>(_task->_scope->_regs[idx]);
+      return any_cast<const T &>(task->scope->_regs[idx]);
     }
 
-    void let_reg(Int idx, any &&val) { _task->_scope->_regs[idx] = move(val); }
-    void clear_reg(Int idx) const { _task->_scope->_regs[idx].reset(); }
+    void let_reg(Int idx, any &&val) { task->scope->_regs[idx] = move(val); }
+    void clear_reg(Int idx) const { task->scope->_regs[idx].reset(); }
     
     template <typename ImpT, typename... ArgsT>
     Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-      Op *prev(_ops.empty() ? nullptr : &_ops.back());
-      _ops.emplace_back(*this, type, args...);
-      auto &op(_ops.back());
+      Op *prev(ops.empty() ? nullptr : &ops.back());
+      ops.emplace_back(*this, type, args...);
+      auto &op(ops.back());
       if (prev) { prev->next = op.imp; }
       return op;
     }
@@ -180,35 +182,34 @@ namespace snabl {
     void run(istream &in);
     void run();
 
-    Lib &lib() const { return *_task->_lib; }
-    const Ops &ops() const { return _ops; }
-    PC pc() const { return _task->_pc; }
+    Lib &lib() const { return *task->lib; }
+    PC pc() const { return task->pc; }
     
     const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-      return _task->begin_scope(parent);
+      return task->begin_scope(parent);
     }
 
-    const ScopePtr &scope() const { return _task->_scope; }
+    const ScopePtr &scope() const { return task->scope; }
 
-    void end_scope() { _task->end_scope(); }
+    void end_scope() { task->end_scope(); }
 
-    void jump(const OpImp &pc) { _task->_pc = pc ? &pc : nullptr; }
+    void jump(const OpImp &pc) { task->pc = pc ? &pc : nullptr; }
 
-    void jump(PC pc) { _task->_pc = pc; }
+    void jump(PC pc) { task->pc = pc; }
 
     void jump(Int pc) {
-      _task->_pc = (pc == Int(_ops.size())) ? nullptr : &(_ops.begin()+pc)->imp;
+      task->pc = (pc == Int(ops.size())) ? nullptr : &(ops.begin()+pc)->imp;
     }
 
     void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
-      _task->_calls.emplace_back(*this, target, pos, return_pc);
+      task->calls.emplace_back(*this, target, pos, return_pc);
     }
     
-    const Call &call() const { return _task->_calls.back(); }
-    void end_call() { _task->_calls.pop_back(); }
+    const Call &call() const { return task->calls.back(); }
+    void end_call() { task->calls.pop_back(); }
     
     void recall(Pos pos) {
-      auto &calls(_task->_calls);
+      auto &calls(task->calls);
       if (!calls.size()) { throw RuntimeError(*this, pos, "Nothing to recall"); }
 
       const auto &c(calls.back());
@@ -220,61 +221,61 @@ namespace snabl {
       s.restore_tries(*this);
       s.restore_splits(*this);
       
-      if (t._parent_scope) { _task->_scope->clear_vars(); }
+      if (t._parent_scope) { task->scope->clear_vars(); }
       jump(&t._start_pc);
     }
 
     void _return(Pos pos) {
-      auto &calls(_task->_calls);
+      auto &calls(task->calls);
       if (!calls.size()) { throw RuntimeError(*this, pos, "Nothing to return from"); }
       auto &c(calls.back());
       auto &t(*c.target);
       if (t._parent_scope) { end_scope(); }
-      _task->_pc = c.return_pc;
+      task->pc = c.return_pc;
       auto fi(dynamic_cast<Fimp *>(&t));
       if (fi && !fi->imp) { end_split(); }
       end_call();
     }
     
-    void begin_try(ops::Try &op) { _task->_tries.push_back(&op); }
-    ops::Try *current_try() { return _task->_tries.back(); }
-    void end_try() { _task->_tries.pop_back(); }
+    void begin_try(ops::Try &op) { task->tries.push_back(&op); }
+    ops::Try *current_try() { return task->tries.back(); }
+    void end_try() { task->tries.pop_back(); }
 
-    void push(const Box &val) { _task->_stack.push_back(val); }
+    void push(const Box &val) { task->stack.push_back(val); }
 
     template <typename ValT, typename... ArgsT>
     void push(const TypePtr<ValT> &type, ArgsT &&...args) {
-      _task->_stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
+      task->stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
     }
 
     Box &peek() {
-      if (Int(_task->_stack.size()) <= _task->_stack_offs) {
+      if (Int(task->stack.size()) <= task->stack_offs) {
         throw Error("Nothing to peek");
       }
       
-      return _task->_stack.back();
+      return task->stack.back();
     }
 
     Box pop() {
-      if (Int(_task->_stack.size()) <= _task->_stack_offs) {
+      if (Int(task->stack.size()) <= task->stack_offs) {
         throw Error("Nothing to pop");
       }
       
-      Box v(_task->_stack.back());
-      _task->_stack.pop_back();
+      Box v(task->stack.back());
+      task->stack.pop_back();
       return v;
     }
 
-    const Stack &stack() { return _task->_stack; }
+    const Stack &stack() { return task->stack; }
 
     void begin_split(Int offs=0) {
-      _task->_stack_offs = _task->_stack.size()-offs;
-      _task->_splits.push_back(_task->_stack_offs);
+      task->stack_offs = task->stack.size()-offs;
+      task->splits.push_back(task->stack_offs);
     }
 
     void end_split() {
-      _task->_splits.pop_back();
-      _task->_stack_offs = _task->_splits.size() ? _task->_splits.back() : 0;
+      task->splits.pop_back();
+      task->stack_offs = task->splits.size() ? task->splits.back() : 0;
     }
 
     template <typename... ArgsT>
@@ -287,36 +288,7 @@ namespace snabl {
     void warn(Pos pos, const string &msg, ArgsT &&... args) {
       cerr << fmt("Warning in row %0, col %1: ", {pos.row, pos.col})
            << fmt(msg, {args...}) << endl;
-    }
-
-  private:
-    map<char, Char> _special_chars;
-    map<Char, char> _char_specials;
-    vector<Int> _nregs;
-    Ops _ops;
-        
-    friend RuntimeError;
-    friend State;
-    friend Target;
-
-    friend ops::DDrop::Type;
-    friend ops::Drop::Type;
-    friend ops::Dup::Type;
-    friend ops::Eqval::Type;
-    friend ops::Fimp::Type;
-    friend ops::Funcall::Type;
-    friend ops::Isa::Type;
-    friend ops::Let::Type;
-    friend ops::Recall::Type;
-    friend ops::Return::Type;
-    friend ops::Rot::Type;
-    friend ops::RSwap::Type;
-    friend ops::SDrop::Type;
-    friend ops::Stack::Type;
-    friend ops::Swap::Type;
-    friend ops::Task::Type;
-    friend ops::Try::Type;
-    friend ops::TryEnd::Type;   
+    }        
   };
 
   inline bool Box::isa(const ATypePtr &rhs) const {

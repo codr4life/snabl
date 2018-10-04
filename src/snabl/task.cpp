@@ -2,10 +2,10 @@
 #include "snabl/task.hpp"
 
 namespace snabl {
-	Task::Task(Env &env, PC start_pc, const ScopePtr &parent_scope):
-		_scope(parent_scope),
-		_status(Status::New),
-		_stack_offs(0),
-		_lib(&env.home_lib),
-		_pc(start_pc) { }
+  Task::Task(Env &env, PC start_pc, const ScopePtr &parent_scope):
+    scope(parent_scope),
+    status(Status::New),
+    stack_offs(0),
+    lib(&env.home_lib),
+    pc(start_pc) { }
 }

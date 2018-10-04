@@ -5,21 +5,16 @@
 #include "snabl/stack.hpp"
 
 namespace snabl {
-	class Env;
-	
-	class RuntimeError: public Error {
-	public:
-		RuntimeError(Env &env, Pos pos, const string &msg);
-		const char *what() const noexcept override;
-	private:
-		string _what;
-	};
+  class Env;
+  
+  struct RuntimeError: Error {
+    RuntimeError(Env &env, Pos pos, const string &msg);
+  };
 
-	class UserError: public RuntimeError {
-	public:
-		const Box val;
-		UserError(Env &env, Pos pos, const Box &_val);
-	};
+  struct UserError: RuntimeError {
+    const Box val;
+    UserError(Env &env, Pos pos, const Box &_val);
+  };
 }
 
 #endif

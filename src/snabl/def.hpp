@@ -4,18 +4,17 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class Def {
-	public:
-		const Sym id;
-		virtual ~Def() { }
-	protected:
-		Def(Sym id): id(id) { }
-	};
+  struct Def {
+    const Sym id;
 
-	inline ostream &operator <<(ostream &out, const Def &x) {
-		out << x.id;
-		return out;
-	}
+    Def(Sym id): id(id) { }
+    virtual ~Def() { }
+  };
+
+  inline ostream &operator <<(ostream &out, const Def &x) {
+    out << x.id;
+    return out;
+  }
 }
 
 #endif
