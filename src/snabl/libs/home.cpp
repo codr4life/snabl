@@ -60,13 +60,12 @@ namespace snabl {
 			add_macro(env.sym("bench:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									const auto form(*in++);									
 									auto &op(env.emit(ops::Bench::type, form.pos)
 													 .as<ops::Bench>());
 									if (in == end) {
-										throw SyntaxError(form.pos, "Missing bench form");
+										throw CompileError(form.pos, "Missing bench form");
 									}
 									env.compile(*in++);
 									env.emit(ops::Stop::type, form.pos);
@@ -76,21 +75,19 @@ namespace snabl {
 			add_macro(env.sym("if:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
 									auto &else_skip(env.emit(ops::Else::type, form.pos));
-									env.compile(*in++, func, fimp);
+									env.compile(*in++);
 									auto &if_skip(env.emit(ops::Jump::type, form.pos));
 									else_skip.as<ops::Else>().skip_pc = env.ops().size();
-									env.compile(*in++, func, fimp);
+									env.compile(*in++);
 									if_skip.as<ops::Jump>().end_pc = env.ops().size();
 								});	
 
 			add_macro(env.sym("func:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &lib(env.lib());
 									const auto &form(*in++);
@@ -121,9 +118,13 @@ namespace snabl {
 			add_macro(env.sym("let:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
+
+									if (in == end) {
+										throw CompileError(form.pos, "Missing let place");
+									}
+									
 									auto &p(*in++);
 
 									if (&p.type == &forms::Id::type) {
@@ -140,12 +141,11 @@ namespace snabl {
 			add_macro(env.sym("switch:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
 
 									vector<ops::Jump *> skips;
-									auto &cases((in++)->as<forms::Body>());;
+									auto &cases((in++)->as<forms::Body>());
 
 									for (auto f(cases.body.begin()); f != cases.body.end();) {
 										if (f+1 != cases.body.end()) {
@@ -175,7 +175,6 @@ namespace snabl {
 			add_macro(env.sym("task:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
 
@@ -194,7 +193,6 @@ namespace snabl {
 			add_macro(env.sym("times:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									auto &form(*in++);
 									const Int i_reg(env.begin_reg());
@@ -214,12 +212,11 @@ namespace snabl {
 			add_macro(env.sym("try:"),
 								[](Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) {
 									const auto form(*in++);
 									auto &op(env.emit(ops::Try::type, form.pos, env.begin_reg())
 													 .as<ops::Try>());
-									if (in == end) { throw SyntaxError(form.pos, "Missing body"); }
+									if (in == end) { throw CompileError(form.pos, "Missing try body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos, op.state_reg);
 									env.end_reg(op.state_reg);

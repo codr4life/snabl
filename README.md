@@ -4,16 +4,20 @@
 The following is a list of what could be considered defining features.
 
 #### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack. ```;``` calls the current function, ```--``` in this case, before evaluating the rest separately.
+Much like Forth, Snabl supports directly manipulating the parameter stack.
 
 ```
-43 -- dup!
+1 2 3 swap! 
 
-[43 42]
+[1 3 2]
 
-43 --; dup!
+dup!
 
-[42 42]
+[1 3 2 2]
+
+drop!
+
+[1 3 2]
 ```
 
 #### Namespacing
@@ -26,7 +30,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 #### Typing
-Snabl supports strong, first class Types. The root type ```T``` may be used to indicate any type except ```Nil```.
+Snabl supports strong, first class Types. The root type ```T``` may refer to any type except ```Nil```.
 
 ```
 42 Int?
@@ -56,7 +60,7 @@ func: my-fib<Int Int Int> {
   @n switch:,
     0? @a
     1? @b,
-    --; @b dup! @a +; recall!
+    -- @b dup! @a + recall!
 }
 ```
 
@@ -67,7 +71,7 @@ func: my-fib<Int Int Int> (
   rswap! switch:,
     0? sdrop!
     1? drop!,
-    --; rswap! dup! rot! +; recall!
+    -- rswap! dup! rot! + recall!
 )
 ```
 
@@ -80,18 +84,18 @@ foo 42
 
 [42]
 
-foo nil
+nil foo
 
 [nil]
 Error in row 1, col 0:
 'Func not applicable: foo'
 
 func: bar<Maybe> _
-bar 42
+42 bar
 
 [42]
 
-bar nil
+nil bar
 
 [nil]
 ```
@@ -99,7 +103,7 @@ bar nil
 Any value may be thrown. ```try:``` runs its argument and pushes an error or ```nil``` on the stack, ```catch``` may be used to retrieve the thrown value.
 
 ```
-(try:, throw 41) catch; ++
+(try:, 41 throw) catch ++
 
 [42]
 ```
@@ -126,7 +130,7 @@ env.home.add_fimp(
     v.as<snabl::Int>() = b;
   });
 
-env.run("say, my-fib 10");
+env.run("10 my-fib say");
 ```
 
 #### Portability
@@ -141,11 +145,11 @@ $ cmake ..
 $ sudo make install
 $ snabl
 
-Snabl v0.1
+Snabl v0.2.1
 
 Press Return on empty line to eval.
 
-1 + 2
+1 2 +
  
 [3]
 ```

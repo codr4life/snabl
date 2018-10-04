@@ -24,8 +24,8 @@ namespace snabl {
 
 		const FimpPtr &get_fimp() const { return _fimps.begin()->second; }
 
-		const FimpPtr *get_best_fimp(Stack::const_iterator begin,
-																 Stack::const_iterator end) const {
+		FimpPtr *get_best_fimp(Stack::const_iterator begin,
+													 Stack::const_iterator end) const {
 			Int best_score(-1);
 			FimpPtr *best_fimp(nullptr);
 			

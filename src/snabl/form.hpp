@@ -35,7 +35,6 @@ namespace snabl {
 
 		virtual void compile(Forms::const_iterator &in,
 												 Forms::const_iterator end,
-												 FuncPtr &func, FimpPtr &fimp,
 												 Env &env) const=0;
 	};
 	
@@ -72,21 +71,6 @@ namespace snabl {
 			void dump(ostream &out) const override;
 		};
 
-		struct Comma: public Body {			
-			static const FormType<Comma> type;
-
-			Comma(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
-
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) const override;
-		};
-
 		struct Fimp: public FormImp {
 			using Ids = vector<Sym>;
 				
@@ -101,7 +85,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;			
 		};
 		
@@ -115,7 +98,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -129,7 +111,20 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
+									 Env &env) const override;
+		};
+
+		struct More: public Body {			
+			static const FormType<More> type;
+
+			More(Forms::const_iterator begin, Forms::const_iterator end):
+				Body(begin, end) { }
+			
+			FormImp *clone() const override;
+			void dump(ostream &out) const override;
+
+			void compile(Forms::const_iterator &in,
+									 Forms::const_iterator end,
 									 Env &env) const override;
 		};
 
@@ -143,7 +138,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -157,7 +151,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -172,22 +165,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
-									 Env &env) const override;
-		};
-
-		struct Semi: public Body {			
-			static const FormType<Semi> type;
-
-			Semi(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
-
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -202,7 +179,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -218,7 +194,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 
@@ -233,7 +208,6 @@ namespace snabl {
 
 			void compile(Forms::const_iterator &in,
 									 Forms::const_iterator end,
-									 FuncPtr &func, FimpPtr &fimp,
 									 Env &env) const override;
 		};
 	}

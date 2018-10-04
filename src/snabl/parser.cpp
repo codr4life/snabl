@@ -38,10 +38,7 @@ namespace snabl {
 			break;
 		case ',':
 			_pos.col++;
-			return parse_body<forms::Comma>(in, end, out);
-		case ';':
-			_pos.col++;
-			return parse_body<forms::Semi>(in, end, out);
+			return parse_body<forms::More>(in, end, out);
 		case '|':
 			_pos.col++;
 			return parse_body<forms::Split>(in, end, out);

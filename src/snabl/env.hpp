@@ -30,7 +30,9 @@
 namespace snabl {
 	template <typename ValT>
 	class Type;
-	
+
+	const vector version {0, 2, 1};
+
 	class Env {
 	public:
 	private:
@@ -168,16 +170,11 @@ namespace snabl {
 			return op;
 		}
 
-		void emit(Pos pos, FuncPtr &func, FimpPtr &fimp);
-
 		void compile(string_view in);
 		void compile(istream &in);
 		void compile(const Forms &forms);
 		void compile(const Form &form);
-		void compile(const Form &form, FuncPtr &func, FimpPtr &fimp);
 		void compile(Forms::const_iterator begin, Forms::const_iterator end);
-		void compile(Forms::const_iterator begin, Forms::const_iterator end,
-								 FuncPtr &func, FimpPtr &fimp);
 		
 		void run(string_view in);
 		void run(istream &in);
@@ -332,9 +329,8 @@ namespace snabl {
 																 const TypePtr<ValT> &type,
 																 ArgsT &&... args) {
 		return add_macro(id, [type, args...](Forms::const_iterator &in,
-																					Forms::const_iterator end,
-																					FuncPtr &func, FimpPtr &fimp,
-																					Env &env) {
+																				 Forms::const_iterator end,
+																				 Env &env) {
 											 env.emit(ops::Push::type, (in++)->pos, type, args...);			
 										 });
 	}
@@ -342,9 +338,8 @@ namespace snabl {
 	template <typename ImpT, typename... ArgsT>
 	const MacroPtr &Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
 		return add_macro(id, [&type, args...](Forms::const_iterator &in,
-																					 Forms::const_iterator end,
-																					 FuncPtr &func, FimpPtr &fimp,
-																					 Env &env) {
+																					Forms::const_iterator end,
+																					Env &env) {
 											 env.emit(type, (in++)->pos, args...);			
 										 });
 	}

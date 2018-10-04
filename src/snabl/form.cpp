@@ -13,14 +13,13 @@ namespace snabl {
 		imp(source.imp->clone()) { }
 
 	namespace forms {
-		const FormType<Comma> Comma::type("comma");
 		const FormType<Fimp> Fimp::type("fimp");
 		const FormType<Id> Id::type("id");
 		const FormType<Lit> Lit::type("lit");
+		const FormType<More> More::type("more");
 		const FormType<Query> Query::type("query");
 		const FormType<Ref> Ref::type("ref");
 		const FormType<Scope> Scope::type("scope");
-		const FormType<Semi> Semi::type("semi");
 		const FormType<Sexpr> Sexpr::type("sexpr");
 		const FormType<Split> Split::type("split");
 		const FormType<Stack> Stack::type("stack");
@@ -34,19 +33,6 @@ namespace snabl {
 				sep = ' ';
 			}
 		}		
-
-		FormImp *Comma::clone() const { return new Comma(body.begin(), body.end()); }
-
-		void Comma::dump(ostream &out) const {
-			out << ", ";
-			Body::dump(out);
-		}		
-
-		void Comma::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
-												Env &env) const {
-			env.compile((in++)->as<Comma>().body);
-		}
 
 		Fimp::Fimp(Sym id,
 							 Forms::const_iterator begin,
@@ -72,14 +58,12 @@ namespace snabl {
 			out << '>';
 		}
 		
-		void Fimp::compile(Forms::const_iterator &in, Forms::const_iterator end,
-											 FuncPtr &func, FimpPtr &fimp,
+		void Fimp::compile(Forms::const_iterator &in,
+											 Forms::const_iterator end,
 											 Env &env) const {
 			auto &lib(env.lib());
 			auto pos(in->pos);
 			auto &form((in++)->as<Fimp>());
-			env.compile(Form(Id::type, pos, form.id), func, fimp);
-			if (!func) { throw CompileError(pos, "Missing func"); }
 			snabl::Stack args;
 				
 			transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
@@ -93,14 +77,20 @@ namespace snabl {
 									return Box(*t);
 								});
 			
+			auto fnp(lib.get_func(id));
+			if (!fnp) { throw CompileError(pos, fmt("Unknown func: '%0'", {id.name()})); }
+			auto &fn(*fnp);
 			
-			if (Int(args.size()) != func->nargs) {
-				throw CompileError(pos, fmt("Wrong number of args: %0", {func->id}));
+			if (Int(args.size()) != fn->nargs) {
+				throw CompileError(pos, fmt("Wrong number of args: %0", {fn->id}));
 			}
 			
-			auto fi(func->get_best_fimp(args.begin(), args.end()));
-			if (!fi) { throw CompileError(pos, fmt("Unknown fimp: %0", {func->id})); }
-			fimp = *fi;
+			auto fip(fn->get_best_fimp(args.begin(), args.end()));
+			auto &fi(*fip);
+							 
+			if (!fi) { throw CompileError(pos, fmt("Unknown fimp: %0", {fn->id})); }
+			if (!fi->imp) { snabl::Fimp::compile(fi, pos); }
+			env.emit(ops::Funcall::type, pos, fi);
 		}
 
 		Id::Id(Sym id): id(id) { }
@@ -111,7 +101,6 @@ namespace snabl {
 		
 		void Id::compile(Forms::const_iterator &in,
 										 Forms::const_iterator end,
-										 FuncPtr &func, FimpPtr &fimp,
 										 Env &env) const {
 			auto &form(*in);
 			auto &id(form.as<Id>().id);
@@ -129,7 +118,7 @@ namespace snabl {
 				auto m(lib.get_macro(id));
 				
 				if (m) {
-					(*m)->call(in, end, func, fimp, env);
+					(*m)->call(in, end, env);
 				} else {
 					in++;
 					auto fn(lib.get_func(id));
@@ -138,11 +127,7 @@ namespace snabl {
 						throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
 					}
 					
-					if (func) {
-						throw CompileError(form.pos,fmt("Extra func: %0", {(*fn)->id}));
-					}
-						
-					func = *fn;
+					env.emit(ops::Funcall::type, form.pos, *fn);
 				}
 			}
 		}
@@ -155,10 +140,22 @@ namespace snabl {
 
 		void Lit::compile(Forms::const_iterator &in,
 											Forms::const_iterator end,
-											FuncPtr &func, FimpPtr &fimp,
 											Env &env) const {
 			auto &form(*in++);
 			env.emit(ops::Push::type, form.pos, form.as<Lit>().val);
+		}
+
+		FormImp *More::clone() const { return new More(body.begin(), body.end()); }
+
+		void More::dump(ostream &out) const {
+			out << ", ";
+			Body::dump(out);
+		}		
+
+		void More::compile(Forms::const_iterator &in,
+											 Forms::const_iterator end,
+											 Env &env) const {
+			env.compile((in++)->as<More>().body);
 		}
 
 		Query::Query(const Form &form): form(form) {}
@@ -172,8 +169,8 @@ namespace snabl {
 			out << '?';
 		}		
 
-		void Query::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
+		void Query::compile(Forms::const_iterator &in,
+												Forms::const_iterator end,
 												Env &env) const {
 			auto &form(*in);
 			auto &qf(form.as<forms::Query>().form);
@@ -187,7 +184,7 @@ namespace snabl {
 					if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
 					env.emit(ops::Isa::type, qf.pos, *t);
 				} else {
-					env.compile(qf, func, fimp);
+					env.compile(qf);
 					env.emit(ops::Eqval::type, qf.pos);
 				}
 			} else {
@@ -208,9 +205,9 @@ namespace snabl {
 			form.imp->dump(out);
 		}		
 
-		void Ref::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
-												Env &env) const {
+		void Ref::compile(Forms::const_iterator &in,
+											Forms::const_iterator end,
+											Env &env) const {
 			auto &f(*in++);
 			auto &rf(f.as<forms::Ref>().form);
 			
@@ -238,31 +235,15 @@ namespace snabl {
 		}		
 
 		void Scope::compile(Forms::const_iterator &in,
-												 Forms::const_iterator end,
-												 FuncPtr &func, FimpPtr &fimp,
-												 Env &env) const {
+												Forms::const_iterator end,
+												Env &env) const {
 			auto &f(*in++);
 			auto &sf(f.as<Scope>());
 			env.emit(ops::Scope::type, f.pos);
 			env.begin_regs();
 			env.compile(sf.body);
 			env.end_regs();
-		}
-
-		FormImp *Semi::clone() const { return new Semi(body.begin(), body.end()); }
-
-		void Semi::dump(ostream &out) const {
-			out << "; ";
-			Body::dump(out);
-		}		
-
-		void Semi::compile(Forms::const_iterator &in, Forms::const_iterator end,
-											 FuncPtr &func, FimpPtr &fimp,
-											 Env &env) const {
-			auto &form(*in++);
-			if (!func) { throw SyntaxError(form.pos, "Missing func"); }
-			env.emit(form.pos, func, fimp);
-			env.compile(form.as<Semi>().body);
+			env.emit(ops::ScopeEnd::type, f.pos);
 		}
 
 		FormImp *Sexpr::clone() const { return new Sexpr(body.begin(), body.end()); }
@@ -273,8 +254,8 @@ namespace snabl {
 			out << ')';
 		}		
 
-		void Sexpr::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
+		void Sexpr::compile(Forms::const_iterator &in,
+												Forms::const_iterator end,
 												Env &env) const {
 			env.compile((in++)->as<Sexpr>().body);
 		}
@@ -286,8 +267,8 @@ namespace snabl {
 			Body::dump(out);
 		}		
 
-		void Split::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
+		void Split::compile(Forms::const_iterator &in,
+												Forms::const_iterator end,
 												Env &env) const {
 			auto &f(*in++);
 			auto &sf(f.as<Split>());
@@ -304,8 +285,8 @@ namespace snabl {
 			out << ']';
 		}	
 
-		void Stack::compile(Forms::const_iterator &in, Forms::const_iterator end,
-												FuncPtr &func, FimpPtr &fimp,
+		void Stack::compile(Forms::const_iterator &in,
+												Forms::const_iterator end,
 												Env &env) const {
 			auto &f(*in++);
 			auto &b(f.as<Stack>().body);
