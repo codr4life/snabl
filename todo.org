@@ -1,5 +1,3 @@
-* public structs
-** remove accessor/friend
 * rewrite throw as throw! macro
 ** add Throw op
 * convert task stack to Starray
