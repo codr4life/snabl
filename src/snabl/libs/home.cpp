@@ -195,7 +195,7 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 Env &env) {
 									auto &form(*in++);
-									const Int i_reg(env.begin_reg());
+									const Int i_reg(env.next_reg(form.pos));
 									env.emit(ops::Times::type, form.pos, i_reg);
 									const auto start_pc(env.ops().size());
 
@@ -204,7 +204,6 @@ namespace snabl {
 											}).as<ops::JumpIf>());
 									
 									env.compile(*in++);
-									env.end_reg(i_reg);
 									env.emit(ops::Jump::type, form.pos, start_pc);
 									jump.end_pc = env.ops().size();
 								});	
@@ -214,12 +213,11 @@ namespace snabl {
 									 Forms::const_iterator end,
 									 Env &env) {
 									const auto form(*in++);
-									auto &op(env.emit(ops::Try::type, form.pos, env.begin_reg())
+									auto &op(env.emit(ops::Try::type, form.pos, env.next_reg(form.pos))
 													 .as<ops::Try>());
 									if (in == end) { throw CompileError(form.pos, "Missing try body"); }
 									env.compile(*in++);
 									env.emit(ops::TryEnd::type, form.pos, op.state_reg);
-									env.end_reg(op.state_reg);
 									env.emit(ops::Push::type, form.pos, env.nil_type);
 									op.end_pc = env.ops().size();
 								});

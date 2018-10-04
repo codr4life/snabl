@@ -20,7 +20,6 @@ namespace snabl {
 		static const Int MaxCalls = 8;
 		static const Int MaxSplits = 8;
 		static const Int MaxTries = 8;
-		const ScopePtr &root_scope;
 		
 		Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
 		

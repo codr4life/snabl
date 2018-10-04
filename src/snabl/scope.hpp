@@ -11,7 +11,7 @@ namespace snabl {
 
 	class Scope {
 	public:
-		static const Int MaxRegs = 8;
+		static const Int MaxRegs = 32;
 		
 		ScopePtr prev;
 		const ScopePtr source;

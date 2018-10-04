@@ -31,7 +31,7 @@ namespace snabl {
 	template <typename ValT>
 	class Type;
 
-	const vector version {0, 2, 1};
+	const array<Int, 3> version {0, 2, 1};
 
 	class Env {
 	public:
@@ -63,16 +63,18 @@ namespace snabl {
 		
 		libs::Home home_lib;
 		const TaskPtr main_task;
+		const ScopePtr &root_scope;
 
 		Env():
 			_type_tag(1),
 			_task(nullptr),
-			separators({
-					' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
-						'<', '>', '(', ')', '{', '}', '[', ']'
-						}),
+			separators {
+			  ' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
+				'<', '>', '(', ')', '{', '}', '[', ']'
+			},
 			home_lib(*this),
-		  main_task((_task = start_task())) {
+		  main_task((_task = start_task())),
+			root_scope(begin_scope()) {
 			add_special_char('t', 8);
 			add_special_char('n', 10);
 			add_special_char('r', 13);
@@ -81,8 +83,7 @@ namespace snabl {
 			begin_regs();
 		}
 
-		TaskPtr start_task(PC start_pc=nullptr,
-											 const ScopePtr &parent_scope=nullptr) {
+		TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
 			auto t(make_shared<Task>(*this, start_pc, parent_scope));
 
 			if (_task) {
@@ -139,17 +140,16 @@ namespace snabl {
 			return n;
 		}
 
-		Int begin_reg() {
+		Int next_reg(Pos pos) {
 			auto &n(_nregs.back());
-			assert(n < Scope::MaxRegs);
+
+			if (n == Scope::MaxRegs) {
+				throw CompileError(pos, "No more regs, consider adding additional scopes");
+			}
+
 			return n++;
 		}
 		
-		void end_reg(Int idx) {
-			assert(Int(_nregs.back()) == idx+1);
-			_nregs.back()--;
-		}
-
 		template <typename T>
 		T &get_reg(Int idx) { return any_cast<T &>(_task->_scope->_regs[idx]); }
 
