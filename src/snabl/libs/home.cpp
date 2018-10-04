@@ -54,6 +54,7 @@ namespace snabl {
       add_macro(env.sym("rswap!"), ops::RSwap::type);
       add_macro(env.sym("sdrop!"), ops::SDrop::type);
       add_macro(env.sym("swap!"), ops::Swap::type);
+      add_macro(env.sym("throw!"), ops::Throw::type);
       add_macro(env.sym("yield!"), ops::Yield::type);
 
       add_macro(env.sym("bench:"),
@@ -220,18 +221,6 @@ namespace snabl {
                   env.emit(ops::Push::type, form.pos, env.nil_type);
                   op.end_pc = env.ops.size();
                 });
-
-      add_fimp(env.sym("throw"),
-               {Box(env.root_type)},
-               [&env](Fimp &fimp) {
-                 throw UserError(env, env.call().pos, env.pop());
-               });
-
-      add_fimp(env.sym("throw"),
-               {Box(env.error_type)},
-               [&env](Fimp &fimp) {
-                 throw *env.pop().as<ErrorPtr>();
-               });
 
       add_fimp(env.sym("catch"),
                {Box(env.error_type)},

@@ -391,6 +391,15 @@ namespace snabl {
       Task(Int start_pc): start_pc(start_pc), end_pc(-1) { }
     };
 
+    struct Throw {
+      struct Type: OpType<Throw> {
+        Type(const string &id): OpType<Throw>(id) { }
+        OpImp make_imp(Env &env, Op &op) const override;
+      };
+
+      static const Type type;
+    };
+    
     struct Times {
       struct Type: OpType<Times> {
         Type(const string &id): OpType<Times>(id) { }

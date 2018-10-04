@@ -76,7 +76,7 @@ func: my-fib<Int Int Int> (
 ```
 
 #### Failure
-Snabl offers two flavors of error handling, ```Maybe``` and ```throw```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
+Snabl offers two flavors of error handling, ```Maybe``` and ```throw!```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
 
 ```
 func: foo<T> _
@@ -103,7 +103,7 @@ nil bar
 Any value may be thrown. ```try:``` runs its argument and pushes an error or ```nil``` on the stack, ```catch``` may be used to retrieve the thrown value.
 
 ```
-try: (41 throw)
+try: (41 throw!)
 catch ++
 
 [42]

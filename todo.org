@@ -1,11 +1,12 @@
-* rewrite throw as throw! macro
-** add Throw op
 * convert task stack to Starray
-* ---
 * eval fimps at compile time
 ** <3 times: Int>
 ** begin/end_scope
 ** use stack as args
+* add define: macro
+** like let but bind at runtime
+** add lib.consts
+** @ sigil
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op

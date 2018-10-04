@@ -52,18 +52,18 @@ f if: 1 3 3 test=
 
 35 switch: (
   (42 <) 'foo,
-	drop! 'bar
+  drop! 'bar
 ) 'foo test=
 
 35 switch: (
   (7 <) 'foo,
-	drop! 'bar
+  drop! 'bar
 ) 'bar test=
 
 35 switch: (
   (7 <) 'foo
-	(42 <) 'bar,
-	drop! 'baz
+  (42 <) 'bar,
+  drop! 'baz
 ) 'bar test= 
 
 2 3 times: ++ 5 test=
@@ -82,8 +82,8 @@ early 'before test=
 try: 42 nil test=
 try: 42 drop! 42 test=
 
-try: (41 throw) catch ++ 42 test=
-try: (try: (41 throw) throw) catch ++ 42 test=
+try: (41 throw!) catch ++ 42 test=
+try: (try: (41 throw!) throw!) catch ++ 42 test=
 
 3 iter
 dup! call! swap! dup! call! swap!
