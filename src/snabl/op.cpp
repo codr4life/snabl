@@ -167,8 +167,8 @@ namespace snabl {
       auto &fimp(*o.ptr);
       
       return [&env, &o, &fimp]() {
-        if (o.is_scope) { fimp._parent_scope = env.scope(); }
-        env.jump(fimp._end_pc);
+        if (o.is_scope) { fimp.parent_scope = env.scope(); }
+        env.jump(fimp.end_pc);
       };
     }
     

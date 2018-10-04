@@ -221,8 +221,8 @@ namespace snabl {
       s.restore_tries(*this);
       s.restore_splits(*this);
       
-      if (t._parent_scope) { task->scope->clear_vars(); }
-      jump(&t._start_pc);
+      if (t.parent_scope) { task->scope->clear_vars(); }
+      jump(&t.start_pc);
     }
 
     void _return(Pos pos) {
@@ -230,7 +230,7 @@ namespace snabl {
       if (!calls.size()) { throw RuntimeError(*this, pos, "Nothing to return from"); }
       auto &c(calls.back());
       auto &t(*c.target);
-      if (t._parent_scope) { end_scope(); }
+      if (t.parent_scope) { end_scope(); }
       task->pc = c.return_pc;
       auto fi(dynamic_cast<Fimp *>(&t));
       if (fi && !fi->imp) { end_split(); }

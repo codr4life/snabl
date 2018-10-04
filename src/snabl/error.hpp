@@ -7,24 +7,19 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-	class Error: public runtime_error {
-	public:
+  struct Error: runtime_error {
+    Error(): runtime_error("") { }
     Error(const string &msg);
-	protected:
-		Error(): runtime_error("") { }
-	};
+  };
 
-	class CompileError: public Error {
-	public:
+  struct CompileError: Error {
     CompileError(Pos pos, const string &msg);
-	protected:
     CompileError(const string &msg);
-	};
+  };
 
-	class SyntaxError: public CompileError {
-	public:
+  struct SyntaxError: CompileError {
     SyntaxError(Pos pos, const string &msg);
-	};
+  };
 }
 
 #endif

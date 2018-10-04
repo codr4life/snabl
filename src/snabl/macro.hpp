@@ -7,24 +7,22 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class Lib;
-	
-	class Macro: public Def {
-	public:
-		using Imp = function<void (Forms::const_iterator &in,
-															 Forms::const_iterator end,
-															 Env &env)>;
-		
-		Lib &lib;
+  struct Lib;
+  
+  struct Macro: Def {
+    using Imp = function<void (Forms::const_iterator &in,
+                               Forms::const_iterator end,
+                               Env &env)>;
+    
+    Lib &lib;
+    const Imp imp;
 
-		Macro(Lib &lib, Sym id, const Imp &imp);
-		
-		void call(Forms::const_iterator &in,
-							Forms::const_iterator end,
-							Env &env);
-	private:
-		const Imp _imp;
-	};
+    Macro(Lib &lib, Sym id, const Imp &imp);
+    
+    void call(Forms::const_iterator &in,
+              Forms::const_iterator end,
+              Env &env);
+  };
 }
 
 #endif

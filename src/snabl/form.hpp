@@ -9,208 +9,207 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class Env;
-	class Form;
+  struct Env;
+  struct Form;
 
-	using Forms = deque<Form>;
+  using Forms = deque<Form>;
 
-	struct AFormType {
-		const string id;
-		AFormType(string_view id);
-		AFormType(const AFormType &) = delete;
-	};
+  struct AFormType {
+    const string id;
+    AFormType(string_view id);
+    AFormType(const AFormType &) = delete;
+  };
 
-	template <typename ImpT>
-	struct FormType: public AFormType {
-		FormType(string_view id);
-	};
+  template <typename ImpT>
+  struct FormType: AFormType {
+    FormType(string_view id);
+  };
 
-	template <typename ImpT>
-	FormType<ImpT>::FormType(string_view id): AFormType(id) { }
-	
-	struct FormImp {
-		virtual ~FormImp();
-		virtual FormImp *clone() const=0;
-		virtual void dump(ostream &out) const=0;
+  template <typename ImpT>
+  FormType<ImpT>::FormType(string_view id): AFormType(id) { }
+  
+  struct FormImp {
+    virtual ~FormImp();
+    virtual FormImp *clone() const=0;
+    virtual void dump(ostream &out) const=0;
 
-		virtual void compile(Forms::const_iterator &in,
-												 Forms::const_iterator end,
-												 Env &env) const=0;
-	};
-	
-	class Form {
-	public:
-		const AFormType &type;
-		const Pos pos;
-		const unique_ptr<FormImp> imp;
-		
-		template <typename ImpT, typename... ArgsT>
-		Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args);
+    virtual void compile(Forms::const_iterator &in,
+                         Forms::const_iterator end,
+                         Env &env) const=0;
+  };
+  
+  struct Form {
+    const AFormType &type;
+    const Pos pos;
+    const unique_ptr<FormImp> imp;
+    
+    template <typename ImpT, typename... ArgsT>
+    Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args);
 
-		Form(const Form &source);
-		
-		virtual ~Form() { }
-		template <typename ImpT>
-		ImpT &as() const;
-	};
-	
-	template <typename ImpT, typename... ArgsT>
-	Form::Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args):
-		type(type), pos(pos), imp(new ImpT(forward<ArgsT>(args)...)) { }
+    Form(const Form &source);
+    
+    virtual ~Form() { }
+    template <typename ImpT>
+    ImpT &as() const;
+  };
+  
+  template <typename ImpT, typename... ArgsT>
+  Form::Form(const FormType<ImpT> &type, Pos pos, ArgsT &&... args):
+    type(type), pos(pos), imp(new ImpT(forward<ArgsT>(args)...)) { }
 
-	template <typename ImpT>
-	ImpT &Form::as() const {
-		return *dynamic_cast<ImpT *>(imp.get());
-	}
+  template <typename ImpT>
+  ImpT &Form::as() const {
+    return *dynamic_cast<ImpT *>(imp.get());
+  }
 
-	namespace forms {
-		struct Body: public FormImp {			
-			const Forms body;
-			Body(Forms::const_iterator begin, Forms::const_iterator end):
-				body(begin, end) { }
-			void dump(ostream &out) const override;
-		};
+  namespace forms {
+    struct Body: FormImp {     
+      const Forms body;
+      Body(Forms::const_iterator begin, Forms::const_iterator end):
+        body(begin, end) { }
+      void dump(ostream &out) const override;
+    };
 
-		struct Fimp: public FormImp {
-			using Ids = vector<Sym>;
-				
-			static const FormType<Fimp> type;
-			const Sym id;
-			Ids type_ids;
-			
-			Fimp(Sym id, Forms::const_iterator begin, Forms::const_iterator end);
-			Fimp(Sym id, const Ids &type_ids);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+    struct Fimp: FormImp {
+      using Ids = vector<Sym>;
+        
+      static const FormType<Fimp> type;
+      const Sym id;
+      Ids type_ids;
+      
+      Fimp(Sym id, Forms::const_iterator begin, Forms::const_iterator end);
+      Fimp(Sym id, const Ids &type_ids);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;			
-		};
-		
-		struct Id: public FormImp {
-			static const FormType<Id> type;
-			const Sym id;
-			
-			Id(Sym id);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;      
+    };
+    
+    struct Id: FormImp {
+      static const FormType<Id> type;
+      const Sym id;
+      
+      Id(Sym id);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Lit: public FormImp {			
-			static const FormType<Lit> type;
-			const Box val;
+    struct Lit: FormImp {      
+      static const FormType<Lit> type;
+      const Box val;
 
-			Lit(const Box &val);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      Lit(const Box &val);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct More: public Body {			
-			static const FormType<More> type;
+    struct More: Body {      
+      static const FormType<More> type;
 
-			More(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      More(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Query: public FormImp {			
-			static const FormType<Query> type;
-			const Form form;
-			
-			Query(const Form &form);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+    struct Query: FormImp {      
+      static const FormType<Query> type;
+      const Form form;
+      
+      Query(const Form &form);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Ref: public FormImp {			
-			static const FormType<Ref> type;
-			const Form form;
-			
-			Ref(const Form &form);
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+    struct Ref: FormImp {      
+      static const FormType<Ref> type;
+      const Form form;
+      
+      Ref(const Form &form);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Scope: public Body {			
-			static const FormType<Scope> type;
+    struct Scope: Body {     
+      static const FormType<Scope> type;
 
-			Scope(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      Scope(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Sexpr: public Body {			
-			static const FormType<Sexpr> type;
+    struct Sexpr: Body {     
+      static const FormType<Sexpr> type;
 
-			Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      Sexpr(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Split: public Body {			
-			static const FormType<Split> type;
-			Int offs=0;
-			
-			Split(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+    struct Split: Body {     
+      static const FormType<Split> type;
+      Int offs=0;
+      
+      Split(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
 
-		struct Stack: public Body {			
-			static const FormType<Stack> type;
+    struct Stack: Body {     
+      static const FormType<Stack> type;
 
-			Stack(Forms::const_iterator begin, Forms::const_iterator end):
-				Body(begin, end) { }
-			
-			FormImp *clone() const override;
-			void dump(ostream &out) const override;
+      Stack(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
 
-			void compile(Forms::const_iterator &in,
-									 Forms::const_iterator end,
-									 Env &env) const override;
-		};
-	}
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
+  }
 }
 
 #endif

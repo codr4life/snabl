@@ -352,7 +352,7 @@ namespace snabl {
                [&env](Fimp &fimp) {
                  auto i(env.pop().iter());
 
-                 while (!i->is_done()) {
+                 while (!i->is_done) {
                    auto v(i->call(env));
                    if (v) { env.push(*v); }
                  }
