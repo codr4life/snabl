@@ -15,9 +15,9 @@ namespace snabl {
     const FormType<Fimp> Fimp::type("fimp");
     const FormType<Id> Id::type("id");
     const FormType<Lit> Lit::type("lit");
-    const FormType<More> More::type("more");
     const FormType<Query> Query::type("query");
     const FormType<Ref> Ref::type("ref");
+    const FormType<Rest> Rest::type("rest");
     const FormType<Scope> Scope::type("scope");
     const FormType<Sexpr> Sexpr::type("sexpr");
     const FormType<Split> Split::type("split");
@@ -144,19 +144,6 @@ namespace snabl {
       env.emit(ops::Push::type, form.pos, form.as<Lit>().val);
     }
 
-    FormImp *More::clone() const { return new More(body.begin(), body.end()); }
-
-    void More::dump(ostream &out) const {
-      out << ", ";
-      Body::dump(out);
-    }   
-
-    void More::compile(Forms::const_iterator &in,
-                       Forms::const_iterator end,
-                       Env &env) const {
-      env.compile((in++)->as<More>().body);
-    }
-
     Query::Query(const Form &form): form(form) {}
     
     FormImp *Query::clone() const {
@@ -225,6 +212,19 @@ namespace snabl {
       }
     }
     
+    FormImp *Rest::clone() const { return new Rest(body.begin(), body.end()); }
+
+    void Rest::dump(ostream &out) const {
+      out << ", ";
+      Body::dump(out);
+    }   
+
+    void Rest::compile(Forms::const_iterator &in,
+                       Forms::const_iterator end,
+                       Env &env) const {
+      env.compile((in++)->as<Rest>().body);
+    }
+
     FormImp *Scope::clone() const { return new Scope(body.begin(), body.end()); }
 
     void Scope::dump(ostream &out) const {

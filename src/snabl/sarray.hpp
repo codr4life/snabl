@@ -2,19 +2,17 @@
 #define SNABL_SARRAY_HPP
 
 namespace snabl {
-	template <typename T, Int MAX_SIZE>
-	struct Sarray {
-		Sarray(): _size(0) { }
-		void push_back(T val) { _items[_size++] = val; }
-		bool empty() const { return !_size; }
-		Int size() const { return _size; }
-		T back() const { return _items[_size-1]; }
-		void pop_back() { _size--; }
-		void trunc(Int new_size) { _size = new_size; }
-	private:
-		array<T, MAX_SIZE> _items;		
-		Int _size;
-	};
+  template <typename T, Int MAX_SIZE>
+  struct Sarray {
+    array<T, MAX_SIZE> items;   
+    Int size;
+
+    Sarray(): size(0) { }
+    void push_back(T val) { items[size++] = val; }
+    T back() const { return items[size-1]; }
+    void pop_back() { size--; }
+    void trunc(Int new_size) { size = new_size; }
+  };
 }
 
 #endif

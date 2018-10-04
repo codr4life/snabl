@@ -113,20 +113,6 @@ namespace snabl {
                    Env &env) const override;
     };
 
-    struct More: Body {      
-      static const FormType<More> type;
-
-      More(Forms::const_iterator begin, Forms::const_iterator end):
-        Body(begin, end) { }
-      
-      FormImp *clone() const override;
-      void dump(ostream &out) const override;
-
-      void compile(Forms::const_iterator &in,
-                   Forms::const_iterator end,
-                   Env &env) const override;
-    };
-
     struct Query: FormImp {      
       static const FormType<Query> type;
       const Form form;
@@ -145,6 +131,20 @@ namespace snabl {
       const Form form;
       
       Ref(const Form &form);
+      FormImp *clone() const override;
+      void dump(ostream &out) const override;
+
+      void compile(Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) const override;
+    };
+
+    struct Rest: Body {      
+      static const FormType<Rest> type;
+
+      Rest(Forms::const_iterator begin, Forms::const_iterator end):
+        Body(begin, end) { }
+      
       FormImp *clone() const override;
       void dump(ostream &out) const override;
 

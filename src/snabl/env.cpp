@@ -61,7 +61,7 @@ namespace snabl {
         goto start;
       }
     } catch (const UserError &e) {
-      if (task->tries.empty()) { throw e; }
+      if (!task->tries.size) { throw e; }
       auto &t(*task->tries.back());
       auto &s(get_reg<State>(t.state_reg));     
       s.restore_lib(*this);
