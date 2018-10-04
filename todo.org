@@ -9,9 +9,12 @@
 ** drop func/fimp compile params
 *** emit funcall immediately
 ** update README/tests/bench
+* public structs
+** remove accessor/friend
 * rewrite throw as throw! macro
 ** add Throw op
 * convert task stack to Starray
+* ---
 * add Ref support
 ** add bench/fib3.sl
 * eval fimps at compile time
