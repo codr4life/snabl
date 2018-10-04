@@ -3,10 +3,10 @@
 
 #include "snabl/std.hpp"
 
-namespace snabl {	
-	class Env;
+namespace snabl { 
+  struct Env;
 
-	void repl(Env &env, istream &in, ostream &out);
+  void repl(Env &env, istream &in, ostream &out);
 }
 
 #endif

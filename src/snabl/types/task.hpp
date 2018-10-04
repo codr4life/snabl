@@ -6,11 +6,10 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	class TaskType: public Type<TaskPtr> {
-	public:
-		TaskType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct TaskType: Type<TaskPtr> {
+    TaskType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

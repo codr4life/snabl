@@ -5,39 +5,37 @@
 #include "snabl/pos.hpp"
 
 namespace snabl {
-	class Env;
+  struct Env;
 
-	class Parser {
-	public:
-		static const Pos init_pos;
-		Env &env;
-		
-		Parser(Env &env): env(env), _pos(init_pos) { }
-		void parse(istream &in, Forms &out);
-		bool parse(istream &in, Pos start_pos, char end, Forms &out);		
-		bool parse_form(istream &in, char end, Forms &out);
-	private:
-		Pos _pos;
+  struct Parser {
+    static const Pos home;
+    Env &env;
+    Pos pos;
+    
+    Parser(Env &env): env(env), pos(home) { }
+    void parse(istream &in, Forms &out);
+    bool parse(istream &in, Pos start_pos, char end, Forms &out);   
+    bool parse_form(istream &in, char end, Forms &out);
 
-		template <typename FormT>
-		bool parse_body(istream &in, char end, Forms &out) {
-			auto start_pos(_pos);
-			Forms body;
-			if (!parse(in, start_pos, end, body) && end) { return false; }
-			out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
-			return true;
-		}
+    template <typename FormT>
+    bool parse_body(istream &in, char end, Forms &out) {
+      auto start_pos(pos);
+      Forms body;
+      if (!parse(in, start_pos, end, body) && end) { return false; }
+      out.emplace_back(FormT::type, start_pos, body.cbegin(), body.cend());
+      return true;
+    }
 
-		void parse_id(istream &in, Forms &out);
-		void parse_num(istream &in, Forms &out);
-		void parse_scope(istream &in, Forms &out);
-		void parse_sexpr(istream &in, Forms &out);
-		void parse_stack(istream &in, Forms &out);
-		void parse_special_char(istream &in, Forms &out);
-		void parse_char(istream &in, Forms &out);
-		void parse_str(istream &in, Forms &out);
-		void parse_fimp(Pos pos, Sym id, istream &in, Forms &out);
-	};
+    void parse_id(istream &in, Forms &out);
+    void parse_num(istream &in, Forms &out);
+    void parse_scope(istream &in, Forms &out);
+    void parse_sexpr(istream &in, Forms &out);
+    void parse_stack(istream &in, Forms &out);
+    void parse_special_char(istream &in, Forms &out);
+    void parse_char(istream &in, Forms &out);
+    void parse_str(istream &in, Forms &out);
+    void parse_fimp(Pos pos, Sym id, istream &in, Forms &out);
+  };
 }
 
 #endif

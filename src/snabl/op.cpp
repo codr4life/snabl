@@ -119,7 +119,7 @@ namespace snabl {
       return [&env, &op, &skip_pc]() {
         const auto &v(env.peek());
 
-        if (v.type() != env.bool_type) {
+        if (v.type != env.bool_type) {
           throw RuntimeError(env, op.pos, fmt("Invalid else cond: %0", {v}));
         }
 

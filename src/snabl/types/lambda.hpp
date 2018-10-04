@@ -6,12 +6,11 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	class LambdaType: public Type<LambdaPtr> {
-	public:
-		LambdaType(Lib &lib, Sym id);
-		void call(const Box &val, Pos pos) const override;
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct LambdaType: Type<LambdaPtr> {
+    LambdaType(Lib &lib, Sym id);
+    void call(const Box &val, Pos pos) const override;
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

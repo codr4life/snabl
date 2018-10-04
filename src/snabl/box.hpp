@@ -8,63 +8,62 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-	struct Box {
-		Box(const ATypePtr &type): _type(type) { }
-		
-		template <typename ValT>
-		Box(const TypePtr<ValT> &type, const ValT &val): _type(type), _val(val) { }
+  struct Box {
+    ATypePtr type;
+    any val;
 
-		template <typename ValT>
-		const ValT &as() const {
-			assert(sizeof(ValT) == _type->size);
-			return any_cast<const ValT &>(_val);
-		}
+    Box(const ATypePtr &type): type(type) { }
+    
+    template <typename ValT>
+    Box(const TypePtr<ValT> &type, const ValT &val): type(type), val(val) { }
 
-		template <typename ValT>
-		ValT &as() {
-			assert(sizeof(ValT) == _type->size);
-			return any_cast<ValT &>(_val);
-		}
+    template <typename ValT>
+    const ValT &as() const {
+      assert(sizeof(ValT) == type->size);
+      return any_cast<const ValT &>(val);
+    }
 
-		const ATypePtr &type() const { return _type; }
-		bool isa(const ATypePtr &rhs) const;
-		
-		bool equid(const Box &rhs) const {
-			if (rhs.type() != _type) { return false; }
-			return _type->equid(*this, rhs);
-		}
-		
-		bool eqval(const Box &rhs) const {
-			if (rhs.type() != _type) { return false; }
-			return _type->eqval(*this, rhs);
-		}
-		
-		Cmp cmp(const Box &rhs) const {
-			auto rt(rhs.type());
-			if (rt != _type) { return snabl::cmp(_type->tag, rt->tag); }
-			return _type->cmp(*this, rhs);
-		}
+    template <typename ValT>
+    ValT &as() {
+      assert(sizeof(ValT) == type->size);
+      return any_cast<ValT &>(val);
+    }
 
-		bool has_val() const { return _val.has_value(); }
-		bool as_bool() const { return _type->as_bool(*this); }
+    bool isa(const ATypePtr &rhs) const;
+    
+    bool equid(const Box &rhs) const {
+      if (rhs.type != type) { return false; }
+      return type->equid(*this, rhs);
+    }
+    
+    bool eqval(const Box &rhs) const {
+      if (rhs.type != type) { return false; }
+      return type->eqval(*this, rhs);
+    }
+    
+    Cmp cmp(const Box &rhs) const {
+      auto rt(rhs.type);
+      if (rt != type) { return snabl::cmp(type->tag, rt->tag); }
+      return type->cmp(*this, rhs);
+    }
 
-		void call(Pos pos) const { _type->call(*this, pos); }
-		void push(const Box &val) { _type->push(*this, val); }
-		optional<Box> peek() const { return _type->peek(*this); }
-		void pop() { _type->pop(*this); }
-		IterPtr iter() const { return _type->iter(*this); }
-		void dump(ostream &out) const { _type->dump(*this, out); }
-		void print(ostream &out) const { _type->print(*this, out); }
-		void write(ostream &out) const { _type->write(*this, out); }
-	private:
-		ATypePtr _type;
-		any _val;
-	};
+    bool has_val() const { return val.has_value(); }
+    bool as_bool() const { return type->as_bool(*this); }
 
-	inline ostream &operator <<(ostream &out, const Box &x) {
-		x.print(out);
-		return out;
-	}
+    void call(Pos pos) const { type->call(*this, pos); }
+    void push(const Box &val) { type->push(*this, val); }
+    optional<Box> peek() const { return type->peek(*this); }
+    void pop() { type->pop(*this); }
+    IterPtr iter() const { return type->iter(*this); }
+    void dump(ostream &out) const { type->dump(*this, out); }
+    void print(ostream &out) const { type->print(*this, out); }
+    void write(ostream &out) const { type->write(*this, out); }
+  };
+
+  inline ostream &operator <<(ostream &out, const Box &x) {
+    x.print(out);
+    return out;
+  }
 }
 
 #endif

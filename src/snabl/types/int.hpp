@@ -5,14 +5,13 @@
 #include "snabl/type.hpp"
 #include "snabl/types.hpp"
 
-namespace snabl {	
-	class IntType: public Type<Int> {
-	public:
-		IntType(Lib &lib, Sym id);
-		bool as_bool(const Box &val) const override;
-		IterPtr iter(const Box &val) const override;
-		void dump(const Box &val, ostream &out) const override;
-	};
+namespace snabl { 
+  struct IntType: Type<Int> {
+    IntType(Lib &lib, Sym id);
+    bool as_bool(const Box &val) const override;
+    IterPtr iter(const Box &val) const override;
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

@@ -7,39 +7,35 @@
 #include "snabl/sym.hpp"
 
 namespace snabl {
-	class Env;
+  struct Env;
 
-	class Scope {
-	public:
-		static const Int MaxRegs = 32;
-		
-		ScopePtr prev;
-		const ScopePtr source;
-		
-		Scope(const ScopePtr &prev, const ScopePtr &source):
-			prev(prev), source(source) { }
+  struct Scope {
+    static const Int MaxRegs = 32;
+    
+    ScopePtr prev;
+    const ScopePtr source;
+    array<any, MaxRegs> regs;
+    map<Sym, Box> vars;
+    
+    Scope(const ScopePtr &prev, const ScopePtr &source):
+      prev(prev), source(source) { }
 
-		Scope(const Scope &) = delete;
-		const Scope &operator=(const Scope &) = delete;
-		
-		const Box *get(Sym id) const {
-			const auto found(_vars.find(id));
-			if (found != _vars.end()) { return &found->second; }
-			return source ? source->get(id) : nullptr;
-		}
+    Scope(const Scope &) = delete;
+    const Scope &operator=(const Scope &) = delete;
+    
+    const Box *get(Sym id) const {
+      const auto found(vars.find(id));
+      if (found != vars.end()) { return &found->second; }
+      return source ? source->get(id) : nullptr;
+    }
 
-		void let(Sym id, const Box &val) {
-			const auto ok(_vars.emplace(make_pair(id, val)));
-			if (!ok.second) { throw Error("Duplicate var: " + id.name()); }
-		}
+    void let(Sym id, const Box &val) {
+      const auto ok(vars.emplace(make_pair(id, val)));
+      if (!ok.second) { throw Error("Duplicate var: " + id.name()); }
+    }
 
-		void clear_vars() { _vars.clear(); }
-	private:
-		array<any, MaxRegs> _regs;
-		map<Sym, Box> _vars;
-
-		friend Env;
-	};
+    void clear_vars() { vars.clear(); }
+  };
 }
 
 #endif

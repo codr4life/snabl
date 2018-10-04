@@ -12,7 +12,7 @@ namespace snabl {
   using TaskPtr = shared_ptr<Task>;
 
   struct Task {
-    enum class Status {New, Running, Yielding, Done};
+    enum struct Status {New, Running, Yielding, Done};
     static const Int MaxCalls = 8;
     static const Int MaxSplits = 8;
     static const Int MaxTries = 8;

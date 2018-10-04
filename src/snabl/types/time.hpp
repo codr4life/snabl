@@ -4,23 +4,22 @@
 #include "snabl/types/int.hpp"
 
 namespace snabl {
-	struct Time {
-		static Time ms(Int n);
+  struct Time {
+    static Time ms(Int n);
 
-		const Int ns;
+    const Int ns;
 
-		Time(Int ns=0);
-		Int as_ms() const;
-	};
+    Time(Int ns=0);
+    Int as_ms() const;
+  };
 
-	bool operator ==(const Time &lhs, const Time &rhs);
-	bool operator <(const Time &lhs, const Time &rhs);
+  bool operator ==(const Time &lhs, const Time &rhs);
+  bool operator <(const Time &lhs, const Time &rhs);
 
-	class TimeType: public Type<Time> {
-	public:
-		TimeType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct TimeType: Type<Time> {
+    TimeType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

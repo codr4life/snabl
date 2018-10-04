@@ -2,7 +2,6 @@
 #include "snabl/env.hpp"
 #include "snabl/fimp.hpp"
 #include "snabl/lib.hpp"
-#include "snabl/run.hpp"
 
 namespace snabl {
   Sym Fimp::get_id(const Func &func, const Args &args) {
@@ -20,7 +19,7 @@ namespace snabl {
       if (a.has_val()) {
         a.write(buf);
       } else {
-        buf << a.type()->id.name();
+        buf << a.type->id.name();
       }
     }
 
@@ -83,7 +82,7 @@ namespace snabl {
       if (i == end) { return -1; }
       
       auto &iv(*i), &jv(*j);
-      auto &it(iv.type()), &jt(jv.type());
+      auto &it(iv.type), &jt(jv.type);
       if (it == env.no_type) { continue; }
 
       if (jv.has_val()) {

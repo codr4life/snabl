@@ -5,11 +5,10 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	class ErrorType: public Type<ErrorPtr> {
-	public:
-		ErrorType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct ErrorType: Type<ErrorPtr> {
+    ErrorType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

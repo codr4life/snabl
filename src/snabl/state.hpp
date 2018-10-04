@@ -10,6 +10,10 @@ namespace snabl {
   namespace ops { struct Try; }
   
   struct State {
+    Lib &lib;
+    const ScopePtr scope;
+    const Int ncalls, ntries, nstack, nsplits;
+
     State(const Env &env);
     void restore_lib(Env &env) const;
     void restore_scope(Env &env) const;
@@ -17,10 +21,6 @@ namespace snabl {
     void restore_calls(Env &env) const;
     void restore_stack(Env &env) const;
     void restore_splits(Env &env) const;
-  private:
-    Lib &_lib;
-    const ScopePtr _scope;
-    const Int _ncalls, _ntries, _nstack, _nsplits;
   };
 }
 

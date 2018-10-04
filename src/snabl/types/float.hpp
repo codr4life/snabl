@@ -5,13 +5,12 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	using Float = long double;
-	
-	class FloatType: public Type<Float> {
-	public:
-		FloatType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  using Float = long double;
+  
+  struct FloatType: Type<Float> {
+    FloatType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

@@ -3,13 +3,10 @@
 
 #include "snabl/lib.hpp"
 
-namespace snabl {
-	namespace libs {
-		class Home: public Lib {
-		public:
-			Home(Env &env);
-		};
-	}
+namespace snabl::libs {
+  struct Home: Lib {
+    Home(Env &env);
+  };
 }
 
 #endif

@@ -8,27 +8,27 @@ namespace snabl {
   using ATypePtr = shared_ptr<AType>;
 
   template <typename ValueT>
-  class Type;
+  struct Type;
 
   template <typename ValueT>
   using TypePtr = shared_ptr<Type<ValueT>>;
 
-  class Trait;
+  struct Trait;
   using TraitPtr = shared_ptr<Trait>;
   
-  class Scope;  
+  struct Scope;  
   using ScopePtr = shared_ptr<Scope>;
 
   struct Macro;
   using MacroPtr = shared_ptr<Macro>;
 
-  class Target;
+  struct Target;
   using TargetPtr = shared_ptr<Target>;
   
   struct Fimp;
   using FimpPtr = shared_ptr<Fimp>;
 
-  class Func;
+  struct Func;
   using FuncPtr = shared_ptr<Func>;
 
   struct Lambda;

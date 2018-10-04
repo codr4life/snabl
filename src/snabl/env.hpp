@@ -4,7 +4,6 @@
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
 #include "snabl/pos.hpp"
-#include "snabl/run.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
 #include "snabl/state.hpp"
@@ -29,7 +28,7 @@
 
 namespace snabl {
   template <typename ValT>
-  class Type;
+  struct Type;
 
   const array<Int, 3> version {0, 2, 1};
 
@@ -153,15 +152,15 @@ namespace snabl {
     }
     
     template <typename T>
-    T &get_reg(Int idx) { return any_cast<T &>(task->scope->_regs[idx]); }
+    T &get_reg(Int idx) { return any_cast<T &>(task->scope->regs[idx]); }
 
     template <typename T>
     const T &get_reg(Int idx) const {
-      return any_cast<const T &>(task->scope->_regs[idx]);
+      return any_cast<const T &>(task->scope->regs[idx]);
     }
 
-    void let_reg(Int idx, any &&val) { task->scope->_regs[idx] = move(val); }
-    void clear_reg(Int idx) const { task->scope->_regs[idx].reset(); }
+    void let_reg(Int idx, any &&val) { task->scope->regs[idx] = move(val); }
+    void clear_reg(Int idx) const { task->scope->regs[idx].reset(); }
     
     template <typename ImpT, typename... ArgsT>
     Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
@@ -291,8 +290,13 @@ namespace snabl {
     }        
   };
 
+  struct UserError: RuntimeError {
+    const Box val;
+    UserError(Env &env, Pos pos, const Box &_val);
+  };
+
   inline bool Box::isa(const ATypePtr &rhs) const {
-    auto &lhs((_type == _type->lib.env.meta_type) ? as<ATypePtr>() : _type);
+    auto &lhs((type == type->lib.env.meta_type) ? as<ATypePtr>() : type);
     return lhs->isa(rhs);
   }
 

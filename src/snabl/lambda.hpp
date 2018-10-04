@@ -14,9 +14,6 @@ namespace snabl {
       Target(parent_scope, start_pc, end_pc) { }
     
     string target_id() const override { return fmt("(Lambda %0)", {this}); }    
-
-    friend bool operator ==(const Lambda &, const Lambda &);
-    friend bool operator <(const Lambda &, const Lambda &);
   };
 
   inline bool operator ==(const Lambda &lhs, const Lambda &rhs) {

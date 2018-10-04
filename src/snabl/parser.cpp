@@ -4,10 +4,10 @@
 #include "snabl/types.hpp"
 
 namespace snabl {
-  const Pos Parser::init_pos(1, 0);
+  const Pos Parser::home(1, 0);
   
   void Parser::parse(istream &in, Forms &out) {
-    parse(in, init_pos, 0, out);
+    parse(in, home, 0, out);
   }
 
   bool Parser::parse(istream &in, Pos start_pos, char end, Forms &out) {
@@ -23,36 +23,36 @@ namespace snabl {
     if (!in.get(c)) { return false; }
     
     if (c == end) {
-      _pos.col++;
+      pos.col++;
       return true;
     }
       
     switch(c) {
     case ' ':
     case '\t':
-      _pos.col++;
+      pos.col++;
       break;  
     case '\n':
-      _pos.row++;
-      _pos.col = init_pos.col;
+      pos.row++;
+      pos.col = home.col;
       break;
     case ',':
-      _pos.col++;
+      pos.col++;
       return parse_body<forms::More>(in, end, out);
     case '|':
-      _pos.col++;
+      pos.col++;
       return parse_body<forms::Split>(in, end, out);
     case '?': {
-      if (out.empty()) { throw CompileError(_pos, "Nothing to query"); }
+      if (out.empty()) { throw CompileError(pos, "Nothing to query"); }
       auto form(out.back());
       out.pop_back();
-      out.emplace_back(forms::Query::type, _pos, form);
-      _pos.col++;
+      out.emplace_back(forms::Query::type, pos, form);
+      pos.col++;
       break;
     }
     case '&': {
-      auto start(_pos);
-      _pos.col++;       
+      auto start(pos);
+      pos.col++;       
       parse_form(in, end, out);
       if (out.empty()) { throw CompileError(start, "Nothing to ref"); }
       auto form(out.back());
@@ -61,30 +61,30 @@ namespace snabl {
       break;
     }
     case '(':
-      _pos.col++;
+      pos.col++;
       parse_sexpr(in, out);
       break;
     case '{':
-      _pos.col++;
+      pos.col++;
       parse_scope(in, out);
       break;
     case '[':
-      _pos.col++;
+      pos.col++;
       parse_stack(in, out);
       break;
     case '~':
-      _pos.col++;
+      pos.col++;
       parse_special_char(in, out);
       break;
     case '#':
-      _pos.col++;
+      pos.col++;
       parse_char(in, out);
       break;
     case '\'': {
       char nc(0);
         
       if (in.get(nc) && nc == '\'') {
-        _pos.col += 2;
+        pos.col += 2;
         parse_str(in,out);
       } else {
         in.clear();
@@ -125,7 +125,7 @@ namespace snabl {
   }
   
   void Parser::parse_id(istream &in, Forms &out) {
-    const auto start_pos(_pos);
+    const auto start_pos(pos);
     stringstream buf;
     char c, pc(0);
     bool pc_sep;
@@ -135,7 +135,7 @@ namespace snabl {
       
       if (c != ' ' && c != '\n' && (!pc || (!c_sep && !pc_sep) || c == pc)) {
         buf << c;
-        _pos.col++;
+        pos.col++;
       } else {
         break;
       }
@@ -165,7 +165,7 @@ namespace snabl {
   }
 
   void Parser::parse_scope(istream &in, Forms &out) {
-    const auto start_pos(_pos);
+    const auto start_pos(pos);
 
     if (!parse_body<forms::Scope>(in, '}', out)) {
       throw SyntaxError(start_pos, "Open scope");
@@ -173,7 +173,7 @@ namespace snabl {
   }
 
   void Parser::parse_num(istream &in, Forms &out) {
-    const auto start_pos(_pos);
+    const auto start_pos(pos);
     stringstream buf;
     bool is_float(false);
     char c;
@@ -191,10 +191,10 @@ namespace snabl {
 
         is_float = true;
         buf << '.';
-        _pos.col++;
+        pos.col++;
       } else if (isdigit(c) || c == '-') {
         buf << c;
-        _pos.col++;
+        pos.col++;
       } else {
         in.clear();
         in.putback(c);
@@ -210,7 +210,7 @@ namespace snabl {
   }
 
   void Parser::parse_sexpr(istream &in, Forms &out) {
-    const auto start_pos(_pos);
+    const auto start_pos(pos);
 
     if (!parse_body<forms::Sexpr>(in, ')', out)) {
       throw SyntaxError(start_pos, "Open sexpr");
@@ -218,7 +218,7 @@ namespace snabl {
   }
 
   void Parser::parse_stack(istream &in, Forms &out) {
-    const auto start_pos(_pos);
+    const auto start_pos(pos);
 
     if (!parse_body<forms::Stack>(in, ']', out)) {
       throw SyntaxError(start_pos, "Open stack");
@@ -226,7 +226,7 @@ namespace snabl {
   }
   
   void Parser::parse_special_char(istream &in, Forms &out) {
-    auto p(_pos);
+    auto p(pos);
     p.col--;
 
     char c(0);
@@ -237,7 +237,7 @@ namespace snabl {
   }
 
   void Parser::parse_char(istream &in, Forms &out) {
-    auto p(_pos);
+    auto p(pos);
     p.col--;
 
     char c(0);
@@ -246,7 +246,7 @@ namespace snabl {
   }
 
   void Parser::parse_str(istream &in, Forms &out) {
-    auto p(_pos);
+    auto p(pos);
     p.col--;
     stringstream s;
     char c(0);
@@ -256,24 +256,24 @@ namespace snabl {
         char nc(0);
         
         if (in.get(nc) && nc == '\'') {
-          _pos.col++;
+          pos.col++;
           break;
         }
         else {
           s << c;
           
           if (nc) {
-            _pos.col++;
+            pos.col++;
             s << nc;
           }
         }
 
-        _pos.col++;
+        pos.col++;
       } else {
         s << c;
       }
 
-      _pos.col++;
+      pos.col++;
       c = 0;
     }
 

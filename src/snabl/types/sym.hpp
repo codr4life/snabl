@@ -5,11 +5,10 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-	class SymType: public Type<Sym> {
-	public:
-		SymType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct SymType: Type<Sym> {
+    SymType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

@@ -5,11 +5,10 @@
 #include "snabl/ptrs.hpp"
 
 namespace snabl {
-	class MetaType: public Type<ATypePtr> {
-	public:
-		MetaType(Lib &lib, Sym id);
-		void dump(const Box &val, ostream &out) const override;
-	};
+  struct MetaType: Type<ATypePtr> {
+    MetaType(Lib &lib, Sym id);
+    void dump(const Box &val, ostream &out) const override;
+  };
 }
 
 #endif

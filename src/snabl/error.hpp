@@ -7,6 +7,8 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
+  struct Env;
+  
   struct Error: runtime_error {
     Error(): runtime_error("") { }
     Error(const string &msg);
@@ -19,6 +21,10 @@ namespace snabl {
 
   struct SyntaxError: CompileError {
     SyntaxError(Pos pos, const string &msg);
+  };
+
+  struct RuntimeError: Error {
+    RuntimeError(Env &env, Pos pos, const string &msg);
   };
 }
 
