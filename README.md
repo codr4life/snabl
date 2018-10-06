@@ -93,7 +93,7 @@ pong
 ```
 
 #### Synchronicity
-Operations that might hang return a async actions, `sync!` yields the current task until the action is done and pushes any result.
+Operations that might hang return async actions, `sync!` yields the current task until the action is done and pushes any result.
 
 foo.txt:
 ```

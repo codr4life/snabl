@@ -1,5 +1,5 @@
-* add Io enum
-** enum: Io (r w rw)
+* add IO enum
+** enum: IO (r w rw)
 ** generate io: macro
 ** push specified sym with enum type
 ** add fopen mode
