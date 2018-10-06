@@ -1,9 +1,6 @@
 ![Logo](logo.png?raw=true)
 
-### Features
-The following is a list of what could be considered defining features.
-
-#### Concatenation
+### Concatenation
 Much like Forth, Snabl supports directly manipulating the parameter stack.
 
 ```
@@ -20,7 +17,7 @@ drop!
 [1 3 2]
 ```
 
-#### Namespacing
+### Namespacing
 Snabl uses sigils to simplify local reasoning. Types start with uppcercase letters, variables are prefixed with `@`, macros use `!` or `:` as suffix. Apart from literals; anything else is either a constant such as `t`, `f` and `nil`; or a function.
 
 ```
@@ -29,7 +26,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 [42]
 ```
 
-#### Typing
+### Typing
 Snabl supports strong, first class Types. The root type ```T``` may refer to any type except ```Nil```.
 
 ```
@@ -50,7 +47,7 @@ nil T?
 [f]
 ```
 
-#### Function
+### Function
 Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci.
 
 ```
@@ -75,13 +72,13 @@ func: my-fib<Int Int Int> (
 )
 ```
 
-#### Multitasking
+### Multitasking
 Snabl supports multitasking in the form of first class green threads. By default, all code runs in the main task. New tasks may be started using ```task:```.
 
 ```
-  task: (3 times:, 'ping say yield!) drop!
-  task: (3 times:, 'pong say yield!) drop!
-  3 times: yield!
+task: (3 times:, 'ping say yield!) drop!
+task: (3 times:, 'pong say yield!) drop!
+3 times: yield!
 
 ping
 pong
@@ -92,7 +89,7 @@ pong
 []
 ```
 
-#### Synchronicity
+### Synchronicity
 Operations that might hang return async actions, `sync!` yields the current task until the action is done and pushes any result.
 
 foo.txt:
@@ -106,7 +103,7 @@ foo bar baz
 [''foo bar baz'']
 ```
 
-#### Failure
+### Failure
 Snabl offers two flavors of error handling, ```Maybe``` and ```throw!```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
 
 ```
@@ -140,7 +137,7 @@ catch ++
 [42]
 ```
 
-#### Integration
+### Integration
 Snabl integrates deeply into C++ and the STL, and is relatively trivial to embed.
 
 Example 5
@@ -165,7 +162,7 @@ env.home.add_fimp(
 env.run("10 my-fib say");
 ```
 
-#### Portability
+### Portability
 Snabl requires a C++17-capable compiler and CMake to build.
 
 ```

@@ -411,14 +411,15 @@ namespace snabl {
       add_fimp(env.sym("slurp"),
                {Box(env.rfile_type)},
                [&env](Fimp &fimp) {
-                 auto f(env.pop().as<FilePtr>());
+                 auto fp(env.pop().as<FilePtr>());
                  
-                 env.push(env.async_type, async([&env, f]() {
-                       f->seekg(0, ios::end);
-                       const auto size = f->tellg();
-                       f->seekg(0, ios::beg);
+                 env.push(env.async_type, async([&env, fp]() {
+                       auto &f(*fp);
+                       f.seekg(0, ios::end);
+                       const auto size = f.tellg();
+                       f.seekg(0, ios::beg);
                        vector<char> buf(size);
-                       f->read(buf.data(), size);
+                       f.read(buf.data(), size);
                        return Box(env.str_type, make_shared<Str>(buf.data(), size));
                      }));
                });
