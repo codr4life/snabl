@@ -1,6 +1,7 @@
 * drop FuncPtr type
 ** use Func*/& instead
-* add IoMode enum
+* add IO enum
+** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)
 ** generate io: macro
 *** io:r, io:w, io:rw
