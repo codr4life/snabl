@@ -1,6 +1,9 @@
-* add IO enum
+* drop FuncPtr type
+** use Func*/& instead
+* add IoMode enum
 ** enum: IO (r w rw)
 ** generate io: macro
+*** io:r, io:w, io:rw
 ** push specified sym with enum type
 ** add fopen mode
 ** add w/rw support to fopen
