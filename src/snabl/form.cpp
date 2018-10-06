@@ -76,9 +76,8 @@ namespace snabl {
                   return Box(*t);
                 });
       
-      auto fnp(lib.get_func(id));
-      if (!fnp) { throw CompileError(pos, fmt("Unknown func: '%0'", {id.name()})); }
-      auto &fn(*fnp);
+      auto fn(lib.get_func(id));
+      if (!fn) { throw CompileError(pos, fmt("Unknown func: '%0'", {id.name()})); }
       
       if (Int(args.size()) != fn->nargs) {
         throw CompileError(pos, fmt("Wrong number of args: %0", {fn->id}));

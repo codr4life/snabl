@@ -30,7 +30,7 @@ namespace snabl {
   bool Fimp::compile(const FimpPtr &fip, Pos pos) {
     auto &fi(*fip);
     if (fi.start_pc) { return false; }
-    auto &env(fi.func->lib.env);
+    auto &env(fi.func.lib.env);
     bool is_scope(&fi.form->type == &forms::Scope::type);
     auto &start_op(env.emit(ops::Fimp::type, pos, fip, is_scope));      
 
@@ -51,7 +51,7 @@ namespace snabl {
 
   void Fimp::call(const FimpPtr &fip, Pos pos) {
     auto &fi(*fip);
-    const auto &fn(*fi.func);
+    const auto &fn(fi.func);
     auto &env(fn.lib.env);
     
     if (fi.imp) {
@@ -67,14 +67,14 @@ namespace snabl {
     }
   }
 
-  Fimp::Fimp(const FuncPtr &func, const Args &args, Imp imp):
-    Def(get_id(*func, args)), func(func), args(args), imp(imp) { }
+  Fimp::Fimp(Func &func, const Args &args, Imp imp):
+    Def(get_id(func, args)), func(func), args(args), imp(imp) { }
 
-  Fimp::Fimp(const FuncPtr &func, const Args &args, const Form &form):
-    Def(get_id(*func, args)), func(func), args(args), form(form) { }
+  Fimp::Fimp(Func &func, const Args &args, const Form &form):
+    Def(get_id(func, args)), func(func), args(args), form(form) { }
 
   Int Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
-    auto &env(func->lib.env);
+    auto &env(func.lib.env);
     auto i(begin), j(args.begin());
     Int score(0);
 

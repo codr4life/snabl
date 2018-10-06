@@ -12,6 +12,7 @@
 #include "snabl/types.hpp"
 
 namespace snabl {
+  struct Func;
   struct Op;
   
   using Ops = deque<Op>;
@@ -160,11 +161,11 @@ namespace snabl {
       };
       
       static const Type type;
-      const FuncPtr func;
+      Func &func;
       const FimpPtr fimp;
       
       FimpPtr prev_fimp;
-      Funcall(const FuncPtr &func);
+      Funcall(Func &func);
       Funcall(const FimpPtr &fimp);
     };
     

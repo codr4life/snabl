@@ -4,7 +4,7 @@ namespace snabl {
   Lib::Lib(Env &env, Sym id): Def(id), env(env) { }
 
   Lib::~Lib() {
-    for (auto &f: funcs) { f.second->clear(); }
+    for (auto &f: funcs) { f.second.clear(); }
   }
 
   const MacroPtr &Lib::add_macro(Sym id, const Macro::Imp &imp) {
@@ -13,16 +13,16 @@ namespace snabl {
     return macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
   }
   
-  const FuncPtr &Lib::add_func(Sym id, Int nargs) {
+  Func &Lib::add_func(Sym id, Int nargs) {
     auto found(funcs.find(id));
     
     if (found != funcs.end()) {
       auto &f(found->second);
-      if (f->nargs != nargs) { throw Error("Args mismatch"); }
+      if (f.nargs != nargs) { throw Error("Func args mismatch"); }
       return f;
     }
     
-    return funcs.emplace(id, make_shared<Func>(*this, id, nargs)).first->second;
+    return funcs.emplace(id, Func(*this, id, nargs)).first->second;
   }
 
   
@@ -36,7 +36,7 @@ namespace snabl {
     return (found == types.end()) ? nullptr : &found->second;
   }
   
-  const FuncPtr *Lib::get_func(Sym id) {
+  Func *Lib::get_func(Sym id) {
     auto found(funcs.find(id));
     return (found == funcs.end()) ? nullptr : &found->second;
   }

@@ -18,13 +18,13 @@ namespace snabl {
     static bool compile(const FimpPtr &fip, Pos pos);
     static void call(const FimpPtr &fip, Pos pos);
 
-    const FuncPtr func;
+    Func &func;
     const Args args;
     const optional<Form> form;
     const Imp imp;
 
-    Fimp(const FuncPtr &func, const Args &args, Imp imp);
-    Fimp(const FuncPtr &func, const Args &args, const Form &form);
+    Fimp(Func &func, const Args &args, Imp imp);
+    Fimp(Func &func, const Args &args, const Form &form);
 
     string target_id() const override { return id.name(); }   
 

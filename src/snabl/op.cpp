@@ -174,11 +174,11 @@ namespace snabl {
       };
     }
     
-    Funcall::Funcall(const FuncPtr &func): func(func) { }
+    Funcall::Funcall(Func &func): func(func) { }
     Funcall::Funcall(const FimpPtr &fimp): func(fimp->func), fimp(fimp) { }
 
     void Funcall::Type::dump_data(const Funcall &op, ostream &out) const {
-      out << ' ' << (op.fimp ? op.fimp->id : op.func->id);
+      out << ' ' << (op.fimp ? op.fimp->id : op.func.id);
       if (op.prev_fimp) { out << " (" << op.prev_fimp->id << ')'; }
     }
 
@@ -191,23 +191,23 @@ namespace snabl {
 
         const FimpPtr *fimp(nullptr);
 
-        if (Int(s.size()) >= t.stack_offs+o.func->nargs) {
+        if (Int(s.size()) >= t.stack_offs+o.func.nargs) {
           if (o.fimp) { fimp = &o.fimp; }
           if (!fimp && o.prev_fimp) { fimp = &o.prev_fimp; }
 
           if (fimp) {
-            if (o.func->nargs &&
-                (*fimp)->score(s.begin()+(s.size()-o.func->nargs),
+            if (o.func.nargs &&
+                (*fimp)->score(s.begin()+(s.size()-o.func.nargs),
                                s.end()) == -1) { fimp = nullptr; }
           } else {
-            fimp = o.func->get_best_fimp(s.begin()+(s.size()-o.func->nargs),
+            fimp = o.func.get_best_fimp(s.begin()+(s.size()-o.func.nargs),
                                          s.end());
           }
         } 
       
         if (!fimp) {
           throw RuntimeError(env, op.pos, fmt("Func not applicable: %0",
-                                              {o.func->id}));
+                                              {o.func.id}));
         }
       
         if (!o.fimp) { o.prev_fimp = *fimp; }

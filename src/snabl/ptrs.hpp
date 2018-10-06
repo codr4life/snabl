@@ -28,9 +28,6 @@ namespace snabl {
   struct Fimp;
   using FimpPtr = shared_ptr<Fimp>;
 
-  struct Func;
-  using FuncPtr = shared_ptr<Func>;
-
   struct Lambda;
   using LambdaPtr = shared_ptr<Lambda>;
 

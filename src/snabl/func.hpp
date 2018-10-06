@@ -11,16 +11,14 @@ namespace snabl {
   struct Lib;
 
   struct Func: Def {
-    template <typename... ImpT>
-    static const FimpPtr &add_fimp(const FuncPtr &func,
-                                   const Fimp::Args &args,
-                                   ImpT &&... imp);
-
     Lib &lib;
     const Int nargs;
     unordered_map<Sym, FimpPtr> fimps;
     
     Func(Lib &lib, Sym id, Int nargs): Def(id), lib(lib), nargs(nargs) { }
+
+    template <typename... ImpT>
+    const FimpPtr &add_fimp(const Fimp::Args &args, ImpT &&... imp);
 
     const FimpPtr &get_fimp() const { return fimps.begin()->second; }
 
@@ -50,15 +48,12 @@ namespace snabl {
   };
 
   template <typename... ImpT>
-  const FimpPtr &Func::add_fimp(const FuncPtr &func,
-                                const Fimp::Args &args,
-                                ImpT &&... imp) {
-    auto id(Fimp::get_id(*func, args));
-    auto found = func->fimps.find(id);
-    if (found != func->fimps.end()) { func->fimps.erase(found); }
+  const FimpPtr &Func::add_fimp(const Fimp::Args &args, ImpT &&... imp) {
+    auto id(Fimp::get_id(*this, args));
+    auto found = fimps.find(id);
+    if (found != fimps.end()) { fimps.erase(found); }
 
-    return func->fimps.emplace(id,
-                                make_shared<Fimp>(func, args, forward<ImpT>(imp)...))
+    return fimps.emplace(id, make_shared<Fimp>(*this, args, forward<ImpT>(imp)...))
       .first->second;
   }
 }

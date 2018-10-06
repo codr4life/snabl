@@ -1,5 +1,8 @@
-* drop FuncPtr type
-** use Func*/& instead
+* Change Ops to use unique_ptr<Op>
+** replaces imp
+** use make_unique in emit
+** move make_imp/dump
+* switch to boxing errors by value
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)
