@@ -36,6 +36,7 @@ namespace snabl {
     const Stack::Type Stack::type("stack");
     const Stop::Type Stop::type("stop");
     const Swap::Type Swap::type("swap");
+    const Sync::Type Sync::type("sync");
     const Task::Type Task::type("task");
     const Throw::Type Throw::type("throw");
     const Times::Type Times::type("times");
@@ -410,6 +411,24 @@ namespace snabl {
         if (Int(s.size()) <= t.stack_offs+1) { throw Error("Nothing to swap"); }
         const auto i(s.size()-1);
         swap(s[i], s[i-1]);
+        env.jump(op.next);
+      };
+    }
+
+    OpImp Sync::Type::make_imp(Env &env, Op &op) const {
+      return [&env, &op]() {
+        auto &v(env.peek());
+
+        if (v.type != env.async_type) {
+          throw Error(fmt("Expected Async, was:", {0}));
+        }
+
+        auto a(v.as<AsyncPtr>());
+        if (!a->valid() && !env.yield()) { a->wait(); }
+        
+        env.pop();
+        auto r(a->get());
+        if (r) { env.push(*r); }
         env.jump(op.next);
       };
     }

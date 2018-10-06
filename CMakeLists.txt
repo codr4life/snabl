@@ -15,6 +15,7 @@ set_target_properties(libsnabl PROPERTIES PREFIX "")
 
 add_executable(snabl ${sources} src/tests.cpp src/main.cpp)
 target_include_directories(snabl PUBLIC src/)
+target_link_libraries(snabl pthread)
 
 file(GLOB headers src/snabl/*.hpp)
 install(FILES ${headers} DESTINATION include/snabl)

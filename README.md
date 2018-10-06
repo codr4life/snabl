@@ -89,6 +89,21 @@ ping
 pong
 ping
 pong
+[]
+```
+
+#### Synchronicity
+Operations that might hang return a async actions, `sync!` yields the current task until the action is done and pushes any result.
+
+foo.txt:
+```
+foo bar baz
+```
+
+```
+''foo.txt'' fopen sync! slurp sync!
+
+[''foo bar baz'']
 ```
 
 #### Failure

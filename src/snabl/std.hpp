@@ -10,6 +10,7 @@
 #include <deque>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <iomanip>
 #include <iostream>
 #include <list>
@@ -28,8 +29,8 @@
 #include <vector>
 
 namespace snabl {
-	using namespace std;
-	using namespace std::chrono;
+  using namespace std;
+  using namespace std::chrono;
 }
 
 #endif

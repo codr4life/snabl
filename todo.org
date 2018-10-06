@@ -1,7 +1,22 @@
+* add Io enum
+** enum: Io (r w rw)
+** generate io: macro
+** push specified sym with enum type
+** add fopen mode
+** add w/rw support to fopen
+* add bool conversion to if:
+** add Bool op
+* add or: macro
+** get first operand from stack
+** treat body forms as multiple operands
+* add and: macro
+** like or:
 * add include: macro
 ** one arg
 ** load all files into ops
 ** add bench/all.sl
+* add while: loop
+** like times
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
@@ -10,6 +25,10 @@
 ** <3 times: Int>
 ** begin/end_scope
 ** use stack as args
+* add derived methods
+** switch type methods to lambdas
+** leave nulled and check in Box
+** copy methods on derive
 * add define: macro
 ** like let but bind at runtime
 ** add lib.consts
@@ -21,10 +40,13 @@
 ** add bench/fib3.sl
 * add Pair type
 ** use std::pair<Box, Box>
+* implement push for sinks
+** Str
+* implement peek/pop for sources
+** Str/Iter
+* add alias: Foo Int macro
+** allow aliasing funcs/fimps/types
+** enable macro processing for all ids
 * add type: Foo Int macro
 ** derive new type from parent
 ** generate constructor 
-* implement push for all sinks
-** Str
-* implement peek/pop for all sources
-** Str/Iter

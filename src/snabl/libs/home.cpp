@@ -17,6 +17,7 @@ namespace snabl {
       env.sink_type = add_type<Trait>(env.sym("Sink"), {env.root_type});
 
       env.meta_type = add_type<MetaType>(env.sym("Type"), {env.root_type}); 
+      env.async_type = add_type<AsyncType>(env.sym("Async"), {env.root_type});
       env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
       env.char_type = add_type<CharType>(env.sym("Char"), {env.root_type});
       env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
@@ -28,6 +29,8 @@ namespace snabl {
       env.iter_type = add_type<IterType>(env.sym("Iter"), {
           env.seq_type, env.source_type});
       
+      env.rfile_type = add_type<RFileType>(env.sym("RFile"), {env.root_type});
+
       env.stack_type = add_type<StackType>(env.sym("Stack"), {
           env.seq_type, env.sink_type, env.source_type});
 
@@ -54,6 +57,7 @@ namespace snabl {
       add_macro(env.sym("rswap!"), ops::RSwap::type);
       add_macro(env.sym("sdrop!"), ops::SDrop::type);
       add_macro(env.sym("swap!"), ops::Swap::type);
+      add_macro(env.sym("sync!"), ops::Sync::type);
       add_macro(env.sym("throw!"), ops::Throw::type);
       add_macro(env.sym("yield!"), ops::Yield::type);
 
@@ -395,6 +399,28 @@ namespace snabl {
                [&env](Fimp &fimp) {
                  const Time time(env.pop().as<Time>());
                  this_thread::sleep_for(nanoseconds(time.ns));
+               });
+
+      add_fimp(env.sym("fopen"),
+               {Box(env.str_type)},
+               [&env](Fimp &fimp) {
+                 auto fn(env.pop().as<StrPtr>());
+                 env.push(env.async_type, fopen(env, env.call().pos, *fn, ios::in));
+               });
+
+      add_fimp(env.sym("slurp"),
+               {Box(env.rfile_type)},
+               [&env](Fimp &fimp) {
+                 auto f(env.pop().as<FilePtr>());
+                 
+                 env.push(env.async_type, async([&env, f]() {
+                       f->seekg(0, ios::end);
+                       const auto size = f->tellg();
+                       f->seekg(0, ios::beg);
+                       vector<char> buf(size);
+                       f->read(buf.data(), size);
+                       return Box(env.str_type, make_shared<Str>(buf.data(), size));
+                     }));
                });
 
       add_fimp(env.sym("test="),

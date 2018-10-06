@@ -378,6 +378,15 @@ namespace snabl {
       static const Type type;
     };
 
+    struct Sync {
+      struct Type: OpType<Sync> {
+        Type(const string &id): OpType<Sync>(id) { }
+        OpImp make_imp(Env &env, Op &op) const override;
+      };
+
+      static const Type type;
+    };
+
     struct Task {
       struct Type: OpType<Task> {
         Type(const string &id): OpType<Task>(id) { }

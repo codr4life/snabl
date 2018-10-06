@@ -11,9 +11,11 @@
 #include "snabl/sym.hpp"
 #include "snabl/task.hpp"
 #include "snabl/types.hpp"
+#include "snabl/types/async.hpp"
 #include "snabl/types/bool.hpp"
 #include "snabl/types/char.hpp"
 #include "snabl/types/error.hpp"
+#include "snabl/types/file.hpp"
 #include "snabl/types/float.hpp"
 #include "snabl/types/int.hpp"
 #include "snabl/types/iter.hpp"
@@ -43,6 +45,7 @@ namespace snabl {
       source_type;
     
     TypePtr<ATypePtr> meta_type;
+    TypePtr<AsyncPtr> async_type;
     TypePtr<bool> bool_type;
     TypePtr<Char> char_type;
     TypePtr<ErrorPtr> error_type;
@@ -51,6 +54,7 @@ namespace snabl {
     TypePtr<IterPtr> iter_type;
     TypePtr<LambdaPtr> lambda_type;
     TypePtr<Nil> nil_type;
+    TypePtr<FilePtr> rfile_type;
     TypePtr<StackPtr> stack_type;
     TypePtr<StrPtr> str_type;
     TypePtr<Sym> sym_type;
@@ -70,7 +74,7 @@ namespace snabl {
       type_tag(1),
       task(nullptr),
       separators {
-      ' ', '\t', '\n', ',', ';', '?', '&', '.', '|',
+      ' ', '\t', '\n', ',', '?', '&', '.', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
         },
       home_lib(*this),
