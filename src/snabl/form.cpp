@@ -88,7 +88,7 @@ namespace snabl {
                
       if (!fi) { throw CompileError(pos, fmt("Unknown fimp: %0", {fn->id})); }
       if (!fi->imp) { snabl::Fimp::compile(fi, pos); }
-      env.emit(ops::Funcall::type, pos, fi);
+      env.emit<ops::Funcall>(pos, fi);
     }
 
     Id::Id(Sym id): id(id) { }
@@ -105,12 +105,12 @@ namespace snabl {
 
       if (id.name().front() == '@') {
         in++;
-        env.emit(ops::Get::type, form.pos, env.sym(id.name().substr(1)));
+        env.emit<ops::Get>(form.pos, env.sym(id.name().substr(1)));
       } else if (isupper(id.name().front())) {
         in++;
         auto t(env.lib().get_type(id));
         if (!t) { throw CompileError(form.pos, fmt("Unknown type: %0", {id})); }
-        env.emit(ops::Push::type, form.pos, env.meta_type, *t);
+        env.emit<ops::Push>(form.pos, env.meta_type, *t);
       } else {
         auto &lib(env.lib());
         auto m(lib.get_macro(id));
@@ -125,7 +125,7 @@ namespace snabl {
             throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
           }
           
-          env.emit(ops::Funcall::type, form.pos, *fn);
+          env.emit<ops::Funcall>(form.pos, *fn);
         }
       }
     }
@@ -140,7 +140,7 @@ namespace snabl {
                       Forms::const_iterator end,
                       Env &env) const {
       auto &form(*in++);
-      env.emit(ops::Push::type, form.pos, form.as<Lit>().val);
+      env.emit<ops::Push>(form.pos, form.as<Lit>().val);
     }
 
     Query::Query(const Form &form): form(form) {}
@@ -161,16 +161,16 @@ namespace snabl {
       auto &qf(form.as<forms::Query>().form);
       
       if (&qf.type == &forms::Lit::type) {
-        env.emit(ops::Eqval::type, qf.pos, qf.as<Lit>().val);
+        env.emit<ops::Eqval>(qf.pos, qf.as<Lit>().val);
       } else if (&qf.type == &forms::Id::type) {
         if (isupper(qf.as<forms::Id>().id.name().front())) {
           auto &id(qf.as<forms::Id>().id);
           auto t(env.lib().get_type(id));
           if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
-          env.emit(ops::Isa::type, qf.pos, *t);
+          env.emit<ops::Isa>(qf.pos, *t);
         } else {
           env.compile(qf);
-          env.emit(ops::Eqval::type, qf.pos);
+          env.emit<ops::Eqval>(qf.pos);
         }
       } else {
         throw CompileError(qf.pos, fmt("Invalid query: %0", {qf.type.id}));
@@ -198,13 +198,12 @@ namespace snabl {
       
       if (&rf.type == &Scope::type || &rf.type == &Sexpr::type) {
         const auto is_scope(&rf.type == &Scope::type);
-        auto &start_op(env.emit(ops::Lambda::type, f.pos, is_scope));
-        auto &start(start_op.as<ops::Lambda>());
+        auto &start(env.emit<ops::Lambda>(f.pos, is_scope));
         if (is_scope) { env.begin_regs(); }
         env.compile(rf.as<Body>().body);
         if (is_scope) { env.end_regs(); }
-        env.emit(ops::Return::type, f.pos);
-        start.start_pc = start_op.next;
+        env.emit<ops::Return>(f.pos);
+        start.start_pc = start.next;
         start.end_pc = env.ops.size();
       } else {
         throw CompileError(rf.pos, fmt("Invalid ref: %0", {rf.type.id}));
@@ -237,11 +236,11 @@ namespace snabl {
                         Env &env) const {
       auto &f(*in++);
       auto &sf(f.as<Scope>());
-      env.emit(ops::Scope::type, f.pos);
+      env.emit<ops::Scope>(f.pos);
       env.begin_regs();
       env.compile(sf.body);
       env.end_regs();
-      env.emit(ops::ScopeEnd::type, f.pos);
+      env.emit<ops::ScopeEnd>(f.pos);
     }
 
     FormImp *Sexpr::clone() const { return new Sexpr(body.begin(), body.end()); }
@@ -270,9 +269,9 @@ namespace snabl {
                         Env &env) const {
       auto &f(*in++);
       auto &sf(f.as<Split>());
-      env.emit(ops::Split::type, f.pos, sf.offs);
+      env.emit<ops::Split>(f.pos, sf.offs);
       env.compile(sf.body);
-      env.emit(ops::SplitEnd::type, f.pos);
+      env.emit<ops::SplitEnd>(f.pos);
     }
 
     FormImp *Stack::clone() const { return new Stack(body.begin(), body.end()); }
@@ -293,9 +292,9 @@ namespace snabl {
                  &b.front().type != &forms::Id::type ||
                  b.front().as<forms::Id>().id != env.sym(".."));
       
-      if (split) { env.emit(ops::Split::type, f.pos); }
+      if (split) { env.emit<ops::Split>(f.pos); }
       env.compile(split ? b.begin() : b.begin()+1, b.end());
-      env.emit(ops::Stack::type, f.pos, split);
+      env.emit<ops::Stack>(f.pos, split);
     }
   }
 }

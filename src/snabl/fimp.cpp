@@ -32,7 +32,7 @@ namespace snabl {
     if (fi.start_pc) { return false; }
     auto &env(fi.func.lib.env);
     bool is_scope(&fi.form->type == &forms::Scope::type);
-    auto &start_op(env.emit(ops::Fimp::type, pos, fip, is_scope));      
+    auto &start_op(env.emit<ops::Fimp>(pos, fip, is_scope));      
 
     if (is_scope) {
       env.begin_regs();
@@ -43,7 +43,7 @@ namespace snabl {
       env.compile(*fi.form);
     }
     
-    env.emit(ops::Return::type, pos);
+    env.emit<ops::Return>(pos);
     fi.start_pc = start_op.next;
     fi.end_pc = env.ops.size();
     return true;

@@ -35,7 +35,7 @@ int main(int argc, const char *argv[]) {
     Int row(0);
     for (const auto &op: env.ops) {
       cout << row++ << '\t';
-      op.dump(cout);
+      op->dump(cout);
     }
     break;
   }

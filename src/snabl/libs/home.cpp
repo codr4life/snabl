@@ -46,33 +46,32 @@ namespace snabl {
       add_macro(env.sym("f"), env.bool_type, false);      
       add_macro(env.sym("nil"), env.nil_type);      
 
-      add_macro(env.sym("_"), ops::Nop::type);
-      add_macro(env.sym("call!"), ops::Call::type);
-      add_macro(env.sym("ddrop!"), ops::DDrop::type);
-      add_macro(env.sym("drop!"), ops::Drop::type);
-      add_macro(env.sym("dup!"), ops::Dup::type);
-      add_macro(env.sym("recall!"), ops::Recall::type);
-      add_macro(env.sym("return!"), ops::Return::type);
-      add_macro(env.sym("rot!"), ops::Rot::type);
-      add_macro(env.sym("rswap!"), ops::RSwap::type);
-      add_macro(env.sym("sdrop!"), ops::SDrop::type);
-      add_macro(env.sym("swap!"), ops::Swap::type);
-      add_macro(env.sym("sync!"), ops::Sync::type);
-      add_macro(env.sym("throw!"), ops::Throw::type);
-      add_macro(env.sym("yield!"), ops::Yield::type);
+      add_macro<ops::Nop>(env.sym("_"));
+      add_macro<ops::Call>(env.sym("call!"));
+      add_macro<ops::DDrop>(env.sym("ddrop!"));
+      add_macro<ops::Drop>(env.sym("drop!"));
+      add_macro<ops::Dup>(env.sym("dup!"));
+      add_macro<ops::Recall>(env.sym("recall!"));
+      add_macro<ops::Return>(env.sym("return!"));
+      add_macro<ops::Rot>(env.sym("rot!"));
+      add_macro<ops::RSwap>(env.sym("rswap!"));
+      add_macro<ops::SDrop>(env.sym("sdrop!"));
+      add_macro<ops::Swap>(env.sym("swap!"));
+      add_macro<ops::Sync>(env.sym("sync!"));
+      add_macro<ops::Throw>(env.sym("throw!"));
+      add_macro<ops::Yield>(env.sym("yield!"));
 
       add_macro(env.sym("bench:"),
                 [](Forms::const_iterator &in,
                    Forms::const_iterator end,
                    Env &env) {
                   const auto form(*in++);                 
-                  auto &op(env.emit(ops::Bench::type, form.pos)
-                           .as<ops::Bench>());
+                  auto &op(env.emit<ops::Bench>(form.pos));
                   if (in == end) {
                     throw CompileError(form.pos, "Missing bench form");
                   }
                   env.compile(*in++);
-                  env.emit(ops::Stop::type, form.pos);
+                  env.emit<ops::Stop>(form.pos);
                   op.end_pc = env.ops.size();
                 }); 
 
@@ -81,12 +80,12 @@ namespace snabl {
                    Forms::const_iterator end,
                    Env &env) {
                   auto &form(*in++);
-                  auto &else_skip(env.emit(ops::Else::type, form.pos));
+                  auto &else_skip(env.emit<ops::Else>(form.pos));
                   env.compile(*in++);
-                  auto &if_skip(env.emit(ops::Jump::type, form.pos));
-                  else_skip.as<ops::Else>().skip_pc = env.ops.size();
+                  auto &if_skip(env.emit<ops::Jump>(form.pos));
+                  else_skip.skip_pc = env.ops.size();
                   env.compile(*in++);
-                  if_skip.as<ops::Jump>().end_pc = env.ops.size();
+                  if_skip.end_pc = env.ops.size();
                 }); 
 
       add_macro(env.sym("func:"),
@@ -132,12 +131,12 @@ namespace snabl {
                   auto &p(*in++);
 
                   if (&p.type == &forms::Id::type) {
-                    env.emit(ops::Let::type, form.pos, p.as<forms::Id>().id);
+                    env.emit<ops::Let>(form.pos, p.as<forms::Id>().id);
                   } else {
                     auto &b(p.as<forms::Body>().body);
 
                     for (auto pp = b.rbegin(); pp != b.rend(); pp++) {
-                      env.emit(ops::Let::type, form.pos, pp->as<forms::Id>().id);
+                      env.emit<ops::Let>(form.pos, pp->as<forms::Id>().id);
                     }
                   }
                 });
@@ -152,21 +151,16 @@ namespace snabl {
                   auto &cases((in++)->as<forms::Body>());
 
                   for (auto f(cases.body.begin()); f != cases.body.end();) {
-                    if (f+1 != cases.body.end()) {
-                      env.emit(ops::Dup::type, form.pos);
-                    }
-                    
+                    if (f+1 != cases.body.end()) { env.emit<ops::Dup>(form.pos); }
                     env.compile(*f++);
 
                     if (f != cases.body.end()) {
-                      auto &else_op(env.emit(ops::Else::type,
-                                             form.pos).as<ops::Else>());
-                      env.emit(ops::Drop::type, form.pos);
+                      auto &else_op(env.emit<ops::Else>(form.pos));
+                      env.emit<ops::Drop>(form.pos);
                       env.compile(*f++);
                       
                       if (f != cases.body.end()) {
-                        skips.push_back(&env.emit(ops::Jump::type,
-                                                  form.pos).as<ops::Jump>());
+                        skips.push_back(&env.emit<ops::Jump>(form.pos));
                       }
 
                       else_op.skip_pc = env.ops.size();
@@ -186,11 +180,10 @@ namespace snabl {
                     throw CompileError(form.pos, "Missing task body");
                   }
                   
-                  auto &op(env.emit(ops::Task::type, form.pos, env.ops.size()+1)
-                           .as<ops::Task>());
+                  auto &op(env.emit<ops::Task>(form.pos, env.ops.size()+1));
                   
                   env.compile(*in++);
-                  env.emit(ops::Stop::type, form.pos);
+                  env.emit<ops::Stop>(form.pos);
                   op.end_pc = env.ops.size();
                 }); 
 
@@ -200,15 +193,15 @@ namespace snabl {
                    Env &env) {
                   auto &form(*in++);
                   const Int i_reg(env.next_reg(form.pos));
-                  env.emit(ops::Times::type, form.pos, i_reg);
+                  env.emit<ops::Times>(form.pos, i_reg);
                   const auto start_pc(env.ops.size());
 
-                  auto &jump(env.emit(ops::JumpIf::type, form.pos, [&env, i_reg]() {
+                  auto &jump(env.emit<ops::JumpIf>(form.pos, [&env, i_reg]() {
                         return !env.get_reg<Int>(i_reg)--;
-                      }).as<ops::JumpIf>());
+                      }));
                   
                   env.compile(*in++);
-                  env.emit(ops::Jump::type, form.pos, start_pc);
+                  env.emit<ops::Jump>(form.pos, start_pc);
                   jump.end_pc = env.ops.size();
                 }); 
 
@@ -217,12 +210,11 @@ namespace snabl {
                    Forms::const_iterator end,
                    Env &env) {
                   const auto form(*in++);
-                  auto &op(env.emit(ops::Try::type, form.pos, env.next_reg(form.pos))
-                           .as<ops::Try>());
+                  auto &op(env.emit<ops::Try>(form.pos, env.next_reg(form.pos)));
                   if (in == end) { throw CompileError(form.pos, "Missing try body"); }
                   env.compile(*in++);
-                  env.emit(ops::TryEnd::type, form.pos, op.state_reg);
-                  env.emit(ops::Push::type, form.pos, env.nil_type);
+                  env.emit<ops::TryEnd>(form.pos, op.state_reg);
+                  env.emit<ops::Push>(form.pos, env.nil_type);
                   op.end_pc = env.ops.size();
                 });
 

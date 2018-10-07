@@ -1,8 +1,9 @@
-* Change Ops to use unique_ptr<Op>
-** replaces imp
-** use make_unique in emit
-** move make_imp/dump
-* switch to boxing errors by value
+* switch OpImp refs to PC
+** Op.next
+* add second Ptr type arg
+** replace shared_ptrs except FilePtr
+
+* ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)

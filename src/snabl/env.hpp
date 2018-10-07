@@ -166,13 +166,13 @@ namespace snabl {
     void let_reg(Int idx, any &&val) { task->scope->regs[idx] = move(val); }
     void clear_reg(Int idx) const { task->scope->regs[idx].reset(); }
     
-    template <typename ImpT, typename... ArgsT>
-    Op &emit(const OpType<ImpT> &type, ArgsT &&... args) {
-      Op *prev(ops.empty() ? nullptr : &ops.back());
-      ops.emplace_back(*this, type, args...);
-      auto &op(ops.back());
-      if (prev) { prev->next = op.imp; }
-      return op;
+    template <typename OpT, typename...ArgsT>
+    OpT &emit(ArgsT &&...args) {
+      Op *prev(ops.empty() ? nullptr : ops.back().get());
+      auto op(new OpT(*this, args...));
+      ops.emplace_back(op);
+      if (prev) { prev->next = op->imp; }
+      return *op;
     }
 
     void compile(string_view in);
@@ -201,7 +201,7 @@ namespace snabl {
     void jump(PC pc) { task->pc = pc; }
 
     void jump(Int pc) {
-      task->pc = (pc == Int(ops.size())) ? nullptr : &(ops.begin()+pc)->imp;
+      task->pc = (pc == Int(ops.size())) ? nullptr : &ops[pc]->imp;
     }
 
     void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
@@ -246,7 +246,7 @@ namespace snabl {
 
     void push(const Box &val) { task->stack.push_back(val); }
 
-    template <typename ValT, typename... ArgsT>
+    template <typename ValT, typename...ArgsT>
     void push(const TypePtr<ValT> &type, ArgsT &&...args) {
       task->stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
     }
@@ -281,14 +281,14 @@ namespace snabl {
       task->stack_offs = task->splits.size ? task->splits.back() : 0;
     }
 
-    template <typename... ArgsT>
-    void note(Pos pos, const string &msg, ArgsT &&... args) {
+    template <typename...ArgsT>
+    void note(Pos pos, const string &msg, ArgsT &&...args) {
       cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
            << fmt(msg, {args...}) << endl;
     }
 
-    template <typename... ArgsT>
-    void warn(Pos pos, const string &msg, ArgsT &&... args) {
+    template <typename...ArgsT>
+    void warn(Pos pos, const string &msg, ArgsT &&...args) {
       cerr << fmt("Warning in row %0, col %1: ", {pos.row, pos.col})
            << fmt(msg, {args...}) << endl;
     }        
@@ -304,23 +304,23 @@ namespace snabl {
     return lhs->isa(rhs);
   }
 
-  template <typename ValT, typename... ArgsT>
+  template <typename ValT, typename...ArgsT>
   const MacroPtr &Lib::add_macro(Sym id,
                                  const TypePtr<ValT> &type,
-                                 ArgsT &&... args) {
+                                 ArgsT &&...args) {
     return add_macro(id, [type, args...](Forms::const_iterator &in,
                                          Forms::const_iterator end,
                                          Env &env) {
-                       env.emit(ops::Push::type, (in++)->pos, type, args...);     
+                       env.emit<ops::Push>((in++)->pos, type, args...);     
                      });
   }
 
-  template <typename ImpT, typename... ArgsT>
-  const MacroPtr &Lib::add_macro(Sym id, const OpType<ImpT> &type, ArgsT &&... args) {
-    return add_macro(id, [&type, args...](Forms::const_iterator &in,
-                                          Forms::const_iterator end,
-                                          Env &env) {
-                       env.emit(type, (in++)->pos, args...);
+  template <typename OpT, typename...ArgsT>
+  const MacroPtr &Lib::add_macro(Sym id, ArgsT &&...args) {
+    return add_macro(id, [args...](Forms::const_iterator &in,
+                                   Forms::const_iterator end,
+                                   Env &env) {
+                       env.emit<OpT>((in++)->pos, args...);
                      });
   }
 }

@@ -15,444 +15,290 @@ namespace snabl {
   struct Func;
   struct Op;
   
-  using Ops = deque<Op>;
+  using Ops = deque<unique_ptr<Op>>;
   
-  struct AOpType {
+  struct OpType {
     const string id;
-    AOpType(const string &id): id(id) { }
-    AOpType(const AOpType &) = delete;
-    const AOpType &operator=(const AOpType &) = delete;
-    virtual OpImp make_imp(Env &env, Op &op) const=0;
-    virtual void dump(const Op &op, ostream &out) const { }
-  };
 
-  template <typename DataT>
-  struct OpType: AOpType {
-    OpType(const string &id): AOpType(id) { }   
-    void dump(const Op &op, ostream &out) const override;
-    virtual void dump_data(const DataT &op, ostream &out) const { }
+    OpType(const OpType &) = delete;
+    const OpType &operator=(const OpType &) = delete;
+
+    OpType(const string &id): id(id) { }   
   };
     
   struct Op {
-    const AOpType &type;
+    const OpType &type;
     const Pos pos;
-    any data;
     const OpImp imp;
     OpImp next;
 
-    Op(const Op &src)=delete;
-    
-    template <typename DataT, typename... ArgsT>
-    Op(Env &env, const OpType<DataT> &type, Pos pos, ArgsT &&... args):
-      type(type),
-      pos(pos),
-      data(DataT(forward<ArgsT>(args)...)),
-      imp(type.make_imp(env, *this)) { }
+    Op(const Op &)=delete;
+    const Op &operator =(const Op &)=delete;
 
-    template <typename DataT>
-    const DataT &as() const { return any_cast<const DataT &>(data); }
+    Op(const OpType &type, Pos pos, OpImp imp): type(type), pos(pos), imp(imp) { }
 
-    template <typename DataT>
-    DataT &as() { return any_cast<DataT &>(data); }
+    virtual void dump_args(ostream &out) const {}
 
     void dump(ostream &out) const {
       out << type.id;
-      type.dump(*this, out);
+      dump_args(out);
       out << endl;
     }
   };
   
-  template <typename DataT>
-  void OpType<DataT>::dump(const Op &op, ostream &out) const {
-    dump_data(op.as<DataT>(), out);
-  }
-
   namespace ops {
-    struct Bench {        
-      struct Type: OpType<Bench> {
-        Type(const string &id): OpType<Bench>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Bench: Op {
+      static const OpType type;
       Int end_pc;
-      Bench(): end_pc(-1) { }
+      Bench(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Call {       
-      struct Type: OpType<Call> {
-        Type(const string &id): OpType<Call>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Call: Op {       
+      static const OpType type;
+      Call(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct DDrop {
-      struct Type: OpType<DDrop> {
-        Type(const string &id): OpType<DDrop>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct DDrop: Op {
+      static const OpType type;
+      DDrop(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Drop {
-      struct Type: OpType<Drop> {
-        Type(const string &id): OpType<Drop>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Drop: Op {
+      static const OpType type;
+      Drop(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Dup {
-      struct Type: OpType<Dup> {
-        Type(const string &id): OpType<Dup>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Dup: Op {
+      static const OpType type;
+      Dup(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Else {
-      struct Type: OpType<Else> {
-        Type(const string &id): OpType<Else>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Else: Op {
+      static const OpType type;
       Int skip_pc;
-      
-      Else(Int skip_pc=-1): skip_pc(skip_pc) { }
+      Else(Env &env, Pos pos, Int skip_pc=-1);
+      OpImp make_imp(Env &env);
     };
     
-    struct Eqval {
-      struct Type: OpType<Eqval> {
-        Type(const string &id): OpType<Eqval>(id) { }
-        void dump_data(const Eqval &op, ostream &out) const override;
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Eqval: Op {
+      static const OpType type;
       const optional<const Box> rhs;
-      Eqval(const optional<const Box> rhs=nullopt): rhs(rhs) { }
+      Eqval(Env &env, Pos pos, const optional<const Box> rhs=nullopt);
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
     };
 
-    struct Fimp {
-      struct Type: OpType<Fimp> {
-        Type(const string &id): OpType<Fimp>(id) { }
-        void dump_data(const Fimp &op, ostream &out) const override;
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Fimp: Op {
+      static const OpType type;
       const FimpPtr ptr;
       const bool is_scope;
-      
-      Fimp(const FimpPtr &ptr, bool is_scope): ptr(ptr), is_scope(is_scope) { }
+      Fimp(Env &env, Pos pos, const FimpPtr &ptr, bool is_scope);
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
     };
 
-    struct Funcall {
-      struct Type: OpType<Funcall> {
-        Type(const string &id): OpType<Funcall>(id) { }
-        void dump_data(const Funcall &op, ostream &out) const override;
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-      
-      static const Type type;
+    struct Funcall: Op {
+      static const OpType type;
       Func &func;
       const FimpPtr fimp;
-      
       FimpPtr prev_fimp;
-      Funcall(Func &func);
-      Funcall(const FimpPtr &fimp);
-    };
+      Funcall(Env &env, Pos pos, Func &func);
+      Funcall(Env &env, Pos pos, const FimpPtr &fimp);
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
+  };
     
-    struct Get {
-      struct Type: OpType<Get> {
-        Type(const string &id): OpType<Get>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Get: Op {
+      static const OpType type;
       const Sym id;
-      Get(Sym id): id(id) { }
+      Get(Env &env, Pos pos, Sym id);
+      OpImp make_imp(Env &env);
     };
 
-    struct Isa {
-      struct Type: OpType<Isa> {
-        Type(const string &id): OpType<Isa>(id) { }
-        void dump_data(const Isa &op, ostream &out) const override;
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Isa: Op {
+      static const OpType type;
       const ATypePtr rhs;
-      Isa(const ATypePtr &rhs): rhs(rhs) { }
+      Isa(Env &env, Pos pos, const ATypePtr &rhs);
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
     };
 
-    struct Jump {
-      struct Type: OpType<Jump> {
-        Type(const string &id): OpType<Jump>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Jump: Op {
+      static const OpType type;
       Int end_pc;
-
-      Jump(Int end_pc=-1): end_pc(end_pc) { }
+      Jump(Env &env, Pos pos, Int end_pc=-1);
+      OpImp make_imp(Env &env);
     };
 
-    struct JumpIf {
-      struct Type: OpType<JumpIf> {
-        Type(const string &id): OpType<JumpIf>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct JumpIf: Op {
+      static const OpType type;
       function<bool ()> cond;
       Int end_pc;
-      
-      JumpIf(function<bool ()> &&cond): cond(move(cond)), end_pc(-1) { } 
+      JumpIf(Env &env, Pos pos, function<bool ()> &&cond);
+      OpImp make_imp(Env &env);
     };
 
-
-    struct Lambda {
-      struct Type: OpType<Lambda> {
-        Type(const string &id): OpType<Lambda>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Lambda: Op {
+      static const OpType type;
       const bool is_scope;
       OpImp start_pc;
       Int end_pc;
-      
-      Lambda(bool is_scope): is_scope(is_scope), end_pc(-1) { }
+      Lambda(Env &env, Pos pos, bool is_scope);
+      OpImp make_imp(Env &env);
     };
 
-    struct Let {
-      struct Type: OpType<Let> {
-        Type(const string &id): OpType<Let>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Let: Op {
+      static const OpType type;
       const Sym id;
-      Let(Sym id): id(id) { }
+      Let(Env &env, Pos pos, Sym id);
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
     };
 
-    struct Nop {
-      struct Type: OpType<Nop> {
-        Type(const string &id): OpType<Nop>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Nop: Op {
+      static const OpType type;
+      Nop(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Push {
-      struct Type: OpType<Push> {
-        Type(const string &id): OpType<Push>(id) { }
-        void dump_data(const Push &op, ostream &out) const override;
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-        
-      static const Type type;     
+    struct Push: Op {
+      static const OpType type;     
       const Box val;
-      Push(const Box &val): val(val) { }
+      Push(Env &env, Pos pos, const Box &val);
+      
       template <typename ValT, typename... ArgsT>
-      Push(const TypePtr<ValT> &type, ArgsT &&...args):
-        val(type, forward<ArgsT>(args)...) { }
+      Push(Env &env, Pos pos, const TypePtr<ValT> &type, ArgsT &&...args):
+        Op(Push::type, pos, make_imp(env)), val(type, forward<ArgsT>(args)...) { }
+
+      OpImp make_imp(Env &env);
+      void dump_args(ostream &out) const override;
     };
 
-    struct Recall {
-      struct Type: OpType<Recall> {
-        Type(const string &id): OpType<Recall>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Recall: Op {
+      static const OpType type;
+      Recall(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Return {
-      struct Type: OpType<Return> {
-        Type(const string &id): OpType<Return>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Return: Op {
+      static const OpType type;
+      Return(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Rot {
-      struct Type: OpType<Rot> {
-        Type(const string &id): OpType<Rot>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Rot: Op {
+      static const OpType type;
+      Rot(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct RSwap {
-      struct Type: OpType<RSwap> {
-        Type(const string &id): OpType<RSwap>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct RSwap: Op {
+      static const OpType type;
+      RSwap(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Scope {
-      struct Type: OpType<Scope> {
-        Type(const string &id): OpType<Scope>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
-      };
-
-    struct ScopeEnd {
-      struct Type: OpType<ScopeEnd> {
-        Type(const string &id): OpType<ScopeEnd>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Scope: Op {
+      static const OpType type;
+      Scope(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct SDrop {
-      struct Type: OpType<SDrop> {
-        Type(const string &id): OpType<SDrop>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct ScopeEnd: Op {
+      static const OpType type;
+      ScopeEnd(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Split {
-      struct Type: OpType<Split> {
-        Type(const string &id): OpType<Split>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
+    struct SDrop: Op {
+      static const OpType type;
+      SDrop(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
+    };
 
-      static const Type type;
+    struct Split: Op {
+      static const OpType type;
       const Int offs;
-      Split(Int offs=0): offs(offs) { }
+      Split(Env &env, Pos pos, Int offs=0);
+      OpImp make_imp(Env &env);
     };
 
-    struct SplitEnd {
-      struct Type: OpType<SplitEnd> {
-        Type(const string &id): OpType<SplitEnd>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct SplitEnd: Op {
+      static const OpType type;
+      SplitEnd(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Stack {
-      struct Type: OpType<Stack> {
-        Type(const string &id): OpType<Stack>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Stack: Op {
+      static const OpType type;
       const bool end_split;
-      Stack(bool end_split): end_split(end_split) { }
+      Stack(Env &env, Pos pos, bool end_split);
+      OpImp make_imp(Env &env);
     };
 
-    struct Stop {
-      struct Type: OpType<Stop> {
-        Type(const string &id): OpType<Stop>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Stop: Op {
+      static const OpType type;
+      Stop(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Swap {
-      struct Type: OpType<Swap> {
-        Type(const string &id): OpType<Swap>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Swap: Op {
+      static const OpType type;
+      Swap(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Sync {
-      struct Type: OpType<Sync> {
-        Type(const string &id): OpType<Sync>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Sync: Op {
+      static const OpType type;
+      Sync(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
 
-    struct Task {
-      struct Type: OpType<Task> {
-        Type(const string &id): OpType<Task>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Task: Op {
+      static const OpType type;
       const Int start_pc;
       Int end_pc;
-
-      Task(Int start_pc): start_pc(start_pc), end_pc(-1) { }
+      Task(Env &env, Pos pos, Int start_pc);
+      OpImp make_imp(Env &env);
     };
 
-    struct Throw {
-      struct Type: OpType<Throw> {
-        Type(const string &id): OpType<Throw>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Throw: Op {
+      static const OpType type;
+      Throw(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
     
-    struct Times {
-      struct Type: OpType<Times> {
-        Type(const string &id): OpType<Times>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Times: Op {
+      static const OpType type;
       const Int i_reg;
-      
-      Times(Int i_reg): i_reg(i_reg) { }
+      Times(Env &env, Pos pos, Int i_reg);
+      OpImp make_imp(Env &env);
     };
 
-    struct Try {
-      struct Type: OpType<Try> {
-        Type(const string &id): OpType<Try>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Try: Op {
+      static const OpType type;
       const Int state_reg;
       Int end_pc;
-
-      Try(Int state_reg): state_reg(state_reg), end_pc(-1) { }
+      Try(Env &env, Pos pos, Int state_reg);
+      OpImp make_imp(Env &env);
     };
 
-    struct TryEnd {
-      struct Type: OpType<TryEnd> {
-        Type(const string &id): OpType<TryEnd>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-      
-      static const Type type;
+    struct TryEnd: Op {
+      static const OpType type;
       const Int state_reg;
-      TryEnd(Int state_reg): state_reg(state_reg) { }
+      TryEnd(Env &env, Pos pos, Int state_reg);
+      OpImp make_imp(Env &env);
     };
 
-    struct Yield {
-      struct Type: OpType<Yield> {
-        Type(const string &id): OpType<Yield>(id) { }
-        OpImp make_imp(Env &env, Op &op) const override;
-      };
-
-      static const Type type;
+    struct Yield: Op {
+      static const OpType type;
+      Yield(Env &env, Pos pos);
+      OpImp make_imp(Env &env);
     };
   } 
 }
