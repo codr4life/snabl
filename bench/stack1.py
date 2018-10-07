@@ -5,4 +5,4 @@ def test():
     for _ in range(100): lst.append([])
     for _ in range(100): lst.pop()
 
-print(int(bench(10000, 'test', '()')))
+print(int(bench(10000)))

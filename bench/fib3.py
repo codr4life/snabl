@@ -9,4 +9,7 @@ def fib(n):
 
     return b
 
-print(int(bench(100000, 'fib', '(20)')))
+def test():
+    fib(20)
+
+print(int(bench(10000)))
