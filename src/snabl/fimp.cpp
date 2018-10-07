@@ -63,7 +63,7 @@ namespace snabl {
       if (fi.parent_scope) { env.begin_scope(fi.parent_scope); }
       env.begin_split(fn.nargs);    
       env.begin_call(fip, pos, env.pc());
-      env.jump(&fi.start_pc);
+      env.jump(fi.start_pc);
     }
   }
 

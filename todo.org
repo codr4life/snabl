@@ -1,9 +1,6 @@
-* switch OpImp refs to PC
-** Op.next
 * add second Ptr type arg
 ** replace shared_ptrs except FilePtr
 
-* ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)

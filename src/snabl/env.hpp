@@ -171,7 +171,7 @@ namespace snabl {
       Op *prev(ops.empty() ? nullptr : ops.back().get());
       auto op(new OpT(*this, args...));
       ops.emplace_back(op);
-      if (prev) { prev->next = op->imp; }
+      if (prev) { prev->next = &op->imp; }
       return *op;
     }
 
@@ -195,8 +195,6 @@ namespace snabl {
     const ScopePtr &scope() const { return task->scope; }
 
     void end_scope() { task->end_scope(); }
-
-    void jump(const OpImp &pc) { task->pc = pc ? &pc : nullptr; }
 
     void jump(PC pc) { task->pc = pc; }
 
@@ -225,7 +223,7 @@ namespace snabl {
       s.restore_splits(*this);
       
       if (t.parent_scope) { task->scope->clear_vars(); }
-      jump(&t.start_pc);
+      jump(t.start_pc);
     }
 
     void _return(Pos pos) {

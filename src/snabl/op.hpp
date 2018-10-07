@@ -30,12 +30,13 @@ namespace snabl {
     const OpType &type;
     const Pos pos;
     const OpImp imp;
-    OpImp next;
+    PC next;
 
     Op(const Op &)=delete;
     const Op &operator =(const Op &)=delete;
 
-    Op(const OpType &type, Pos pos, OpImp imp): type(type), pos(pos), imp(imp) { }
+    Op(const OpType &type, Pos pos, OpImp imp):
+      type(type), pos(pos), imp(imp), next(nullptr) { }
 
     virtual void dump_args(ostream &out) const {}
 
@@ -146,7 +147,7 @@ namespace snabl {
     struct Lambda: Op {
       static const OpType type;
       const bool is_scope;
-      OpImp start_pc;
+      PC start_pc;
       Int end_pc;
       Lambda(Env &env, Pos pos, bool is_scope);
       OpImp make_imp(Env &env);
@@ -261,9 +262,9 @@ namespace snabl {
 
     struct Task: Op {
       static const OpType type;
-      const Int start_pc;
+      PC start_pc;
       Int end_pc;
-      Task(Env &env, Pos pos, Int start_pc);
+      Task(Env &env, Pos pos);
       OpImp make_imp(Env &env);
     };
 

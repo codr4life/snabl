@@ -252,7 +252,8 @@ namespace snabl {
     }
     
     Lambda::Lambda(Env &env, Pos pos, bool is_scope):
-      Op(type, pos, make_imp(env)), is_scope(is_scope), end_pc(-1) { }
+      Op(type, pos, make_imp(env)),
+      is_scope(is_scope), start_pc(nullptr), end_pc(-1) { }
     
     OpImp Lambda::make_imp(Env &env) {
       return [this, &env]() {
@@ -468,13 +469,12 @@ namespace snabl {
       };
     }
     
-    Task::Task(Env &env, Pos pos, Int start_pc):
-      Op(type, pos, make_imp(env)), start_pc(start_pc), end_pc(-1) { }
+    Task::Task(Env &env, Pos pos):
+      Op(type, pos, make_imp(env)), start_pc(nullptr), end_pc(-1) { }
 
     OpImp Task::make_imp(Env &env) {
       return [this, &env]() {
-        auto start(&env.ops[start_pc]->imp);
-        env.push(env.task_type, env.start_task(start, env.task->scope));
+        env.push(env.task_type, env.start_task(next, env.task->scope));
         env.jump(end_pc);
       };
     }

@@ -180,7 +180,7 @@ namespace snabl {
                     throw CompileError(form.pos, "Missing task body");
                   }
                   
-                  auto &op(env.emit<ops::Task>(form.pos, env.ops.size()+1));
+                  auto &op(env.emit<ops::Task>(form.pos));
                   
                   env.compile(*in++);
                   env.emit<ops::Stop>(form.pos);
