@@ -1,3 +1,6 @@
+* drop LambdaPtr/FimpPtr/TargetPtr
+** store lambdas by value
+** replace call.target with variant<Fimp *, Lambda>
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)

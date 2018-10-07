@@ -9,6 +9,7 @@
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/target.hpp"
+#include "snabl/type.hpp"
 #include "snabl/types.hpp"
 
 namespace snabl {
@@ -38,6 +39,7 @@ namespace snabl {
     Op(const OpType &type, Pos pos, OpImp imp):
       type(type), pos(pos), imp(imp), next(nullptr) { }
 
+    virtual ~Op() { }
     virtual void dump_args(ostream &out) const {}
 
     void dump(ostream &out) const {
@@ -123,8 +125,8 @@ namespace snabl {
 
     struct Isa: Op {
       static const OpType type;
-      const ATypePtr rhs;
-      Isa(Env &env, Pos pos, const ATypePtr &rhs);
+      const AType &rhs;
+      Isa(Env &env, Pos pos, const AType &rhs);
       OpImp make_imp(Env &env);
       void dump_args(ostream &out) const override;
     };
@@ -173,7 +175,7 @@ namespace snabl {
       Push(Env &env, Pos pos, const Box &val);
       
       template <typename ValT, typename... ArgsT>
-      Push(Env &env, Pos pos, const TypePtr<ValT> &type, ArgsT &&...args):
+      Push(Env &env, Pos pos, Type<ValT> &type, ArgsT &&...args):
         Op(Push::type, pos, make_imp(env)), val(type, forward<ArgsT>(args)...) { }
 
       OpImp make_imp(Env &env);

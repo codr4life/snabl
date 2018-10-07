@@ -6,42 +6,9 @@
 
 namespace snabl {
   namespace libs {
-    Home::Home(Env &env): Lib(env, env.sym("home")) {
-      env.no_type = add_type<Trait>(env.sym("_"));
-      env.maybe_type = add_type<Trait>(env.sym("Maybe"));
-      env.nil_type = add_type<NilType>(env.sym("Nil"), {env.maybe_type});
-      env.root_type = add_type<Trait>(env.sym("T"), {env.maybe_type});
-      env.num_type = add_type<Trait>(env.sym("Num"), {env.root_type});
-      env.seq_type = add_type<Trait>(env.sym("Seq"), {env.root_type});
-      env.source_type = add_type<Trait>(env.sym("Source"), {env.root_type});
-      env.sink_type = add_type<Trait>(env.sym("Sink"), {env.root_type});
+    Home::Home(Env &env): Lib(env, env.sym("home")) { }
 
-      env.meta_type = add_type<MetaType>(env.sym("Type"), {env.root_type}); 
-      env.async_type = add_type<AsyncType>(env.sym("Async"), {env.root_type});
-      env.bool_type = add_type<BoolType>(env.sym("Bool"), {env.root_type});
-      env.char_type = add_type<CharType>(env.sym("Char"), {env.root_type});
-      env.error_type = add_type<ErrorType>(env.sym("Error"), {env.root_type});
-      env.float_type = add_type<FloatType>(env.sym("Float"), {env.num_type});
-      
-      env.int_type = add_type<IntType>(env.sym("Int"), {
-          env.num_type, env.seq_type});
-
-      env.iter_type = add_type<IterType>(env.sym("Iter"), {
-          env.seq_type, env.source_type});
-      
-      env.rfile_type = add_type<RFileType>(env.sym("RFile"), {env.root_type});
-
-      env.stack_type = add_type<StackType>(env.sym("Stack"), {
-          env.seq_type, env.sink_type, env.source_type});
-
-      env.str_type = add_type<StrType>(env.sym("Str"), {
-          env.seq_type, env.sink_type, env.source_type});
-      
-      env.sym_type = add_type<SymType>(env.sym("Sym"), {env.root_type});
-      env.task_type = add_type<TaskType>(env.sym("Task"), {env.root_type});
-      env.time_type = add_type<TimeType>(env.sym("Time"), {env.root_type});
-      env.lambda_type = add_type<LambdaType>(env.sym("Lambda"), {env.root_type});
-      
+    void Home::init() {
       add_macro(env.sym("t"), env.bool_type, true);     
       add_macro(env.sym("f"), env.bool_type, false);      
       add_macro(env.sym("nil"), env.nil_type);      
@@ -220,120 +187,120 @@ namespace snabl {
 
       add_fimp(env.sym("catch"),
                {Box(env.error_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.pop().as<ErrorPtr>()->val);
                });
 
       add_fimp(env.sym("isa"),
                {Box(env.maybe_type), Box(env.meta_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
-                 env.push(env.bool_type, x.isa(y.as<ATypePtr>()));
+                 env.push(env.bool_type, x.isa(*y.as<AType *>()));
                });
 
       add_fimp(env.sym("="),
                {Box(env.maybe_type), Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
                  env.push(env.bool_type, x.eqval(y));
                });
 
       add_fimp(env.sym("=="),
                {Box(env.maybe_type), Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
                  env.push(env.bool_type, x.equid(y));
                });
 
       add_fimp(env.sym("<"),
                {Box(env.root_type), Box(env.root_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
                  env.push(env.bool_type, x.cmp(y) == Cmp::LT);
                });
   
       add_fimp(env.sym("int"),
                {Box(env.float_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  const Float v(env.pop().as<Float>());
                  env.push(env.int_type, Int(v));
                });
 
       add_fimp(env.sym("float"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  const Int v(env.pop().as<Int>());
                  env.push(env.float_type, Float(v));
                });
 
       add_fimp(env.sym("++"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.peek().as<Int>()++;
                });
 
       add_fimp(env.sym("--"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.peek().as<Int>()--;
                });
       
       add_fimp(env.sym("+"),
                {Box(env.int_type), Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Int y(env.pop().as<Int>());
                  env.peek().as<Int>() += y;
                });
 
       add_fimp(env.sym("-"),
                {Box(env.int_type), Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Int y(env.pop().as<Int>());
                  env.peek().as<Int>() -= y;
                });
       
       add_fimp(env.sym("*"),
                {Box(env.int_type), Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Int y(env.pop().as<Int>());
                  env.peek().as<Int>() *= y;
                });
 
       add_fimp(env.sym("bool"),
                {Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.bool_type, env.pop().as_bool());
                });
 
       add_fimp(env.sym("push"),
                {Box(env.sink_type), Box(env.root_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  auto v(env.pop());
                  env.pop().push(v);
                });
       
       add_fimp(env.sym("peek"),
                {Box(env.source_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  auto v(env.pop().peek());
                  env.push(v ? *v : Box(env.nil_type));
                });
 
       add_fimp(env.sym("pop"),
                {Box(env.source_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.pop().pop();
                });
 
       add_fimp(env.sym("iter"),
                {Box(env.seq_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.iter_type, env.pop().iter());
                });
 
       add_fimp(env.sym(".."),
                {Box(env.seq_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  auto i(env.pop().iter());
 
                  while (!i->is_done) {
@@ -344,68 +311,68 @@ namespace snabl {
       
       add_fimp(env.sym("dump"),
                {Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.pop().dump(cerr);
                  cerr << endl;
                });
 
       add_fimp(env.sym("say"),
                {Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.pop().print(cout);
                  cout << endl;
                });
       
       add_fimp(env.sym("len"),
                {Box(env.str_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.int_type, env.pop().as<StrPtr>()->size());
                });
 
       add_fimp(env.sym("len"),
                {Box(env.stack_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.int_type, env.pop().as<StackPtr>()->size());
                });
 
       add_fimp(env.sym("ns"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.time_type, env.pop().as<Int>());
                });      
 
       add_fimp(env.sym("ms"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.time_type, Time::ms(env.pop().as<Int>()));
                });      
 
       add_fimp(env.sym("ms"),
                {Box(env.time_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  env.push(env.int_type, env.pop().as<Time>().as_ms());
                });
       
       add_fimp(env.sym("sleep"),
                {Box(env.time_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  const Time time(env.pop().as<Time>());
                  this_thread::sleep_for(nanoseconds(time.ns));
                });
 
       add_fimp(env.sym("fopen"),
                {Box(env.str_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  auto fn(env.pop().as<StrPtr>());
                  env.push(env.async_type, fopen(env, env.call().pos, *fn, ios::in));
                });
 
       add_fimp(env.sym("slurp"),
                {Box(env.rfile_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  auto fp(env.pop().as<FilePtr>());
                  
-                 env.push(env.async_type, async([&env, fp]() {
+                 env.push(env.async_type, async([this, fp]() {
                        auto &f(*fp);
                        f.seekg(0, ios::end);
                        const auto size = f.tellg();
@@ -418,7 +385,7 @@ namespace snabl {
 
       add_fimp(env.sym("test="),
                {Box(env.maybe_type), Box(env.maybe_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
                  
                  if (!x.eqval(y)) {
@@ -430,7 +397,7 @@ namespace snabl {
 
       add_fimp(env.sym("fib"),
                {Box(env.int_type)},
-               [&env](Fimp &fimp) {
+               [this](Fimp &fimp) {
                  Box &v(env.peek());
                  Int n(v.as<Int>()), a(0), b(1);
                  

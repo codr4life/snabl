@@ -4,18 +4,6 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-  struct AType;
-  using ATypePtr = shared_ptr<AType>;
-
-  template <typename ValueT>
-  struct Type;
-
-  template <typename ValueT>
-  using TypePtr = shared_ptr<Type<ValueT>>;
-
-  struct Trait;
-  using TraitPtr = shared_ptr<Trait>;
-  
   struct Scope;  
   using ScopePtr = shared_ptr<Scope>;
 

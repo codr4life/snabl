@@ -80,10 +80,9 @@ namespace snabl {
 
     for (; j != args.end(); i++, j++) {
       if (i == end) { return -1; }
-      
-      auto &iv(*i), &jv(*j);
-      auto &it(iv.type), &jt(jv.type);
-      if (it == env.no_type) { continue; }
+      const Box &iv(*i), &jv(*j);
+      const AType *it(iv.type), &jt(*jv.type);
+      if (it == &env.no_type) { continue; }
 
       if (jv.has_val()) {
         if (!iv.has_val() || !iv.eqval(jv)) { return -1; }
@@ -91,7 +90,7 @@ namespace snabl {
         return -1;
       }
       
-      score += abs(static_cast<Int>(it->tag-jt->tag));
+      score += abs(static_cast<Int>(it->tag-jt.tag));
     }
 
     return score;

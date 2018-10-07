@@ -105,7 +105,7 @@ namespace snabl {
       return [this, &env]() {
         const auto &v(env.peek());
 
-        if (v.type != env.bool_type) {
+        if (v.type != &env.bool_type) {
           throw RuntimeError(env, pos, fmt("Invalid else cond: %0", {v}));
         }
 
@@ -210,7 +210,7 @@ namespace snabl {
       };
     }
       
-    Isa::Isa(Env &env, Pos pos, const ATypePtr &rhs):
+    Isa::Isa(Env &env, Pos pos, const AType &rhs):
       Op(type, pos, make_imp(env)), rhs(rhs) { }
     
     OpImp Isa::make_imp(Env &env) {
@@ -229,7 +229,7 @@ namespace snabl {
       };
     }
     
-    void Isa::dump_args(ostream &out) const { out << ' ' << rhs->id; }
+    void Isa::dump_args(ostream &out) const { out << ' ' << rhs.id; }
 
     Jump::Jump(Env &env, Pos pos, Int end_pc):
       Op(type, pos, make_imp(env)), end_pc(end_pc) { }
@@ -429,7 +429,7 @@ namespace snabl {
     Stop::Stop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
 
     OpImp Stop::make_imp(Env &env) {
-      return [this, &env]() { env.jump(nullptr); };
+      return [&env]() { env.jump(nullptr); };
     }
     
     Swap::Swap(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
@@ -455,7 +455,7 @@ namespace snabl {
       return [this, &env]() {
         auto &v(env.peek());
 
-        if (v.type != env.async_type) {
+        if (v.type != &env.async_type) {
           throw RuntimeError(env, pos, fmt("Expected Async, was:", {v.type->id}));
         }
 
@@ -484,7 +484,7 @@ namespace snabl {
     OpImp Throw::make_imp(Env &env) {
       return [this, &env]() {
         auto &v(env.peek());
-        auto e((v.type == env.error_type)
+        auto e((v.type == &env.error_type)
                ? *v.as<ErrorPtr>()
                : UserError(env, pos, v));
         env.task->stack.pop_back();

@@ -15,14 +15,14 @@ namespace snabl {
   struct Lib: Def {
     Env &env;
     unordered_map<Sym, MacroPtr> macros;
-    unordered_map<Sym, ATypePtr> types;
+    unordered_map<Sym, unique_ptr<AType>> types;
     map<Sym, Func> funcs;
     
     Lib(Env &env, Sym id);
     ~Lib();
     
     template <typename ValT, typename... ArgsT>
-    const MacroPtr &add_macro(Sym id, const TypePtr<ValT> &type, ArgsT &&... args);
+    const MacroPtr &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);
 
     template <typename OpT, typename... ArgsT>
     const MacroPtr &add_macro(Sym id, ArgsT &&... args);
@@ -30,9 +30,9 @@ namespace snabl {
     const MacroPtr &add_macro(Sym id, const Macro::Imp &imp);
 
     template <typename TypeT, typename... ArgsT>
-    shared_ptr<TypeT> add_type(Sym id,
-                               initializer_list<ATypePtr> parent_types={},
-                               ArgsT &&... args);
+    TypeT &add_type(Sym id,
+                    initializer_list<AType *> parent_types={},
+                    ArgsT &&... args);
 
     Func &add_func(Sym id, Int nargs);
 
@@ -40,20 +40,18 @@ namespace snabl {
     const FimpPtr &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
 
     const MacroPtr *get_macro(Sym id);
-    const ATypePtr *get_type(Sym id);
+    AType *get_type(Sym id);
     Func *get_func(Sym id);
   };
 
   template <typename TypeT, typename... ArgsT>
-  shared_ptr<TypeT> Lib::add_type(Sym id,
-                                  initializer_list<ATypePtr> parent_types,
-                                  ArgsT &&... args) {
-    auto t(make_shared<TypeT>(*this,
-                              id,
-                              forward<ArgsT>(args)...));
-    types.emplace(t->id, t);
-    for (auto &pt: parent_types) { AType::derive(t, pt); }
-    return t;
+  TypeT &Lib::add_type(Sym id,
+                       initializer_list<AType *> parent_types,
+                       ArgsT &&... args) {
+    auto t(new TypeT(*this, id, forward<ArgsT>(args)...));
+    types.emplace(t->id, unique_ptr<AType>(t));
+    for (auto &pt: parent_types) { t->derive(*pt); }
+    return *t;
   }
 
   template <typename... ImpT>

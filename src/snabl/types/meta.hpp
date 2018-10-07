@@ -5,7 +5,7 @@
 #include "snabl/ptrs.hpp"
 
 namespace snabl {
-  struct MetaType: Type<ATypePtr> {
+  struct MetaType: Type<AType *> {
     MetaType(Lib &lib, Sym id);
     void dump(const Box &val, ostream &out) const override;
   };

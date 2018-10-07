@@ -84,9 +84,9 @@ namespace snabl {
       }
       
       auto fip(fn->get_best_fimp(args.begin(), args.end()));
-      auto &fi(*fip);
-               
-      if (!fi) { throw CompileError(pos, fmt("Unknown fimp: %0", {fn->id})); }
+      if (!fip) { throw CompileError(pos, fmt("Unknown fimp: %0", {fn->id})); }
+
+      auto &fi(*fip);               
       if (!fi->imp) { snabl::Fimp::compile(fi, pos); }
       env.emit<ops::Funcall>(pos, fi);
     }
@@ -110,7 +110,7 @@ namespace snabl {
         in++;
         auto t(env.lib().get_type(id));
         if (!t) { throw CompileError(form.pos, fmt("Unknown type: %0", {id})); }
-        env.emit<ops::Push>(form.pos, env.meta_type, *t);
+        env.emit<ops::Push>(form.pos, env.meta_type, t);
       } else {
         auto &lib(env.lib());
         auto m(lib.get_macro(id));

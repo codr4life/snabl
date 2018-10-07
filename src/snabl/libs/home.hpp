@@ -6,6 +6,7 @@
 namespace snabl::libs {
   struct Home: Lib {
     Home(Env &env);
+    void init();
   };
 }
 

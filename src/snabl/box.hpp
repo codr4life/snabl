@@ -8,14 +8,17 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
+  template <typename ValT>
+  struct Type;
+  
   struct Box {
-    ATypePtr type;
+    AType *type;
     any val;
 
-    Box(const ATypePtr &type): type(type) { }
+    Box(AType &type): type(&type) { }
     
     template <typename ValT>
-    Box(const TypePtr<ValT> &type, const ValT &val): type(type), val(val) { }
+    Box(Type<ValT> &type, const ValT &val): type(&type), val(val) { }
 
     template <typename ValT>
     const ValT &as() const {
@@ -29,7 +32,7 @@ namespace snabl {
       return any_cast<ValT &>(val);
     }
 
-    bool isa(const ATypePtr &rhs) const;
+    bool isa(const AType &rhs) const;
     
     bool equid(const Box &rhs) const {
       if (rhs.type != type) { return false; }

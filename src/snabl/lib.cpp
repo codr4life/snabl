@@ -31,9 +31,9 @@ namespace snabl {
     return (found == macros.end()) ? nullptr : &found->second;
   }
 
-  const ATypePtr *Lib::get_type(Sym id) {
+  AType *Lib::get_type(Sym id) {
     auto found(types.find(id));
-    return (found == types.end()) ? nullptr : &found->second;
+    return (found == types.end()) ? nullptr : found->second.get();
   }
   
   Func *Lib::get_func(Sym id) {

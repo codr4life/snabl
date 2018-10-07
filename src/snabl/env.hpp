@@ -40,28 +40,29 @@ namespace snabl {
     Int type_tag;
     TaskPtr task;
     set<char> separators;
-
-    TraitPtr root_type, maybe_type, no_type, num_type, seq_type, sink_type, 
-      source_type;
-    
-    TypePtr<ATypePtr> meta_type;
-    TypePtr<AsyncPtr> async_type;
-    TypePtr<bool> bool_type;
-    TypePtr<Char> char_type;
-    TypePtr<ErrorPtr> error_type;
-    TypePtr<Float> float_type;
-    TypePtr<Int> int_type;
-    TypePtr<IterPtr> iter_type;
-    TypePtr<LambdaPtr> lambda_type;
-    TypePtr<Nil> nil_type;
-    TypePtr<FilePtr> rfile_type;
-    TypePtr<StackPtr> stack_type;
-    TypePtr<StrPtr> str_type;
-    TypePtr<Sym> sym_type;
-    TypePtr<TaskPtr> task_type;
-    TypePtr<Time> time_type;
-    
     libs::Home home_lib;
+
+    Trait &no_type, &maybe_type, &root_type, &num_type, &seq_type, &source_type,
+      &sink_type;
+    
+    Type<AType *> &meta_type;
+    Type<Nil> &nil_type;
+
+    Type<AsyncPtr> &async_type;
+    Type<bool> &bool_type;
+    Type<Char> &char_type;
+    Type<ErrorPtr> &error_type;
+    Type<Float> &float_type;
+    Type<Int> &int_type;
+    Type<IterPtr> &iter_type;
+    Type<LambdaPtr> &lambda_type;
+    Type<FilePtr> &rfile_type;
+    Type<StackPtr> &stack_type;
+    Type<StrPtr> &str_type;
+    Type<Sym> &sym_type;
+    Type<TaskPtr> &task_type;
+    Type<Time> &time_type;
+    
     const TaskPtr main_task;
     const ScopePtr &root_scope;
 
@@ -78,6 +79,37 @@ namespace snabl {
         '<', '>', '(', ')', '{', '}', '[', ']'
         },
       home_lib(*this),
+
+      no_type(home_lib.add_type<Trait>(sym("_"))),
+      maybe_type(home_lib.add_type<Trait>(sym("Maybe"))),
+      root_type(home_lib.add_type<Trait>(sym("T"), {&maybe_type})),
+      num_type(home_lib.add_type<Trait>(sym("Num"), {&root_type})),
+      seq_type(home_lib.add_type<Trait>(sym("Seq"), {&root_type})),
+      source_type(home_lib.add_type<Trait>(sym("Source"), {&root_type})),
+      sink_type(home_lib.add_type<Trait>(sym("Sink"), {&root_type})),
+
+      meta_type(home_lib.add_type<MetaType>(sym("Type"), {&root_type})),
+      nil_type(home_lib.add_type<NilType>(sym("Nil"), {&maybe_type})),
+
+      async_type(home_lib.add_type<AsyncType>(sym("Async"), {&root_type})),
+      bool_type(home_lib.add_type<BoolType>(sym("Bool"), {&root_type})),
+      char_type(home_lib.add_type<CharType>(sym("Char"), {&root_type})),
+      error_type(home_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
+      float_type(home_lib.add_type<FloatType>(sym("Float"), {&num_type})),
+      int_type(home_lib.add_type<IntType>(sym("Int"), {
+            &num_type, &seq_type})),
+      iter_type(home_lib.add_type<IterType>(sym("Iter"), {
+            &seq_type, &source_type})),
+      lambda_type(home_lib.add_type<LambdaType>(sym("Lambda"), {&root_type})),
+      rfile_type(home_lib.add_type<RFileType>(sym("RFile"), {&root_type})),
+      stack_type(home_lib.add_type<StackType>(sym("Stack"), {
+            &seq_type, &sink_type, &source_type})),
+      str_type(home_lib.add_type<StrType>(sym("Str"), {
+            &seq_type, &sink_type, &source_type})),
+      sym_type(home_lib.add_type<SymType>(sym("Sym"), {&root_type})),
+      task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
+      time_type(home_lib.add_type<TimeType>(sym("Time"), {&root_type})),
+      
       main_task((task = start_task())),
       root_scope(begin_scope()) {
         add_special_char('t', 8);
@@ -86,6 +118,7 @@ namespace snabl {
         add_special_char('e', 27);
         add_special_char('s', 32);
         begin_regs();
+        home_lib.init();
       }
 
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
@@ -169,7 +202,7 @@ namespace snabl {
     template <typename OpT, typename...ArgsT>
     OpT &emit(ArgsT &&...args) {
       Op *prev(ops.empty() ? nullptr : ops.back().get());
-      auto op(new OpT(*this, args...));
+      auto op(new OpT(*this, forward<ArgsT>(args)...));
       ops.emplace_back(op);
       if (prev) { prev->next = &op->imp; }
       return *op;
@@ -245,7 +278,7 @@ namespace snabl {
     void push(const Box &val) { task->stack.push_back(val); }
 
     template <typename ValT, typename...ArgsT>
-    void push(const TypePtr<ValT> &type, ArgsT &&...args) {
+    void push(Type<ValT> &type, ArgsT &&...args) {
       task->stack.emplace_back(type, ValT(forward<ArgsT>(args)...));
     }
 
@@ -297,16 +330,16 @@ namespace snabl {
     UserError(Env &env, Pos pos, const Box &_val);
   };
 
-  inline bool Box::isa(const ATypePtr &rhs) const {
-    auto &lhs((type == type->lib.env.meta_type) ? as<ATypePtr>() : type);
-    return lhs->isa(rhs);
+  inline bool Box::isa(const AType &rhs) const {
+    auto &lhs((type == &type->lib.env.meta_type) ? *as<AType *>() : *type);
+    return lhs.isa(rhs);
   }
 
   template <typename ValT, typename...ArgsT>
   const MacroPtr &Lib::add_macro(Sym id,
-                                 const TypePtr<ValT> &type,
+                                 Type<ValT> &type,
                                  ArgsT &&...args) {
-    return add_macro(id, [type, args...](Forms::const_iterator &in,
+    return add_macro(id, [&type, args...](Forms::const_iterator &in,
                                          Forms::const_iterator end,
                                          Env &env) {
                        env.emit<ops::Push>((in++)->pos, type, args...);     

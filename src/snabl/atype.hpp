@@ -14,34 +14,37 @@ namespace snabl {
   struct Lib;
 
   struct AType: Def {
-    static void derive(const ATypePtr &child, const ATypePtr &parent) {
-      if (Int(child->parent_types.size()) <= parent->tag) {
-        child->parent_types.resize(parent->tag+1);
-      }
-      
-      child->parent_types[parent->tag] = parent;
-      for (auto &c: child->child_types) { derive(c, parent); }
-      parent->child_types.insert(child);
-      
-      for (auto &p: parent->parent_types) {
-        if (p) { derive(child, p); }
-      }
-    }
-
     Lib &lib;
     const Int size;
     const Int tag;
-    vector<ATypePtr> parent_types;
-    unordered_set<ATypePtr> child_types;
+    vector<AType *> parent_types;
+    unordered_set<AType *> child_types;
 
+    AType(const AType &)=delete;
+    const AType &operator =(const AType &)=delete;
+    
     AType(Lib &lib, Sym id, Int size);
 
     virtual ~AType() { }
+
+    void derive(AType &parent) {
+      if (Int(parent_types.size()) <= parent.tag) {
+        parent_types.resize(parent.tag+1);
+      }
+      
+      parent_types[parent.tag] = &parent;
+      for (auto &c: child_types) { c->derive(parent); }
+      parent.child_types.insert(this);
+      
+      for (auto &p: parent.parent_types) {
+        if (p) { derive(*p); }
+      }
+    }
     
-    bool isa(const ATypePtr &parent) const {
+    bool isa(const AType &parent) const {
       return
-        parent.get() == this ||
-        (Int(parent_types.size()) > parent->tag && parent_types[parent->tag]);
+        &parent == this ||
+        (Int(parent_types.size()) > parent.tag && parent_types[parent.tag]);
     }
 
     virtual bool equid(const Box &lhs, const Box &rhs) const=0;

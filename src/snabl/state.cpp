@@ -25,7 +25,7 @@ namespace snabl {
 
   void State::restore_stack(Env &env) const {
     auto &s(env.task->stack);
-    if (Int(s.size()) > nstack) { s.erase(s.begin()+nstack, s.end()); }
+    while (Int(s.size()) > nstack) { s.erase(s.begin()+nstack, s.end()); }
   }
 
   void State::restore_splits(Env &env) const {
