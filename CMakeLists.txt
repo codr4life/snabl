@@ -4,7 +4,7 @@ project(snabl)
 
 set(CMAKE_CXX_COMPILER g++)
 
-add_compile_options(-std=c++17 -Wall -Werror -O2 -g)
+add_compile_options(-std=c++17 -Wall -Werror -O3)
 
 file(GLOB_RECURSE sources src/snabl/*.cpp)
 

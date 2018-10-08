@@ -1,9 +1,6 @@
-* replace mpool free vector with slot struct
-* convert shared_ptr except files to PtrType
 * drop ErrorPtr
 ** store by value
 ** compare try perf
-* ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)
@@ -41,6 +38,7 @@
 ** like let but bind at runtime
 ** add lib.consts
 ** @ sigil
+* convert shared_ptr except files to PtrType
 * add support for str special chars
 * add support for func/fimp refs with &
 ** add func/fimp type

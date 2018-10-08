@@ -6,7 +6,7 @@
 namespace snabl {
   template <typename T>
   struct MPool {
-    static const Int NSLOTS = 32;
+    static const Int NSLOTS = 128;
 
     struct Slot {
       typename aligned_storage<sizeof(T), alignof(T)>::type val;
