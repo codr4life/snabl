@@ -122,7 +122,7 @@ namespace snabl {
       }
 
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
-      auto t(make_shared<Task>(*this, start_pc, parent_scope));
+      auto t(TaskPtr::make(*this, start_pc, parent_scope));
 
       if (task) {
         t->next = task;

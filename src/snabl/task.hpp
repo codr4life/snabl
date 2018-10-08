@@ -3,6 +3,7 @@
 
 #include "snabl/call.hpp"
 #include "snabl/op.hpp"
+#include "snabl/ptr.hpp"
 #include "snabl/sarray.hpp"
 #include "snabl/starray.hpp"
 
@@ -10,7 +11,7 @@ namespace snabl {
   struct Env;
 
   struct Task;
-  using TaskPtr = shared_ptr<Task>;
+  using TaskPtr = Ptr<Task>;
 
   struct Task {
     enum struct Status {New, Running, Yielding, Done};
