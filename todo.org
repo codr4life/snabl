@@ -1,3 +1,8 @@
+* remove ScopePtr
+** switch _scope/next to deque<Scope>
+** copy parent scope vars in constructor
+** remove recursive look up
+** store Scope * in target
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)
