@@ -58,7 +58,7 @@ func: my-fib<Int Int Int> {
     0? @a
     1? @b,
     -- @b dup! @a + recall!
-} 20 my-fib
+} 20 0 1 my-fib
 
 [6765]
 ```
