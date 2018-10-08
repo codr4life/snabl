@@ -63,7 +63,7 @@ func: my-fib<Int Int Int> {
 [6765]
 ```
 
-The same algorithm may be implemented anonymously in a single scope using lambdas that manipulate the stack directly.
+The same algorithm may be implemented anonymously in a single scope using a lambda that manipulates the stack directly.
 
 ```
 20 0 1 &(
