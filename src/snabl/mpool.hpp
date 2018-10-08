@@ -8,16 +8,21 @@ namespace snabl {
   struct MPool {
     static const Int NSLOTS = 32;
 
+    struct Slot {
+      typename aligned_storage<sizeof(T), alignof(T)>::type val;
+      Slot *next = nullptr;
+    };
+    
     struct Slab {
-      typename aligned_storage<sizeof(T), alignof(T)>::type slots[NSLOTS];
-      Slab *next=nullptr;
+      Slot slots[NSLOTS];
+      Slab *next = nullptr;
 
       Slab(Slab *next): next(next) { }
     };
     
     Slab *slab = nullptr;
     size_t offs = 0;
-    vector<T *> free;
+    Slot *free = nullptr;;
 
     MPool(const MPool &)=delete;
     const MPool &operator =(const MPool &)=delete;
@@ -34,24 +39,27 @@ namespace snabl {
     T *acquire(ArgsT &&...args) {
       T *p(nullptr);
       
-      if (free.empty()) {
+      if (free) {
+        p = reinterpret_cast<T *>(&free->val);
+        free = free->next;
+      } else {
         if (offs == NSLOTS) {
           slab = new Slab(slab);
           offs = 0;
         }
 
-        p = reinterpret_cast<T *>(slab->slots+offs++);
-      } else {
-        p = free.back();
-        free.pop_back();
+        p = reinterpret_cast<T *>(&slab->slots[offs++].val);
       }
 
       return new (p) T(forward<ArgsT>(args)...);
     }
 
     void release(T *ptr) {
+      auto s(reinterpret_cast<Slot *>(ptr));
+      s->next = free;
+      free = s;
+
       ptr->~T();
-      free.push_back(ptr);
     }
   };
 }
