@@ -58,21 +58,23 @@ func: my-fib<Int Int Int> {
     0? @a
     1? @b,
     -- @b dup! @a + recall!
-}
+} 20 my-fib
+
+[6765]
 ```
 
-The same algorithm may be implemented anonymously using lambdas that manipulate the stack directly.
+The same algorithm may be implemented anonymously in a single scope using lambdas that manipulate the stack directly.
 
 ```
 &(
-  20 0 1 &(
-    rswap!
-    switch:,
+  rswap!
+  switch:,
       0? sdrop!
       1? drop!,
       -- rswap! dup! rot! + recall!
-  ) call!
-) call!
+) 20 0 1 call!
+
+[6765]
 ```
 
 ### Multitasking
