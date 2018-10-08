@@ -6,8 +6,17 @@
 #include "snabl/timer.hpp"
 
 namespace snabl {
+  Op::Op(Env &env, const string &type, Pos pos):
+    type(env.sym(type)), pos(pos), next(nullptr) { }
+
+  void Op::dump(ostream &out) const {
+    out << type;
+    dump_args(out);
+    out << endl;
+  }
+
   namespace ops {
-    const OpType Bench::type("bench"), Call::type("call"), DDrop::type("ddrop"),
+    const string Bench::type("bench"), Call::type("call"), DDrop::type("ddrop"),
       Drop::type("drop"), Dup::type("dup"), Else::type("else"), Eqval::type("eqval"),
       Fimp::type("fimp"), Funcall::type("funcall"), Get::type("get"),
       Isa::type("isa"), Jump::type("jump"), JumpIf::type("jump-if"),
@@ -20,7 +29,7 @@ namespace snabl {
       Times::type("times"), Try::type("try"), TryEnd::type("try-end"),
       Yield::type("yield");
 
-    Bench::Bench(Env &env, Pos pos): Op(type, pos), end_pc(-1) { }
+    Bench::Bench(Env &env, Pos pos): Op(env, type, pos), end_pc(-1) { }
 
     void Bench::run(Env &env) {
       const Int reps(env.pop().as<Int>());
@@ -41,14 +50,14 @@ namespace snabl {
       env.jump(end_pc);
     }
     
-    Call::Call(Env &env, Pos pos): Op(type, pos) { }
+    Call::Call(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Call::run(Env &env) {
       env.jump(next);
       env.pop().call(pos);
     }
     
-    DDrop::DDrop(Env &env, Pos pos): Op(type, pos) { }
+    DDrop::DDrop(Env &env, Pos pos): Op(env, type, pos) { }
     
     void DDrop::run(Env &env) {
       auto &t(*env.task);
@@ -63,7 +72,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    Drop::Drop(Env &env, Pos pos): Op(type, pos) { }
+    Drop::Drop(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Drop::run(Env &env) {
       auto &t(*env.task);
@@ -78,7 +87,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    Dup::Dup(Env &env, Pos pos): Op(type, pos) { }
+    Dup::Dup(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Dup::run(Env &env) {
       auto &t(*env.task);
@@ -89,7 +98,7 @@ namespace snabl {
     }
     
     Else::Else(Env &env, Pos pos, Int skip_pc):
-      Op(type, pos), skip_pc(skip_pc) { }
+      Op(env, type, pos), skip_pc(skip_pc) { }
 
     void Else::run(Env &env) {
       const auto &v(env.peek());
@@ -108,7 +117,7 @@ namespace snabl {
     }
     
     Eqval::Eqval(Env &env, Pos pos, const optional<const Box> rhs):
-      Op(type, pos), rhs(rhs) { }
+      Op(env, type, pos), rhs(rhs) { }
 
     void Eqval::run(Env &env) {
       auto &t(*env.task);
@@ -133,7 +142,7 @@ namespace snabl {
     }
 
     Fimp::Fimp(Env &env, Pos pos, snabl::Fimp &fimp, bool is_scope):
-      Op(type, pos), fimp(fimp), is_scope(is_scope) { }
+      Op(env, type, pos), fimp(fimp), is_scope(is_scope) { }
 
     void Fimp::run(Env &env) {
       if (is_scope) { fimp.parent_scope = env.scope(); }
@@ -143,10 +152,10 @@ namespace snabl {
     void Fimp::dump_args(ostream &out) const { out << ' ' << fimp.id; }
     
     Funcall::Funcall(Env &env, Pos pos, Func &func):
-      Op(type, pos), func(func), fimp(nullptr), prev_fimp(nullptr) { }
+      Op(env, type, pos), func(func), fimp(nullptr), prev_fimp(nullptr) { }
 
     Funcall::Funcall(Env &env, Pos pos, snabl::Fimp &fimp):
-      Op(type, pos),
+      Op(env, type, pos),
       func(fimp.func), fimp(&fimp), prev_fimp(nullptr) { }
 
     void Funcall::run(Env &env) {
@@ -184,7 +193,7 @@ namespace snabl {
       if (prev_fimp) { out << " (" << prev_fimp->id << ')'; }
     }
 
-    Get::Get(Env &env, Pos pos, Sym id): Op(type, pos), id(id) { }
+    Get::Get(Env &env, Pos pos, Sym id): Op(env, type, pos), id(id) { }
 
     void Get::run(Env &env) {
       auto v(env.scope()->get(id));
@@ -194,7 +203,7 @@ namespace snabl {
     }
       
     Isa::Isa(Env &env, Pos pos, const AType &rhs):
-      Op(type, pos), rhs(rhs) { }
+      Op(env, type, pos), rhs(rhs) { }
     
     void Isa::run(Env &env) {
       auto &t(*env.task);
@@ -213,12 +222,12 @@ namespace snabl {
     void Isa::dump_args(ostream &out) const { out << ' ' << rhs.id; }
 
     Jump::Jump(Env &env, Pos pos, Int end_pc):
-      Op(type, pos), end_pc(end_pc) { }
+      Op(env, type, pos), end_pc(end_pc) { }
 
     void Jump::run(Env &env) { env.jump(end_pc); }
     
     JumpIf::JumpIf(Env &env, Pos pos, function<bool ()> &&cond):
-      Op(type, pos), cond(move(cond)), end_pc(-1) { } 
+      Op(env, type, pos), cond(move(cond)), end_pc(-1) { } 
     
     void JumpIf::run(Env &env) {
       if (cond()) {
@@ -229,7 +238,7 @@ namespace snabl {
     }
     
     Lambda::Lambda(Env &env, Pos pos, bool is_scope):
-      Op(type, pos),
+      Op(env, type, pos),
       is_scope(is_scope), start_pc(nullptr), end_pc(-1) { }
     
     void Lambda::run(Env &env) {
@@ -238,7 +247,7 @@ namespace snabl {
       env.jump(end_pc);
     }
     
-    Let::Let(Env &env, Pos pos, Sym id): Op(type, pos), id(id) { }
+    Let::Let(Env &env, Pos pos, Sym id): Op(env, type, pos), id(id) { }
 
     void Let::run(Env &env) {
       auto &t(*env.task);
@@ -252,12 +261,12 @@ namespace snabl {
     
     void Let::dump_args(ostream &out) const { out << ' ' << id; }
 
-    Nop::Nop(Env &env, Pos pos): Op(type, pos) { }
+    Nop::Nop(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Nop::run(Env &env) { env.jump(next); }
     
     Push::Push(Env &env, Pos pos, const Box &val):
-      Op(type, pos), val(val) { }
+      Op(env, type, pos), val(val) { }
     
     void Push::run(Env &env) {
       env.push(val);
@@ -269,15 +278,15 @@ namespace snabl {
       val.dump(out);
     }
 
-    Recall::Recall(Env &env, Pos pos): Op(type, pos) { } 
+    Recall::Recall(Env &env, Pos pos): Op(env, type, pos) { } 
 
     void Recall::run(Env &env) { env.recall(pos); }
     
-    Return::Return(Env &env, Pos pos): Op(type, pos) { } 
+    Return::Return(Env &env, Pos pos): Op(env, type, pos) { } 
 
     void Return::run(Env &env) { env._return(pos); }
     
-    Rot::Rot(Env &env, Pos pos): Op(type, pos) { }
+    Rot::Rot(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Rot::run(Env &env) {
       auto &t(*env.task);
@@ -293,7 +302,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    RSwap::RSwap(Env &env, Pos pos): Op(type, pos) { }
+    RSwap::RSwap(Env &env, Pos pos): Op(env, type, pos) { }
 
     void RSwap::run(Env &env) {
       auto &t(*env.task);
@@ -308,21 +317,21 @@ namespace snabl {
       env.jump(next);
     }
     
-    Scope::Scope(Env &env, Pos pos): Op(type, pos) { }
+    Scope::Scope(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Scope::run(Env &env) {
       env.begin_scope(env.scope());
       env.jump(next);
     }
     
-    ScopeEnd::ScopeEnd(Env &env, Pos pos): Op(type, pos) { }
+    ScopeEnd::ScopeEnd(Env &env, Pos pos): Op(env, type, pos) { }
 
     void ScopeEnd::run(Env &env) {
       env.end_scope();
       env.jump(next);
     }
     
-    SDrop::SDrop(Env &env, Pos pos): Op(type, pos) { }
+    SDrop::SDrop(Env &env, Pos pos): Op(env, type, pos) { }
 
     void SDrop::run(Env &env) {
       auto &t(*env.task);
@@ -339,14 +348,14 @@ namespace snabl {
     }
     
     Split::Split(Env &env, Pos pos, Int offs):
-      Op(type, pos), offs(offs) { }
+      Op(env, type, pos), offs(offs) { }
 
     void Split::run(Env &env) {
       env.begin_split(offs);
       env.jump(next);
     }
     
-    SplitEnd::SplitEnd(Env &env, Pos pos): Op(type, pos) { }
+    SplitEnd::SplitEnd(Env &env, Pos pos): Op(env, type, pos) { }
 
     void SplitEnd::run(Env &env) {
       env.end_split();
@@ -354,7 +363,7 @@ namespace snabl {
     }
     
     Stack::Stack(Env &env, Pos pos, bool end_split):
-      Op(type, pos), end_split(end_split) { }
+      Op(env, type, pos), end_split(end_split) { }
 
     void Stack::run(Env &env) {
       auto &t(*env.task);
@@ -374,11 +383,11 @@ namespace snabl {
       env.jump(next);
     }
     
-    Stop::Stop(Env &env, Pos pos): Op(type, pos) { }
+    Stop::Stop(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Stop::run(Env &env) { env.jump(nullptr); }
     
-    Swap::Swap(Env &env, Pos pos): Op(type, pos) { }
+    Swap::Swap(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Swap::run(Env &env) {
       auto &t(*env.task);
@@ -393,7 +402,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    Sync::Sync(Env &env, Pos pos): Op(type, pos) { }
+    Sync::Sync(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Sync::run(Env &env) {
       auto &v(env.peek());
@@ -412,14 +421,14 @@ namespace snabl {
     }
     
     Task::Task(Env &env, Pos pos):
-      Op(type, pos), start_pc(nullptr), end_pc(-1) { }
+      Op(env, type, pos), start_pc(nullptr), end_pc(-1) { }
 
     void Task::run(Env &env) {
       env.push(env.task_type, env.start_task(next, env.task->scope));
       env.jump(end_pc);
     }
     
-    Throw::Throw(Env &env, Pos pos): Op(type, pos) { }
+    Throw::Throw(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Throw::run(Env &env) {
       auto &v(env.peek());
@@ -431,7 +440,7 @@ namespace snabl {
     }
     
     Times::Times(Env &env, Pos pos, Int i_reg):
-      Op(type, pos), i_reg(i_reg) { }
+      Op(env, type, pos), i_reg(i_reg) { }
 
     void Times::run(Env &env) {
       env.let_reg(i_reg, env.pop().as<Int>());
@@ -439,7 +448,7 @@ namespace snabl {
     }
     
     Try::Try(Env &env, Pos pos, Int state_reg):
-      Op(type, pos), state_reg(state_reg), end_pc(-1) { }
+      Op(env, type, pos), state_reg(state_reg), end_pc(-1) { }
 
     void Try::run(Env &env) {
       env.let_reg(state_reg, State(env));
@@ -448,7 +457,7 @@ namespace snabl {
     }
     
     TryEnd::TryEnd(Env &env, Pos pos, Int state_reg):
-      Op(type, pos), state_reg(state_reg) { }
+      Op(env, type, pos), state_reg(state_reg) { }
 
     void TryEnd::run(Env &env) {
       env.clear_reg(state_reg);
@@ -456,7 +465,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    Yield::Yield(Env &env, Pos pos): Op(type, pos) { }
+    Yield::Yield(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Yield::run(Env &env) {
       env.jump(next);
