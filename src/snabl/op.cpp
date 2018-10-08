@@ -20,122 +20,109 @@ namespace snabl {
       Times::type("times"), Try::type("try"), TryEnd::type("try-end"),
       Yield::type("yield");
 
-    Bench::Bench(Env &env, Pos pos): Op(type, pos, make_imp(env)), end_pc(-1) { }
+    Bench::Bench(Env &env, Pos pos): Op(type, pos), end_pc(-1) { }
 
-    OpImp Bench::make_imp(Env &env) {
-      return [this, &env]() {
-        const Int reps(env.pop().as<Int>());
+    void Bench::run(Env &env) {
+      const Int reps(env.pop().as<Int>());
         
-        for (int i(0); i < reps; i++) {
-          env.jump(next);
-          env.run();
-        }
+      for (int i(0); i < reps; i++) {
+        env.jump(next);
+        env.run();
+      }
         
-        Timer t;
+      Timer t;
         
-        for (int i(0); i < reps; i++) {
-          env.jump(next);
-          env.run();
-        }
+      for (int i(0); i < reps; i++) {
+        env.jump(next);
+        env.run();
+      }
         
-        env.push(env.time_type, t.ns());
-        env.jump(end_pc);
-      };
+      env.push(env.time_type, t.ns());
+      env.jump(end_pc);
     }
     
-    Call::Call(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Call::Call(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Call::make_imp(Env &env) {
-      return [this, &env]() {
-        env.jump(next);
-        env.pop().call(pos);
-      };
+    void Call::run(Env &env) {
+      env.jump(next);
+      env.pop().call(pos);
     }
     
-    DDrop::DDrop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    DDrop::DDrop(Env &env, Pos pos): Op(type, pos) { }
     
-    OpImp DDrop::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void DDrop::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
         
-        if (Int(s.size()) <= t.stack_offs) {
-          throw Error("Nothing to ddrop");
-        }
+      if (Int(s.size()) <= t.stack_offs) {
+        throw Error("Nothing to ddrop");
+      }
         
-        s.pop_back();
-        s.pop_back();
-        env.jump(next);
-      };
+      s.pop_back();
+      s.pop_back();
+      env.jump(next);
     }
     
-    Drop::Drop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Drop::Drop(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Drop::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Drop::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
         
-        if (Int(s.size()) <= t.stack_offs) {
-          throw RuntimeError(env, pos,
-                             fmt("Nothing to drop: %0/%1", {s.size(), t.stack_offs}));
-        }
+      if (Int(s.size()) <= t.stack_offs) {
+        throw RuntimeError(env, pos,
+                           fmt("Nothing to drop: %0/%1", {s.size(), t.stack_offs}));
+      }
         
-        s.pop_back();
-        env.jump(next);
-      };
+      s.pop_back();
+      env.jump(next);
     }
     
-    Dup::Dup(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Dup::Dup(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Dup::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
-        if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to dup"); }
-        env.push(s.back());
-        env.jump(next);
-      };
+    void Dup::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
+      if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to dup"); }
+      env.push(s.back());
+      env.jump(next);
     }
     
     Else::Else(Env &env, Pos pos, Int skip_pc):
-      Op(type, pos, make_imp(env)), skip_pc(skip_pc) { }
+      Op(type, pos), skip_pc(skip_pc) { }
 
-    OpImp Else::make_imp(Env &env) {
-      return [this, &env]() {
-        const auto &v(env.peek());
+    void Else::run(Env &env) {
+      const auto &v(env.peek());
 
-        if (v.type != &env.bool_type) {
-          throw RuntimeError(env, pos, fmt("Invalid else cond: %0", {v}));
-        }
+      if (v.type != &env.bool_type) {
+        throw RuntimeError(env, pos, fmt("Invalid else cond: %0", {v}));
+      }
 
-        if (v.as<bool>()) {
-          env.jump(next);
-        } else {
-          env.jump(skip_pc);
-        }
+      if (v.as<bool>()) {
+        env.jump(next);
+      } else {
+        env.jump(skip_pc);
+      }
 
-        env.pop();
-      };
+      env.pop();
     }
     
     Eqval::Eqval(Env &env, Pos pos, const optional<const Box> rhs):
-      Op(type, pos, make_imp(env)), rhs(rhs) { }
+      Op(type, pos), rhs(rhs) { }
 
-    OpImp Eqval::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Eqval::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        if (Int(s.size()) <= t.stack_offs+(rhs ? 0 : 1)) {
-          throw Error("Nothing to eqval");
-        }
+      if (Int(s.size()) <= t.stack_offs+(rhs ? 0 : 1)) {
+        throw Error("Nothing to eqval");
+      }
         
-        const auto lhs(env.pop());
-        const auto _rhs(rhs ? *rhs : s.back());
-        env.push(env.bool_type, lhs.eqval(_rhs));
-        env.jump(next);
-      };
+      const auto lhs(env.pop());
+      const auto _rhs(rhs ? *rhs : s.back());
+      env.push(env.bool_type, lhs.eqval(_rhs));
+      env.jump(next);
+
     }
     
     void Eqval::dump_args(ostream &out) const {
@@ -146,54 +133,50 @@ namespace snabl {
     }
 
     Fimp::Fimp(Env &env, Pos pos, snabl::Fimp &fimp, bool is_scope):
-      Op(type, pos, make_imp(env)), fimp(fimp), is_scope(is_scope) { }
+      Op(type, pos), fimp(fimp), is_scope(is_scope) { }
 
-    OpImp Fimp::make_imp(Env &env) {
-      return [this, &env]() {
-        if (is_scope) { fimp.parent_scope = env.scope(); }
-        env.jump(fimp.end_pc);
-      };
+    void Fimp::run(Env &env) {
+      if (is_scope) { fimp.parent_scope = env.scope(); }
+      env.jump(fimp.end_pc);
     }
     
     void Fimp::dump_args(ostream &out) const { out << ' ' << fimp.id; }
     
     Funcall::Funcall(Env &env, Pos pos, Func &func):
-      Op(type, pos, make_imp(env)), func(func), fimp(nullptr), prev_fimp(nullptr) { }
+      Op(type, pos), func(func), fimp(nullptr), prev_fimp(nullptr) { }
 
     Funcall::Funcall(Env &env, Pos pos, snabl::Fimp &fimp):
-      Op(type, pos, make_imp(env)),
+      Op(type, pos),
       func(fimp.func), fimp(&fimp), prev_fimp(nullptr) { }
 
-    OpImp Funcall::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Funcall::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        snabl::Fimp *f(nullptr);
+      snabl::Fimp *f(nullptr);
 
-        if (Int(s.size()) >= t.stack_offs+func.nargs) {
-          if (fimp) { f = fimp; }
-          if (!f && prev_fimp) { f = prev_fimp; }
+      if (Int(s.size()) >= t.stack_offs+func.nargs) {
+        if (fimp) { f = fimp; }
+        if (!f && prev_fimp) { f = prev_fimp; }
 
-          if (f) {
-            if (func.nargs &&
-                f->score(s.begin()+(s.size()-func.nargs),
-                         s.end()) == -1) { f = nullptr; }
-          }
-
-          if (!fimp && !f) {
-            f = func.get_best_fimp(s.begin()+(s.size()-func.nargs), s.end());
-          }
-        } 
-      
-        if (!f) {
-          throw RuntimeError(env, pos, fmt("Func not applicable: %0", {func.id}));
+        if (f) {
+          if (func.nargs &&
+              f->score(s.begin()+(s.size()-func.nargs),
+                       s.end()) == -1) { f = nullptr; }
         }
+
+        if (!fimp && !f) {
+          f = func.get_best_fimp(s.begin()+(s.size()-func.nargs), s.end());
+        }
+      } 
       
-        if (!fimp) { prev_fimp = f; }
-        env.jump(next);
-        f->call(pos);
-      };
+      if (!f) {
+        throw RuntimeError(env, pos, fmt("Func not applicable: %0", {func.id}));
+      }
+      
+      if (!fimp) { prev_fimp = f; }
+      env.jump(next);
+      f->call(pos);
     }
     
     void Funcall::dump_args(ostream &out) const {
@@ -201,100 +184,84 @@ namespace snabl {
       if (prev_fimp) { out << " (" << prev_fimp->id << ')'; }
     }
 
-    Get::Get(Env &env, Pos pos, Sym id): Op(type, pos, make_imp(env)), id(id) { }
+    Get::Get(Env &env, Pos pos, Sym id): Op(type, pos), id(id) { }
 
-    OpImp Get::make_imp(Env &env) {
-      return [this, &env]() {
-        auto v(env.scope()->get(id));
-        if (!v) { throw RuntimeError(env, pos, fmt("Unknown var: %0", {id})); }
-        env.push(*v);
-        env.jump(next);
-      };
+    void Get::run(Env &env) {
+      auto v(env.scope()->get(id));
+      if (!v) { throw RuntimeError(env, pos, fmt("Unknown var: %0", {id})); }
+      env.push(*v);
+      env.jump(next);
     }
       
     Isa::Isa(Env &env, Pos pos, const AType &rhs):
-      Op(type, pos, make_imp(env)), rhs(rhs) { }
+      Op(type, pos), rhs(rhs) { }
     
-    OpImp Isa::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Isa::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        if (Int(s.size()) <= t.stack_offs) {
-          throw RuntimeError(env, pos, "Nothing to isa");
-        }
+      if (Int(s.size()) <= t.stack_offs) {
+        throw RuntimeError(env, pos, "Nothing to isa");
+      }
           
-        const bool ok(s.back().isa(rhs));
-        s.pop_back();
-        env.push(env.bool_type, ok);
-        env.jump(next);
-      };
+      const bool ok(s.back().isa(rhs));
+      s.pop_back();
+      env.push(env.bool_type, ok);
+      env.jump(next);
     }
     
     void Isa::dump_args(ostream &out) const { out << ' ' << rhs.id; }
 
     Jump::Jump(Env &env, Pos pos, Int end_pc):
-      Op(type, pos, make_imp(env)), end_pc(end_pc) { }
+      Op(type, pos), end_pc(end_pc) { }
 
-    OpImp Jump::make_imp(Env &env) {
-      return [this, &env]() { env.jump(end_pc); };
-    }
+    void Jump::run(Env &env) { env.jump(end_pc); }
     
     JumpIf::JumpIf(Env &env, Pos pos, function<bool ()> &&cond):
-      Op(type, pos, make_imp(env)), cond(move(cond)), end_pc(-1) { } 
+      Op(type, pos), cond(move(cond)), end_pc(-1) { } 
     
-    OpImp JumpIf::make_imp(Env &env) {
-      return [this, &env]() {
-        if (cond()) {
-          env.jump(end_pc);
-        } else {
-          env.jump(next);
-        }
-      };
+    void JumpIf::run(Env &env) {
+      if (cond()) {
+        env.jump(end_pc);
+      } else {
+        env.jump(next);
+      }
     }
     
     Lambda::Lambda(Env &env, Pos pos, bool is_scope):
-      Op(type, pos, make_imp(env)),
+      Op(type, pos),
       is_scope(is_scope), start_pc(nullptr), end_pc(-1) { }
     
-    OpImp Lambda::make_imp(Env &env) {
-      return [this, &env]() {
-        env.push(env.lambda_type,
-                 snabl::Lambda(is_scope ? env.scope() : nullptr, start_pc, end_pc));
-        env.jump(end_pc);
-      };
+    void Lambda::run(Env &env) {
+      env.push(env.lambda_type,
+               snabl::Lambda(is_scope ? env.scope() : nullptr, start_pc, end_pc));
+      env.jump(end_pc);
     }
     
-    Let::Let(Env &env, Pos pos, Sym id): Op(type, pos, make_imp(env)), id(id) { }
+    Let::Let(Env &env, Pos pos, Sym id): Op(type, pos), id(id) { }
 
-    OpImp Let::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
-        if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to let"); }
-        auto &v(s.back());
-        env.scope()->let(id, v);
-        s.pop_back();
-        env.jump(next);
-      };
+    void Let::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
+      if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to let"); }
+      auto &v(s.back());
+      env.scope()->let(id, v);
+      s.pop_back();
+      env.jump(next);
     }
     
     void Let::dump_args(ostream &out) const { out << ' ' << id; }
 
-    Nop::Nop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Nop::Nop(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Nop::make_imp(Env &env) {
-      return [this, &env]() { env.jump(next); };
-    }
+    void Nop::run(Env &env) { env.jump(next); }
     
     Push::Push(Env &env, Pos pos, const Box &val):
-      Op(type, pos, make_imp(env)), val(val) { }
+      Op(type, pos), val(val) { }
     
-    OpImp Push::make_imp(Env &env) {
-      return [this, &env]() {
-        env.push(val);
-        env.jump(next);
-      };
+    void Push::run(Env &env) {
+      env.push(val);
+      env.jump(next);
     }
 
     void Push::dump_args(ostream &out) const {
@@ -302,236 +269,198 @@ namespace snabl {
       val.dump(out);
     }
 
-    Recall::Recall(Env &env, Pos pos): Op(type, pos, make_imp(env)) { } 
+    Recall::Recall(Env &env, Pos pos): Op(type, pos) { } 
 
-    OpImp Recall::make_imp(Env &env) {
-      return [this, &env]() { env.recall(pos); };
-    }
+    void Recall::run(Env &env) { env.recall(pos); }
     
-    Return::Return(Env &env, Pos pos): Op(type, pos, make_imp(env)) { } 
+    Return::Return(Env &env, Pos pos): Op(type, pos) { } 
 
-    OpImp Return::make_imp(Env &env) {
-      return [this, &env]() { env._return(pos); };
-    }
+    void Return::run(Env &env) { env._return(pos); }
     
-    Rot::Rot(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Rot::Rot(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Rot::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Rot::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        if (Int(s.size()) <= t.stack_offs+2) {
-          throw RuntimeError(env, pos, "Nothing to rot");
-        }
+      if (Int(s.size()) <= t.stack_offs+2) {
+        throw RuntimeError(env, pos, "Nothing to rot");
+      }
         
-        auto i(s.size()-1);
-        swap(s[i], s[i-2]);
-        swap(s[i], s[i-1]);
-        env.jump(next);
-      };
+      auto i(s.size()-1);
+      swap(s[i], s[i-2]);
+      swap(s[i], s[i-1]);
+      env.jump(next);
     }
     
-    RSwap::RSwap(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    RSwap::RSwap(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp RSwap::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void RSwap::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        if (Int(s.size()) <= t.stack_offs+2) {
-          throw RuntimeError(env, pos, "Nothing to rswap");
-        }
+      if (Int(s.size()) <= t.stack_offs+2) {
+        throw RuntimeError(env, pos, "Nothing to rswap");
+      }
 
-        const auto i(s.size()-1);
-        swap(s[i], s[i-2]);
-        env.jump(next);
-      };
+      const auto i(s.size()-1);
+      swap(s[i], s[i-2]);
+      env.jump(next);
     }
     
-    Scope::Scope(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Scope::Scope(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Scope::make_imp(Env &env) {
-      return [this, &env]() {
-        env.begin_scope(env.scope());
-        env.jump(next);
-      };
+    void Scope::run(Env &env) {
+      env.begin_scope(env.scope());
+      env.jump(next);
     }
     
-    ScopeEnd::ScopeEnd(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    ScopeEnd::ScopeEnd(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp ScopeEnd::make_imp(Env &env) {
-      return [this, &env]() {
-        env.end_scope();
-        env.jump(next);
-      };
+    void ScopeEnd::run(Env &env) {
+      env.end_scope();
+      env.jump(next);
     }
     
-    SDrop::SDrop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    SDrop::SDrop(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp SDrop::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void SDrop::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        if (Int(s.size()) <= t.stack_offs+1) {
-          throw RuntimeError(env, pos, "Nothing to sdrop");
-        }
+      if (Int(s.size()) <= t.stack_offs+1) {
+        throw RuntimeError(env, pos, "Nothing to sdrop");
+      }
         
-        const auto i(s.size()-1);
-        s[i-1] = s[i];  
-        s.pop_back();
-        env.jump(next);
-      };
+      const auto i(s.size()-1);
+      s[i-1] = s[i];  
+      s.pop_back();
+      env.jump(next);
     }
     
     Split::Split(Env &env, Pos pos, Int offs):
-      Op(type, pos, make_imp(env)), offs(offs) { }
+      Op(type, pos), offs(offs) { }
 
-    OpImp Split::make_imp(Env &env) {
-      return [this, &env]() {
-        env.begin_split(offs);
-        env.jump(next);
-      };
+    void Split::run(Env &env) {
+      env.begin_split(offs);
+      env.jump(next);
     }
     
-    SplitEnd::SplitEnd(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    SplitEnd::SplitEnd(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp SplitEnd::make_imp(Env &env) {
-      return [this, &env]() {
-        env.end_split();
-        env.jump(next);
-      };
+    void SplitEnd::run(Env &env) {
+      env.end_split();
+      env.jump(next);
     }
     
     Stack::Stack(Env &env, Pos pos, bool end_split):
-      Op(type, pos, make_imp(env)), end_split(end_split) { }
+      Op(type, pos), end_split(end_split) { }
 
-    OpImp Stack::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Stack::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
 
-        const Int offs(t.stack_offs);
-        if (end_split) { env.end_split(); }
-        auto ss(StackPtr::make(&env.stack_type.pool));
+      const Int offs(t.stack_offs);
+      if (end_split) { env.end_split(); }
+      auto ss(StackPtr::make(&env.stack_type.pool));
         
-        if (Int(s.size()) > offs) {
-          const auto i(s.begin()+offs), j(s.end());
-          move(i, j, back_inserter(*ss));
-          s.erase(i, j);
-        }
+      if (Int(s.size()) > offs) {
+        const auto i(s.begin()+offs), j(s.end());
+        move(i, j, back_inserter(*ss));
+        s.erase(i, j);
+      }
         
-        env.push(env.stack_type, ss);
-        env.jump(next);
-      };
+      env.push(env.stack_type, ss);
+      env.jump(next);
     }
     
-    Stop::Stop(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Stop::Stop(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Stop::make_imp(Env &env) {
-      return [&env]() { env.jump(nullptr); };
+    void Stop::run(Env &env) { env.jump(nullptr); }
+    
+    Swap::Swap(Env &env, Pos pos): Op(type, pos) { }
+
+    void Swap::run(Env &env) {
+      auto &t(*env.task);
+      auto &s(t.stack);
+
+      if (Int(s.size()) <= t.stack_offs+1) {
+        throw RuntimeError(env, pos, "Nothing to swap");
+      }
+        
+      const auto i(s.size()-1);
+      swap(s[i], s[i-1]);
+      env.jump(next);
     }
     
-    Swap::Swap(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Sync::Sync(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Swap::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &t(*env.task);
-        auto &s(t.stack);
+    void Sync::run(Env &env) {
+      auto &v(env.peek());
 
-        if (Int(s.size()) <= t.stack_offs+1) {
-          throw RuntimeError(env, pos, "Nothing to swap");
-        }
+      if (v.type != &env.async_type) {
+        throw RuntimeError(env, pos, fmt("Expected Async, was:", {v.type->id}));
+      }
+
+      auto a(v.as<AsyncPtr>());
+      if (!a->valid() && !env.yield()) { a->wait(); }
         
-        const auto i(s.size()-1);
-        swap(s[i], s[i-1]);
-        env.jump(next);
-      };
-    }
-    
-    Sync::Sync(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
-
-    OpImp Sync::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &v(env.peek());
-
-        if (v.type != &env.async_type) {
-          throw RuntimeError(env, pos, fmt("Expected Async, was:", {v.type->id}));
-        }
-
-        auto a(v.as<AsyncPtr>());
-        if (!a->valid() && !env.yield()) { a->wait(); }
-        
-        env.pop();
-        auto r(a->get());
-        if (r) { env.push(*r); }
-        env.jump(next);
-      };
+      env.pop();
+      auto r(a->get());
+      if (r) { env.push(*r); }
+      env.jump(next);
     }
     
     Task::Task(Env &env, Pos pos):
-      Op(type, pos, make_imp(env)), start_pc(nullptr), end_pc(-1) { }
+      Op(type, pos), start_pc(nullptr), end_pc(-1) { }
 
-    OpImp Task::make_imp(Env &env) {
-      return [this, &env]() {
-        env.push(env.task_type, env.start_task(next, env.task->scope));
-        env.jump(end_pc);
-      };
+    void Task::run(Env &env) {
+      env.push(env.task_type, env.start_task(next, env.task->scope));
+      env.jump(end_pc);
     }
     
-    Throw::Throw(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Throw::Throw(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Throw::make_imp(Env &env) {
-      return [this, &env]() {
-        auto &v(env.peek());
-        auto e((v.type == &env.error_type)
-               ? *v.as<ErrorPtr>()
-               : UserError(env, pos, v));
-        env.task->stack.pop_back();
-        throw e;
-      };
+    void Throw::run(Env &env) {
+      auto &v(env.peek());
+      auto e((v.type == &env.error_type)
+             ? *v.as<ErrorPtr>()
+             : UserError(env, pos, v));
+      env.task->stack.pop_back();
+      throw e;
     }
     
     Times::Times(Env &env, Pos pos, Int i_reg):
-      Op(type, pos, make_imp(env)), i_reg(i_reg) { }
+      Op(type, pos), i_reg(i_reg) { }
 
-    OpImp Times::make_imp(Env &env) {
-      return [this, &env]() {
-        env.let_reg(i_reg, env.pop().as<Int>());
-        env.jump(next);
-      };
+    void Times::run(Env &env) {
+      env.let_reg(i_reg, env.pop().as<Int>());
+      env.jump(next);
     }
     
     Try::Try(Env &env, Pos pos, Int state_reg):
-      Op(type, pos, make_imp(env)), state_reg(state_reg), end_pc(-1) { }
+      Op(type, pos), state_reg(state_reg), end_pc(-1) { }
 
-    OpImp Try::make_imp(Env &env) {
-      return [this, &env]() {
-        env.let_reg(state_reg, State(env));
-        env.begin_try(*this);
-        env.jump(next);
-      };
+    void Try::run(Env &env) {
+      env.let_reg(state_reg, State(env));
+      env.begin_try(*this);
+      env.jump(next);
     }
     
     TryEnd::TryEnd(Env &env, Pos pos, Int state_reg):
-      Op(type, pos, make_imp(env)), state_reg(state_reg) { }
+      Op(type, pos), state_reg(state_reg) { }
 
-    OpImp TryEnd::make_imp(Env &env) {
-      return [this, &env]() {
-        env.clear_reg(state_reg);
-        env.end_try();
-        env.jump(next);
-      };
+    void TryEnd::run(Env &env) {
+      env.clear_reg(state_reg);
+      env.end_try();
+      env.jump(next);
     }
     
-    Yield::Yield(Env &env, Pos pos): Op(type, pos, make_imp(env)) { }
+    Yield::Yield(Env &env, Pos pos): Op(type, pos) { }
 
-    OpImp Yield::make_imp(Env &env) {
-      return [this, &env]() {
-        env.jump(next);
-        env.yield();
-      };
+    void Yield::run(Env &env) {
+      env.jump(next);
+      env.yield();
     }
   }
 }

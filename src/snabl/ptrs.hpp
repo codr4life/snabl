@@ -17,8 +17,8 @@ namespace snabl {
   struct UserError;
   using ErrorPtr = shared_ptr<UserError>;
 
-  using OpImp = function<void ()>;
-  using PC = const OpImp *;
+  struct Op;
+  using PC = Op *;
 }
 
 #endif

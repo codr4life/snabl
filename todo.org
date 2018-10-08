@@ -1,3 +1,5 @@
+* replace OpType with Sym
+** rename field to xtype
 * drop ErrorPtr
 ** store by value
 ** compare try perf

@@ -48,9 +48,11 @@ namespace snabl {
   }
 
   void Env::run() {
+    Env &env(*this);
+    auto &pc(task->pc);
   start:    
     try {
-      while (task->pc) { (*task->pc)(); }
+      while (pc) { pc->run(env); }
 
       if (task != main_task) {
         task->status = Task::Status::Done;
@@ -74,8 +76,9 @@ namespace snabl {
       
       push(error_type, make_shared<UserError>(e));
       jump(t.end_pc);
-      goto start;
     }
+
+    if (pc) { goto start; }
   }
 
   static string val_str(const Box &val) {

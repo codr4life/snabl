@@ -207,7 +207,7 @@ namespace snabl {
       Op *prev(ops.empty() ? nullptr : ops.back().get());
       auto op(new OpT(*this, forward<ArgsT>(args)...));
       ops.emplace_back(op);
-      if (prev) { prev->next = &op->imp; }
+      if (prev) { prev->next = op; }
       return *op;
     }
 
@@ -235,7 +235,7 @@ namespace snabl {
     void jump(PC pc) { task->pc = pc; }
 
     void jump(Int pc) {
-      task->pc = (pc == Int(ops.size())) ? nullptr : &ops[pc]->imp;
+      task->pc = (pc == Int(ops.size())) ? nullptr : ops[pc].get();
     }
 
     void begin_call(Fimp &target, Pos pos, PC return_pc=nullptr) {
