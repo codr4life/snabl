@@ -35,7 +35,7 @@ namespace snabl {
     Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
     
     const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-      scope = make_shared<Scope>(scope, parent);
+      scope = ScopePtr::make(scope, parent);
       return scope;
     }
 

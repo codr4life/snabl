@@ -1,4 +1,6 @@
-* switch TaskPtr to Ptr
+* switch ScopePtr to Ptr
+** compare perf
+* switch StackPtr to Ptr
 ** compare perf
 * drop ErrorPtr
 ** switch Error type to store by value
