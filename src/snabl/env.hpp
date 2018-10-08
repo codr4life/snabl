@@ -55,7 +55,7 @@ namespace snabl {
     Type<Float> &float_type;
     Type<Int> &int_type;
     Type<IterPtr> &iter_type;
-    Type<LambdaPtr> &lambda_type;
+    Type<Lambda> &lambda_type;
     Type<FilePtr> &rfile_type;
     Type<StackPtr> &stack_type;
     Type<StrPtr> &str_type;
@@ -235,10 +235,14 @@ namespace snabl {
       task->pc = (pc == Int(ops.size())) ? nullptr : &ops[pc]->imp;
     }
 
-    void begin_call(const TargetPtr &target, Pos pos, PC return_pc) {
+    void begin_call(Fimp &target, Pos pos, PC return_pc=nullptr) {
       task->calls.emplace_back(*this, target, pos, return_pc);
     }
-    
+
+    void begin_call(const Lambda &target, Pos pos, PC return_pc) {
+      task->calls.emplace_back(*this, target, pos, return_pc);
+    }
+
     const Call &call() const { return task->calls.back(); }
     void end_call() { task->calls.pop_back(); }
     
@@ -247,7 +251,7 @@ namespace snabl {
       if (!calls.size) { throw RuntimeError(*this, pos, "Nothing to recall"); }
 
       const auto &c(calls.back());
-      const auto &t(*c.target);
+      const auto &t(c.get_target());
       const auto &s(c.state);
       
       s.restore_lib(*this);
@@ -263,10 +267,10 @@ namespace snabl {
       auto &calls(task->calls);
       if (!calls.size) { throw RuntimeError(*this, pos, "Nothing to return from"); }
       auto &c(calls.back());
-      auto &t(*c.target);
+      auto &t(c.get_target());
       if (t.parent_scope) { end_scope(); }
       task->pc = c.return_pc;
-      auto fi(dynamic_cast<Fimp *>(&t));
+      auto fi(dynamic_cast<const Fimp *>(&t));
       if (fi && !fi->imp) { end_split(); }
       end_call();
     }

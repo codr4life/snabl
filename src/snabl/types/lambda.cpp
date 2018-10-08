@@ -5,14 +5,13 @@
 #include "snabl/types/lambda.hpp"
 
 namespace snabl {
-  LambdaType::LambdaType(Lib &lib, Sym id): Type<LambdaPtr>(lib, id) { }
+  LambdaType::LambdaType(Lib &lib, Sym id): Type<Lambda>(lib, id) { }
 
   void LambdaType::call(const Box &val, Pos pos) const {
-    Lambda::call(val.as<LambdaPtr>(), val.type->lib.env, pos);
+    val.as<Lambda>().call(val.type->lib.env, pos);
   }
   
   void LambdaType::dump(const Box &val, ostream &out) const {
-    auto &l(val.as<LambdaPtr>());
-    out << "(Lambda " << l.get() << ')';
+    out << "(Lambda " << val.as<Lambda>().start_pc << ')';
   }
 }

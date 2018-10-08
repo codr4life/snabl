@@ -1,7 +1,6 @@
 #ifndef SNABL_TARGET_HPP
 #define SNABL_TARGET_HPP
 
-#include "snabl/call.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/state.hpp"
 #include "snabl/types.hpp"

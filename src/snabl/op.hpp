@@ -13,6 +13,7 @@
 #include "snabl/types.hpp"
 
 namespace snabl {
+  struct Fimp;
   struct Func;
   struct Op;
   
@@ -98,9 +99,9 @@ namespace snabl {
 
     struct Fimp: Op {
       static const OpType type;
-      const FimpPtr ptr;
+      snabl::Fimp &fimp;
       const bool is_scope;
-      Fimp(Env &env, Pos pos, const FimpPtr &ptr, bool is_scope);
+      Fimp(Env &env, Pos pos, snabl::Fimp &fimp, bool is_scope);
       OpImp make_imp(Env &env);
       void dump_args(ostream &out) const override;
     };
@@ -108,10 +109,9 @@ namespace snabl {
     struct Funcall: Op {
       static const OpType type;
       Func &func;
-      const FimpPtr fimp;
-      FimpPtr prev_fimp;
+      snabl::Fimp *const fimp, *prev_fimp;
       Funcall(Env &env, Pos pos, Func &func);
-      Funcall(Env &env, Pos pos, const FimpPtr &fimp);
+      Funcall(Env &env, Pos pos, snabl::Fimp &fimp);
       OpImp make_imp(Env &env);
       void dump_args(ostream &out) const override;
   };

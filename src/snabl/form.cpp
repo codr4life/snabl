@@ -87,7 +87,7 @@ namespace snabl {
       if (!fip) { throw CompileError(pos, fmt("Unknown fimp: %0", {fn->id})); }
 
       auto &fi(*fip);               
-      if (!fi->imp) { snabl::Fimp::compile(fi, pos); }
+      if (!fi.imp) { fi.compile(pos); }
       env.emit<ops::Funcall>(pos, fi);
     }
 

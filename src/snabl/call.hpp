@@ -1,24 +1,25 @@
 #ifndef SNABL_CALL_HPP
 #define SNABL_CALL_HPP
 
+#include "snabl/lambda.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/state.hpp"
 #include "snabl/std.hpp"
 
-namespace snabl {	
-	struct Call {
-		const TargetPtr target;
-		const Pos pos;
-		const State state;
-		const PC return_pc;
+namespace snabl {
+  struct Fimp;
+  
+  struct Call {
+    const variant<Fimp *, Lambda> target;
+    const Pos pos;
+    const State state;
+    const PC return_pc;
 
-		Call(Env &env,
-				 const TargetPtr &target,
-				 Pos pos,
-				 PC return_pc=nullptr):
-			target(target), pos(pos), state(env), return_pc(return_pc) { }
-	};
+    Call(Env &env, Fimp &fimp, Pos pos, PC return_pc=nullptr);
+    Call(Env &env, const Lambda &lambda, Pos pos, PC return_pc);
+    const Target &get_target() const;
+  };
 }
 
 #endif

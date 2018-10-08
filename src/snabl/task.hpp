@@ -1,6 +1,7 @@
 #ifndef SNABL_TASK_HPP
 #define SNABL_TASK_HPP
 
+#include "snabl/call.hpp"
 #include "snabl/op.hpp"
 #include "snabl/sarray.hpp"
 #include "snabl/starray.hpp"

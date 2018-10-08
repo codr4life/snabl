@@ -13,23 +13,26 @@ namespace snabl {
   struct Func: Def {
     Lib &lib;
     const Int nargs;
-    unordered_map<Sym, FimpPtr> fimps;
+    unordered_map<Sym, unique_ptr<Fimp>> fimps;
     
+    Func(const Func &)=delete;
+    const Func &operator =(const Func &)=delete;
+
     Func(Lib &lib, Sym id, Int nargs): Def(id), lib(lib), nargs(nargs) { }
 
     template <typename... ImpT>
-    const FimpPtr &add_fimp(const Fimp::Args &args, ImpT &&... imp);
+    Fimp &add_fimp(const Fimp::Args &args, ImpT &&... imp);
 
-    const FimpPtr &get_fimp() const { return fimps.begin()->second; }
+    Fimp &get_fimp() const { return *fimps.begin()->second; }
 
-    FimpPtr *get_best_fimp(Stack::const_iterator begin,
-                           Stack::const_iterator end) const {
+    Fimp *get_best_fimp(Stack::const_iterator begin,
+                        Stack::const_iterator end) const {
       Int best_score(-1);
-      FimpPtr *best_fimp(nullptr);
+      Fimp *best_fimp(nullptr);
       
       for (auto &fp: fimps) {
-        auto &f(const_cast<FimpPtr &>(fp.second));
-        auto fs(f->score(begin, end));
+        auto &f(*fp.second);
+        auto fs(f.score(begin, end));
         
         if (fs != -1) {
           if (fs == 0) { return &f; }
@@ -43,18 +46,22 @@ namespace snabl {
       
       return best_fimp;
     }
-
-    void clear() { fimps.clear(); }
   };
 
   template <typename... ImpT>
-  const FimpPtr &Func::add_fimp(const Fimp::Args &args, ImpT &&... imp) {
+  Fimp &Func::add_fimp(const Fimp::Args &args, ImpT &&... imp) {
     auto id(Fimp::get_id(*this, args));
     auto found = fimps.find(id);
-    if (found != fimps.end()) { fimps.erase(found); }
+    
+    if (found == fimps.end()) {
+      return *fimps.emplace(id, make_unique<Fimp>(*this, args, forward<ImpT>(imp)...))
+        .first->second;
+    }
 
-    return fimps.emplace(id, make_shared<Fimp>(*this, args, forward<ImpT>(imp)...))
-      .first->second;
+    auto *fi(found->second.get());
+    fi->~Fimp();
+    new (fi) Fimp(*this, args, forward<ImpT>(imp)...);
+    return *fi;
   }
 }
 

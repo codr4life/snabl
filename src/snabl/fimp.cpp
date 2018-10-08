@@ -27,46 +27,6 @@ namespace snabl {
     return func.lib.env.sym(buf.str());
   }
 
-  bool Fimp::compile(const FimpPtr &fip, Pos pos) {
-    auto &fi(*fip);
-    if (fi.start_pc) { return false; }
-    auto &env(fi.func.lib.env);
-    bool is_scope(&fi.form->type == &forms::Scope::type);
-    auto &start_op(env.emit<ops::Fimp>(pos, fip, is_scope));      
-
-    if (is_scope) {
-      env.begin_regs();
-      auto &b(fi.form->as<forms::Scope>().body);
-      env.compile(b);
-      env.end_regs();
-    } else {
-      env.compile(*fi.form);
-    }
-    
-    env.emit<ops::Return>(pos);
-    fi.start_pc = start_op.next;
-    fi.end_pc = env.ops.size();
-    return true;
-  }
-
-  void Fimp::call(const FimpPtr &fip, Pos pos) {
-    auto &fi(*fip);
-    const auto &fn(fi.func);
-    auto &env(fn.lib.env);
-    
-    if (fi.imp) {
-      env.begin_call(fip, pos, env.pc());
-      fi.imp(fi);
-      env.end_call();
-    } else {
-      Fimp::compile(fip, pos);
-      if (fi.parent_scope) { env.begin_scope(fi.parent_scope); }
-      env.begin_split(fn.nargs);    
-      env.begin_call(fip, pos, env.pc());
-      env.jump(fi.start_pc);
-    }
-  }
-
   Fimp::Fimp(Func &func, const Args &args, Imp imp):
     Def(get_id(func, args)), func(func), args(args), imp(imp) { }
 
@@ -94,5 +54,42 @@ namespace snabl {
     }
 
     return score;
+  }
+
+  bool Fimp::compile(Pos pos) {
+    if (start_pc) { return false; }
+    auto &env(func.lib.env);
+    bool is_scope(&form->type == &forms::Scope::type);
+    auto &start_op(env.emit<ops::Fimp>(pos, *this, is_scope));      
+
+    if (is_scope) {
+      env.begin_regs();
+      auto &b(form->as<forms::Scope>().body);
+      env.compile(b);
+      env.end_regs();
+    } else {
+      env.compile(*form);
+    }
+    
+    env.emit<ops::Return>(pos);
+    start_pc = start_op.next;
+    end_pc = env.ops.size();
+    return true;
+  }
+
+  void Fimp::call(Pos pos) {
+    auto &env(func.lib.env);
+    
+    if (imp) {
+      env.begin_call(*this, pos, env.pc());
+      imp(*this);
+      env.end_call();
+    } else {
+      compile(pos);
+      if (parent_scope) { env.begin_scope(parent_scope); }
+      env.begin_split(func.nargs);    
+      env.begin_call(*this, pos, env.pc());
+      env.jump(start_pc);
+    }
   }
 }

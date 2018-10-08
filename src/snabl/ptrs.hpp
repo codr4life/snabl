@@ -10,15 +10,6 @@ namespace snabl {
   struct Macro;
   using MacroPtr = shared_ptr<Macro>;
 
-  struct Target;
-  using TargetPtr = shared_ptr<Target>;
-  
-  struct Fimp;
-  using FimpPtr = shared_ptr<Fimp>;
-
-  struct Lambda;
-  using LambdaPtr = shared_ptr<Lambda>;
-
   struct Iter;
   using IterPtr = shared_ptr<Iter>;
 

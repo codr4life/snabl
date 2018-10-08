@@ -15,20 +15,21 @@ namespace snabl {
     using Imp = function<void (Fimp &)>;
     
     static Sym get_id(const Func &func, const Args &args);
-    static bool compile(const FimpPtr &fip, Pos pos);
-    static void call(const FimpPtr &fip, Pos pos);
 
     Func &func;
     const Args args;
     const optional<Form> form;
     const Imp imp;
 
+    Fimp(const Fimp &)=delete;
+    const Fimp &operator =(const Fimp &)=delete;
+    
     Fimp(Func &func, const Args &args, Imp imp);
     Fimp(Func &func, const Args &args, const Form &form);
-
     string target_id() const override { return id.name(); }   
-
     Int score(Stack::const_iterator begin, Stack::const_iterator end) const;
+    bool compile(Pos pos);
+    void call(Pos pos);
   };
 }
 

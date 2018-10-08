@@ -81,8 +81,8 @@ namespace snabl {
                     args.emplace_back(*t);
                   }
                   
-                  auto fi = lib.add_fimp(id_form.id, args, *in++);
-                  Fimp::compile(fi, form.pos);
+                  auto &fi = lib.add_fimp(id_form.id, args, *in++);
+                  fi.compile(form.pos);
                 });
 
       add_macro(env.sym("let:"),

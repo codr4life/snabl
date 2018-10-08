@@ -2,9 +2,9 @@
 #include "snabl/lambda.hpp"
 
 namespace snabl {
-  void Lambda::call(const LambdaPtr &l, Env &env, Pos pos) {
-    if (l->parent_scope) { env.begin_scope(l->parent_scope); }
-    env.begin_call(l, pos, env.pc());
-    env.jump(l->start_pc);
+  void Lambda::call(Env &env, Pos pos) const {
+    if (parent_scope) { env.begin_scope(parent_scope); }
+    env.begin_call(*this, pos, env.pc());
+    env.jump(start_pc);
   }
 }

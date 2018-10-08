@@ -16,10 +16,9 @@ namespace snabl {
     Env &env;
     unordered_map<Sym, MacroPtr> macros;
     unordered_map<Sym, unique_ptr<AType>> types;
-    map<Sym, Func> funcs;
+    unordered_map<Sym, unique_ptr<Func>> funcs;
     
     Lib(Env &env, Sym id);
-    ~Lib();
     
     template <typename ValT, typename... ArgsT>
     const MacroPtr &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);
@@ -37,7 +36,7 @@ namespace snabl {
     Func &add_func(Sym id, Int nargs);
 
     template <typename... ImpT>
-    const FimpPtr &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
+    Fimp &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
 
     const MacroPtr *get_macro(Sym id);
     AType *get_type(Sym id);
@@ -55,7 +54,7 @@ namespace snabl {
   }
 
   template <typename... ImpT>
-  const FimpPtr &Lib::add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp) {
+  Fimp &Lib::add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp) {
     auto &fn(add_func(id, args.size()));
     return fn.add_fimp(args, forward<ImpT>(imp)...);
   }

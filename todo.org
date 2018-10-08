@@ -1,6 +1,8 @@
-* drop LambdaPtr/FimpPtr/TargetPtr
-** store lambdas by value
-** replace call.target with variant<Fimp *, Lambda>
+* switch TaskPtr to Ptr
+** compare perf
+* drop ErrorPtr
+** switch Error type to store by value
+* ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)

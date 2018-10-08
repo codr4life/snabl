@@ -145,38 +145,40 @@ namespace snabl {
       }
     }
 
-    Fimp::Fimp(Env &env, Pos pos, const FimpPtr &ptr, bool is_scope):
-      Op(type, pos, make_imp(env)), ptr(ptr), is_scope(is_scope) { }
+    Fimp::Fimp(Env &env, Pos pos, snabl::Fimp &fimp, bool is_scope):
+      Op(type, pos, make_imp(env)), fimp(fimp), is_scope(is_scope) { }
 
     OpImp Fimp::make_imp(Env &env) {
       return [this, &env]() {
-        if (is_scope) { ptr->parent_scope = env.scope(); }
-        env.jump(ptr->end_pc);
+        if (is_scope) { fimp.parent_scope = env.scope(); }
+        env.jump(fimp.end_pc);
       };
     }
     
-    void Fimp::dump_args(ostream &out) const { out << ' ' << ptr->id; }
+    void Fimp::dump_args(ostream &out) const { out << ' ' << fimp.id; }
     
     Funcall::Funcall(Env &env, Pos pos, Func &func):
-      Op(type, pos, make_imp(env)), func(func) { }
-    Funcall::Funcall(Env &env, Pos pos, const FimpPtr &fimp):
-      Op(type, pos, make_imp(env)), func(fimp->func), fimp(fimp) { }
+      Op(type, pos, make_imp(env)), func(func), fimp(nullptr), prev_fimp(nullptr) { }
+
+    Funcall::Funcall(Env &env, Pos pos, snabl::Fimp &fimp):
+      Op(type, pos, make_imp(env)),
+      func(fimp.func), fimp(&fimp), prev_fimp(nullptr) { }
 
     OpImp Funcall::make_imp(Env &env) {
       return [this, &env]() {
         auto &t(*env.task);
         auto &s(t.stack);
 
-        const FimpPtr *f(nullptr);
+        snabl::Fimp *f(nullptr);
 
         if (Int(s.size()) >= t.stack_offs+func.nargs) {
-          if (fimp) { f = &fimp; }
-          if (!f && prev_fimp) { f = &prev_fimp; }
+          if (fimp) { f = fimp; }
+          if (!f && prev_fimp) { f = prev_fimp; }
 
           if (f) {
             if (func.nargs &&
-                (*f)->score(s.begin()+(s.size()-func.nargs),
-                            s.end()) == -1) { f = nullptr; }
+                f->score(s.begin()+(s.size()-func.nargs),
+                         s.end()) == -1) { f = nullptr; }
           }
 
           if (!fimp && !f) {
@@ -188,9 +190,9 @@ namespace snabl {
           throw RuntimeError(env, pos, fmt("Func not applicable: %0", {func.id}));
         }
       
-        if (!fimp) { prev_fimp = *f; }
+        if (!fimp) { prev_fimp = f; }
         env.jump(next);
-        snabl::Fimp::call(*f, pos);
+        f->call(pos);
       };
     }
     
@@ -258,8 +260,7 @@ namespace snabl {
     OpImp Lambda::make_imp(Env &env) {
       return [this, &env]() {
         env.push(env.lambda_type,
-                 make_shared<snabl::Lambda>(is_scope ? env.scope() : nullptr,
-                                            start_pc, end_pc));
+                 snabl::Lambda(is_scope ? env.scope() : nullptr, start_pc, end_pc));
         env.jump(end_pc);
       };
     }
