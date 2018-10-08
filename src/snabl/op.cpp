@@ -433,7 +433,7 @@ namespace snabl {
     void Throw::run(Env &env) {
       auto &v(env.peek());
       auto e((v.type == &env.error_type)
-             ? *v.as<ErrorPtr>()
+             ? v.as<UserError>()
              : UserError(env, pos, v));
       env.task->stack.pop_back();
       throw e;

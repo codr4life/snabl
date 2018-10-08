@@ -1,8 +1,4 @@
-* drop ErrorPtr
-** store by value
-** compare try perf
 * switch Box to Val
-* ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
 ** enum: IO (r w rw)

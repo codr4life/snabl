@@ -188,7 +188,7 @@ namespace snabl {
       add_fimp(env.sym("catch"),
                {Box(env.error_type)},
                [this](Fimp &fimp) {
-                 env.push(env.pop().as<ErrorPtr>()->val);
+                 env.push(env.pop().as<UserError>().val);
                });
 
       add_fimp(env.sym("isa"),

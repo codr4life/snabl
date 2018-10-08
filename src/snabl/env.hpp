@@ -28,6 +28,7 @@
 #include "snabl/types/sym.hpp"
 #include "snabl/types/task.hpp"
 #include "snabl/types/time.hpp"
+#include "snabl/user_error.hpp"
 
 namespace snabl {
   template <typename ValT>
@@ -330,11 +331,6 @@ namespace snabl {
       cerr << fmt("Warning in row %0, col %1: ", {pos.row, pos.col})
            << fmt(msg, {args...}) << endl;
     }        
-  };
-
-  struct UserError: RuntimeError {
-    const Box val;
-    UserError(Env &env, Pos pos, const Box &_val);
   };
 
   inline bool Box::isa(const AType &rhs) const {

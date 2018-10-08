@@ -14,9 +14,6 @@ namespace snabl {
   struct Iter;
   using IterPtr = shared_ptr<Iter>;
 
-  struct UserError;
-  using ErrorPtr = shared_ptr<UserError>;
-
   struct Op;
   using PC = Op *;
 }

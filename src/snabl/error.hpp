@@ -26,6 +26,14 @@ namespace snabl {
   struct RuntimeError: Error {
     RuntimeError(Env &env, Pos pos, const string &msg);
   };
+
+  inline bool operator ==(const Error &lhs, const Error &rhs) {
+    return false;
+  }
+
+  inline bool operator <(const Error &lhs, const Error &rhs) {
+    throw Error("Errors are not comparable");
+  }
 }
 
 #endif

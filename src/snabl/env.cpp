@@ -74,19 +74,10 @@ namespace snabl {
       clear_reg(t.state_reg);
       end_try();
       
-      push(error_type, make_shared<UserError>(e));
+      push(error_type, e);
       jump(t.end_pc);
     }
 
     if (pc) { goto start; }
   }
-
-  static string val_str(const Box &val) {
-    stringstream buf;
-    buf << val;
-    return buf.str();
-  }
-  
-  UserError::UserError(Env &env, Pos pos, const Box &_val):
-    RuntimeError(env, pos, val_str(_val)), val(_val) { }
 }
