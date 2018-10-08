@@ -414,7 +414,7 @@ namespace snabl {
 
         const Int offs(t.stack_offs);
         if (end_split) { env.end_split(); }
-        auto ss(make_shared<snabl::Stack>());
+        auto ss(StackPtr::make());
         
         if (Int(s.size()) > offs) {
           const auto i(s.begin()+offs), j(s.end());
