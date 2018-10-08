@@ -61,15 +61,18 @@ func: my-fib<Int Int Int> {
 }
 ```
 
-The same algorithm may be implemented entirely without variables by manipulating the stack directly.
+The same algorithm may be implemented anonymously using lambdas that manipulate the stack directly.
 
 ```
-func: my-fib<Int Int Int> (
-  rswap! switch:,
-    0? sdrop!
-    1? drop!,
-    -- rswap! dup! rot! + recall!
-)
+&(
+  20 0 1 &(
+    rswap!
+    switch:,
+      0? sdrop!
+      1? drop!,
+      -- rswap! dup! rot! + recall!
+  ) call!
+) call!
 ```
 
 ### Multitasking
