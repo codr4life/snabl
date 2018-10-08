@@ -6,6 +6,8 @@ namespace snabl {
   ErrorType::ErrorType(Lib &lib, Sym id): Type<UserError>(lib, id) { }
 
   void ErrorType::dump(const Box &val, ostream &out) const {
-    out << "(Error " << val.as<UserError>().what() << ')';
+    out << "(Error ";
+    val.as<UserError>().val.dump(out);
+    out << ')';
   }
 }
