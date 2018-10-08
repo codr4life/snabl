@@ -67,8 +67,7 @@ The same algorithm may be implemented anonymously in a single scope using lambda
 
 ```
 20 0 1 &(
-  rswap!
-  switch:,
+  rswap! switch:,
     0? sdrop!
     1? drop!,
     -- rswap! dup! rot! + recall!

@@ -1,7 +1,6 @@
 &(
   20 0 1 &(
-    rswap!
-    switch:,
+    rswap! switch:,
       0? sdrop!
       1? drop!,
       -- rswap! dup! rot! + recall!
