@@ -6,7 +6,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-  struct StackType: Type<StackPtr> {
+  struct StackType: PtrType<Stack> {
     StackType(Lib &lib, Sym id);
     bool as_bool(const Box &val) const override;
     void push(Box &sink, const Box &val) const override;

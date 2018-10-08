@@ -3,6 +3,8 @@
 
 #include "snabl/atype.hpp"
 #include "snabl/box.hpp"
+#include "snabl/mpool.hpp"
+#include "snabl/ptr.hpp"
 
 namespace snabl {
   template <typename T>
@@ -22,6 +24,12 @@ namespace snabl {
     }
   };
 
+  template <typename T>
+  struct PtrType: Type<Ptr<T>> {
+    MPool<typename Ptr<T>::Imp> pool;
+    PtrType(Lib &lib, Sym id): Type<Ptr<T>>(lib, id) { }
+  };
+  
   struct Trait: Type<nullptr_t> {
     Trait(Lib &lib, Sym id): Type<nullptr_t>(lib, id) { }
   };

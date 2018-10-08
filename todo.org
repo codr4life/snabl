@@ -1,12 +1,7 @@
+* convert shared_ptr except files to PtrType
 * drop ErrorPtr
 ** store by value
 ** compare try perf
-* add slab alloc
-** add MemPool struct
-*** keep free list
-*** add ref arg to Ptr
-** add RefType<ValT>: Type<Ptr<ValT>>
-*** add mem pool field
 * ---
 * add IO enum
 ** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})

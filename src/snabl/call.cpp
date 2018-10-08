@@ -9,7 +9,7 @@ namespace snabl {
     target(move(lambda)), pos(pos), state(env), return_pc(return_pc) { }
 
   const Target &Call::get_target() const {
-    if (target.index()) { return get<Lambda>(target); }
+    if (holds_alternative<Lambda>(target)) { return get<Lambda>(target); }
     return *get<Fimp *>(target);
   }
 }

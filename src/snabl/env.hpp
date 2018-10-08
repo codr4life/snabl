@@ -3,6 +3,7 @@
 
 #include "snabl/lib.hpp"
 #include "snabl/libs/home.hpp"
+#include "snabl/mpool.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
 #include "snabl/stack.hpp"
@@ -38,8 +39,10 @@ namespace snabl {
     list<SymImp> syms;
     unordered_map<string, Sym> sym_table;
     Int type_tag;
-    TaskPtr task;
     set<char> separators;
+    MPool<TaskPtr::Imp> task_pool;
+    MPool<ScopePtr::Imp> scope_pool;
+    TaskPtr task;
     libs::Home home_lib;
 
     Trait &no_type, &maybe_type, &root_type, &num_type, &seq_type, &source_type,
@@ -48,20 +51,20 @@ namespace snabl {
     Type<AType *> &meta_type;
     Type<Nil> &nil_type;
 
-    Type<AsyncPtr> &async_type;
-    Type<bool> &bool_type;
-    Type<Char> &char_type;
-    Type<ErrorPtr> &error_type;
-    Type<Float> &float_type;
-    Type<Int> &int_type;
-    Type<IterPtr> &iter_type;
-    Type<Lambda> &lambda_type;
-    Type<FilePtr> &rfile_type;
-    Type<StackPtr> &stack_type;
-    Type<StrPtr> &str_type;
-    Type<Sym> &sym_type;
-    Type<TaskPtr> &task_type;
-    Type<Time> &time_type;
+    AsyncType &async_type;
+    BoolType &bool_type;
+    CharType &char_type;
+    ErrorType &error_type;
+    FloatType &float_type;
+    IntType &int_type;
+    IterType &iter_type;
+    LambdaType &lambda_type;
+    RFileType &rfile_type;
+    StackType &stack_type;
+    StrType &str_type;
+    SymType &sym_type;
+    TaskType &task_type;
+    TimeType &time_type;
     
     const TaskPtr main_task;
     const ScopePtr &root_scope;
@@ -73,11 +76,11 @@ namespace snabl {
     
     Env():
       type_tag(1),
-      task(nullptr),
       separators {
       ' ', '\t', '\n', ',', '?', '&', '.', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
         },
+      task(nullptr),
       home_lib(*this),
 
       no_type(home_lib.add_type<Trait>(sym("_"))),
@@ -122,7 +125,7 @@ namespace snabl {
       }
 
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
-      auto t(TaskPtr::make(*this, start_pc, parent_scope));
+      auto t(TaskPtr::make(&task_pool, *this, start_pc, parent_scope));
 
       if (task) {
         t->next = task;
@@ -222,7 +225,7 @@ namespace snabl {
     PC pc() const { return task->pc; }
     
     const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-      return task->begin_scope(parent);
+      return task->begin_scope(*this, parent);
     }
 
     const ScopePtr &scope() const { return task->scope; }

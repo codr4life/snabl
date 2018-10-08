@@ -33,17 +33,8 @@ namespace snabl {
     Sarray<Int, MaxSplits> splits;
 
     Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
-    
-    const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-      scope = ScopePtr::make(scope, parent);
-      return scope;
-    }
-
-    void end_scope() {
-      auto prev(scope->prev);
-      scope->prev = nullptr;
-      scope = prev;
-    }
+    const ScopePtr &begin_scope(Env &env, const ScopePtr &parent=nullptr);
+    void end_scope();
   };
 }
 
