@@ -21,18 +21,18 @@ namespace snabl {
     };
     
     Slab *slab = nullptr;
-    size_t offs = 0;
+    size_t offs = NSLOTS;
     Slot *free = nullptr;;
 
     MPool(const MPool &)=delete;
     const MPool &operator =(const MPool &)=delete;
-    
-    MPool(): slab(new Slab(nullptr)) { }
 
+    MPool() { }
+    
     ~MPool() {
-      for (Slab *s(slab), *ns = s->next; s; s = ns, ns = s ? s->next : nullptr) {
-        delete s;
-      }
+      for (Slab *s(slab), *ns = s ? s->next : nullptr;
+           s;
+           s = ns, ns = s ? s->next : nullptr) { delete s; }
     }
 
     template <typename...ArgsT>
