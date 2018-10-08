@@ -66,13 +66,13 @@ func: my-fib<Int Int Int> {
 The same algorithm may be implemented anonymously in a single scope using lambdas that manipulate the stack directly.
 
 ```
-&(
+20 0 1 &(
   rswap!
   switch:,
     0? sdrop!
     1? drop!,
     -- rswap! dup! rot! + recall!
-) 20 0 1 call!
+) call!
 
 [6765]
 ```
