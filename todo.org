@@ -20,6 +20,8 @@
 ** add bench/all.sl
 * add while: loop
 ** like times
+* add clear! macro
+** Clear op
 * add for: loop
 ** Iter ... IterNext
 ** keep iter in Iter op
