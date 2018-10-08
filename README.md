@@ -102,7 +102,12 @@ foo bar baz
 ```
 
 ```
-''foo.txt'' fopen sync! slurp sync!
+''foo.txt'' fopen
+
+[(Async 0x125b850)]
+
+sync!
+slurp sync!
 
 [''foo bar baz'']
 ```
