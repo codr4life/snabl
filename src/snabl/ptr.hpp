@@ -46,8 +46,8 @@ namespace snabl {
     
     const Ptr<T> &operator =(const Ptr<T> &src) {
       if (imp != src.imp) {
-        pool = src.pool;
         if (imp) { decr(); }
+        pool = src.pool;
         if ((imp = src.imp)) { imp->nrefs++; }
       }
 
@@ -56,8 +56,8 @@ namespace snabl {
 
     Ptr<T> &operator =(Ptr<T> &&src) {
       if (imp != src.imp) {
-        pool = src.pool;
         if (imp) { decr(); }
+        pool = src.pool;
         imp = src.imp;        
         src.imp = nullptr;
       }
@@ -92,6 +92,11 @@ namespace snabl {
       }
     }
   };
+
+  template <typename T>
+  bool operator ==(const Ptr<T> &lhs, const Ptr<T> &rhs) {
+    return lhs.imp == rhs.imp;
+  }
 
   template <typename T>
   ostream &operator <<(ostream &out, const Ptr<T> &x) {

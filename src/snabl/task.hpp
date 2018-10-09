@@ -32,6 +32,9 @@ namespace snabl {
     Sarray<ops::Try *, MaxTries> tries;
     Sarray<Int, MaxSplits> splits;
 
+    Task(const Task &)=delete;
+    const Task &operator =(const Task &)=delete;
+    
     Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
     const ScopePtr &begin_scope(Env &env, const ScopePtr &parent=nullptr);
     void end_scope();

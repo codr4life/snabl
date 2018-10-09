@@ -114,7 +114,7 @@ namespace snabl {
       task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
       time_type(home_lib.add_type<TimeType>(sym("Time"), {&root_type})),
       
-      main_task((task = start_task())),
+      main_task(start_task()),
       root_scope(begin_scope()) {
         add_special_char('t', 8);
         add_special_char('n', 10);
@@ -134,13 +134,13 @@ namespace snabl {
         t->prev->next = t;
         task->prev = t;
       } else {
-        t->prev = t->next = t;
+        task = t->prev = t->next = t;
       }
       
       return t;
     }
 
-    bool yield() { 
+    bool yield() {
       if (task->next == task) { return false; }
       task = task->next; 
       return true;

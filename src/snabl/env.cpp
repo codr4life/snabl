@@ -48,11 +48,9 @@ namespace snabl {
   }
 
   void Env::run() {
-    Env &env(*this);
-    auto &pc(task->pc);
   start:    
     try {
-      while (pc) { pc->run(env); }
+      while (task->pc) { task->pc->run(*this); }
 
       if (task != main_task) {
         task->status = Task::Status::Done;
@@ -78,6 +76,6 @@ namespace snabl {
       jump(t.end_pc);
     }
 
-    if (pc) { goto start; }
+    if (task->pc) { goto start; }
   }
 }
