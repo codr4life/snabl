@@ -8,6 +8,7 @@
 #include "snabl/std.hpp"
 #include "snabl/sym.hpp"
 #include "snabl/type.hpp"
+#include "snabl/types/enum.hpp"
 
 namespace snabl {
   struct Env;
@@ -33,6 +34,8 @@ namespace snabl {
                     initializer_list<AType *> parent_types={},
                     ArgsT &&... args);
 
+    EnumType &add_enum_type(Sym id, initializer_list<Sym> alts);
+    
     Func &add_func(Sym id, I64 nargs);
 
     template <typename... ImpT>

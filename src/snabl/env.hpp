@@ -15,6 +15,7 @@
 #include "snabl/types/async.hpp"
 #include "snabl/types/bool.hpp"
 #include "snabl/types/char.hpp"
+#include "snabl/types/enum.hpp"
 #include "snabl/types/error.hpp"
 #include "snabl/types/file.hpp"
 #include "snabl/types/float.hpp"
@@ -34,7 +35,7 @@ namespace snabl {
   template <typename ValT>
   struct Type;
 
-  const array<uint8_t, 3> version {0, 2, 1};
+  const array<int, 3> version {0, 2, 1};
 
   struct Env {
     list<SymImp> syms;
@@ -66,7 +67,9 @@ namespace snabl {
     SymType &sym_type;
     TaskType &task_type;
     TimeType &time_type;
-    
+
+    EnumType &enum_type, &io_type;
+
     const TaskPtr main_task;
     const ScopePtr &root_scope;
 
@@ -100,20 +103,23 @@ namespace snabl {
       char_type(home_lib.add_type<CharType>(sym("Char"), {&root_type})),
       error_type(home_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
       float_type(home_lib.add_type<FloatType>(sym("Float"), {&num_type})),
-      i64_type(home_lib.add_type<I64Type>(sym("I64"), {
-            &num_type, &seq_type})),
-      iter_type(home_lib.add_type<IterType>(sym("Iter"), {
-            &seq_type, &source_type})),
+      i64_type(home_lib.add_type<I64Type>(sym("I64"),
+        {&num_type, &seq_type})),
+      iter_type(home_lib.add_type<IterType>(sym("Iter"),
+        {&seq_type, &source_type})),
       lambda_type(home_lib.add_type<LambdaType>(sym("Lambda"), {&root_type})),
       rfile_type(home_lib.add_type<RFileType>(sym("RFile"), {&root_type})),
-      stack_type(home_lib.add_type<StackType>(sym("Stack"), {
-            &seq_type, &sink_type, &source_type})),
-      str_type(home_lib.add_type<StrType>(sym("Str"), {
-            &seq_type, &sink_type, &source_type})),
+      stack_type(home_lib.add_type<StackType>(sym("Stack"),
+        {&seq_type, &sink_type, &source_type})),
+      str_type(home_lib.add_type<StrType>(sym("Str"),
+        {&seq_type, &sink_type, &source_type})),
       sym_type(home_lib.add_type<SymType>(sym("Sym"), {&root_type})),
       task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
       time_type(home_lib.add_type<TimeType>(sym("Time"), {&root_type})),
-      
+
+      enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&sym_type})),
+      io_type(home_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
+
       main_task(start_task()),
       root_scope(begin_scope()) {
         add_special_char('t', 8);

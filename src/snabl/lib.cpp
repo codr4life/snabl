@@ -1,3 +1,4 @@
+#include "snabl/env.hpp"
 #include "snabl/lib.hpp"
 
 namespace snabl {
@@ -9,6 +10,10 @@ namespace snabl {
     return macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
   }
   
+  EnumType &Lib::add_enum_type(Sym id, initializer_list<Sym> alts) {
+    return add_type<EnumType>(id, {&env.enum_type}, alts);
+  }
+
   Func &Lib::add_func(Sym id, I64 nargs) {
     auto found(funcs.find(id));
     

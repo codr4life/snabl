@@ -1,5 +1,3 @@
-#include <ostream>
-
 #include "snabl/box.hpp"
 #include "snabl/types/sym.hpp"
 

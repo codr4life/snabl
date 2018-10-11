@@ -361,13 +361,26 @@ namespace snabl {
                });
 
       add_fimp(env.sym("fopen"),
-               {Box(env.str_type)},
+               {Box(env.str_type), Box(env.io_type)},
                [this](Fimp &fimp) {
+                 auto m(env.pop().as_sym);
                  auto fn(env.pop().as<StrPtr>());
-                 env.push(env.async_type, fopen(env, env.call().pos, *fn, ios::in));
+
+                 if (m == env.sym("r")) {
+                   env.push(env.async_type, fopen(env, env.call().pos, *fn, ios::in));
+                 } else if (m == env.sym("w")) {
+                   env.push(env.async_type,
+                            fopen(env, env.call().pos, *fn, ios::out));
+                 } else if (m == env.sym("rw")) {
+                   env.push(env.async_type,
+                            fopen(env, env.call().pos, *fn, ios::in | ios::out));
+                 } else {
+                   throw RuntimeError(env, env.call().pos,
+                                      fmt("Invalid mode: %0", {m}));
+                 }
                });
 
-      add_fimp(env.sym("slurp"),
+      add_fimp(env.sym("str"),
                {Box(env.rfile_type)},
                [this](Fimp &fimp) {
                  auto fp(env.pop().as<FilePtr>());

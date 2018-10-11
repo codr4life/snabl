@@ -1,17 +1,5 @@
-* remove ScopePtr
-** switch _scope/next to Starray<Scope>
-** replace parent scopes with vector<pair<sym, box>>
-*** use to init scope vars
-** remove recursive look up
-** store Scope * in target
-* add IO enum
-** Lib::add_enum(env.sym("IO"), {env.Sym("r"), env.Sym("w"), env.Sym("rw")})
-** enum: IO (r w rw)
-** generate io: macro
-*** io:r, io:w, io:rw
-** push specified sym with enum type
-** add fopen mode
-** add w/rw support to fopen
+* add enum: macro
+** call add_enum_type
 * add bool conversion to if:
 ** add Bool op
 * add or: macro

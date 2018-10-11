@@ -101,12 +101,11 @@ foo bar baz
 ```
 
 ```
-''foo.txt'' fopen
+''foo.txt'' r fopen
 
 [(Async 0x125b850)]
 
-sync!
-slurp sync!
+sync! str sync!
 
 [''foo bar baz'']
 ```
