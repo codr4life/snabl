@@ -6,6 +6,8 @@
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
+#include "snabl/sym.hpp"
+#include "snabl/time.hpp"
 #include "snabl/type.hpp"
 
 namespace snabl {
@@ -17,16 +19,20 @@ namespace snabl {
       Char as_char;
       Float as_float;
       I64 as_i64;
+      Sym as_sym;
+      Time as_time;
     };
 
     any val;
-    bool is_valid;
+    bool is_valid=true;
       
     Box(AType &type): type(&type), is_valid(false) { }
-    Box(Type<bool> &type, bool val): type(&type), as_bool(val), is_valid(true) { }
-    Box(Type<Char> &type, Char val): type(&type), as_char(val), is_valid(true) { }
-    Box(Type<Float> &type, Float val): type(&type), as_float(val), is_valid(true) { }
-    Box(Type<I64> &type, I64 val): type(&type), as_i64(val), is_valid(true) { }
+    Box(Type<bool> &type, bool val): type(&type), as_bool(val) { }
+    Box(Type<Char> &type, Char val): type(&type), as_char(val) { }
+    Box(Type<Float> &type, Float val): type(&type), as_float(val) { }
+    Box(Type<I64> &type, I64 val): type(&type), as_i64(val) { }
+    Box(Type<Sym> &type, Sym val): type(&type), as_sym(val) { }
+    Box(Type<Time> &type, Time val): type(&type), as_time(val) { }
     
     template <typename ValT>
     Box(Type<ValT> &type, const ValT &val): type(&type), val(val) { }

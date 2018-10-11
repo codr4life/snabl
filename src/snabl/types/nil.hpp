@@ -11,7 +11,6 @@ namespace snabl {
     NilType(Lib &lib, Sym id);
     bool eqval(const Box &lhs, const Box &rhs) const override;
     bool as_bool(const Box &val) const override;
-    void call(const Box &val, Pos pos) const override;
     void dump(const Box &val, ostream &out) const override;
   };
 }

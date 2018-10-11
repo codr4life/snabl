@@ -350,13 +350,13 @@ namespace snabl {
       add_fimp(env.sym("ms"),
                {Box(env.time_type)},
                [this](Fimp &fimp) {
-                 env.push(env.i64_type, env.pop().as<Time>().as_ms());
+                 env.push(env.i64_type, env.pop().as_time.as_ms());
                });
       
       add_fimp(env.sym("sleep"),
                {Box(env.time_type)},
                [this](Fimp &fimp) {
-                 const Time time(env.pop().as<Time>());
+                 const Time time(env.pop().as_time);
                  this_thread::sleep_for(nanoseconds(time.ns));
                });
 

@@ -1,4 +1,3 @@
-* convert time to prim
 * remove ScopePtr
 ** switch _scope/next to Starray<Scope>
 ** replace parent scopes with vector<pair<sym, box>>
