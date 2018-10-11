@@ -27,7 +27,7 @@ namespace snabl {
     Fimp(Func &func, const Args &args, Imp imp);
     Fimp(Func &func, const Args &args, const Form &form);
     string target_id() const override { return id.name(); }   
-    Int score(Stack::const_iterator begin, Stack::const_iterator end) const;
+    I64 score(Stack::const_iterator begin, Stack::const_iterator end) const;
     bool compile(Pos pos);
     void call(Pos pos);
   };

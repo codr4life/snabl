@@ -9,9 +9,9 @@ namespace snabl {
   struct Target {
     ScopePtr parent_scope;
     PC start_pc;
-    Int end_pc;
+    I64 end_pc;
 
-    Target(const ScopePtr &parent_scope=nullptr, PC start_pc=nullptr, Int end_pc=-1):
+    Target(const ScopePtr &parent_scope=nullptr, PC start_pc=nullptr, I64 end_pc=-1):
       parent_scope(parent_scope), start_pc(start_pc), end_pc(end_pc) { }
 
     virtual ~Target() { }

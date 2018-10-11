@@ -9,7 +9,7 @@ namespace snabl {
   
   struct SymImp {
     const string name;
-    const Int hash;
+    const I64 hash;
 
     SymImp(const string &name): name(name), hash(std::hash<string>{}(name)) { }
   };

@@ -33,7 +33,7 @@ namespace snabl {
                     initializer_list<AType *> parent_types={},
                     ArgsT &&... args);
 
-    Func &add_func(Sym id, Int nargs);
+    Func &add_func(Sym id, I64 nargs);
 
     template <typename... ImpT>
     Fimp &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);

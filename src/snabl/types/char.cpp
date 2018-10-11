@@ -5,11 +5,19 @@
 namespace snabl {
   CharType::CharType(Lib &lib, Sym id): Type<Char>(lib, id) { }
 
-  bool CharType::as_bool(const Box &val) const { return val.as<Char>(); }
+  bool CharType::as_bool(const Box &val) const { return val.as_char; }
+
+  bool CharType::eqval(const Box &lhs, const Box &rhs) const {
+    return lhs.as_char == rhs.as_char;
+  }
+  
+  Cmp CharType::cmp(const Box &lhs, const Box &rhs) const {
+    return snabl::cmp(lhs.as_char, rhs.as_char);
+  }
 
   void CharType::dump(const Box &val, ostream &out) const {
     Env &env(val.type->lib.env);
-    const auto c(val.as<Char>());
+    const auto c(val.as_char);
     const auto sc(env.find_char_special(c));
     
     if (sc) {

@@ -9,7 +9,7 @@
 
 namespace snabl {
   struct Lambda: Target {    
-    Lambda(const ScopePtr &parent_scope, PC start_pc, Int end_pc):
+    Lambda(const ScopePtr &parent_scope, PC start_pc, I64 end_pc):
       Target(parent_scope, start_pc, end_pc) { }
     
     string target_id() const override { return fmt("(Lambda %0)", {this}); }

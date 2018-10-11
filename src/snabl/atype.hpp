@@ -15,20 +15,20 @@ namespace snabl {
 
   struct AType: Def {
     Lib &lib;
-    const Int size;
-    const Int tag;
+    const I64 size;
+    const I64 tag;
     vector<AType *> parent_types;
     unordered_set<AType *> child_types;
 
     AType(const AType &)=delete;
     const AType &operator =(const AType &)=delete;
     
-    AType(Lib &lib, Sym id, Int size);
+    AType(Lib &lib, Sym id, I64 size);
 
     virtual ~AType() { }
 
     void derive(AType &parent) {
-      if (Int(parent_types.size()) <= parent.tag) {
+      if (I64(parent_types.size()) <= parent.tag) {
         parent_types.resize(parent.tag+1);
       }
       
@@ -44,27 +44,39 @@ namespace snabl {
     bool isa(const AType &parent) const {
       return
         &parent == this ||
-        (Int(parent_types.size()) > parent.tag && parent_types[parent.tag]);
+        (I64(parent_types.size()) > parent.tag && parent_types[parent.tag]);
     }
 
-    virtual bool equid(const Box &lhs, const Box &rhs) const=0;
-    virtual bool eqval(const Box &lhs, const Box &rhs) const=0;
-    virtual Cmp cmp(const Box &lhs, const Box &rhs) const=0;
+    virtual bool equid(const Box &lhs, const Box &rhs) const {
+      return eqval(lhs, rhs);
+    }
+    
+    virtual bool eqval(const Box &lhs, const Box &rhs) const;
+                                                             
+    virtual Cmp cmp(const Box &lhs, const Box &rhs) const {
+      throw Error("cmp() is not implemented");
+      return Cmp::LT;
+    }
+    
     virtual bool as_bool(const Box &val) const { return true; }
-    virtual void call(const Box &val, Pos pos) const;
+    
+    virtual void call(const Box &val, Pos pos) const {
+      throw Error("call() is not implemented");
+    }
+    
 
     virtual void push(Box &sink, const Box &val) const {
-      throw Error(fmt("Invalid sink: %0", {sink}));
+      throw Error("push() is not implemented");
     }
 
     virtual optional<Box> peek(const Box &source) const;
 
     virtual void pop(Box &source) const {
-      throw Error(fmt("Invalid source: %0", {source}));     
+      throw Error("pop() is not implemented");
     }
 
     virtual IterPtr iter(const Box &val) const {
-      throw Error(fmt("Invalid seq: %0", {val}));
+      throw Error("iter() is not implemented");
     }
     
     virtual void dump(const Box &val, ostream &out) const {

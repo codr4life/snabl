@@ -6,16 +6,27 @@
 #include "snabl/error.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/std.hpp"
+#include "snabl/type.hpp"
 
 namespace snabl {
-  template <typename ValT>
-  struct Type;
-  
   struct Box {
     AType *type;
-    any val;
 
-    Box(AType &type): type(&type) { }
+    union {
+      bool as_bool;
+      Char as_char;
+      Float as_float;
+      I64 as_i64;
+    };
+
+    any val;
+    bool is_valid;
+      
+    Box(AType &type): type(&type), is_valid(false) { }
+    Box(Type<bool> &type, bool val): type(&type), as_bool(val), is_valid(true) { }
+    Box(Type<Char> &type, Char val): type(&type), as_char(val), is_valid(true) { }
+    Box(Type<Float> &type, Float val): type(&type), as_float(val), is_valid(true) { }
+    Box(Type<I64> &type, I64 val): type(&type), as_i64(val), is_valid(true) { }
     
     template <typename ValT>
     Box(Type<ValT> &type, const ValT &val): type(&type), val(val) { }
@@ -50,8 +61,7 @@ namespace snabl {
       return type->cmp(*this, rhs);
     }
 
-    bool has_val() const { return val.has_value(); }
-    bool as_bool() const { return type->as_bool(*this); }
+    bool val_as_bool() const { return type->as_bool(*this); }
 
     void call(Pos pos) const { type->call(*this, pos); }
     void push(const Box &val) { type->push(*this, val); }

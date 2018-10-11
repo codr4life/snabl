@@ -1,5 +1,5 @@
-42 Int isa t test=
-Int Num? t test=
+42 I64 isa t test=
+I64 Num? t test=
 
 42 nil? f test=
 nil nil? t test=
@@ -27,7 +27,7 @@ f bool f test=
 3.14 int 3 test=
 
 1 3 + 4 test=
-1 3 +<_ Int> 4 test=
+1 3 +<_ I64> 4 test=
 
 ''foo'bar'' ''foo'bar'' test=
 

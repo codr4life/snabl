@@ -16,7 +16,7 @@ namespace snabl {
         sep = ' ';
       }
 
-      if (a.has_val()) {
+      if (a.is_valid) {
         a.write(buf);
       } else {
         buf << a.type->id.name();
@@ -33,10 +33,10 @@ namespace snabl {
   Fimp::Fimp(Func &func, const Args &args, const Form &form):
     Def(get_id(func, args)), func(func), args(args), form(form) { }
 
-  Int Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
+  I64 Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
     auto &env(func.lib.env);
     auto i(begin), j(args.begin());
-    Int score(0);
+    I64 score(0);
 
     for (; j != args.end(); i++, j++) {
       if (i == end) { return -1; }
@@ -44,13 +44,13 @@ namespace snabl {
       const AType *it(iv.type), &jt(*jv.type);
       if (it == &env.no_type) { continue; }
 
-      if (jv.has_val()) {
-        if (!iv.has_val() || !iv.eqval(jv)) { return -1; }
+      if (jv.is_valid) {
+        if (!iv.is_valid || !iv.eqval(jv)) { return -1; }
       } else if (!it->isa(jt)) {
         return -1;
       }
       
-      score += abs(static_cast<Int>(it->tag-jt.tag));
+      score += abs(static_cast<I64>(it->tag-jt.tag));
     }
 
     return score;

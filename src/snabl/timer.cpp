@@ -7,7 +7,7 @@ namespace snabl {
 
   void Timer::reset() { start = now(); }
   
-  Int Timer::ns() const {
+  I64 Timer::ns() const {
     return duration_cast<nanoseconds>(now() - start).count();
   }
 }

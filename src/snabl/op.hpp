@@ -36,7 +36,7 @@ namespace snabl {
   namespace ops {    
     struct Bench: Op {
       static const string type;
-      Int end_pc;
+      I64 end_pc;
       Bench(Env &env, Pos pos);
       void run(Env &env) override;
     };
@@ -67,8 +67,8 @@ namespace snabl {
 
     struct Else: Op {
       static const string type;
-      Int skip_pc;
-      Else(Env &env, Pos pos, Int skip_pc=-1);
+      I64 skip_pc;
+      Else(Env &env, Pos pos, I64 skip_pc=-1);
       void run(Env &env) override;
     };
     
@@ -116,15 +116,15 @@ namespace snabl {
 
     struct Jump: Op {
       static const string type;
-      Int end_pc;
-      Jump(Env &env, Pos pos, Int end_pc=-1);
+      I64 end_pc;
+      Jump(Env &env, Pos pos, I64 end_pc=-1);
       void run(Env &env) override;
     };
 
     struct JumpIf: Op {
       static const string type;
       function<bool ()> cond;
-      Int end_pc;
+      I64 end_pc;
       JumpIf(Env &env, Pos pos, function<bool ()> &&cond);
       void run(Env &env) override;
     };
@@ -133,7 +133,7 @@ namespace snabl {
       static const string type;
       const bool is_scope;
       PC start_pc;
-      Int end_pc;
+      I64 end_pc;
       Lambda(Env &env, Pos pos, bool is_scope);
       void run(Env &env) override;
     };
@@ -209,8 +209,8 @@ namespace snabl {
 
     struct Split: Op {
       static const string type;
-      const Int offs;
-      Split(Env &env, Pos pos, Int offs=0);
+      const I64 offs;
+      Split(Env &env, Pos pos, I64 offs=0);
       void run(Env &env) override;
     };
 
@@ -248,7 +248,7 @@ namespace snabl {
     struct Task: Op {
       static const string type;
       PC start_pc;
-      Int end_pc;
+      I64 end_pc;
       Task(Env &env, Pos pos);
       void run(Env &env) override;
     };
@@ -261,23 +261,23 @@ namespace snabl {
     
     struct Times: Op {
       static const string type;
-      const Int i_reg;
-      Times(Env &env, Pos pos, Int i_reg);
+      const I64 i_reg;
+      Times(Env &env, Pos pos, I64 i_reg);
       void run(Env &env) override;
     };
 
     struct Try: Op {
       static const string type;
-      const Int state_reg;
-      Int end_pc;
-      Try(Env &env, Pos pos, Int state_reg);
+      const I64 state_reg;
+      I64 end_pc;
+      Try(Env &env, Pos pos, I64 state_reg);
       void run(Env &env) override;
     };
 
     struct TryEnd: Op {
       static const string type;
-      const Int state_reg;
-      TryEnd(Env &env, Pos pos, Int state_reg);
+      const I64 state_reg;
+      TryEnd(Env &env, Pos pos, I64 state_reg);
       void run(Env &env) override;
     };
 

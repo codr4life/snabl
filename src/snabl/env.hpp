@@ -18,7 +18,7 @@
 #include "snabl/types/error.hpp"
 #include "snabl/types/file.hpp"
 #include "snabl/types/float.hpp"
-#include "snabl/types/int.hpp"
+#include "snabl/types/i64.hpp"
 #include "snabl/types/iter.hpp"
 #include "snabl/types/lambda.hpp"
 #include "snabl/types/meta.hpp"
@@ -34,12 +34,12 @@ namespace snabl {
   template <typename ValT>
   struct Type;
 
-  const array<Int, 3> version {0, 2, 1};
+  const array<uint8_t, 3> version {0, 2, 1};
 
   struct Env {
     list<SymImp> syms;
     unordered_map<string, Sym> sym_table;
-    Int type_tag;
+    I64 type_tag;
     set<char> separators;
     MPool<TaskPtr::Imp> task_pool;
     MPool<ScopePtr::Imp> scope_pool;
@@ -57,7 +57,7 @@ namespace snabl {
     CharType &char_type;
     ErrorType &error_type;
     FloatType &float_type;
-    IntType &int_type;
+    I64Type &i64_type;
     IterType &iter_type;
     LambdaType &lambda_type;
     RFileType &rfile_type;
@@ -72,7 +72,7 @@ namespace snabl {
 
     map<char, Char> special_chars;
     map<Char, char> char_specials;
-    vector<Int> nregs;
+    vector<I64> nregs;
     Ops ops;
     
     Env():
@@ -100,7 +100,7 @@ namespace snabl {
       char_type(home_lib.add_type<CharType>(sym("Char"), {&root_type})),
       error_type(home_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
       float_type(home_lib.add_type<FloatType>(sym("Float"), {&num_type})),
-      int_type(home_lib.add_type<IntType>(sym("Int"), {
+      i64_type(home_lib.add_type<I64Type>(sym("I64"), {
             &num_type, &seq_type})),
       iter_type(home_lib.add_type<IterType>(sym("Iter"), {
             &seq_type, &source_type})),
@@ -149,7 +149,7 @@ namespace snabl {
     Env(const Env &) = delete;
     const Env &operator=(const Env &) = delete;
 
-    Int next_type_tag() { return type_tag++; }
+    I64 next_type_tag() { return type_tag++; }
 
     void add_special_char(char in, Char out) {
       special_chars.emplace(in, out);
@@ -176,13 +176,13 @@ namespace snabl {
 
     void begin_regs() { nregs.push_back(0); }
     
-    Int end_regs() {
-      const Int n(nregs.back());
+    I64 end_regs() {
+      const I64 n(nregs.back());
       nregs.pop_back();
       return n;
     }
 
-    Int next_reg(Pos pos) {
+    I64 next_reg(Pos pos) {
       auto &n(nregs.back());
 
       if (n == Scope::MaxRegs) {
@@ -193,15 +193,15 @@ namespace snabl {
     }
     
     template <typename T>
-    T &get_reg(Int idx) { return any_cast<T &>(task->scope->regs[idx]); }
+    T &get_reg(I64 idx) { return any_cast<T &>(task->scope->regs[idx]); }
 
     template <typename T>
-    const T &get_reg(Int idx) const {
+    const T &get_reg(I64 idx) const {
       return any_cast<const T &>(task->scope->regs[idx]);
     }
 
-    void let_reg(Int idx, any &&val) { task->scope->regs[idx] = move(val); }
-    void clear_reg(Int idx) const { task->scope->regs[idx].reset(); }
+    void let_reg(I64 idx, any &&val) { task->scope->regs[idx] = move(val); }
+    void clear_reg(I64 idx) const { task->scope->regs[idx].reset(); }
     
     template <typename OpT, typename...ArgsT>
     OpT &emit(ArgsT &&...args) {
@@ -235,8 +235,8 @@ namespace snabl {
 
     void jump(PC pc) { task->pc = pc; }
 
-    void jump(Int pc) {
-      task->pc = (pc == Int(ops.size())) ? nullptr : ops[pc].get();
+    void jump(I64 pc) {
+      task->pc = (pc == I64(ops.size())) ? nullptr : ops[pc].get();
     }
 
     void begin_call(Fimp &target, Pos pos, PC return_pc=nullptr) {
@@ -291,7 +291,7 @@ namespace snabl {
     }
 
     Box &peek() {
-      if (Int(task->stack.size()) <= task->stack_offs) {
+      if (I64(task->stack.size()) <= task->stack_offs) {
         throw Error("Nothing to peek");
       }
       
@@ -299,7 +299,7 @@ namespace snabl {
     }
 
     Box pop() {
-      if (Int(task->stack.size()) <= task->stack_offs) {
+      if (I64(task->stack.size()) <= task->stack_offs) {
         throw Error("Nothing to pop");
       }
       
@@ -310,7 +310,7 @@ namespace snabl {
 
     const Stack &stack() { return task->stack; }
 
-    void begin_split(Int offs=0) {
+    void begin_split(I64 offs=0) {
       task->stack_offs = task->stack.size()-offs;
       task->splits.push_back(task->stack_offs);
     }

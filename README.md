@@ -30,11 +30,11 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 Snabl supports strong, first class Types. The root type ```T``` may refer to any type except ```Nil```.
 
 ```
-42 Int?
+42 I64?
 
 [t]
 
-Int T?
+I64 T?
 
 [t]
 
@@ -51,7 +51,7 @@ nil T?
 Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci.
 
 ```
-func: my-fib<Int Int Int> {
+func: my-fib<I64 I64 I64> {
   let: (n a b)
 
   @n switch:,
@@ -157,14 +157,14 @@ env.home.add_fimp(
   {snabl::Box(env.int_type)},
   [&env](snabl::Fimp &fimp) {
     snabl::Box &v(env.peek());
-    snabl::Int n(v.as<snabl::Int>()), a(0), b(1);
+    snabl::I64 n(v.as_i64), a(0), b(1);
 
     while (n-- > 1) {
       std::swap(a, b);
       b += a;
     }
 
-    v.as<snabl::Int>() = b;
+    v.as_i64 = b;
   });
 
 env.run("10 my-fib say");

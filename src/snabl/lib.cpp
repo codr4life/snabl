@@ -9,7 +9,7 @@ namespace snabl {
     return macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
   }
   
-  Func &Lib::add_func(Sym id, Int nargs) {
+  Func &Lib::add_func(Sym id, I64 nargs) {
     auto found(funcs.find(id));
     
     if (found != funcs.end()) {

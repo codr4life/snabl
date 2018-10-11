@@ -5,10 +5,10 @@
 #include "snabl/types.hpp"
 
 namespace snabl {
-	struct Pos {
-		Pos(Int row, Int col): row(row), col(col) { } 
-		Int row, col;
-	};
+  struct Pos {
+    I64 row, col;
+    Pos(I64 row, I64 col): row(row), col(col) { } 
+  };
 }
 
 #endif

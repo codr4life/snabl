@@ -15,22 +15,20 @@ namespace snabl {
 
   struct Task {
     enum struct Status {New, Running, Yielding, Done};
-    static const Int MaxCalls = 8;
-    static const Int MaxSplits = 8;
-    static const Int MaxTries = 8;
+    static const I64 MaxCalls = 8, MaxSplits = 8, MaxTries = 8;
     
     ScopePtr scope;
     Stack stack;
 
     TaskPtr prev, next;
     Status status;
-    Int stack_offs;
+    I64 stack_offs;
     Lib *lib;
     PC pc;
 
     Starray<Call, MaxCalls> calls;
     Sarray<ops::Try *, MaxTries> tries;
-    Sarray<Int, MaxSplits> splits;
+    Sarray<I64, MaxSplits> splits;
 
     Task(const Task &)=delete;
     const Task &operator =(const Task &)=delete;

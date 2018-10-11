@@ -1,7 +1,7 @@
 #ifndef SNABL_TIMER_HPP
 #define SNABL_TIMER_HPP
 
-#include "snabl/types/int.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
   struct Timer {
@@ -11,7 +11,7 @@ namespace snabl {
     
     Timer();
     void reset();
-    Int ns() const;
+    I64 ns() const;
   };
 }
 

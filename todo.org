@@ -1,7 +1,8 @@
+* convert time to prim
 * remove ScopePtr
 ** switch _scope/next to Starray<Scope>
 ** replace parent scopes with vector<pair<sym, box>>
-*** use to ini scope vars
+*** use to init scope vars
 ** remove recursive look up
 ** store Scope * in target
 * add IO enum

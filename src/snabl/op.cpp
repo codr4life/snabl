@@ -32,9 +32,9 @@ namespace snabl {
     Bench::Bench(Env &env, Pos pos): Op(env, type, pos), end_pc(-1) { }
 
     void Bench::run(Env &env) {
-      const Int reps(env.pop().as<Int>());
+      const I64 reps(env.pop().as_i64);
         
-      for (int i(0); i < reps; i++) {
+      for (I64 i(0); i < reps; i++) {
         env.jump(next);
         env.run();
       }
@@ -63,7 +63,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
         
-      if (Int(s.size()) <= t.stack_offs) {
+      if (I64(s.size()) <= t.stack_offs) {
         throw Error("Nothing to ddrop");
       }
         
@@ -78,7 +78,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
         
-      if (Int(s.size()) <= t.stack_offs) {
+      if (I64(s.size()) <= t.stack_offs) {
         throw RuntimeError(env, pos,
                            fmt("Nothing to drop: %0/%1", {s.size(), t.stack_offs}));
       }
@@ -92,12 +92,12 @@ namespace snabl {
     void Dup::run(Env &env) {
       auto &t(*env.task);
       auto &s(t.stack);
-      if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to dup"); }
+      if (I64(s.size()) <= t.stack_offs) { throw Error("Nothing to dup"); }
       env.push(s.back());
       env.jump(next);
     }
     
-    Else::Else(Env &env, Pos pos, Int skip_pc):
+    Else::Else(Env &env, Pos pos, I64 skip_pc):
       Op(env, type, pos), skip_pc(skip_pc) { }
 
     void Else::run(Env &env) {
@@ -107,7 +107,7 @@ namespace snabl {
         throw RuntimeError(env, pos, fmt("Invalid else cond: %0", {v}));
       }
 
-      if (v.as<bool>()) {
+      if (v.as_bool) {
         env.jump(next);
       } else {
         env.jump(skip_pc);
@@ -123,7 +123,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs+(rhs ? 0 : 1)) {
+      if (I64(s.size()) <= t.stack_offs+(rhs ? 0 : 1)) {
         throw Error("Nothing to eqval");
       }
         
@@ -164,7 +164,7 @@ namespace snabl {
 
       snabl::Fimp *f(nullptr);
 
-      if (Int(s.size()) >= t.stack_offs+func.nargs) {
+      if (I64(s.size()) >= t.stack_offs+func.nargs) {
         if (fimp) { f = fimp; }
         if (!f && prev_fimp) { f = prev_fimp; }
 
@@ -209,7 +209,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs) {
+      if (I64(s.size()) <= t.stack_offs) {
         throw RuntimeError(env, pos, "Nothing to isa");
       }
           
@@ -221,7 +221,7 @@ namespace snabl {
     
     void Isa::dump_args(ostream &out) const { out << ' ' << rhs.id; }
 
-    Jump::Jump(Env &env, Pos pos, Int end_pc):
+    Jump::Jump(Env &env, Pos pos, I64 end_pc):
       Op(env, type, pos), end_pc(end_pc) { }
 
     void Jump::run(Env &env) { env.jump(end_pc); }
@@ -252,7 +252,7 @@ namespace snabl {
     void Let::run(Env &env) {
       auto &t(*env.task);
       auto &s(t.stack);
-      if (Int(s.size()) <= t.stack_offs) { throw Error("Nothing to let"); }
+      if (I64(s.size()) <= t.stack_offs) { throw Error("Nothing to let"); }
       auto &v(s.back());
       env.scope()->let(id, v);
       s.pop_back();
@@ -292,7 +292,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs+2) {
+      if (I64(s.size()) <= t.stack_offs+2) {
         throw RuntimeError(env, pos, "Nothing to rot");
       }
         
@@ -308,7 +308,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs+2) {
+      if (I64(s.size()) <= t.stack_offs+2) {
         throw RuntimeError(env, pos, "Nothing to rswap");
       }
 
@@ -337,7 +337,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs+1) {
+      if (I64(s.size()) <= t.stack_offs+1) {
         throw RuntimeError(env, pos, "Nothing to sdrop");
       }
         
@@ -347,7 +347,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    Split::Split(Env &env, Pos pos, Int offs):
+    Split::Split(Env &env, Pos pos, I64 offs):
       Op(env, type, pos), offs(offs) { }
 
     void Split::run(Env &env) {
@@ -369,11 +369,11 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      const Int offs(t.stack_offs);
+      const I64 offs(t.stack_offs);
       if (end_split) { env.end_split(); }
       auto ss(StackPtr::make(&env.stack_type.pool));
         
-      if (Int(s.size()) > offs) {
+      if (I64(s.size()) > offs) {
         const auto i(s.begin()+offs), j(s.end());
         move(i, j, back_inserter(*ss));
         s.erase(i, j);
@@ -393,7 +393,7 @@ namespace snabl {
       auto &t(*env.task);
       auto &s(t.stack);
 
-      if (Int(s.size()) <= t.stack_offs+1) {
+      if (I64(s.size()) <= t.stack_offs+1) {
         throw RuntimeError(env, pos, "Nothing to swap");
       }
         
@@ -439,15 +439,15 @@ namespace snabl {
       throw e;
     }
     
-    Times::Times(Env &env, Pos pos, Int i_reg):
+    Times::Times(Env &env, Pos pos, I64 i_reg):
       Op(env, type, pos), i_reg(i_reg) { }
 
     void Times::run(Env &env) {
-      env.let_reg(i_reg, env.pop().as<Int>());
+      env.let_reg(i_reg, env.pop().as_i64);
       env.jump(next);
     }
     
-    Try::Try(Env &env, Pos pos, Int state_reg):
+    Try::Try(Env &env, Pos pos, I64 state_reg):
       Op(env, type, pos), state_reg(state_reg), end_pc(-1) { }
 
     void Try::run(Env &env) {
@@ -456,7 +456,7 @@ namespace snabl {
       env.jump(next);
     }
     
-    TryEnd::TryEnd(Env &env, Pos pos, Int state_reg):
+    TryEnd::TryEnd(Env &env, Pos pos, I64 state_reg):
       Op(env, type, pos), state_reg(state_reg) { }
 
     void TryEnd::run(Env &env) {

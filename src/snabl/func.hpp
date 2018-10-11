@@ -12,13 +12,13 @@ namespace snabl {
 
   struct Func: Def {
     Lib &lib;
-    const Int nargs;
+    const I64 nargs;
     unordered_map<Sym, unique_ptr<Fimp>> fimps;
     
     Func(const Func &)=delete;
     const Func &operator =(const Func &)=delete;
 
-    Func(Lib &lib, Sym id, Int nargs): Def(id), lib(lib), nargs(nargs) { }
+    Func(Lib &lib, Sym id, I64 nargs): Def(id), lib(lib), nargs(nargs) { }
 
     template <typename... ImpT>
     Fimp &add_fimp(const Fimp::Args &args, ImpT &&... imp);
@@ -27,7 +27,7 @@ namespace snabl {
 
     Fimp *get_best_fimp(Stack::const_iterator begin,
                         Stack::const_iterator end) const {
-      Int best_score(-1);
+      I64 best_score(-1);
       Fimp *best_fimp(nullptr);
       
       for (auto &fp: fimps) {

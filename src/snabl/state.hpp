@@ -12,7 +12,7 @@ namespace snabl {
   struct State {
     Lib &lib;
     const ScopePtr scope;
-    const Int ncalls, ntries, nstack, nsplits;
+    const I64 ncalls, ntries, nstack, nsplits;
 
     State(const Env &env);
     void restore_lib(Env &env) const;

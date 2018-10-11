@@ -79,7 +79,7 @@ namespace snabl {
       auto fn(lib.get_func(id));
       if (!fn) { throw CompileError(pos, fmt("Unknown func: '%0'", {id.name()})); }
       
-      if (Int(args.size()) != fn->nargs) {
+      if (I64(args.size()) != fn->nargs) {
         throw CompileError(pos, fmt("Wrong number of args: %0", {fn->id}));
       }
       

@@ -1,16 +1,16 @@
 #ifndef SNABL_TYPE_TIME_HPP
 #define SNABL_TYPE_TIME_HPP
 
-#include "snabl/types/int.hpp"
+#include "snabl/types.hpp"
 
 namespace snabl {
   struct Time {
-    static Time ms(Int n);
+    static Time ms(I64 n);
 
-    const Int ns;
+    const I64 ns;
 
-    Time(Int ns=0);
-    Int as_ms() const;
+    Time(I64 ns=0);
+    I64 as_ms() const;
   };
 
   bool operator ==(const Time &lhs, const Time &rhs);

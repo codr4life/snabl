@@ -183,7 +183,7 @@ namespace snabl {
 
     struct Split: Body {     
       static const FormType<Split> type;
-      Int offs=0;
+      I64 offs=0;
       
       Split(Forms::const_iterator begin, Forms::const_iterator end):
         Body(begin, end) { }

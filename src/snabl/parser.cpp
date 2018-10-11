@@ -206,7 +206,7 @@ namespace snabl {
                      start_pos,
                      is_float
                      ? Box(env.float_type, stold(buf.str()))
-                     : Box(env.int_type, stoll(buf.str())));
+                     : Box(env.i64_type, I64(stoll(buf.str()))));
   }
 
   void Parser::parse_sexpr(istream &in, Forms &out) {

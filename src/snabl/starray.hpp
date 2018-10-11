@@ -2,12 +2,12 @@
 #define SNABL_STARRAY_HPP
 
 namespace snabl {
-  template <typename T, Int MAX_SIZE>
+  template <typename T, I64 MAX_SIZE>
   struct Starray {
     using Item = typename aligned_storage<sizeof(T), alignof(T)>::type;
 
     array<Item, MAX_SIZE> items;    
-    Int size;
+    I64 size;
 
     Starray(const Starray &)=delete;
     const Starray &operator =(const Starray &)=delete;
@@ -15,7 +15,7 @@ namespace snabl {
     Starray(): size(0) { }
     
     ~Starray() {
-      for (Int i(0); i < size; i++) { get(i).~T(); }
+      for (I64 i(0); i < size; i++) { get(i).~T(); }
     }
     
     template <typename...ArgsT>
@@ -27,12 +27,12 @@ namespace snabl {
     T &back() { return get(size-1); }
     void pop_back() { get(--size).~T(); }
 
-    void trunc(Int new_size) {
+    void trunc(I64 new_size) {
       for (; size > new_size; size--) { get(size-1).~T(); }
     }
 
-    T &get(Int i) { return reinterpret_cast<T &>(items[i]); }
-    const T &get(Int i) const { return reinterpret_cast<const T &>(items[i]); }
+    T &get(I64 i) { return reinterpret_cast<T &>(items[i]); }
+    const T &get(I64 i) const { return reinterpret_cast<const T &>(items[i]); }
   };
 }
 

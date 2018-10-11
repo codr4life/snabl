@@ -10,7 +10,7 @@ namespace snabl {
   struct Env;
 
   struct Scope {
-    static const Int MaxRegs = 32;
+    static const I64 MaxRegs = 32;
     
     ScopePtr prev;
     const ScopePtr source;

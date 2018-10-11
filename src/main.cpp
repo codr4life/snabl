@@ -32,7 +32,7 @@ int main(int argc, const char *argv[]) {
   
   switch (mode) {
   case Mode::Compile: {
-    Int row(0);
+    I64 row(0);
     for (const auto &op: env.ops) {
       cout << row++ << '\t';
       op->dump(cout);
@@ -46,7 +46,7 @@ int main(int argc, const char *argv[]) {
     break;
   case Mode::Run:
     if (!env.ops.empty()) {
-      env.jump(Int(0));
+      env.jump(I64(0));
       env.run();
     }
     

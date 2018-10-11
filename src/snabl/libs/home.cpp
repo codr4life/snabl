@@ -159,12 +159,12 @@ namespace snabl {
                    Forms::const_iterator end,
                    Env &env) {
                   auto &form(*in++);
-                  const Int i_reg(env.next_reg(form.pos));
+                  const I64 i_reg(env.next_reg(form.pos));
                   env.emit<ops::Times>(form.pos, i_reg);
                   const auto start_pc(env.ops.size());
 
                   auto &jump(env.emit<ops::JumpIf>(form.pos, [&env, i_reg]() {
-                        return !env.get_reg<Int>(i_reg)--;
+                        return !env.get_reg<I64>(i_reg)--;
                       }));
                   
                   env.compile(*in++);
@@ -222,54 +222,54 @@ namespace snabl {
       add_fimp(env.sym("int"),
                {Box(env.float_type)},
                [this](Fimp &fimp) {
-                 const Float v(env.pop().as<Float>());
-                 env.push(env.int_type, Int(v));
+                 const Float v(env.pop().as_float);
+                 env.push(env.i64_type, I64(v));
                });
 
       add_fimp(env.sym("float"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 const Int v(env.pop().as<Int>());
+                 const I64 v(env.pop().as_i64);
                  env.push(env.float_type, Float(v));
                });
 
       add_fimp(env.sym("++"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 env.peek().as<Int>()++;
+                 env.peek().as_i64++;
                });
 
       add_fimp(env.sym("--"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 env.peek().as<Int>()--;
+                 env.peek().as_i64--;
                });
       
       add_fimp(env.sym("+"),
-               {Box(env.int_type), Box(env.int_type)},
+               {Box(env.i64_type), Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 Int y(env.pop().as<Int>());
-                 env.peek().as<Int>() += y;
+                 I64 y(env.pop().as_i64);
+                 env.peek().as_i64 += y;
                });
 
       add_fimp(env.sym("-"),
-               {Box(env.int_type), Box(env.int_type)},
+               {Box(env.i64_type), Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 Int y(env.pop().as<Int>());
-                 env.peek().as<Int>() -= y;
+                 I64 y(env.pop().as_i64);
+                 env.peek().as_i64 -= y;
                });
       
       add_fimp(env.sym("*"),
-               {Box(env.int_type), Box(env.int_type)},
+               {Box(env.i64_type), Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 Int y(env.pop().as<Int>());
-                 env.peek().as<Int>() *= y;
+                 I64 y(env.pop().as_i64);
+                 env.peek().as_i64 *= y;
                });
 
       add_fimp(env.sym("bool"),
                {Box(env.maybe_type)},
                [this](Fimp &fimp) {
-                 env.push(env.bool_type, env.pop().as_bool());
+                 env.push(env.bool_type, env.pop().val_as_bool());
                });
 
       add_fimp(env.sym("push"),
@@ -326,31 +326,31 @@ namespace snabl {
       add_fimp(env.sym("len"),
                {Box(env.str_type)},
                [this](Fimp &fimp) {
-                 env.push(env.int_type, env.pop().as<StrPtr>()->size());
+                 env.push(env.i64_type, env.pop().as<StrPtr>()->size());
                });
 
       add_fimp(env.sym("len"),
                {Box(env.stack_type)},
                [this](Fimp &fimp) {
-                 env.push(env.int_type, env.pop().as<StackPtr>()->size());
+                 env.push(env.i64_type, env.pop().as<StackPtr>()->size());
                });
 
       add_fimp(env.sym("ns"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 env.push(env.time_type, env.pop().as<Int>());
+                 env.push(env.time_type, env.pop().as_i64);
                });      
 
       add_fimp(env.sym("ms"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
-                 env.push(env.time_type, Time::ms(env.pop().as<Int>()));
+                 env.push(env.time_type, Time::ms(env.pop().as_i64));
                });      
 
       add_fimp(env.sym("ms"),
                {Box(env.time_type)},
                [this](Fimp &fimp) {
-                 env.push(env.int_type, env.pop().as<Time>().as_ms());
+                 env.push(env.i64_type, env.pop().as<Time>().as_ms());
                });
       
       add_fimp(env.sym("sleep"),
@@ -396,17 +396,17 @@ namespace snabl {
                });
 
       add_fimp(env.sym("fib"),
-               {Box(env.int_type)},
+               {Box(env.i64_type)},
                [this](Fimp &fimp) {
                  Box &v(env.peek());
-                 Int n(v.as<Int>()), a(0), b(1);
+                 I64 n(v.as_i64), a(0), b(1);
                  
                  while (n-- > 1) {
                    swap(a, b);
                    b += a;
                  }
 
-                 v.as<Int>() = b;
+                 v.as_i64 = b;
                });
     }
   }
