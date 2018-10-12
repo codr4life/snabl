@@ -27,7 +27,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 ### Typing
-Snabl supports strong, static, gradual, first class types. The root type ```T``` may refer to anything except ```nil```.
+Snabl provides strong, static, gradual, first class types. The root type ```T``` may refer to anything except ```nil```.
 
 ```
 42 I64?
@@ -48,7 +48,7 @@ nil T?
 ```
 
 ### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, lambdas and tail recursion. The following example implements a tail recursive fibonacci.
+Snabl borrows many ideas from functional languages;  first class multi methods, pattern matching, lambdas, tail recursion and more. The following example implements a tail recursive fibonacci.
 
 ```
 func: my-fib<I64 I64 I64> {
