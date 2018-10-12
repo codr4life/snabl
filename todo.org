@@ -1,3 +1,8 @@
+* remove Box type methods
+** call directly
+* add shared_ptr StackType.empty
+** copy on push
+* ---
 * add bool conversion to if:
 ** add Bool op
 * add or: macro
