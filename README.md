@@ -1,7 +1,7 @@
 ![Logo](logo.png?raw=true)
 
 ### Concatenation
-Much like Forth, Snabl supports directly manipulating the parameter stack.
+Like Forth, Snabl supports manipulating the parameter stack.
 
 ```
 1 2 3 swap! 
@@ -27,7 +27,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 ### Typing
-Snabl supports strong, first class Types. The root type ```T``` may refer to any type except ```Nil```.
+Snabl supports strong, first class Types. The root type ```T``` may refer to anything except ```Nil```.
 
 ```
 42 I64?
@@ -48,7 +48,7 @@ nil T?
 ```
 
 ### Function
-Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, cheap lambdas and tail recursion. The following example implements a tail recursive fibonacci.
+Snabl embraces but does not mandate functional programming. It supports first class functions, pattern matching, lambdas and tail recursion. The following example implements a tail recursive fibonacci.
 
 ```
 func: my-fib<I64 I64 I64> {
@@ -63,7 +63,7 @@ func: my-fib<I64 I64 I64> {
 [6765]
 ```
 
-The same algorithm may be implemented anonymously in a single scope using a lambda that manipulates the stack directly.
+The same algorithm may be implemented anonymously in a single scope using a lambda with stack manipulation.
 
 ```
 20 0 1 &(
@@ -77,7 +77,7 @@ The same algorithm may be implemented anonymously in a single scope using a lamb
 ```
 
 ### Multitasking
-Snabl supports multitasking in the form of first class green threads. By default, all code runs in the main task. New tasks may be started using ```task:```.
+Snabl supports multitasking in the form of first class green threads. By default, code runs in the main task. New tasks may be started using ```task:```.
 
 ```
 task: (3 times:, 'pong say yield!) drop!
