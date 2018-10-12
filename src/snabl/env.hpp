@@ -118,7 +118,7 @@ namespace snabl {
       task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
       time_type(home_lib.add_type<TimeType>(sym("Time"), {&cmp_type})),
 
-      enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&sym_type})),
+      enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
       io_type(home_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
 
       main_task(start_task()),

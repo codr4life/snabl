@@ -5,7 +5,14 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-  struct EnumType: Type<Sym> {
+  struct Enum {
+    I64 i;
+    Sym id;
+
+    Enum(I64 i, Sym id): i(i), id(id) { }
+  };
+  
+  struct EnumType: Type<Enum> {
     EnumType(Lib &lib, Sym id, const vector<Sym> &alts={});
     bool eqval(const Box &lhs, const Box &rhs) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;

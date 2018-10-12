@@ -379,7 +379,9 @@ namespace snabl {
 
       add_fimp(env.sym("sym"),
                {Box(env.enum_type)},
-               [this](Fimp &fimp) { env.peek().type = &env.sym_type; });      
+               [this](Fimp &fimp) {
+                 env.push(env.sym_type, env.pop().as_enum.id);
+               });
 
       add_fimp(env.sym("ns"),
                {Box(env.i64_type)},

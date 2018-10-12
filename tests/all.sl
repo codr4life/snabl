@@ -90,6 +90,7 @@ dup! call! swap! dup! call! swap!
 call! + + 3 test=
 
 enum: Foo (foo/bar foo/baz)
-foo/bar Foo isa
-foo/bar foo/baz !=
-foo/bar sym 'foo/bar =
+foo/bar Foo isa t test=
+foo/bar foo/baz = f test=
+foo/bar foo/baz < t test=
+foo/bar sym 'foo/bar test=
