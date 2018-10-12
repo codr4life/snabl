@@ -27,7 +27,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 ### Typing
-Snabl supports strong, first class Types. The root type ```T``` may refer to anything except ```nil```.
+Snabl supports strong, static, first class types. The root type ```T``` may refer to anything except ```nil```.
 
 ```
 42 I64?
