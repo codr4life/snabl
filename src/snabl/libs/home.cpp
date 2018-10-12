@@ -34,9 +34,11 @@ namespace snabl {
                    Env &env) {
                   const auto form(*in++);                 
                   auto &op(env.emit<ops::Bench>(form.pos));
+                  
                   if (in == end) {
-                    throw SyntaxError(form.pos, "Missing bench form");
+                    throw SyntaxError(form.pos, "Missing bench body");
                   }
+                  
                   env.compile(*in++);
                   env.emit<ops::Stop>(form.pos);
                   op.end_pc = env.ops.size();
@@ -50,11 +52,6 @@ namespace snabl {
                   auto id((in++)->as<forms::Id>().id);
                   auto body(*in++);
                   
-                  if (&body.type != &forms::Sexpr::type &&
-                      &body.type != &forms::Rest::type) {
-                    throw SyntaxError(form.pos, "Invalid enum body");
-                  }
-
                   vector<Sym> alts;
                   for (auto &f: body.as<forms::Body>().body) {
                     alts.push_back(f.as<forms::Id>().id);
@@ -76,6 +73,57 @@ namespace snabl {
                   if_skip.end_pc = env.ops.size();
                 }); 
 
+      add_macro(env.sym("is:"),
+                [this](Forms::const_iterator &in,
+                       Forms::const_iterator end,
+                       Env &env) {
+                  auto &form(*in++);                  
+
+                  if (in == end) {
+                    throw SyntaxError(form.pos, "Missing target type");
+                  }
+
+                  auto child(*in++);
+                  const auto &child_id(child.as<forms::Id>().id);
+                  auto child_type(env.lib().get_type(child_id));
+
+                  if (!child_type) {
+                    throw CompileError(form.pos,
+                                       fmt("Target type not found: %0",
+                                           {child_id}));                    
+                  }
+                                                     
+                  if (in == end) {
+                    throw SyntaxError(form.pos, "Missing parent types");
+                  }
+                  
+                  auto parents(*in++);
+
+                  auto derive = [&env, &form, &child_type](Sym parent_id) {
+                    auto parent_type(env.lib().get_type(parent_id));
+                    
+                    if (!parent_type) {
+                      throw CompileError(form.pos,
+                                         fmt("Parent type not found: %0",
+                                             {parent_id}));
+                    }
+
+                    if (!dynamic_cast<Trait *>(parent_type)) {
+                      throw CompileError(form.pos, "Parent type is not a trait");
+                    }
+
+                    child_type->derive(*parent_type);
+                  };
+                  
+                  if (&parents.type == &forms::Id::type) {
+                    derive(parents.as<forms::Id>().id);
+                  } else {
+                    for (auto &id: parents.as<forms::Body>().body) {
+                      derive(id.as<forms::Id>().id);
+                    }
+                  }
+                }); 
+
       add_macro(env.sym("func:"),
                 [](Forms::const_iterator &in,
                    Forms::const_iterator end,
@@ -83,12 +131,6 @@ namespace snabl {
                   auto &lib(env.lib());
                   const auto &form(*in++);
                   
-                  if (&in->type != &forms::Fimp::type) {
-                    throw SyntaxError(form.pos,
-                                      fmt("Invalid func: %0",
-                                          {in->type.id}));
-                  }
-
                   auto &id_form((in++)->as<forms::Fimp>());
                   vector<Box> args;
                   
@@ -212,11 +254,11 @@ namespace snabl {
                  env.push(env.pop().as<UserError>().val);
                });
 
-      add_fimp(env.sym("isa"),
+      add_fimp(env.sym("is"),
                {Box(env.maybe_type), Box(env.meta_type)},
                [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
-                 env.push(env.bool_type, x.isa(*y.as<AType *>()));
+                 env.push(env.bool_type, x.is(*y.as<AType *>()));
                });
 
       add_fimp(env.sym("="),

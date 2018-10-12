@@ -106,10 +106,10 @@ namespace snabl {
       void run(Env &env) override;
     };
 
-    struct Isa: Op {
+    struct Is: Op {
       static const string type;
       const AType &rhs;
-      Isa(Env &env, Pos pos, const AType &rhs);
+      Is(Env &env, Pos pos, const AType &rhs);
       void run(Env &env) override;
       void dump_args(ostream &out) const override;
     };

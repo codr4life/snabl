@@ -41,7 +41,7 @@ namespace snabl {
       }
     }
     
-    bool isa(const AType &parent) const {
+    bool is(const AType &parent) const {
       return
         &parent == this ||
         (I64(parent_types.size()) > parent.tag && parent_types[parent.tag]);

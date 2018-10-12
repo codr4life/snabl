@@ -19,7 +19,7 @@ namespace snabl {
     const string Bench::type("bench"), Call::type("call"), DDrop::type("ddrop"),
       Drop::type("drop"), Dup::type("dup"), Else::type("else"), Eqval::type("eqval"),
       Fimp::type("fimp"), Funcall::type("funcall"), Get::type("get"),
-      Isa::type("isa"), Jump::type("jump"), JumpIf::type("jump-if"),
+      Is::type("is"), Jump::type("jump"), JumpIf::type("jump-if"),
       Lambda::type("lambda"), Let::type("let"), Nop::type("nop"), Push::type("push"),
       Recall::type("recall"), Return::type("return"), Rot::type("rot"),
       RSwap::type("rswap"), Scope::type("scope"), ScopeEnd::type("scope-end"),
@@ -202,24 +202,24 @@ namespace snabl {
       env.jump(next);
     }
       
-    Isa::Isa(Env &env, Pos pos, const AType &rhs):
+    Is::Is(Env &env, Pos pos, const AType &rhs):
       Op(env, type, pos), rhs(rhs) { }
     
-    void Isa::run(Env &env) {
+    void Is::run(Env &env) {
       auto &t(*env.task);
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs) {
-        throw RuntimeError(env, pos, "Nothing to isa");
+        throw RuntimeError(env, pos, "Nothing to is");
       }
           
-      const bool ok(s.back().isa(rhs));
+      const bool ok(s.back().is(rhs));
       s.pop_back();
       env.push(env.bool_type, ok);
       env.jump(next);
     }
     
-    void Isa::dump_args(ostream &out) const { out << ' ' << rhs.id; }
+    void Is::dump_args(ostream &out) const { out << ' ' << rhs.id; }
 
     Jump::Jump(Env &env, Pos pos, I64 end_pc):
       Op(env, type, pos), end_pc(end_pc) { }

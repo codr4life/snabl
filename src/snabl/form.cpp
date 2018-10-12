@@ -167,7 +167,7 @@ namespace snabl {
           auto &id(qf.as<forms::Id>().id);
           auto t(env.lib().get_type(id));
           if (!t) { throw CompileError(qf.pos, fmt("Unknown type: %0", {id})); }
-          env.emit<ops::Isa>(qf.pos, *t);
+          env.emit<ops::Is>(qf.pos, *t);
         } else {
           env.compile(qf);
           env.emit<ops::Eqval>(qf.pos);

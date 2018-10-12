@@ -340,9 +340,9 @@ namespace snabl {
     }        
   };
 
-  inline bool Box::isa(const AType &rhs) const {
+  inline bool Box::is(const AType &rhs) const {
     auto &lhs((type == &type->lib.env.meta_type) ? *as<AType *>() : *type);
-    return lhs.isa(rhs);
+    return lhs.is(rhs);
   }
 
   template <typename ValT, typename...ArgsT>

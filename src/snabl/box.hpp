@@ -54,7 +54,7 @@ namespace snabl {
       return any_cast<ValT &>(val);
     }
 
-    bool isa(const AType &rhs) const;
+    bool is(const AType &rhs) const;
     
     bool equid(const Box &rhs) const {
       if (rhs.type != type) { return false; }

@@ -1,14 +1,11 @@
-* rename isa to is
+* add is: macro
+** is: Foo (Cmp Seq) macro
 * remove Box type methods
 ** call directly
 * add derived methods
 ** switch type methods to lambdas
 ** call func in default imp
 ** copy imps on derive
-* add derive: macro
-** derive: Foo (Cmp Seq) macro
-** only allow deriving from traits
-** execute at compile time
 * ---
 * add bool conversion to if:
 ** add Bool op

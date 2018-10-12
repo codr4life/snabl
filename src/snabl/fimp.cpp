@@ -46,7 +46,7 @@ namespace snabl {
 
       if (jv.is_valid) {
         if (!iv.is_valid || !iv.eqval(jv)) { return -1; }
-      } else if (!it->isa(jt)) {
+      } else if (!it->is(jt)) {
         return -1;
       }
       

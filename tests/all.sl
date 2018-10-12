@@ -1,4 +1,4 @@
-42 I64 isa t test=
+42 I64 is t test=
 I64 Num? t test=
 
 42 nil? f test=
@@ -90,7 +90,10 @@ dup! call! swap! dup! call! swap!
 call! + + 3 test=
 
 enum: Foo (foo/bar foo/baz)
-foo/bar Foo isa t test=
+foo/bar Foo is t test=
 foo/bar foo/baz = f test=
 foo/bar foo/baz < t test=
 foo/bar sym 'foo/bar test=
+
+is: Foo Seq
+foo/bar Seq is t test=
