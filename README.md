@@ -27,7 +27,7 @@ Snabl uses sigils to simplify local reasoning. Types start with uppcercase lette
 ```
 
 ### Typing
-Snabl supports strong, first class Types. The root type ```T``` may refer to anything except ```Nil```.
+Snabl supports strong, first class Types. The root type ```T``` may refer to anything except ```nil```.
 
 ```
 42 I64?
@@ -111,7 +111,7 @@ sync! str sync!
 ```
 
 ### Failure
-Snabl offers two flavors of error handling, ```Maybe``` and ```throw!```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next call.
+Snabl offers two flavors of error handling, ```Maybe``` and ```throw!```/```catch```. Any value may be passed as ```Maybe```, stray ```nil```'s are usually caught in the next function call.
 
 ```
 func: foo<T> _
