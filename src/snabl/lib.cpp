@@ -10,7 +10,7 @@ namespace snabl {
     return macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
   }
   
-  EnumType &Lib::add_enum_type(Sym id, initializer_list<Sym> alts) {
+  EnumType &Lib::add_enum_type(Sym id, const vector<Sym> &alts) {
     return add_type<EnumType>(id, {&env.enum_type}, alts);
   }
 

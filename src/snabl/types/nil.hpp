@@ -5,8 +5,9 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-  using Nil = nullptr_t;
-
+  struct Nil {
+  };
+  
   struct NilType: Type<Nil> {
     NilType(Lib &lib, Sym id);
     bool eqval(const Box &lhs, const Box &rhs) const override;

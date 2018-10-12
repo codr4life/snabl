@@ -88,3 +88,8 @@ try: (try: (41 throw!) throw!) catch ++ 42 test=
 3 iter
 dup! call! swap! dup! call! swap!
 call! + + 3 test=
+
+enum: Foo (foo/bar foo/baz)
+foo/bar Foo isa
+foo/bar foo/baz !=
+foo/bar sym 'foo/bar =

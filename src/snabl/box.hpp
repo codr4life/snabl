@@ -9,6 +9,7 @@
 #include "snabl/sym.hpp"
 #include "snabl/time.hpp"
 #include "snabl/type.hpp"
+#include "snabl/types/nil.hpp"
 
 namespace snabl {
   struct Box {
@@ -27,6 +28,7 @@ namespace snabl {
     bool is_valid=true;
       
     Box(AType &type): type(&type), is_valid(false) { }
+    Box(Type<Nil> &type): type(&type) { }
     Box(Type<bool> &type, bool val): type(&type), as_bool(val) { }
     Box(Type<Char> &type, Char val): type(&type), as_char(val) { }
     Box(Type<Float> &type, Float val): type(&type), as_float(val) { }

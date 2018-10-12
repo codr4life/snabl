@@ -4,7 +4,7 @@
 #include "snabl/types/enum.hpp"
 
 namespace snabl {
-  EnumType::EnumType(Lib &lib, Sym id, initializer_list<Sym> alts):
+  EnumType::EnumType(Lib &lib, Sym id, const vector<Sym> &alts):
     Type<Sym>(lib, id) {
     for (auto &a: alts) { lib.add_macro(a, *this, a); }
   }

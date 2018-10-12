@@ -31,10 +31,10 @@ namespace snabl {
 
     template <typename TypeT, typename... ArgsT>
     TypeT &add_type(Sym id,
-                    initializer_list<AType *> parent_types={},
+                    const vector<AType *> &parent_types={},
                     ArgsT &&... args);
 
-    EnumType &add_enum_type(Sym id, initializer_list<Sym> alts);
+    EnumType &add_enum_type(Sym id, const vector<Sym> &alts);
     
     Func &add_func(Sym id, I64 nargs);
 
@@ -48,7 +48,7 @@ namespace snabl {
 
   template <typename TypeT, typename... ArgsT>
   TypeT &Lib::add_type(Sym id,
-                       initializer_list<AType *> parent_types,
+                       const vector<AType *> &parent_types,
                        ArgsT &&... args) {
     auto t(new TypeT(*this, id, forward<ArgsT>(args)...));
     types.emplace(t->id, unique_ptr<AType>(t));

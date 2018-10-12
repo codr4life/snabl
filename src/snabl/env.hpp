@@ -47,8 +47,8 @@ namespace snabl {
     TaskPtr task;
     libs::Home home_lib;
 
-    Trait &no_type, &maybe_type, &root_type, &num_type, &seq_type, &source_type,
-      &sink_type;
+    Trait &no_type, &maybe_type, &root_type, &cmp_type, &num_type, &seq_type,
+      &source_type, &sink_type;
     
     Type<AType *> &meta_type;
     Type<Nil> &nil_type;
@@ -90,7 +90,8 @@ namespace snabl {
       no_type(home_lib.add_type<Trait>(sym("_"))),
       maybe_type(home_lib.add_type<Trait>(sym("Maybe"))),
       root_type(home_lib.add_type<Trait>(sym("T"), {&maybe_type})),
-      num_type(home_lib.add_type<Trait>(sym("Num"), {&root_type})),
+      cmp_type(home_lib.add_type<Trait>(sym("Cmp"), {&root_type})),
+      num_type(home_lib.add_type<Trait>(sym("Num"), {&cmp_type})),
       seq_type(home_lib.add_type<Trait>(sym("Seq"), {&root_type})),
       source_type(home_lib.add_type<Trait>(sym("Source"), {&root_type})),
       sink_type(home_lib.add_type<Trait>(sym("Sink"), {&root_type})),
@@ -99,8 +100,8 @@ namespace snabl {
       nil_type(home_lib.add_type<NilType>(sym("Nil"), {&maybe_type})),
 
       async_type(home_lib.add_type<AsyncType>(sym("Async"), {&root_type})),
-      bool_type(home_lib.add_type<BoolType>(sym("Bool"), {&root_type})),
-      char_type(home_lib.add_type<CharType>(sym("Char"), {&root_type})),
+      bool_type(home_lib.add_type<BoolType>(sym("Bool"), {&cmp_type})),
+      char_type(home_lib.add_type<CharType>(sym("Char"), {&cmp_type})),
       error_type(home_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
       float_type(home_lib.add_type<FloatType>(sym("Float"), {&num_type})),
       i64_type(home_lib.add_type<I64Type>(sym("I64"),
@@ -112,10 +113,10 @@ namespace snabl {
       stack_type(home_lib.add_type<StackType>(sym("Stack"),
         {&seq_type, &sink_type, &source_type})),
       str_type(home_lib.add_type<StrType>(sym("Str"),
-        {&seq_type, &sink_type, &source_type})),
-      sym_type(home_lib.add_type<SymType>(sym("Sym"), {&root_type})),
+        {&cmp_type, &seq_type, &sink_type, &source_type})),
+      sym_type(home_lib.add_type<SymType>(sym("Sym"), {&cmp_type})),
       task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
-      time_type(home_lib.add_type<TimeType>(sym("Time"), {&root_type})),
+      time_type(home_lib.add_type<TimeType>(sym("Time"), {&cmp_type})),
 
       enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&sym_type})),
       io_type(home_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),

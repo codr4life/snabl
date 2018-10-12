@@ -35,11 +35,32 @@ namespace snabl {
                   const auto form(*in++);                 
                   auto &op(env.emit<ops::Bench>(form.pos));
                   if (in == end) {
-                    throw CompileError(form.pos, "Missing bench form");
+                    throw SyntaxError(form.pos, "Missing bench form");
                   }
                   env.compile(*in++);
                   env.emit<ops::Stop>(form.pos);
                   op.end_pc = env.ops.size();
+                }); 
+
+      add_macro(env.sym("enum:"),
+                [this](Forms::const_iterator &in,
+                       Forms::const_iterator end,
+                       Env &env) {
+                  const auto form(*in++);
+                  auto id((in++)->as<forms::Id>().id);
+                  auto body(*in++);
+                  
+                  if (&body.type != &forms::Sexpr::type &&
+                      &body.type != &forms::Rest::type) {
+                    throw SyntaxError(form.pos, "Invalid enum body");
+                  }
+
+                  vector<Sym> alts;
+                  for (auto &f: body.as<forms::Body>().body) {
+                    alts.push_back(f.as<forms::Id>().id);
+                  }
+
+                  add_enum_type(id, alts);
                 }); 
 
       add_macro(env.sym("if:"),
@@ -92,7 +113,7 @@ namespace snabl {
                   auto &form(*in++);
 
                   if (in == end) {
-                    throw CompileError(form.pos, "Missing let place");
+                    throw SyntaxError(form.pos, "Missing let place");
                   }
                   
                   auto &p(*in++);
@@ -144,7 +165,7 @@ namespace snabl {
                   auto &form(*in++);
 
                   if (in == end) {
-                    throw CompileError(form.pos, "Missing task body");
+                    throw SyntaxError(form.pos, "Missing task body");
                   }
                   
                   auto &op(env.emit<ops::Task>(form.pos));
@@ -178,7 +199,7 @@ namespace snabl {
                    Env &env) {
                   const auto form(*in++);
                   auto &op(env.emit<ops::Try>(form.pos, env.next_reg(form.pos)));
-                  if (in == end) { throw CompileError(form.pos, "Missing try body"); }
+                  if (in == end) { throw SyntaxError(form.pos, "Missing try body"); }
                   env.compile(*in++);
                   env.emit<ops::TryEnd>(form.pos, op.state_reg);
                   env.emit<ops::Push>(form.pos, env.nil_type);
@@ -205,6 +226,13 @@ namespace snabl {
                  env.push(env.bool_type, x.eqval(y));
                });
 
+      add_fimp(env.sym("!="),
+               {Box(env.maybe_type), Box(env.maybe_type)},
+               [this](Fimp &fimp) {
+                 Box y(env.pop()), x(env.pop());
+                 env.push(env.bool_type, !x.eqval(y));
+               });
+
       add_fimp(env.sym("=="),
                {Box(env.maybe_type), Box(env.maybe_type)},
                [this](Fimp &fimp) {
@@ -212,13 +240,27 @@ namespace snabl {
                  env.push(env.bool_type, x.equid(y));
                });
 
+      add_fimp(env.sym("!=="),
+               {Box(env.maybe_type), Box(env.maybe_type)},
+               [this](Fimp &fimp) {
+                 Box y(env.pop()), x(env.pop());
+                 env.push(env.bool_type, !x.equid(y));
+               });
+
       add_fimp(env.sym("<"),
-               {Box(env.root_type), Box(env.root_type)},
+               {Box(env.cmp_type), Box(env.cmp_type)},
                [this](Fimp &fimp) {
                  Box y(env.pop()), x(env.pop());
                  env.push(env.bool_type, x.cmp(y) == Cmp::LT);
                });
-  
+
+      add_fimp(env.sym(">"),
+               {Box(env.cmp_type), Box(env.cmp_type)},
+               [this](Fimp &fimp) {
+                 Box y(env.pop()), x(env.pop());
+                 env.push(env.bool_type, x.cmp(y) == Cmp::GT);
+               });
+
       add_fimp(env.sym("int"),
                {Box(env.float_type)},
                [this](Fimp &fimp) {
@@ -334,6 +376,10 @@ namespace snabl {
                [this](Fimp &fimp) {
                  env.push(env.i64_type, env.pop().as<StackPtr>()->size());
                });
+
+      add_fimp(env.sym("sym"),
+               {Box(env.enum_type)},
+               [this](Fimp &fimp) { env.peek().type = &env.sym_type; });      
 
       add_fimp(env.sym("ns"),
                {Box(env.i64_type)},
