@@ -4,7 +4,7 @@
 namespace snabl {
   template <typename KeyT, typename ValT>
   struct BSet {
-    using Vals = deque<ValT>;
+    using Vals = vector<ValT>;
     Vals vals;
     KeyT ValT::*key_ptr;
     
