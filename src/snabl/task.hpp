@@ -5,7 +5,7 @@
 #include "snabl/op.hpp"
 #include "snabl/ptr.hpp"
 #include "snabl/sarray.hpp"
-#include "snabl/starray.hpp"
+#include "snabl/sparray.hpp"
 
 namespace snabl {
   struct Env;
@@ -26,9 +26,9 @@ namespace snabl {
     Lib *lib;
     PC pc;
 
-    Starray<Call, MaxCalls> calls;
-    Sarray<ops::Try *, MaxTries> tries;
-    Sarray<I64, MaxSplits> splits;
+    SArray<Call, MaxCalls> calls;
+    SPArray<ops::Try *, MaxTries> tries;
+    SPArray<I64, MaxSplits> splits;
 
     Task(const Task &)=delete;
     const Task &operator =(const Task &)=delete;
