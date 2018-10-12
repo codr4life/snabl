@@ -1,8 +1,3 @@
-* add BMap type
-** binary searched deque
-** member data ptr for key
-** use for scope vars
-*** add Var struct
 * remove Box type methods
 ** call directly
 * add shared_ptr StackType.empty

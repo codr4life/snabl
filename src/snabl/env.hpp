@@ -270,7 +270,7 @@ namespace snabl {
       s.restore_tries(*this);
       s.restore_splits(*this);
       
-      if (t.parent_scope) { task->scope->clear_vars(); }
+      if (t.parent_scope) { task->scope->clear(); }
       jump(t.start_pc);
     }
 
