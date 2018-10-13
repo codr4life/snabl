@@ -30,7 +30,6 @@ f bool f test=
 1 3 +<_ I64> 4 test=
 
 ''foo'bar'' ''foo'bar'' test=
-
 ''abc'' iter call! #a test=
 
 1 3 5 drop! + 4 test=
