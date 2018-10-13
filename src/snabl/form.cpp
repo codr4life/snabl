@@ -66,8 +66,12 @@ namespace snabl {
       snabl::Stack args;
         
       transform(form.type_ids.begin(), form.type_ids.end(), back_inserter(args),
-                [&lib, pos](Sym id) {
-                  auto t(lib.get_type(id));
+                [&env, &lib, pos](Sym id) {
+                  auto &idn(id.name());
+
+                  auto t((idn.size() == 1 && idn[0] == '_')
+                         ? &env.no_type
+                         : lib.get_type(id));
                   
                   if (!t) {
                     throw CompileError(pos, "Unknown type: " + id.name());
@@ -106,7 +110,7 @@ namespace snabl {
       auto found_lib(idn.rfind('.'));
       Lib *lib(&env.lib());
       
-      if (found_lib != string::npos) {
+      if (found_lib != string::npos && found_lib > 0 && idn[found_lib-1] != '.') {
         const auto lib_id(env.sym(idn.substr(0, found_lib)));
         lib = env.get_lib(lib_id);
         if (!lib) { throw CompileError(form.pos, fmt("Unknown lib: %0", {lib_id})); }
@@ -125,7 +129,7 @@ namespace snabl {
         auto m(lib->get_macro(id));
         
         if (m) {
-          (*m)->call(in, end, env);
+          m->call(in, end, env);
         } else {
           in++;
           auto fn(lib->get_func(id));

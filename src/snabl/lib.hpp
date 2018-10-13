@@ -16,19 +16,18 @@ namespace snabl {
   struct Lib: Def {
     Env &env;
     const Sym qid;
-    unordered_map<Sym, MacroPtr> macros;
-    unordered_map<Sym, unique_ptr<AType>> types;
-    unordered_map<Sym, unique_ptr<Func>> funcs;
+    unordered_map<Sym, unique_ptr<Def>> lib_defs;
+    unordered_map<Sym, Def *> defs;
     
     Lib(Env &env, const string &parent_qid, Sym id);
     
     template <typename ValT, typename... ArgsT>
-    const MacroPtr &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);
+    Macro &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);
 
     template <typename OpT, typename... ArgsT>
-    const MacroPtr &add_macro(Sym id, ArgsT &&... args);
+    Macro &add_macro(Sym id, ArgsT &&... args);
 
-    const MacroPtr &add_macro(Sym id, const Macro::Imp &imp);
+    Macro &add_macro(Sym id, const Macro::Imp &imp);
 
     template <typename TypeT, typename... ArgsT>
     TypeT &add_type(Sym id,
@@ -42,17 +41,52 @@ namespace snabl {
     template <typename... ImpT>
     Fimp &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
 
-    const MacroPtr *get_macro(Sym id);
-    AType *get_type(Sym id);
-    Func *get_func(Sym id);
+    Def *get_def(Sym id);
+
+    bool use_def(Pos pos, Def &def) {
+      auto found(defs.find(def.id));
+
+      if (found != defs.end()) {
+        if (found->second == &def) { return false; }
+        throw CompileError(pos, fmt("Name conflict: %0", {def.id}));
+      }
+      
+      defs.emplace(def.id, &def);
+      return true;
+    }
+    
+    Macro *get_macro(Sym id) {
+      auto d(get_def(id));
+      return d ? dynamic_cast<Macro *>(d) : nullptr;
+    }
+
+    AType *get_type(Sym id) {
+      auto d(get_def(id));
+      return d ? dynamic_cast<AType *>(d) : nullptr;
+    }
+
+    Func *get_func(Sym id) {
+      auto d(get_def(id));
+      return d ? dynamic_cast<Func *>(d) : nullptr;
+    }
   };
 
   template <typename TypeT, typename... ArgsT>
   TypeT &Lib::add_type(Sym id,
                        const vector<AType *> &parent_types,
                        ArgsT &&... args) {
+    auto found(lib_defs.find(id));
+
+    if (found != lib_defs.end()) {
+      auto t(dynamic_cast<TypeT *>(found->second.get()));
+      t->~TypeT();
+      new (t) TypeT(*this, id, forward<ArgsT>(args)...);
+      return *t;
+    }
+
     auto t(new TypeT(*this, id, forward<ArgsT>(args)...));
-    types.emplace(t->id, unique_ptr<AType>(t));
+    defs.emplace(t->id, t);
+    lib_defs.emplace(t->id, unique_ptr<Def>(t));
     for (auto &pt: parent_types) { t->derive(*pt); }
     return *t;
   }

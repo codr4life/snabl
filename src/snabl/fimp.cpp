@@ -35,6 +35,7 @@ namespace snabl {
 
   I64 Fimp::score(Stack::const_iterator begin, Stack::const_iterator end) const {
     auto &env(func.lib.env);
+    auto no_type(&env.no_type);
     auto i(begin), j(args.begin());
     I64 score(0);
 
@@ -42,7 +43,7 @@ namespace snabl {
       if (i == end) { return -1; }
       const Box &iv(*i), &jv(*j);
       const AType *it(iv.type), &jt(*jv.type);
-      if (it == &env.no_type) { continue; }
+      if (it == no_type) { continue; }
 
       if (jv.is_valid) {
         if (!iv.is_valid || !iv.eqval(jv)) { return -1; }

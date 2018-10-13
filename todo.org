@@ -1,12 +1,9 @@
-* add lib.use(src) 
-** call on abc lib
 * remove Box type methods
 ** call directly
 * add derived methods
 ** switch type methods to lambdas
 ** call func in default imp
 ** copy imps on derive
-* ---
 * add bool conversion to if:
 ** add Bool op
 * add or: macro
@@ -18,6 +15,7 @@
 ** one arg
 ** load all files into ops
 ** add bench/all.sl
+* replace Func.fimps with BSet
 * add while: loop
 ** like times
 * add clear! macro
@@ -54,4 +52,5 @@
 ** generate constructor 
 * drop MacroPtr
 * add use: macro
+* add lib: macro
 * convert Forms to <unique_ptr<Form>> like ops

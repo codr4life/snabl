@@ -7,10 +7,20 @@ namespace snabl {
     env(env),
     qid(parent_qid.empty() ? id : env.sym(fmt("%0.%1", {parent_qid, id}))) { }
 
-  const MacroPtr &Lib::add_macro(Sym id, const Macro::Imp &imp) {
-    auto found(macros.find(id));
-    if (found != macros.end()) { macros.erase(found); }
-    return macros.emplace(id, make_shared<Macro>(*this, id, imp)).first->second;
+  Macro &Lib::add_macro(Sym id, const Macro::Imp &imp) {
+    auto found(lib_defs.find(id));
+
+    if (found != lib_defs.end()) {
+      auto m(dynamic_cast<Macro *>(found->second.get()));
+      m->~Macro();
+      new (m) Macro(*this, id, imp);
+      return *m;
+    }
+
+    auto m(new Macro(*this, id, imp));
+    defs.emplace(id, m);
+    lib_defs.emplace(id, unique_ptr<Def>(m));
+    return *m;
   }
   
   EnumType &Lib::add_enum_type(Sym id, const vector<Sym> &alts) {
@@ -18,30 +28,20 @@ namespace snabl {
   }
 
   Func &Lib::add_func(Sym id, I64 nargs) {
-    auto found(funcs.find(id));
+    auto found(lib_defs.find(id));
     
-    if (found != funcs.end()) {
-      auto &f(*found->second);
-      if (f.nargs != nargs) { throw Error("Func args mismatch"); }
-      return f;
+    if (found != lib_defs.end()) {
+      return *dynamic_cast<Func *>(found->second.get());
     }
-    
-    return *funcs.emplace(id, make_unique<Func>(*this, id, nargs)).first->second;
-  }
 
-  
-  const MacroPtr *Lib::get_macro(Sym id) {
-    auto found(macros.find(id));
-    return (found == macros.end()) ? nullptr : &found->second;
-  }
-
-  AType *Lib::get_type(Sym id) {
-    auto found(types.find(id));
-    return (found == types.end()) ? nullptr : found->second.get();
+    auto f(new Func(*this, id, nargs));
+    defs.emplace(id, f);
+    lib_defs.emplace(id, unique_ptr<Def>(f)).first->second;
+    return *f;
   }
   
-  Func *Lib::get_func(Sym id) {
-    auto found(funcs.find(id));
-    return (found == funcs.end()) ? nullptr : found->second.get();
+  Def *Lib::get_def(Sym id) {
+    auto found(defs.find(id));
+    return (found == defs.end()) ? nullptr : found->second;
   }
 }

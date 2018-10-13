@@ -8,6 +8,7 @@ enum class Mode { Compile, Default, Repl, Run };
 
 int main(int argc, const char *argv[]) {
   Env env;
+  env.use(Pos(-1, -1), env.sym("s.abc"));
   Mode mode(Mode::Default);
   argc--;
   

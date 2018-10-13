@@ -58,7 +58,7 @@ namespace snabl {
                     alts.push_back(f.as<forms::Id>().id);
                   }
 
-                  add_enum_type(id, alts);
+                  env.lib().add_enum_type(id, alts);
                 }); 
 
       add_macro(env.sym("if:"),

@@ -8,9 +8,6 @@ namespace snabl {
   struct Scope;  
   using ScopePtr = Ptr<Scope>;
 
-  struct Macro;
-  using MacroPtr = shared_ptr<Macro>;
-
   struct Iter;
   using IterPtr = shared_ptr<Iter>;
 

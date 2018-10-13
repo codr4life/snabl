@@ -4,6 +4,21 @@
 #include "snabl/parser.hpp"
 
 namespace snabl {
+  void Env::use(Pos pos, Sym lib_id, const vector<Sym> def_ids) {
+    Lib *lib(get_lib(lib_id));
+    if (!lib) { throw Error(fmt("Unknown lib: %0", {lib_id})); }
+
+    if (def_ids.empty()) {
+      for (auto &d: lib->lib_defs) { task->lib->use_def(pos, *d.second); }
+    } else {
+      for (auto did: def_ids) {
+        auto d(lib->get_def(did));
+        if (!d) { throw Error(fmt("Unknown def: %0", {lib_id})); }
+        task->lib->use_def(pos, *d);
+      }
+    }
+  }
+  
   void Env::compile(string_view in) {
     const string s(in);
     istringstream ss(s);

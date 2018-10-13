@@ -83,46 +83,47 @@ namespace snabl {
     Env():
       type_tag(1),
       separators {
-      ' ', '\t', '\n', ',', '?', '&', '|',
+        ' ', '\t', '\n',
+        ',', '?', '&', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
-        },
+      },
       task(nullptr),
       main_task(start_task()),
-      home_lib(add_lib<Lib>(sym("snabl"))),
+      home_lib(add_lib<Lib>(sym("s"))),
       abc_lib(add_lib<libs::Abc>()),
-      no_type(home_lib.add_type<Trait>(sym("_"))),
-      maybe_type(home_lib.add_type<Trait>(sym("Maybe"))),
-      root_type(home_lib.add_type<Trait>(sym("T"), {&maybe_type})),
-      cmp_type(home_lib.add_type<Trait>(sym("Cmp"), {&root_type})),
-      num_type(home_lib.add_type<Trait>(sym("Num"), {&cmp_type})),
-      seq_type(home_lib.add_type<Trait>(sym("Seq"), {&root_type})),
-      source_type(home_lib.add_type<Trait>(sym("Source"), {&root_type})),
-      sink_type(home_lib.add_type<Trait>(sym("Sink"), {&root_type})),
+      no_type(abc_lib.add_type<Trait>(sym("No"))),
+      maybe_type(abc_lib.add_type<Trait>(sym("Maybe"))),
+      root_type(abc_lib.add_type<Trait>(sym("T"), {&maybe_type})),
+      cmp_type(abc_lib.add_type<Trait>(sym("Cmp"), {&root_type})),
+      num_type(abc_lib.add_type<Trait>(sym("Num"), {&cmp_type})),
+      seq_type(abc_lib.add_type<Trait>(sym("Seq"), {&root_type})),
+      source_type(abc_lib.add_type<Trait>(sym("Source"), {&root_type})),
+      sink_type(abc_lib.add_type<Trait>(sym("Sink"), {&root_type})),
 
-      meta_type(home_lib.add_type<MetaType>(sym("Type"), {&root_type})),
-      nil_type(home_lib.add_type<NilType>(sym("Nil"), {&maybe_type})),
+      meta_type(abc_lib.add_type<MetaType>(sym("Type"), {&root_type})),
+      nil_type(abc_lib.add_type<NilType>(sym("Nil"), {&maybe_type})),
 
-      async_type(home_lib.add_type<AsyncType>(sym("Async"), {&root_type})),
-      bool_type(home_lib.add_type<BoolType>(sym("Bool"), {&cmp_type})),
-      char_type(home_lib.add_type<CharType>(sym("Char"), {&cmp_type})),
-      error_type(home_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
-      float_type(home_lib.add_type<FloatType>(sym("Float"), {&num_type})),
-      i64_type(home_lib.add_type<I64Type>(sym("I64"),
+      async_type(abc_lib.add_type<AsyncType>(sym("Async"), {&root_type})),
+      bool_type(abc_lib.add_type<BoolType>(sym("Bool"), {&cmp_type})),
+      char_type(abc_lib.add_type<CharType>(sym("Char"), {&cmp_type})),
+      error_type(abc_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
+      float_type(abc_lib.add_type<FloatType>(sym("Float"), {&num_type})),
+      i64_type(abc_lib.add_type<I64Type>(sym("I64"),
         {&num_type, &seq_type})),
-      iter_type(home_lib.add_type<IterType>(sym("Iter"),
+      iter_type(abc_lib.add_type<IterType>(sym("Iter"),
         {&seq_type, &source_type})),
-      lambda_type(home_lib.add_type<LambdaType>(sym("Lambda"), {&root_type})),
-      rfile_type(home_lib.add_type<RFileType>(sym("RFile"), {&root_type})),
-      stack_type(home_lib.add_type<StackType>(sym("Stack"),
+      lambda_type(abc_lib.add_type<LambdaType>(sym("Lambda"), {&root_type})),
+      rfile_type(abc_lib.add_type<RFileType>(sym("RFile"), {&root_type})),
+      stack_type(abc_lib.add_type<StackType>(sym("Stack"),
         {&seq_type, &sink_type, &source_type})),
-      str_type(home_lib.add_type<StrType>(sym("Str"),
+      str_type(abc_lib.add_type<StrType>(sym("Str"),
         {&cmp_type, &seq_type, &sink_type, &source_type})),
-      sym_type(home_lib.add_type<SymType>(sym("Sym"), {&cmp_type})),
-      task_type(home_lib.add_type<TaskType>(sym("Task"), {&root_type})),
-      time_type(home_lib.add_type<TimeType>(sym("Time"), {&cmp_type})),
+      sym_type(abc_lib.add_type<SymType>(sym("Sym"), {&cmp_type})),
+      task_type(abc_lib.add_type<TaskType>(sym("Task"), {&root_type})),
+      time_type(abc_lib.add_type<TimeType>(sym("Time"), {&cmp_type})),
 
-      enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
-      io_type(home_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
+      enum_type(abc_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
+      io_type(abc_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
 
       root_scope(begin_scope()) {
         add_special_char('t', 8);
@@ -148,6 +149,8 @@ namespace snabl {
       const auto found(libs.find(id));
       return (found == libs.end()) ? nullptr : found->second.get();
     }
+
+    void use(Pos pos, Sym lib_id, const vector<Sym> def_ids={});
     
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
       auto t(TaskPtr::make(&task_pool, *this, start_pc, parent_scope));
@@ -363,7 +366,7 @@ namespace snabl {
   }
 
   template <typename ValT, typename...ArgsT>
-  const MacroPtr &Lib::add_macro(Sym id,
+  Macro &Lib::add_macro(Sym id,
                                  Type<ValT> &type,
                                  ArgsT &&...args) {
     return add_macro(id, [&type, args...](Forms::const_iterator &in,
@@ -374,7 +377,7 @@ namespace snabl {
   }
 
   template <typename OpT, typename...ArgsT>
-  const MacroPtr &Lib::add_macro(Sym id, ArgsT &&...args) {
+  Macro &Lib::add_macro(Sym id, ArgsT &&...args) {
     return add_macro(id, [args...](Forms::const_iterator &in,
                                    Forms::const_iterator end,
                                    Env &env) {

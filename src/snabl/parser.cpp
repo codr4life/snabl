@@ -140,8 +140,13 @@ namespace snabl {
         break;
       }
 
+      if (c == '.' && pc == '.') {
+        c = 0;
+        break;
+      }
+
       pc = c;
-      pc_sep = c_sep;
+      pc_sep = c_sep;      
       c = 0;
     }
 

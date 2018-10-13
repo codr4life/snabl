@@ -7,7 +7,7 @@ namespace snabl {
   EnumType::EnumType(Lib &lib, Sym id, const vector<Sym> &alts):
     Type<Enum>(lib, id) {
     I64 i(0);
-    for (auto &a: alts) { lib.add_macro(a, *this, Enum(i++, a)); }
+    for (auto &a: alts) { lib.env.lib().add_macro(a, *this, Enum(i++, a)); }
   }
 
   bool EnumType::eqval(const Box &lhs, const Box &rhs) const {
