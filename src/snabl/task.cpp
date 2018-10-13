@@ -6,7 +6,7 @@ namespace snabl {
     scope(parent_scope),
     status(Status::New),
     stack_offs(0),
-    lib(&env.home_lib),
+    lib(nullptr),
     pc(start_pc) { }
 
   const ScopePtr &Task::begin_scope(Env &env, const ScopePtr &parent) {

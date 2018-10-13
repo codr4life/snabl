@@ -2,7 +2,7 @@
 #define SNABL_ENV_HPP
 
 #include "snabl/lib.hpp"
-#include "snabl/libs/home.hpp"
+#include "snabl/libs/abc.hpp"
 #include "snabl/mpool.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/scope.hpp"
@@ -45,7 +45,10 @@ namespace snabl {
     MPool<TaskPtr::Imp> task_pool;
     MPool<ScopePtr::Imp> scope_pool;
     TaskPtr task;
-    libs::Home home_lib;
+    const TaskPtr main_task;
+    unordered_map<Sym, unique_ptr<Lib>> libs;
+    Lib &home_lib;
+    libs::Abc &abc_lib;
 
     Trait &no_type, &maybe_type, &root_type, &cmp_type, &num_type, &seq_type,
       &source_type, &sink_type;
@@ -70,7 +73,6 @@ namespace snabl {
 
     EnumType &enum_type, &io_type;
 
-    const TaskPtr main_task;
     const ScopePtr &root_scope;
 
     map<char, Char> special_chars;
@@ -81,12 +83,13 @@ namespace snabl {
     Env():
       type_tag(1),
       separators {
-      ' ', '\t', '\n', ',', '?', '&', '.', '|',
+      ' ', '\t', '\n', ',', '?', '&', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
         },
       task(nullptr),
-      home_lib(*this),
-
+      main_task(start_task()),
+      home_lib(add_lib<Lib>(sym("snabl"))),
+      abc_lib(add_lib<libs::Abc>()),
       no_type(home_lib.add_type<Trait>(sym("_"))),
       maybe_type(home_lib.add_type<Trait>(sym("Maybe"))),
       root_type(home_lib.add_type<Trait>(sym("T"), {&maybe_type})),
@@ -121,7 +124,6 @@ namespace snabl {
       enum_type(home_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
       io_type(home_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
 
-      main_task(start_task()),
       root_scope(begin_scope()) {
         add_special_char('t', 8);
         add_special_char('n', 10);
@@ -129,9 +131,24 @@ namespace snabl {
         add_special_char('e', 27);
         add_special_char('s', 32);
         begin_regs();
-        home_lib.init();
+        abc_lib.init();
       }
 
+    template <typename LibT, typename...ArgsT>
+    LibT &add_lib(ArgsT &&...args) {
+      auto l(new LibT(*this,
+                      task->lib ? task->lib->qid.name() : string(""),
+                      forward<ArgsT>(args)...));
+      libs.emplace(l->qid, l);
+      if (!task->lib) { task->lib = l; }
+      return *l;
+    }
+
+    Lib *get_lib(Sym id) const {
+      const auto found(libs.find(id));
+      return (found == libs.end()) ? nullptr : found->second.get();
+    }
+    
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
       auto t(TaskPtr::make(&task_pool, *this, start_pc, parent_scope));
 

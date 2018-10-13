@@ -1,10 +1,5 @@
-* add support for id symbols
-** handle in Id compile
-** db.new-table 
-* add abc lib
-** rename home lib to snabl
-** store by full id: snabl.abc
-** use in home lib
+* add lib.use(src) 
+** call on abc lib
 * remove Box type methods
 ** call directly
 * add derived methods
@@ -58,4 +53,5 @@
 ** derive new type from parent
 ** generate constructor 
 * drop MacroPtr
+* add use: macro
 * convert Forms to <unique_ptr<Form>> like ops

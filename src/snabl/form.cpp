@@ -101,28 +101,37 @@ namespace snabl {
                      Forms::const_iterator end,
                      Env &env) const {
       auto &form(*in);
-      auto &id(form.as<Id>().id);
-
-      if (id.name().front() == '@') {
+      auto id(form.as<Id>().id);
+      auto &idn(id.name());
+      auto found_lib(idn.rfind('.'));
+      Lib *lib(&env.lib());
+      
+      if (found_lib != string::npos) {
+        const auto lib_id(env.sym(idn.substr(0, found_lib)));
+        lib = env.get_lib(lib_id);
+        if (!lib) { throw CompileError(form.pos, fmt("Unknown lib: %0", {lib_id})); }
+        id = env.sym(idn.substr(found_lib+1));
+      }
+      
+      if (idn.front() == '@') {
         in++;
-        env.emit<ops::Get>(form.pos, env.sym(id.name().substr(1)));
-      } else if (isupper(id.name().front())) {
+        env.emit<ops::Get>(form.pos, env.sym(idn.substr(1)));
+      } else if (isupper(idn.front())) {
         in++;
-        auto t(env.lib().get_type(id));
+        auto t(lib->get_type(id));
         if (!t) { throw CompileError(form.pos, fmt("Unknown type: %0", {id})); }
         env.emit<ops::Push>(form.pos, env.meta_type, t);
       } else {
-        auto &lib(env.lib());
-        auto m(lib.get_macro(id));
+        auto m(lib->get_macro(id));
         
         if (m) {
           (*m)->call(in, end, env);
         } else {
           in++;
-          auto fn(lib.get_func(id));
+          auto fn(lib->get_func(id));
 
           if (!fn) {
-            throw CompileError(form.pos, fmt("Unknown id: '%0'", {id.name()}));
+            throw CompileError(form.pos, fmt("Unknown id: '%0'", {id}));
           }
           
           env.emit<ops::Funcall>(form.pos, *fn);

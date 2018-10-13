@@ -15,11 +15,12 @@ namespace snabl {
   
   struct Lib: Def {
     Env &env;
+    const Sym qid;
     unordered_map<Sym, MacroPtr> macros;
     unordered_map<Sym, unique_ptr<AType>> types;
     unordered_map<Sym, unique_ptr<Func>> funcs;
     
-    Lib(Env &env, Sym id);
+    Lib(Env &env, const string &parent_qid, Sym id);
     
     template <typename ValT, typename... ArgsT>
     const MacroPtr &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);

@@ -1,14 +1,15 @@
 #include "snabl/call.hpp"
 #include "snabl/env.hpp"
-#include "snabl/libs/home.hpp"
+#include "snabl/libs/abc.hpp"
 #include "snabl/std.hpp"
 #include "snabl/timer.hpp"
 
 namespace snabl {
   namespace libs {
-    Home::Home(Env &env): Lib(env, env.sym("home")) { }
+    Abc::Abc(Env &env, const string &parent_qid):
+      Lib(env, parent_qid, env.sym("abc")) { }
 
-    void Home::init() {
+    void Abc::init() {
       add_macro(env.sym("t"), env.bool_type, true);     
       add_macro(env.sym("f"), env.bool_type, false);      
       add_macro(env.sym("nil"), env.nil_type);      

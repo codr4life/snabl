@@ -2,7 +2,10 @@
 #include "snabl/lib.hpp"
 
 namespace snabl {
-  Lib::Lib(Env &env, Sym id): Def(id), env(env) { }
+  Lib::Lib(Env &env, const string &parent_qid, Sym id):
+    Def(id),
+    env(env),
+    qid(parent_qid.empty() ? id : env.sym(fmt("%0.%1", {parent_qid, id}))) { }
 
   const MacroPtr &Lib::add_macro(Sym id, const Macro::Imp &imp) {
     auto found(macros.find(id));
