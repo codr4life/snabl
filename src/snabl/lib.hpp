@@ -18,8 +18,11 @@ namespace snabl {
     const Sym qid;
     unordered_map<Sym, unique_ptr<Def>> lib_defs;
     unordered_map<Sym, Def *> defs;
+
+    Lib(const Lib &)=delete;
+    const Lib &operator=(const Lib &)=delete;
     
-    Lib(Env &env, const string &parent_qid, Sym id);
+    Lib(Env &env, Sym id, Lib *parent=nullptr);
     
     template <typename ValT, typename... ArgsT>
     Macro &add_macro(Sym id, Type<ValT> &type, ArgsT &&... args);

@@ -5,7 +5,7 @@
 
 namespace snabl::libs {
   struct Abc: Lib {
-    Abc(Env &env, const string &parent_qid);
+    Abc(Env &env);
     void init();
   };
 }

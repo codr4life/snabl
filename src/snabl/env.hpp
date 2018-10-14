@@ -47,7 +47,7 @@ namespace snabl {
     TaskPtr task;
     const TaskPtr main_task;
     unordered_map<Sym, unique_ptr<Lib>> libs;
-    Lib &home_lib;
+    Lib &home_lib, &s_lib;
     libs::Abc &abc_lib;
 
     Trait &no_type, &maybe_type, &root_type, &cmp_type, &num_type, &seq_type,
@@ -89,7 +89,8 @@ namespace snabl {
       },
       task(nullptr),
       main_task(start_task()),
-      home_lib(add_lib<Lib>(sym("s"))),
+      home_lib(add_lib<Lib>(sym(""))),
+      s_lib(add_lib<Lib>(sym("s"))),
       abc_lib(add_lib<libs::Abc>()),
       no_type(abc_lib.add_type<Trait>(sym("No"))),
       maybe_type(abc_lib.add_type<Trait>(sym("Maybe"))),
@@ -132,16 +133,14 @@ namespace snabl {
         add_special_char('e', 27);
         add_special_char('s', 32);
         begin_regs();
+        task->lib = &home_lib;
         abc_lib.init();
       }
 
     template <typename LibT, typename...ArgsT>
     LibT &add_lib(ArgsT &&...args) {
-      auto l(new LibT(*this,
-                      task->lib ? task->lib->qid.name() : string(""),
-                      forward<ArgsT>(args)...));
+      auto l(new LibT(*this, forward<ArgsT>(args)...));
       libs.emplace(l->qid, l);
-      if (!task->lib) { task->lib = l; }
       return *l;
     }
 

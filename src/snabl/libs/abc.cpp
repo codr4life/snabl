@@ -6,8 +6,7 @@
 
 namespace snabl {
   namespace libs {
-    Abc::Abc(Env &env, const string &parent_qid):
-      Lib(env, parent_qid, env.sym("abc")) { }
+    Abc::Abc(Env &env): Lib(env, env.sym("abc"), &env.s_lib) { }
 
     void Abc::init() {
       add_macro(env.sym("t"), env.bool_type, true);     
