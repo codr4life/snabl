@@ -248,6 +248,12 @@ namespace snabl {
     void run(istream &in);
     void run();
 
+    void load(const string &path) {
+      ifstream f(path);
+      if (f.fail()) { throw Error(fmt("File not found: %0", {path})); }
+      compile(f);
+    }
+    
     Lib &lib() const { return *task->lib; }
     PC pc() const { return task->pc; }
     

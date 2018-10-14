@@ -24,9 +24,7 @@ int main(int argc, const char *argv[]) {
         throw Error(fmt("Invalid flag: %0", {a}));
       }
     } else {
-      ifstream f(a);
-      if (f.fail()) { throw Error(fmt("File not found: %0", {a})); }
-      env.compile(f);
+      env.load(a);
       if (mode == Mode::Default) { mode = Mode::Run; }
     }
   }
