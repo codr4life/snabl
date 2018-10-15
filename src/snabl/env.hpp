@@ -149,7 +149,7 @@ namespace snabl {
       return (found == libs.end()) ? nullptr : found->second.get();
     }
 
-    void use(Pos pos, Sym lib_id, const vector<Sym> def_ids={});
+    void use(Sym lib_id, const vector<Sym> def_ids={});
     
     TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
       auto t(TaskPtr::make(&task_pool, *this, start_pc, parent_scope));
@@ -271,6 +271,8 @@ namespace snabl {
       task->pc = (pc == I64(ops.size())) ? nullptr : ops[pc].get();
     }
 
+    Pos pos() const { return task->pc ? task->pc->pos : Pos(-1, -1); }
+    
     void begin_call(Fimp &target, Pos pos, PC return_pc=nullptr) {
       task->calls.emplace_back(*this, target, pos, return_pc);
     }
@@ -284,7 +286,7 @@ namespace snabl {
     
     void recall(Pos pos) {
       auto &calls(task->calls);
-      if (!calls.size) { throw RuntimeError(*this, pos, "Nothing to recall"); }
+      if (!calls.size) { throw RuntimeError(*this, "Nothing to recall"); }
 
       const auto &c(calls.back());
       const auto &t(c.get_target());
@@ -301,7 +303,7 @@ namespace snabl {
 
     void _return(Pos pos) {
       auto &calls(task->calls);
-      if (!calls.size) { throw RuntimeError(*this, pos, "Nothing to return from"); }
+      if (!calls.size) { throw RuntimeError(*this, "Nothing to return from"); }
       auto &c(calls.back());
       auto &t(c.get_target());
       if (t.parent_scope) { end_scope(); }

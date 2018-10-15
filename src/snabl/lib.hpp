@@ -45,18 +45,7 @@ namespace snabl {
     Fimp &add_fimp(Sym id, const Fimp::Args &args, ImpT &&... imp);
 
     Def *get_def(Sym id);
-
-    bool use_def(Pos pos, Def &def) {
-      auto found(defs.find(def.id));
-
-      if (found != defs.end()) {
-        if (found->second == &def) { return false; }
-        throw CompileError(pos, fmt("Name conflict: %0", {def.id}));
-      }
-      
-      defs.emplace(def.id, &def);
-      return true;
-    }
+    bool use_def(Def &def);
     
     Macro *get_macro(Sym id) {
       auto d(get_def(id));

@@ -457,16 +457,13 @@ namespace snabl {
                  auto fn(env.pop().as<StrPtr>());
 
                  if (m == env.sym("r")) {
-                   env.push(env.async_type, fopen(env, env.call().pos, *fn, ios::in));
+                   env.push(env.async_type, fopen(env, *fn, ios::in));
                  } else if (m == env.sym("w")) {
-                   env.push(env.async_type,
-                            fopen(env, env.call().pos, *fn, ios::out));
+                   env.push(env.async_type, fopen(env, *fn, ios::out));
                  } else if (m == env.sym("rw")) {
-                   env.push(env.async_type,
-                            fopen(env, env.call().pos, *fn, ios::in | ios::out));
+                   env.push(env.async_type, fopen(env, *fn, ios::in | ios::out));
                  } else {
-                   throw RuntimeError(env, env.call().pos,
-                                      fmt("Invalid mode: %0", {m}));
+                   throw RuntimeError(env, fmt("Invalid mode: %0", {m}));
                  }
                });
 
@@ -492,9 +489,7 @@ namespace snabl {
                  Box y(env.pop()), x(env.pop());
                  
                  if (!x.eqval(y)) {
-                   throw RuntimeError(env,
-                                      env.call().pos,
-                                      fmt("Expected (%0), was (%1)", {y, x}));
+                   throw RuntimeError(env, fmt("Expected (%0), was (%1)", {y, x}));
                  }
                });
 

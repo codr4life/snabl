@@ -15,7 +15,8 @@ namespace snabl {
     CompileError(fmt("Syntax error in row %0, col %1: %2",
                      {pos.row, pos.col, msg})) { }
 
-  static string runtime_str(Env &env, Pos pos, const string &msg) {
+  static string runtime_str(Env &env, const string &msg) {
+    const auto pos(env.pos());
     stringstream buf;
         
     buf << env.task->stack << endl
@@ -25,6 +26,6 @@ namespace snabl {
     return buf.str();
   }
   
-  RuntimeError::RuntimeError(Env &env, Pos pos, const string &msg):
-    Error(runtime_str(env, pos, msg)) { }
+  RuntimeError::RuntimeError(Env &env, const string &msg):
+    Error(runtime_str(env, msg)) { }
 }

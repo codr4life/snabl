@@ -79,7 +79,7 @@ namespace snabl {
       auto &s(t.stack);
         
       if (I64(s.size()) <= t.stack_offs) {
-        throw RuntimeError(env, pos,
+        throw RuntimeError(env,
                            fmt("Nothing to drop: %0/%1", {s.size(), t.stack_offs}));
       }
         
@@ -104,7 +104,7 @@ namespace snabl {
       const auto &v(env.peek());
 
       if (v.type != &env.bool_type) {
-        throw RuntimeError(env, pos, fmt("Invalid else cond: %0", {v}));
+        throw RuntimeError(env, fmt("Invalid else cond: %0", {v}));
       }
 
       if (v.as_bool) {
@@ -180,7 +180,7 @@ namespace snabl {
       } 
       
       if (!f) {
-        throw RuntimeError(env, pos, fmt("Func not applicable: %0", {func.id}));
+        throw RuntimeError(env, fmt("Func not applicable: %0", {func.id}));
       }
       
       if (!fimp) { prev_fimp = f; }
@@ -197,7 +197,7 @@ namespace snabl {
 
     void Get::run(Env &env) {
       auto v(env.scope()->get(id));
-      if (!v) { throw RuntimeError(env, pos, fmt("Unknown var: %0", {id})); }
+      if (!v) { throw RuntimeError(env, fmt("Unknown var: %0", {id})); }
       env.push(*v);
       env.jump(next);
     }
@@ -210,7 +210,7 @@ namespace snabl {
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs) {
-        throw RuntimeError(env, pos, "Nothing to is");
+        throw RuntimeError(env, "Nothing to is");
       }
           
       const bool ok(s.back().is(rhs));
@@ -293,7 +293,7 @@ namespace snabl {
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs+2) {
-        throw RuntimeError(env, pos, "Nothing to rot");
+        throw RuntimeError(env, "Nothing to rot");
       }
         
       auto i(s.size()-1);
@@ -309,7 +309,7 @@ namespace snabl {
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs+2) {
-        throw RuntimeError(env, pos, "Nothing to rswap");
+        throw RuntimeError(env, "Nothing to rswap");
       }
 
       const auto i(s.size()-1);
@@ -338,7 +338,7 @@ namespace snabl {
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs+1) {
-        throw RuntimeError(env, pos, "Nothing to sdrop");
+        throw RuntimeError(env, "Nothing to sdrop");
       }
         
       const auto i(s.size()-1);
@@ -394,7 +394,7 @@ namespace snabl {
       auto &s(t.stack);
 
       if (I64(s.size()) <= t.stack_offs+1) {
-        throw RuntimeError(env, pos, "Nothing to swap");
+        throw RuntimeError(env, "Nothing to swap");
       }
         
       const auto i(s.size()-1);
@@ -408,7 +408,7 @@ namespace snabl {
       auto &v(env.peek());
 
       if (v.type != &env.async_type) {
-        throw RuntimeError(env, pos, fmt("Expected Async, was:", {v.type->id}));
+        throw RuntimeError(env, fmt("Expected Async, was:", {v.type->id}));
       }
 
       auto a(v.as<AsyncPtr>());
@@ -434,7 +434,7 @@ namespace snabl {
       auto &v(env.peek());
       auto e((v.type == &env.error_type)
              ? v.as<UserError>()
-             : UserError(env, pos, v));
+             : UserError(env, v));
       env.task->stack.pop_back();
       throw e;
     }

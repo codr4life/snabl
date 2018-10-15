@@ -24,7 +24,7 @@ namespace snabl {
   };
 
   struct RuntimeError: Error {
-    RuntimeError(Env &env, Pos pos, const string &msg);
+    RuntimeError(Env &env, const string &msg);
   };
 
   inline bool operator ==(const Error &lhs, const Error &rhs) {

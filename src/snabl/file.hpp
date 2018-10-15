@@ -8,6 +8,6 @@ namespace snabl {
   
   using FilePtr = shared_ptr<fstream>;
   
-  AsyncPtr fopen(Env &env, Pos pos, const string &name, fstream::openmode mode);
+  AsyncPtr fopen(Env &env, const string &name, fstream::openmode mode);
 }
 #endif

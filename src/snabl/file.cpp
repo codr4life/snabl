@@ -4,12 +4,12 @@
 #include "snabl/fmt.hpp"
 
 namespace snabl {
-  AsyncPtr fopen(Env &env, Pos pos, const string &name, fstream::openmode mode) {
-    return async([&env, pos, name, mode]() {
+  AsyncPtr fopen(Env &env, const string &name, fstream::openmode mode) {
+    return async([&env, name, mode]() {
         auto f(make_shared<fstream>(name, mode | ios::binary));
 
         if (f->fail()) {
-          throw RuntimeError(env, pos, fmt("File not found: %0", {name}));
+          throw RuntimeError(env, fmt("File not found: %0", {name}));
         }
         
         return Box(env.rfile_type, f);

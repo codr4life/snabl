@@ -14,8 +14,8 @@ namespace snabl {
       return buf.str();
     }
 
-    UserError(Env &env, Pos pos, const Box &_val):
-      RuntimeError(env, pos, val_str(_val)), val(_val) { }
+    UserError(Env &env, const Box &_val):
+      RuntimeError(env, val_str(_val)), val(_val) { }
   };
 }
 

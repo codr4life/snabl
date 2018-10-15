@@ -44,4 +44,17 @@ namespace snabl {
     auto found(defs.find(id));
     return (found == defs.end()) ? nullptr : found->second;
   }
+
+  bool Lib::use_def(Def &def) {
+    auto found(defs.find(def.id));
+
+    if (found != defs.end()) {
+      if (found->second == &def) { return false; }
+      throw CompileError(env.pos(), fmt("Name conflict: %0", {def.id}));
+    }
+      
+    defs.emplace(def.id, &def);
+    return true;
+  }
+
 }
