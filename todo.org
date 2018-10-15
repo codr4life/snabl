@@ -1,3 +1,5 @@
+* add Try struct
+** move state from reg to struct
 * remove Box type methods
 ** call directly
 * add derived methods
