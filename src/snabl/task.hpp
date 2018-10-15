@@ -13,6 +13,13 @@ namespace snabl {
   struct Task;
   using TaskPtr = Ptr<Task>;
 
+  struct Try {
+    ops::Try &op;
+    State state;
+
+    Try(Env &env, ops::Try &op): op(op), state(env) { }
+  };
+  
   struct Task {
     enum struct Status {New, Running, Yielding, Done};
     static const I64 MaxCalls = 8, MaxSplits = 8, MaxTries = 8;
@@ -27,7 +34,7 @@ namespace snabl {
     PC pc;
 
     SArray<Call, MaxCalls> calls;
-    SPArray<ops::Try *, MaxTries> tries;
+    SArray<Try, MaxTries> tries;
     SPArray<I64, MaxSplits> splits;
 
     Task(const Task &)=delete;

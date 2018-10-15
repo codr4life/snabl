@@ -268,16 +268,14 @@ namespace snabl {
 
     struct Try: Op {
       static const string type;
-      const I64 state_reg;
       I64 end_pc;
-      Try(Env &env, Pos pos, I64 state_reg);
+      Try(Env &env, Pos pos);
       void run(Env &env) override;
     };
 
     struct TryEnd: Op {
       static const string type;
-      const I64 state_reg;
-      TryEnd(Env &env, Pos pos, I64 state_reg);
+      TryEnd(Env &env, Pos pos);
       void run(Env &env) override;
     };
 

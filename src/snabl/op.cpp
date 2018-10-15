@@ -447,20 +447,17 @@ namespace snabl {
       env.jump(next);
     }
     
-    Try::Try(Env &env, Pos pos, I64 state_reg):
-      Op(env, type, pos), state_reg(state_reg), end_pc(-1) { }
+    Try::Try(Env &env, Pos pos):
+      Op(env, type, pos), end_pc(-1) { }
 
     void Try::run(Env &env) {
-      env.let_reg(state_reg, State(env));
       env.begin_try(*this);
       env.jump(next);
     }
     
-    TryEnd::TryEnd(Env &env, Pos pos, I64 state_reg):
-      Op(env, type, pos), state_reg(state_reg) { }
+    TryEnd::TryEnd(Env &env, Pos pos): Op(env, type, pos) { }
 
     void TryEnd::run(Env &env) {
-      env.clear_reg(state_reg);
       env.end_try();
       env.jump(next);
     }

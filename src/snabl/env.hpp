@@ -313,8 +313,8 @@ namespace snabl {
       end_call();
     }
     
-    void begin_try(ops::Try &op) { task->tries.push_back(&op); }
-    ops::Try *current_try() { return task->tries.back(); }
+    void begin_try(ops::Try &op) { task->tries.emplace_back(*this, op); }
+    Try &current_try() { return task->tries.back(); }
     void end_try() { task->tries.pop_back(); }
 
     void push(const Box &val) { task->stack.push_back(val); }

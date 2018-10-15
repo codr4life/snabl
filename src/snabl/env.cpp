@@ -77,18 +77,17 @@ namespace snabl {
       }
     } catch (const UserError &e) {
       if (!task->tries.size) { throw e; }
-      auto &t(*task->tries.back());
-      auto &s(get_reg<State>(t.state_reg));     
+      auto &t(task->tries.back());
+      auto &s(t.state);
       s.restore_lib(*this);
       s.restore_scope(*this);
       s.restore_calls(*this);
       s.restore_stack(*this);
       s.restore_splits(*this);
-      clear_reg(t.state_reg);
       end_try();
       
       push(error_type, e);
-      jump(t.end_pc);
+      jump(t.op.end_pc);
     }
 
     if (task->pc) { goto start; }

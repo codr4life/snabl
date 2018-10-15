@@ -240,10 +240,10 @@ namespace snabl {
                    Forms::const_iterator end,
                    Env &env) {
                   const auto form(*in++);
-                  auto &op(env.emit<ops::Try>(form.pos, env.next_reg(form.pos)));
+                  auto &op(env.emit<ops::Try>(form.pos));
                   if (in == end) { throw SyntaxError(form.pos, "Missing try body"); }
                   env.compile(*in++);
-                  env.emit<ops::TryEnd>(form.pos, op.state_reg);
+                  env.emit<ops::TryEnd>(form.pos);
                   env.emit<ops::Push>(form.pos, env.nil_type);
                   op.end_pc = env.ops.size();
                 });
