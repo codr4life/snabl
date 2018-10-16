@@ -79,7 +79,7 @@ namespace snabl {
     size_t nrefs() const { return imp ? imp->nrefs : 0; }
 
     void decr() {
-      if (! imp->nrefs) {
+      if (!imp->nrefs) {
         if (pool) {
           pool->release(imp);
         } else {

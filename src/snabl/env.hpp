@@ -354,17 +354,12 @@ namespace snabl {
       task->stack_offs = task->splits.size ? task->splits.back() : 0;
     }
 
+    const Box *get(Sym id) const { return task->scope->get(id); }
+    
     template <typename...ArgsT>
-    void note(Pos pos, const string &msg, ArgsT &&...args) {
-      cerr << fmt("Note in row %0, col %1: ", {pos.row, pos.col})
-           << fmt(msg, {args...}) << endl;
+    void let(Sym id, ArgsT &&...args) {
+      task->scope->let(id, forward<ArgsT>(args)...);
     }
-
-    template <typename...ArgsT>
-    void warn(Pos pos, const string &msg, ArgsT &&...args) {
-      cerr << fmt("Warning in row %0, col %1: ", {pos.row, pos.col})
-           << fmt(msg, {args...}) << endl;
-    }        
   };
 
   inline bool Box::is(const AType &rhs) const {

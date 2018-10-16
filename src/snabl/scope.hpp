@@ -14,7 +14,8 @@ namespace snabl {
     Sym key;
     Box val;
 
-    Var(Sym key, const Box &val): key(key), val(val) { }
+    template <typename...ArgsT>
+    Var(Sym key, ArgsT &&...args): key(key), val(forward<ArgsT>(args)...) { }
   };
   
   struct Scope {
@@ -37,8 +38,11 @@ namespace snabl {
       return source ? source->get(id) : nullptr;
     }
 
-    void let(Sym id, const Box &val) {
-      if (!vars.emplace(id, id, val)) { throw Error("Duplicate var: " + id.name()); }
+    template <typename...ArgsT>
+    void let(Sym id, ArgsT &&...args) {
+      if (!vars.emplace(id, id, forward<ArgsT>(args)...)) {
+        throw Error("Duplicate var: " + id.name());
+      }
     }
 
     void clear() { vars.clear(); }
