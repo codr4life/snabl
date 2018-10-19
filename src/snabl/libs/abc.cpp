@@ -450,6 +450,22 @@ namespace snabl {
                  this_thread::sleep_for(nanoseconds(time.ns));
                });
 
+      add_fimp(env.sym("bin"),
+               {Box(env.str_type)},
+               [this](Fimp &fimp) {
+                 auto &in(*env.pop().as<StrPtr>());
+                 env.push(env.bin_type,
+                          BinPtr::make(&env.bin_type.pool, in.begin(), in.end()));
+               });
+
+      add_fimp(env.sym("str"),
+               {Box(env.bin_type)},
+               [this](Fimp &fimp) {
+                 auto &in(*env.pop().as<BinPtr>());
+                 env.push(env.str_type,
+                          StrPtr::make(&env.str_type.pool, in.begin(), in.end()));
+               });
+
       add_fimp(env.sym("fopen"),
                {Box(env.str_type), Box(env.io_type)},
                [this](Fimp &fimp) {
@@ -479,7 +495,8 @@ namespace snabl {
                        f.seekg(0, ios::beg);
                        vector<char> buf(size);
                        f.read(buf.data(), size);
-                       return Box(env.str_type, make_shared<Str>(buf.data(), size));
+                       return Box(env.str_type,
+                                  StrPtr::make(&env.str_type.pool, buf.data(), size));
                      }));
                });
 

@@ -9,6 +9,7 @@
 #include "snabl/sym.hpp"
 #include "snabl/time.hpp"
 #include "snabl/type.hpp"
+#include "snabl/types/byte.hpp"
 #include "snabl/types/enum.hpp"
 #include "snabl/types/nil.hpp"
 
@@ -18,6 +19,7 @@ namespace snabl {
 
     union {
       bool as_bool;
+      Byte as_byte;
       Char as_char;
       Enum as_enum;
       Float as_float;
@@ -32,6 +34,7 @@ namespace snabl {
     Box(AType &type): type(&type), is_valid(false) { }
     Box(Type<Nil> &type): type(&type) { }
     Box(Type<bool> &type, bool val): type(&type), as_bool(val) { }
+    Box(Type<Byte> &type, Byte val): type(&type), as_byte(val) { }
     Box(Type<Char> &type, Char val): type(&type), as_char(val) { }
     Box(Type<Enum> &type, Enum val): type(&type), as_enum(val) { }
     Box(Type<Float> &type, Float val): type(&type), as_float(val) { }

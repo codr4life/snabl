@@ -13,7 +13,9 @@
 #include "snabl/task.hpp"
 #include "snabl/types.hpp"
 #include "snabl/types/async.hpp"
+#include "snabl/types/bin.hpp"
 #include "snabl/types/bool.hpp"
+#include "snabl/types/byte.hpp"
 #include "snabl/types/char.hpp"
 #include "snabl/types/enum.hpp"
 #include "snabl/types/error.hpp"
@@ -57,7 +59,9 @@ namespace snabl {
     Type<Nil> &nil_type;
 
     AsyncType &async_type;
+    BinType &bin_type;
     BoolType &bool_type;
+    ByteType &byte_type;
     CharType &char_type;
     ErrorType &error_type;
     FloatType &float_type;
@@ -105,7 +109,10 @@ namespace snabl {
       nil_type(abc_lib.add_type<NilType>(sym("Nil"), {&maybe_type})),
 
       async_type(abc_lib.add_type<AsyncType>(sym("Async"), {&root_type})),
+      bin_type(abc_lib.add_type<BinType>(sym("Bin"),
+        {&seq_type, &sink_type, &source_type})),
       bool_type(abc_lib.add_type<BoolType>(sym("Bool"), {&cmp_type})),
+      byte_type(abc_lib.add_type<ByteType>(sym("Byte"), {&num_type})),
       char_type(abc_lib.add_type<CharType>(sym("Char"), {&cmp_type})),
       error_type(abc_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
       float_type(abc_lib.add_type<FloatType>(sym("Float"), {&num_type})),

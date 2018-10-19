@@ -285,7 +285,7 @@ namespace snabl {
     if (!c) { throw SyntaxError(p, "Open string"); }
     
     out.emplace_back(forms::Lit::type, p,
-                     Box(env.str_type, make_shared<Str>(s.str())));
+                     Box(env.str_type, StrPtr::make(&env.str_type.pool, s.str())));
   }
 
   void Parser::parse_fimp(Pos pos, Sym id, istream &in, Forms &out) {

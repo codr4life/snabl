@@ -4,11 +4,12 @@
 #include "snabl/std.hpp"
 
 namespace snabl {
-  using Char = unsigned char;
+  using Byte = uint8_t;
+  using Bin = vector<Byte>;
+  using Char = char;
   using Float = long double;
   using I64 = int64_t;
   using Str = string;
-  using StrPtr = shared_ptr<Str>;
 }
 
 #endif
