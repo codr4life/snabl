@@ -1,5 +1,6 @@
 #include "snabl/box.hpp"
 #include "snabl/iter.hpp"
+#include "snabl/lib.hpp"
 #include "snabl/types/stack.hpp"
 
 namespace snabl {
@@ -17,16 +18,18 @@ namespace snabl {
 
   optional<Box> StackType::peek(const Box &source) const {
     auto &s(*source.as<StackPtr>());
-    return s.empty() ? make_optional(s.back()) : nullopt;
+    return s.empty() ? nullopt : make_optional(s.back());
   }
 
   void StackType::pop(Box &source) const { source.as<StackPtr>()->pop_back(); }
 
   IterPtr StackType::iter(const Box &val) const {
+    Env &env(val.type->lib.env);
+
     const StackPtr s(val.as<StackPtr>());
     auto i(s->begin());
     
-    return make_shared<Iter>([s, i](Env &env) mutable {
+    return make_shared<Iter>([&env, s, i]() mutable {
         return (i == s->end())
           ? nullopt
           : make_optional<Box>(*i++);

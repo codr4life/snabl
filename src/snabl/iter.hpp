@@ -7,17 +7,17 @@ namespace snabl {
   struct Env;
   
   struct Iter {
-    using Imp = function<optional<Box> (Env &env)>;
+    using Imp = function<optional<Box> ()>;
 
     Imp imp;
     bool is_done;
 
     Iter(Imp imp): imp(imp), is_done(false) { }
 
-    optional<Box> call(Env &env) {
+    optional<Box> call() {
       if (is_done) { throw Error("Iter is done"); }
       
-      auto v(imp(env));
+      auto v(imp());
       if (!v) { is_done = true; }
       return v;
     }

@@ -40,6 +40,7 @@ f bool f test=
 1 2 [3 4 5] len 3 test=
 |1 2 [..3 4 5] len 5 test=
 |3.. [..] len 3 test=
+42 stack peek 41 test=
 
 {42 let: foo @foo} 42 test=
 {21 let: foo &{@foo}} call! 21 test=

@@ -27,16 +27,18 @@ namespace snabl {
   optional<Box> StrType::peek(const Box &source) const {
     Env &env(source.type->lib.env);
     auto &s(*source.as<StrPtr>());
-    return s.empty() ? make_optional<Box>(env.char_type, s.back()) : nullopt;
+    return s.empty() ? nullopt : make_optional<Box>(env.char_type, s.back());
   }
 
   void StrType::pop(Box &source) const { source.as<StrPtr>()->pop_back(); }
   
   IterPtr StrType::iter(const Box &val) const {
+    Env &env(val.type->lib.env);
+
     const StrPtr s(val.as<StrPtr>());
     auto i(s->begin());
     
-    return make_shared<Iter>([s, i](Env &env) mutable {
+    return make_shared<Iter>([&env, s, i]() mutable {
         return (i == s->end())
           ? nullopt
           : make_optional<Box>(env.char_type, Char(*i++));

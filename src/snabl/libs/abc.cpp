@@ -388,11 +388,20 @@ namespace snabl {
                  auto i(env.pop().iter());
 
                  while (!i->is_done) {
-                   auto v(i->call(env));
+                   auto v(i->call());
                    if (v) { env.push(*v); }
                  }
                });
-      
+
+      add_fimp(env.sym("stack"),
+               {Box(env.seq_type)},
+               [this](Fimp &fimp) {
+                 auto in(env.pop().iter());
+                 auto out(StackPtr::make(&env.stack_type.pool));
+                 drain(*in, *out);
+                 env.push(env.stack_type, out);
+               });
+
       add_fimp(env.sym("dump"),
                {Box(env.maybe_type)},
                [this](Fimp &fimp) {

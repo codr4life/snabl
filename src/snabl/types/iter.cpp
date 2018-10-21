@@ -12,8 +12,13 @@ namespace snabl {
 
   void IterType::call(const Box &val, Pos pos) const {
     Env &env(val.type->lib.env);
-    const auto v(val.as<IterPtr>()->call(env));
-    if (v) { env.push(*v); } else { env.push(env.nil_type); }
+    const auto v(val.as<IterPtr>()->call());
+
+    if (v) {
+      env.push(*v);
+    } else {
+      env.push(env.nil_type);
+    }
   }
 
   IterPtr IterType::iter(const Box &val) const {

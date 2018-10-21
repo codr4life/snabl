@@ -20,16 +20,17 @@ namespace snabl {
   optional<Box> BinType::peek(const Box &source) const {
     Env &env(source.type->lib.env);
     auto &s(*source.as<BinPtr>());
-    return s.empty() ? make_optional<Box>(env.byte_type, s.back()) : nullopt;
+    return s.empty() ? nullopt : make_optional<Box>(env.byte_type, s.back());
   }
 
   void BinType::pop(Box &source) const { source.as<BinPtr>()->pop_back(); }
 
   IterPtr BinType::iter(const Box &val) const {
+    Env &env(val.type->lib.env);
     const BinPtr b(val.as<BinPtr>());
     auto i(b->begin());
     
-    return make_shared<Iter>([b, i](Env &env) mutable {
+    return make_shared<Iter>([&env, b, i]() mutable {
         return (i == b->end())
           ? nullopt
           : make_optional<Box>(env.byte_type, Byte(*i++));

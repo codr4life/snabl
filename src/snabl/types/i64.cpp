@@ -16,10 +16,12 @@ namespace snabl {
   }
   
   IterPtr I64Type::iter(const Box &val) const {
+    Env &env(val.type->lib.env);
+
     I64 i(0);
     const I64 max(val.as_i64);
     
-    return make_shared<Iter>([i, max](Env &env) mutable {
+    return make_shared<Iter>([&env, i, max]() mutable {
         return (i < max) ? make_optional<Box>(env.i64_type, i++) : nullopt;
       });
   }
