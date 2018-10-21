@@ -16,7 +16,8 @@ namespace snabl {
   }
 
   namespace ops {
-    const string Bench::type("bench"), Call::type("call"), DDrop::type("ddrop"),
+    const string Async::type("async"), Bench::type("bench"), Call::type("call"),
+      DDrop::type("ddrop"),
       Drop::type("drop"), Dup::type("dup"), Else::type("else"), Eqval::type("eqval"),
       Fimp::type("fimp"), Funcall::type("funcall"), Get::type("get"),
       Is::type("is"), Jump::type("jump"), JumpIf::type("jump-if"),
@@ -28,6 +29,13 @@ namespace snabl {
       Sync::type("sync"), Task::type("task"), Throw::type("throw"),
       Times::type("times"), Try::type("try"), TryEnd::type("try-end"),
       Yield::type("yield");
+
+    Async::Async(Env &env, Pos pos, I64 delta): Op(env, type, pos), delta(delta) { }
+
+    void Async::run(Env &env) {
+      env.async_depth += delta;
+      env.jump(next);
+    }
 
     Bench::Bench(Env &env, Pos pos): Op(env, type, pos), end_pc(-1) { }
 

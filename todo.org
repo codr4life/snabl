@@ -1,3 +1,4 @@
+* add auto sync! on funcall
 * remove Box type methods
 ** call directly
 * add derived methods
@@ -54,3 +55,6 @@
 * add use: macro
 * add lib: macro
 * convert Forms to <unique_ptr<Form>> like ops
+
+''test.sl'' r fopen async: str sync!
+''test.sl'' r fopen async: str say

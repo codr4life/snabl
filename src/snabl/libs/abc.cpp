@@ -28,6 +28,21 @@ namespace snabl {
       add_macro<ops::Throw>(env.sym("throw!"));
       add_macro<ops::Yield>(env.sym("yield!"));
 
+      add_macro(env.sym("async:"),
+                [](Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) {
+                  const auto form(*in++);                 
+                  env.emit<ops::Async>(form.pos, 1);
+                  
+                  if (in == end) {
+                    throw SyntaxError(form.pos, "Missing async body");
+                  }
+                  
+                  env.compile(*in++);
+                  env.emit<ops::Async>(form.pos, -1);
+                });
+
       add_macro(env.sym("bench:"),
                 [](Forms::const_iterator &in,
                    Forms::const_iterator end,
@@ -478,15 +493,15 @@ namespace snabl {
       add_fimp(env.sym("fopen"),
                {Box(env.str_type), Box(env.io_type)},
                [this](Fimp &fimp) {
-                 auto m(env.pop().as_sym);
+                 auto m(env.pop().as_enum.id);
                  auto fn(env.pop().as<StrPtr>());
 
                  if (m == env.sym("r")) {
-                   env.push(env.async_type, fopen(env, *fn, ios::in));
+                   env.push(fopen(env, *fn, ios::in));
                  } else if (m == env.sym("w")) {
-                   env.push(env.async_type, fopen(env, *fn, ios::out));
+                   env.push(fopen(env, *fn, ios::out));
                  } else if (m == env.sym("rw")) {
-                   env.push(env.async_type, fopen(env, *fn, ios::in | ios::out));
+                   env.push(fopen(env, *fn, ios::in | ios::out));
                  } else {
                    throw RuntimeError(env, fmt("Invalid mode: %0", {m}));
                  }
@@ -497,7 +512,7 @@ namespace snabl {
                [this](Fimp &fimp) {
                  auto fp(env.pop().as<FilePtr>());
                  
-                 env.push(env.async_type, async([this, fp]() {
+                 env.push(*async(env, [this, fp]() {
                        auto &f(*fp);
                        f.seekg(0, ios::end);
                        const auto size = f.tellg();

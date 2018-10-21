@@ -83,6 +83,8 @@ namespace snabl {
     map<Char, char> char_specials;
     vector<I64> nregs;
     Ops ops;
+
+    I64 async_depth=0;
     
     Env():
       type_tag(1),

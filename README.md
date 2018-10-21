@@ -103,9 +103,13 @@ foo bar baz
 ```
 ''foo.txt'' r fopen
 
-[(Async 0x125b850)]
+[(RFile 0x125b850)]
 
-sync! str sync!
+async: str
+
+[(Async 0x126b550)]
+
+sync!
 
 [''foo bar baz'']
 ```

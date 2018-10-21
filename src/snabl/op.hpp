@@ -34,6 +34,13 @@ namespace snabl {
   using Ops = deque<unique_ptr<Op>>;
 
   namespace ops {    
+    struct Async: Op {
+      static const string type;
+      I64 delta;
+      Async(Env &env, Pos pos, I64 delta);
+      void run(Env &env) override;
+    };
+
     struct Bench: Op {
       static const string type;
       I64 end_pc;

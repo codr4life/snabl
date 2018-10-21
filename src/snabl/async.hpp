@@ -7,7 +7,7 @@ namespace snabl {
   using Async = future<optional<Box>>;
   using AsyncPtr = shared_ptr<Async>;
   
-  AsyncPtr async(const function<optional<Box> ()> &fn);
+  optional<Box> async(Env &env, const function<optional<Box> ()> &fn);
 }
 
 #endif
