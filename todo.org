@@ -1,4 +1,3 @@
-* add auto sync! on funcall
 * remove Box type methods
 ** call directly
 * add derived methods

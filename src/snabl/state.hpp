@@ -12,15 +12,12 @@ namespace snabl {
   struct State {
     Lib &lib;
     const ScopePtr scope;
-    const I64 ncalls, ntries, nstack, nsplits;
+    const I64 ncalls, ntries, nstack, nsplits, async_depth;
 
     State(const Env &env);
-    void restore_lib(Env &env) const;
-    void restore_scope(Env &env) const;
-    void restore_tries(Env &env) const;
+    void restore_env(Env &env) const;
     void restore_calls(Env &env) const;
-    void restore_stack(Env &env) const;
-    void restore_splits(Env &env) const;
+    void restore_tries(Env &env) const;
   };
 }
 

@@ -33,7 +33,7 @@ namespace snabl {
     Async::Async(Env &env, Pos pos, I64 delta): Op(env, type, pos), delta(delta) { }
 
     void Async::run(Env &env) {
-      env.async_depth += delta;
+      env.task->async_depth += delta;
       env.jump(next);
     }
 

@@ -26,6 +26,7 @@ namespace snabl {
     
     ScopePtr scope;
     Stack stack;
+    I64 async_depth=0;
 
     TaskPtr prev, next;
     Status status;

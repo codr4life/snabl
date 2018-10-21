@@ -79,11 +79,8 @@ namespace snabl {
       if (!task->tries.size) { throw e; }
       auto &t(task->tries.back());
       auto &s(t.state);
-      s.restore_lib(*this);
-      s.restore_scope(*this);
+      s.restore_env(*this);
       s.restore_calls(*this);
-      s.restore_stack(*this);
-      s.restore_splits(*this);
       end_try();
       
       push(error_type, e);

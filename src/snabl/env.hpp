@@ -83,8 +83,6 @@ namespace snabl {
     map<Char, char> char_specials;
     vector<I64> nregs;
     Ops ops;
-
-    I64 async_depth=0;
     
     Env():
       type_tag(1),
@@ -296,16 +294,11 @@ namespace snabl {
     void recall(Pos pos) {
       auto &calls(task->calls);
       if (!calls.size) { throw RuntimeError(*this, "Nothing to recall"); }
-
       const auto &c(calls.back());
       const auto &t(c.get_target());
       const auto &s(c.state);
-      
-      s.restore_lib(*this);
-      s.restore_scope(*this);
+      s.restore_env(*this);
       s.restore_tries(*this);
-      s.restore_splits(*this);
-      
       if (t.parent_scope) { task->scope->clear(); }
       jump(t.start_pc);
     }
