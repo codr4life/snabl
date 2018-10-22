@@ -67,6 +67,8 @@ f if: 1 3 3 test=
 ) 'bar test= 
 
 2 3 times: ++ 5 test=
+0 while: (++ dup! 42 <) 42 test=
+
 &(1 2 +) call! 3 test=
 
 func: double<T> (2 *)

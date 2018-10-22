@@ -113,6 +113,13 @@ namespace snabl {
       void run(Env &env) override;
     };
 
+    struct If: Op {
+      static const string type;
+      I64 skip_pc;
+      If(Env &env, Pos pos, I64 skip_pc=-1);
+      void run(Env &env) override;
+    };
+
     struct Is: Op {
       static const string type;
       const AType &rhs;

@@ -20,7 +20,7 @@ namespace snabl {
       DDrop::type("ddrop"),
       Drop::type("drop"), Dup::type("dup"), Else::type("else"), Eqval::type("eqval"),
       Fimp::type("fimp"), Funcall::type("funcall"), Get::type("get"),
-      Is::type("is"), Jump::type("jump"), JumpIf::type("jump-if"),
+      If::type("if"), Is::type("is"), Jump::type("jump"), JumpIf::type("jump-if"),
       Lambda::type("lambda"), Let::type("let"), Nop::type("nop"), Push::type("push"),
       Recall::type("recall"), Return::type("return"), Rot::type("rot"),
       RSwap::type("rswap"), Scope::type("scope"), ScopeEnd::type("scope-end"),
@@ -203,7 +203,20 @@ namespace snabl {
       env.push(*v);
       env.jump(next);
     }
-      
+
+    If::If(Env &env, Pos pos, I64 skip_pc):
+      Op(env, type, pos), skip_pc(skip_pc) { }
+
+    void If::run(Env &env) {
+      if (env.peek()) {
+        env.jump(skip_pc);
+      } else {
+        env.jump(next);
+      }
+
+      env.pop();
+    }
+    
     Is::Is(Env &env, Pos pos, const AType &rhs):
       Op(env, type, pos), rhs(rhs) { }
     

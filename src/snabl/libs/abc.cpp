@@ -215,6 +215,18 @@ namespace snabl {
                   for (auto &s: skips) { s->end_pc = env.ops.size(); }
                 }); 
 
+      add_macro(env.sym("sync:"),
+                [](Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) {
+                  const auto form(*in++);                 
+                  env.emit<ops::Async>(form.pos, 1);
+                  if (in == end) { throw SyntaxError(form.pos, "Missing sync body"); }
+                  env.compile(*in++);
+                  env.emit<ops::Async>(form.pos, -1);
+                  env.emit<ops::Sync>(form.pos);
+                });
+      
       add_macro(env.sym("task:"),
                 [](Forms::const_iterator &in,
                    Forms::const_iterator end,
@@ -263,6 +275,21 @@ namespace snabl {
                   op.end_pc = env.ops.size();
                 });
 
+      add_macro(env.sym("while:"),
+                [](Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) {
+                  auto &form(*in++);               
+
+                  if (in == end) {
+                    throw SyntaxError(form.pos, "Missing while body");
+                  }
+
+                  const auto start_pc(env.ops.size());
+                  env.compile(*in++);
+                  env.emit<ops::If>(form.pos, start_pc);
+                });; 
+      
       add_fimp(env.sym("catch"),
                {Box(env.error_type)},
                [this](Fimp &fimp) {
