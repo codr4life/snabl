@@ -450,7 +450,7 @@ namespace snabl {
       auto e((v.type == &env.error_type)
              ? v.as<UserError>()
              : UserError(env, v));
-      env.task->stack.pop_back();
+      env.pop();
       throw e;
     }
     
