@@ -109,13 +109,7 @@ namespace snabl {
       Op(env, type, pos), skip_pc(skip_pc) { }
 
     void Else::run(Env &env) {
-      const auto &v(env.peek());
-
-      if (v.type != &env.bool_type) {
-        throw RuntimeError(env, fmt("Invalid else cond: %0", {v}));
-      }
-
-      if (v.as_bool) {
+      if (env.peek()) {
         env.jump(next);
       } else {
         env.jump(skip_pc);

@@ -1,11 +1,14 @@
-* remove Box type methods
-** call directly
+* add while loop
+** use Else op
+* add sync: macro
+** async: followed by sync!
+
+* ---
+* convert shared_ptr to PtrType
 * add derived methods
 ** switch type methods to lambdas
 ** call func in default imp
 ** copy imps on derive
-* add bool conversion to if:
-** add Bool op
 * add or: macro
 ** get first operand from stack
 ** treat body forms as multiple operands
@@ -16,8 +19,6 @@
 ** load all files into ops
 ** add bench/all.sl
 * replace Func.fimps with BSet
-* add while: loop
-** like times
 * add clear! macro
 ** Clear op
 * add for: loop
@@ -29,10 +30,6 @@
 ** begin/end_scope
 ** use stack as args
 * add define: macro
-** like let but bind at runtime
-** add lib.consts
-** @ sigil
-* convert shared_ptr except files to PtrType
 * add support for str special chars
 * add support for func/fimp refs with &
 ** add func/fimp type

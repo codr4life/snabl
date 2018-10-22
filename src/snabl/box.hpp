@@ -75,8 +75,7 @@ namespace snabl {
       return type->cmp(*this, rhs);
     }
 
-    bool val_as_bool() const { return type->as_bool(*this); }
-
+    operator bool() const { return type->as_bool(*this); }
     void call(Pos pos) const { type->call(*this, pos); }
     void push(const Box &val) { type->push(*this, val); }
     optional<Box> peek() const { return type->peek(*this); }

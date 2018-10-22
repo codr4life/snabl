@@ -367,9 +367,7 @@ namespace snabl {
 
       add_fimp(env.sym("bool"),
                {Box(env.maybe_type)},
-               [this](Fimp &fimp) {
-                 env.push(env.bool_type, env.pop().val_as_bool());
-               });
+               [this](Fimp &fimp) { env.push(env.bool_type, env.pop()); });
 
       add_fimp(env.sym("push"),
                {Box(env.sink_type), Box(env.root_type)},
