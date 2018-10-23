@@ -17,6 +17,7 @@ namespace snabl {
     void pop(Box &source) const override;
     IterPtr iter(const Box &val) const override;
     void dump(const Box &val, ostream &out) const override;
+    void print(const Box &val, ostream &out) const override;
   };
 }
 

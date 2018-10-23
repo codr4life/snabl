@@ -48,4 +48,8 @@ namespace snabl {
   void StrType::dump(const Box &val, ostream &out) const {
     out << "''" << *val.as<StrPtr>() << "''";
   }
+
+  void StrType::print(const Box &val, ostream &out) const {
+    out << *val.as<StrPtr>();
+  }
 }

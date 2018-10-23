@@ -11,12 +11,12 @@ namespace snabl {
   Cmp SymType::cmp(const Box &lhs, const Box &rhs) const {
     return snabl::cmp(lhs.as_sym, rhs.as_sym);
   }
-
-  void SymType::print(const Box &val, ostream &out) const {
-    out << val.as_sym;
-  }
   
   void SymType::dump(const Box &val, ostream &out) const {
     out << '\'' << val.as_sym;
+  }
+
+  void SymType::print(const Box &val, ostream &out) const {
+    out << val.as_sym;
   }
 }
