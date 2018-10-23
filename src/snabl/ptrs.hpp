@@ -13,9 +13,6 @@ namespace snabl {
 
   using StrPtr = Ptr<Str>;
 
-  struct Iter;
-  using IterPtr = shared_ptr<Iter>;
-
   struct Op;
   using PC = Op *;
 }

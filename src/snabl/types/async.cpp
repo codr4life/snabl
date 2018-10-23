@@ -2,7 +2,7 @@
 #include "snabl/types/async.hpp"
 
 namespace snabl {
-  AsyncType::AsyncType(Lib &lib, Sym id): Type<AsyncPtr>(lib, id) { }
+  AsyncType::AsyncType(Lib &lib, Sym id): PtrType<Async>(lib, id) { }
 
   bool AsyncType::as_bool(const Box &val) const {
     return !val.as<AsyncPtr>()->valid();

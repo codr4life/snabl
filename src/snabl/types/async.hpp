@@ -6,7 +6,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl {
-  struct AsyncType: Type<AsyncPtr> {
+  struct AsyncType: PtrType<Async> {
     AsyncType(Lib &lib, Sym id);
     bool as_bool(const Box &val) const override;
     void dump(const Box &val, ostream &out) const override;

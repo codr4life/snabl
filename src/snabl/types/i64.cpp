@@ -21,8 +21,10 @@ namespace snabl {
     I64 i(0);
     const I64 max(val.as_i64);
     
-    return make_shared<Iter>([&env, i, max]() mutable {
-        return (i < max) ? make_optional<Box>(env.i64_type, i++) : nullopt;
+    return IterPtr::make(&env.iter_type.pool, [&env, i, max]() mutable {
+        if (i == max) { return false; }
+        env.push(env.i64_type, i++);
+        return true;
       });
   }
 

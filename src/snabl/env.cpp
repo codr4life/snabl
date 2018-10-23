@@ -89,4 +89,28 @@ namespace snabl {
 
     if (task->pc) { goto start; }
   }
+
+  optional<Box> Env::async(const function<optional<Box> ()> &fn) {
+    return (is_async())
+      ? Box(async_type, AsyncPtr::make(&async_type.pool, 
+                                       std::async(launch::async, fn)))
+      : fn();
+  }
+
+  void Env::push_async(const function<optional<Box> ()> &fn) {
+    const auto v(async(fn));
+    if (v) { push(*v); }
+  }
+
+  void Env::fopen(const string &name, fstream::openmode mode) {
+    return push_async([this, name, mode]() {
+        auto f(FilePtr::make(&file_type.pool, name, mode | ios::binary));
+        
+        if (f->fail()) {
+          throw RuntimeError(*this, fmt("File not found: %0", {name}));
+        }
+        
+        return Box(rfile_type, f);
+      });
+  }
 }

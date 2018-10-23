@@ -38,7 +38,7 @@ namespace snabl {
   struct Type;
 
   const array<int, 3> version {0, 3, 1};
-
+  
   struct Env {
     list<SymImp> syms;
     unordered_map<string, Sym> sym_table;
@@ -64,11 +64,12 @@ namespace snabl {
     ByteType &byte_type;
     CharType &char_type;
     ErrorType &error_type;
+    FileType &file_type;
     FloatType &float_type;
     I64Type &i64_type;
     IterType &iter_type;
     LambdaType &lambda_type;
-    RFileType &rfile_type;
+    FileType &rfile_type;
     StackType &stack_type;
     StrType &str_type;
     SymType &sym_type;
@@ -83,6 +84,9 @@ namespace snabl {
     map<Char, char> char_specials;
     vector<I64> nregs;
     Ops ops;
+
+    istream *stdin;
+    ostream *stdout, *stderr;
     
     Env():
       type_tag(1),
@@ -115,13 +119,14 @@ namespace snabl {
       byte_type(abc_lib.add_type<ByteType>(sym("Byte"), {&num_type})),
       char_type(abc_lib.add_type<CharType>(sym("Char"), {&cmp_type})),
       error_type(abc_lib.add_type<ErrorType>(sym("Error"), {&root_type})),
+      file_type(abc_lib.add_type<FileType>(sym("File"), {&root_type})),
       float_type(abc_lib.add_type<FloatType>(sym("Float"), {&num_type})),
       i64_type(abc_lib.add_type<I64Type>(sym("I64"),
         {&num_type, &seq_type})),
       iter_type(abc_lib.add_type<IterType>(sym("Iter"),
         {&seq_type, &source_type})),
       lambda_type(abc_lib.add_type<LambdaType>(sym("Lambda"), {&root_type})),
-      rfile_type(abc_lib.add_type<RFileType>(sym("RFile"), {&root_type})),
+      rfile_type(abc_lib.add_type<FileType>(sym("RFile"), {&file_type})),
       stack_type(abc_lib.add_type<StackType>(sym("Stack"),
         {&seq_type, &sink_type, &source_type})),
       str_type(abc_lib.add_type<StrType>(sym("Str"),
@@ -133,7 +138,10 @@ namespace snabl {
       enum_type(abc_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
       io_type(abc_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
 
-      root_scope(begin_scope()) {
+      root_scope(begin_scope()),
+      stdin(&cin),
+      stdout(&cout),
+      stderr(&cerr) {
         add_special_char('t', 8);
         add_special_char('n', 10);
         add_special_char('r', 13);
@@ -362,6 +370,11 @@ namespace snabl {
     void let(Sym id, ArgsT &&...args) {
       task->scope->let(id, forward<ArgsT>(args)...);
     }
+
+    optional<Box> async(const function<optional<Box> ()> &fn);
+    void push_async(const function<optional<Box> ()> &fn);
+    bool is_async() const { return task->async_depth > 0; }
+    void fopen(const string &name, fstream::openmode mode);
   };
 
   inline bool Box::is(const AType &rhs) const {

@@ -38,10 +38,10 @@ namespace snabl {
     const StrPtr s(val.as<StrPtr>());
     auto i(s->begin());
     
-    return make_shared<Iter>([&env, s, i]() mutable {
-        return (i == s->end())
-          ? nullopt
-          : make_optional<Box>(env.char_type, Char(*i++));
+    return IterPtr::make(&env.iter_type.pool, [&env, s, i]() mutable {
+        if (i == s->end()) { return false; }
+        env.push(env.char_type, Char(*i++));
+        return true;
       });
   }
 

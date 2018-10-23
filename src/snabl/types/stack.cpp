@@ -1,4 +1,5 @@
 #include "snabl/box.hpp"
+#include "snabl/env.hpp"
 #include "snabl/iter.hpp"
 #include "snabl/lib.hpp"
 #include "snabl/types/stack.hpp"
@@ -29,10 +30,10 @@ namespace snabl {
     const StackPtr s(val.as<StackPtr>());
     auto i(s->begin());
     
-    return make_shared<Iter>([&env, s, i]() mutable {
-        return (i == s->end())
-          ? nullopt
-          : make_optional<Box>(*i++);
+    return IterPtr::make(&env.iter_type.pool, [&env, s, i]() mutable {
+        if (i == s->end()) { return false; }
+        env.push(*i++);
+        return true;
       });
   }
 

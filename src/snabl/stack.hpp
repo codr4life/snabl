@@ -10,7 +10,6 @@ namespace snabl {
   using Stack = vector<Box>;
   using StackPtr = Ptr<Stack>;
   
-  void drain(Iter &in, Stack &out);
   ostream &operator <<(ostream &out, const Stack &stack);
 }
 

@@ -1,27 +1,23 @@
 #ifndef SNABL_ITER_HPP
 #define SNABL_ITER_HPP
 
-#include "snabl/box.hpp"
+#include "snabl/ptr.hpp"
+#include "snabl/std.hpp"
 
 namespace snabl {
   struct Env;
   
   struct Iter {
-    using Imp = function<optional<Box> ()>;
+    using Imp = function<bool ()>;
 
     Imp imp;
     bool is_done;
 
     Iter(Imp imp): imp(imp), is_done(false) { }
-
-    optional<Box> call() {
-      if (is_done) { throw Error("Iter is done"); }
-      
-      auto v(imp());
-      if (!v) { is_done = true; }
-      return v;
-    }
+    bool call(Env &env);
   };
+
+  using IterPtr = Ptr<Iter>;
 }
 
 #endif

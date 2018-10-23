@@ -425,20 +425,20 @@ namespace snabl {
       add_fimp(env.sym(".."),
                {Box(env.seq_type)},
                [this](Fimp &fimp) {
-                 auto i(env.pop().iter());
-
-                 while (!i->is_done) {
-                   auto v(i->call());
-                   if (v) { env.push(*v); }
-                 }
+                 auto in(env.pop().iter());
+                 while (in->call(env));
                });
 
       add_fimp(env.sym("stack"),
                {Box(env.seq_type)},
                [this](Fimp &fimp) {
                  auto in(env.pop().iter());
-                 auto out(StackPtr::make(&env.stack_type.pool));
-                 drain(*in, *out);
+                 auto &s(env.task->stack);
+                 const auto offs(s.size());
+                 while (in->call(env));
+                 auto i(s.begin()+offs), j(s.end());
+                 auto out(StackPtr::make(&env.stack_type.pool, i, j));
+                 s.erase(i, j);
                  env.push(env.stack_type, out);
                });
 
@@ -452,8 +452,9 @@ namespace snabl {
       add_fimp(env.sym("say"),
                {Box(env.maybe_type)},
                [this](Fimp &fimp) {
-                 env.pop().print(cout);
-                 cout << endl;
+                 auto &out(*env.stdout);
+                 env.pop().print(out);
+                 out << endl;
                });
       
       add_fimp(env.sym("len"),
@@ -496,7 +497,11 @@ namespace snabl {
                {Box(env.time_type)},
                [this](Fimp &fimp) {
                  const Time time(env.pop().as_time);
-                 this_thread::sleep_for(nanoseconds(time.ns));
+                 
+                 env.push_async([time]() {
+                     this_thread::sleep_for(nanoseconds(time.ns));
+                     return nullopt;
+                   });
                });
 
       add_fimp(env.sym("bin"),
@@ -522,11 +527,11 @@ namespace snabl {
                  auto fn(env.pop().as<StrPtr>());
 
                  if (m == env.sym("r")) {
-                   env.push(fopen(env, *fn, ios::in));
+                   env.fopen(*fn, ios::in);
                  } else if (m == env.sym("w")) {
-                   env.push(fopen(env, *fn, ios::out));
+                   env.fopen(*fn, ios::out);
                  } else if (m == env.sym("rw")) {
-                   env.push(fopen(env, *fn, ios::in | ios::out));
+                   env.fopen(*fn, ios::in | ios::out);
                  } else {
                    throw RuntimeError(env, fmt("Invalid mode: %0", {m}));
                  }
@@ -537,16 +542,16 @@ namespace snabl {
                [this](Fimp &fimp) {
                  auto fp(env.pop().as<FilePtr>());
                  
-                 env.push(*async(env, [this, fp]() {
-                       auto &f(*fp);
-                       f.seekg(0, ios::end);
-                       const auto size = f.tellg();
-                       f.seekg(0, ios::beg);
-                       vector<char> buf(size);
-                       f.read(buf.data(), size);
-                       return Box(env.str_type,
-                                  StrPtr::make(&env.str_type.pool, buf.data(), size));
-                     }));
+                 env.push_async([this, fp]() {
+                     auto &f(*fp);
+                     f.seekg(0, ios::end);
+                     const auto size = f.tellg();
+                     f.seekg(0, ios::beg);
+                     vector<char> buf(size);
+                     f.read(buf.data(), size);
+                     return Box(env.str_type,
+                                StrPtr::make(&env.str_type.pool, buf.data(), size));
+                   });
                });
 
       add_fimp(env.sym("test="),

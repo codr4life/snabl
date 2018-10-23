@@ -2,13 +2,13 @@
 #include "snabl/types/file.hpp"
 
 namespace snabl {
-  RFileType::RFileType(Lib &lib, Sym id): Type<FilePtr>(lib, id) { }
+  FileType::FileType(Lib &lib, Sym id): PtrType<File>(lib, id) { }
 
-  bool RFileType::as_bool(const Box &val) const {
+  bool FileType::as_bool(const Box &val) const {
     return !val.as<FilePtr>()->eof();
   }
 
-  void RFileType::dump(const Box &val, ostream &out) const {
-    out << "(RFile " << val.as<FilePtr>().get() << ')';
+  void FileType::dump(const Box &val, ostream &out) const {
+    out << '(' << val.type->id << ' ' << val.as<FilePtr>().get() << ')';
   }
 }

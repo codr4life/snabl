@@ -6,7 +6,7 @@
 #include "snabl/type.hpp"
 
 namespace snabl { 
-  struct IterType: Type<IterPtr> {
+  struct IterType: PtrType<Iter> {
     IterType(Lib &lib, Sym id);
     bool as_bool(const Box &val) const override;
     void call(const Box &val, Pos pos) const override;

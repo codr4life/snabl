@@ -30,10 +30,10 @@ namespace snabl {
     const BinPtr b(val.as<BinPtr>());
     auto i(b->begin());
     
-    return make_shared<Iter>([&env, b, i]() mutable {
-        return (i == b->end())
-          ? nullopt
-          : make_optional<Box>(env.byte_type, Byte(*i++));
+    return IterPtr::make(&env.iter_type.pool, [&env, b, i]() mutable {
+        if (i == b->end()) { return false; }
+        env.push(env.byte_type, Byte(*i++));
+        return true;
       });
   }
 

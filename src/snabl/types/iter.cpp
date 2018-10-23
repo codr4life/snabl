@@ -4,7 +4,7 @@
 #include "snabl/types/iter.hpp"
 
 namespace snabl {
-  IterType::IterType(Lib &lib, Sym id): Type<IterPtr>(lib, id) { }
+  IterType::IterType(Lib &lib, Sym id): PtrType<Iter>(lib, id) { }
 
   bool IterType::as_bool(const Box &val) const {
     return !val.as<IterPtr>()->is_done;
@@ -12,13 +12,7 @@ namespace snabl {
 
   void IterType::call(const Box &val, Pos pos) const {
     Env &env(val.type->lib.env);
-    const auto v(val.as<IterPtr>()->call());
-
-    if (v) {
-      env.push(*v);
-    } else {
-      env.push(env.nil_type);
-    }
+    if (!val.as<IterPtr>()->call(env)) { env.push(env.nil_type); }
   }
 
   IterPtr IterType::iter(const Box &val) const {

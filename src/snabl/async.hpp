@@ -2,12 +2,11 @@
 #define SNABL_ASYNC_HPP
 
 #include "snabl/box.hpp"
+#include "snabl/ptr.hpp"
 
 namespace snabl {
   using Async = future<optional<Box>>;
-  using AsyncPtr = shared_ptr<Async>;
-  
-  optional<Box> async(Env &env, const function<optional<Box> ()> &fn);
+  using AsyncPtr = Ptr<Async>;  
 }
 
 #endif

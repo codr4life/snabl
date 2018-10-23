@@ -1,9 +1,3 @@
-* rename sync to await!/await:
-* async sleep/say/etc.
-* add env.out/in
-** support rebinding
-** start task to update snackis console
-* ---
 * convert shared_ptr to PtrType
 * add derived methods
 ** switch type methods to lambdas

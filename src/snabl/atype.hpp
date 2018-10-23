@@ -5,6 +5,7 @@
 #include "snabl/def.hpp"
 #include "snabl/error.hpp"
 #include "snabl/fmt.hpp"
+#include "snabl/iter.hpp"
 #include "snabl/ptrs.hpp"
 #include "snabl/pos.hpp"
 #include "snabl/std.hpp"
