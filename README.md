@@ -93,7 +93,7 @@ pong
 ```
 
 ### Synchronicity
-Snabl supports executing any actions that might hang asynchronously in separate threads using `async:`, `await!` yields the current task until the action is done and pushes any results.
+Snabl supports executing any calls that might hang asynchronously in a separate thread using `async:`, `await!` may be used to yield until the call returns and push any results.
 
 foo.txt:
 ```
