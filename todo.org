@@ -1,3 +1,9 @@
+* rename sync to await!/await:
+* async sleep/say/etc.
+* add env.out/in
+** support rebinding
+** start task to update snackis console
+* ---
 * convert shared_ptr to PtrType
 * add derived methods
 ** switch type methods to lambdas
@@ -46,5 +52,4 @@
 * add lib: macro
 * convert Forms to <unique_ptr<Form>> like ops
 
-''test.sl'' r fopen async: str sync!
-''test.sl'' r fopen async: str say
+''test.sl'' r fopen await: str

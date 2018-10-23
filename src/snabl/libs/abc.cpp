@@ -13,18 +13,18 @@ namespace snabl {
       add_macro(env.sym("f"), env.bool_type, false);      
       add_macro(env.sym("nil"), env.nil_type);      
 
-      add_macro<ops::Nop>(env.sym("_"));
+      add_macro<ops::Await>(env.sym("await!"));
       add_macro<ops::Call>(env.sym("call!"));
       add_macro<ops::DDrop>(env.sym("ddrop!"));
       add_macro<ops::Drop>(env.sym("drop!"));
       add_macro<ops::Dup>(env.sym("dup!"));
+      add_macro<ops::Nop>(env.sym("_"));
       add_macro<ops::Recall>(env.sym("recall!"));
       add_macro<ops::Return>(env.sym("return!"));
       add_macro<ops::Rot>(env.sym("rot!"));
       add_macro<ops::RSwap>(env.sym("rswap!"));
       add_macro<ops::SDrop>(env.sym("sdrop!"));
       add_macro<ops::Swap>(env.sym("swap!"));
-      add_macro<ops::Sync>(env.sym("sync!"));
       add_macro<ops::Throw>(env.sym("throw!"));
       add_macro<ops::Yield>(env.sym("yield!"));
 
@@ -41,6 +41,18 @@ namespace snabl {
                   
                   env.compile(*in++);
                   env.emit<ops::Async>(form.pos, -1);
+                });
+
+      add_macro(env.sym("await:"),
+                [](Forms::const_iterator &in,
+                   Forms::const_iterator end,
+                   Env &env) {
+                  const auto form(*in++);                 
+                  env.emit<ops::Async>(form.pos, 1);
+                  if (in == end) { throw SyntaxError(form.pos, "Missing sync body"); }
+                  env.compile(*in++);
+                  env.emit<ops::Async>(form.pos, -1);
+                  env.emit<ops::Await>(form.pos);
                 });
 
       add_macro(env.sym("bench:"),
@@ -214,18 +226,6 @@ namespace snabl {
 
                   for (auto &s: skips) { s->end_pc = env.ops.size(); }
                 }); 
-
-      add_macro(env.sym("sync:"),
-                [](Forms::const_iterator &in,
-                   Forms::const_iterator end,
-                   Env &env) {
-                  const auto form(*in++);                 
-                  env.emit<ops::Async>(form.pos, 1);
-                  if (in == end) { throw SyntaxError(form.pos, "Missing sync body"); }
-                  env.compile(*in++);
-                  env.emit<ops::Async>(form.pos, -1);
-                  env.emit<ops::Sync>(form.pos);
-                });
       
       add_macro(env.sym("task:"),
                 [](Forms::const_iterator &in,

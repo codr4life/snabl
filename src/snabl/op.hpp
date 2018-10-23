@@ -41,6 +41,12 @@ namespace snabl {
       void run(Env &env) override;
     };
 
+    struct Await: Op {
+      static const string type;
+      Await(Env &env, Pos pos);
+      void run(Env &env) override;
+    };
+    
     struct Bench: Op {
       static const string type;
       I64 end_pc;
@@ -250,12 +256,6 @@ namespace snabl {
     struct Swap: Op {
       static const string type;
       Swap(Env &env, Pos pos);
-      void run(Env &env) override;
-    };
-
-    struct Sync: Op {
-      static const string type;
-      Sync(Env &env, Pos pos);
       void run(Env &env) override;
     };
 

@@ -16,8 +16,8 @@ namespace snabl {
   }
 
   namespace ops {
-    const string Async::type("async"), Bench::type("bench"), Call::type("call"),
-      DDrop::type("ddrop"),
+    const string Async::type("async"), Await::type("await"), Bench::type("bench"),
+      Call::type("call"), DDrop::type("ddrop"),
       Drop::type("drop"), Dup::type("dup"), Else::type("else"), Eqval::type("eqval"),
       Fimp::type("fimp"), Funcall::type("funcall"), Get::type("get"),
       If::type("if"), Is::type("is"), Jump::type("jump"), JumpIf::type("jump-if"),
@@ -26,7 +26,7 @@ namespace snabl {
       RSwap::type("rswap"), Scope::type("scope"), ScopeEnd::type("scope-end"),
       SDrop::type("sdrop"), Split::type("split"), SplitEnd::type("split-end"),
       Stack::type("stack"), Stop::type("stop"), Swap::type("swap"),
-      Sync::type("sync"), Task::type("task"), Throw::type("throw"),
+      Task::type("task"), Throw::type("throw"),
       Times::type("times"), Try::type("try"), TryEnd::type("try-end"),
       Yield::type("yield");
 
@@ -34,6 +34,24 @@ namespace snabl {
 
     void Async::run(Env &env) {
       env.task->async_depth += delta;
+      env.jump(next);
+    }
+
+    Await::Await(Env &env, Pos pos): Op(env, type, pos) { }
+
+    void Await::run(Env &env) {
+      auto &v(env.peek());
+
+      if (v.type != &env.async_type) {
+        throw RuntimeError(env, fmt("Expected Async, was:", {v.type->id}));
+      }
+
+      auto a(v.as<AsyncPtr>());
+      if (!a->valid() && !env.yield()) { a->wait(); }
+        
+      env.pop();
+      auto r(a->get());
+      if (r) { env.push(*r); }
       env.jump(next);
     }
 
@@ -416,25 +434,7 @@ namespace snabl {
       swap(s[i], s[i-1]);
       env.jump(next);
     }
-    
-    Sync::Sync(Env &env, Pos pos): Op(env, type, pos) { }
-
-    void Sync::run(Env &env) {
-      auto &v(env.peek());
-
-      if (v.type != &env.async_type) {
-        throw RuntimeError(env, fmt("Expected Async, was:", {v.type->id}));
-      }
-
-      auto a(v.as<AsyncPtr>());
-      if (!a->valid() && !env.yield()) { a->wait(); }
         
-      env.pop();
-      auto r(a->get());
-      if (r) { env.push(*r); }
-      env.jump(next);
-    }
-    
     Task::Task(Env &env, Pos pos):
       Op(env, type, pos), start_pc(nullptr), end_pc(-1) { }
 
