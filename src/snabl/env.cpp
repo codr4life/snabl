@@ -67,11 +67,12 @@ namespace snabl {
     try {
       while (task->pc) { task->pc->run(*this); }
 
-      if (task != main_task) {
+      if (task != &main_task) {
         task->status = Task::Status::Done;
         auto next(task->next);
         task->prev->next = task->next;
         task->next->prev = task->prev;
+        task_pool.release(task);
         task = next;
         goto start;
       }

@@ -439,7 +439,7 @@ namespace snabl {
       Op(env, type, pos), start_pc(nullptr), end_pc(-1) { }
 
     void Task::run(Env &env) {
-      env.push(env.task_type, env.start_task(next, env.task->scope));
+      env.start_task(next, env.task->scope);
       env.jump(end_pc);
     }
     

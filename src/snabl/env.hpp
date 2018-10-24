@@ -29,7 +29,6 @@
 #include "snabl/types/stack.hpp"
 #include "snabl/types/str.hpp"
 #include "snabl/types/sym.hpp"
-#include "snabl/types/task.hpp"
 #include "snabl/types/time.hpp"
 #include "snabl/user_error.hpp"
 
@@ -44,10 +43,10 @@ namespace snabl {
     unordered_map<string, Sym> sym_table;
     I64 type_tag;
     set<char> separators;
-    MPool<TaskPtr::Imp> task_pool;
+    MPool<Task> task_pool;
     MPool<ScopePtr::Imp> scope_pool;
-    TaskPtr task;
-    const TaskPtr main_task;
+    Task main_task;
+    Task *task;
     unordered_map<Sym, unique_ptr<Lib>> libs;
     Lib &home_lib, &s_lib;
     libs::Abc &abc_lib;
@@ -73,7 +72,6 @@ namespace snabl {
     StackType &stack_type;
     StrType &str_type;
     SymType &sym_type;
-    TaskType &task_type;
     TimeType &time_type;
 
     EnumType &enum_type, &io_type;
@@ -95,8 +93,8 @@ namespace snabl {
         ',', '?', '&', '|',
         '<', '>', '(', ')', '{', '}', '[', ']'
       },
-      task(nullptr),
-      main_task(start_task()),
+      main_task(*this),
+      task(&main_task),
       home_lib(add_lib<Lib>(sym(""))),
       s_lib(add_lib<Lib>(sym("s"))),
       abc_lib(add_lib<libs::Abc>()),
@@ -132,7 +130,6 @@ namespace snabl {
       str_type(abc_lib.add_type<StrType>(sym("Str"),
         {&cmp_type, &seq_type, &sink_type, &source_type})),
       sym_type(abc_lib.add_type<SymType>(sym("Sym"), {&cmp_type})),
-      task_type(abc_lib.add_type<TaskType>(sym("Task"), {&root_type})),
       time_type(abc_lib.add_type<TimeType>(sym("Time"), {&cmp_type})),
 
       enum_type(abc_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
@@ -166,19 +163,13 @@ namespace snabl {
 
     void use(Sym lib_id, const vector<Sym> def_ids={});
     
-    TaskPtr start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
-      auto t(TaskPtr::make(&task_pool, *this, start_pc, parent_scope));
-
-      if (task) {
-        t->next = task;
-        t->prev = task->prev;
-        t->prev->next = t;
-        task->prev = t;
-      } else {
-        task = t->prev = t->next = t;
-      }
-      
-      return t;
+    Task &start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
+      auto t(task_pool.acquire(*this, start_pc, parent_scope));
+      t->next = task;
+      t->prev = task->prev;
+      t->prev->next = t;
+      task->prev = t;
+      return *t;
     }
 
     bool yield() {

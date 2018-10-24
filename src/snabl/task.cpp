@@ -3,11 +3,7 @@
 
 namespace snabl {
   Task::Task(Env &env, PC start_pc, const ScopePtr &parent_scope):
-    scope(parent_scope),
-    status(Status::New),
-    stack_offs(0),
-    lib(nullptr),
-    pc(start_pc) { }
+    scope(parent_scope), prev(this), next(this), pc(start_pc) { }
 
   const ScopePtr &Task::begin_scope(Env &env, const ScopePtr &parent) {
     scope = ScopePtr::make(&env.scope_pool, scope, parent);

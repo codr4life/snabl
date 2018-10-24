@@ -10,9 +10,6 @@
 namespace snabl {
   struct Env;
 
-  struct Task;
-  using TaskPtr = Ptr<Task>;
-
   struct Try {
     ops::Try &op;
     State state;
@@ -28,10 +25,10 @@ namespace snabl {
     Stack stack;
     I64 async_depth=0;
 
-    TaskPtr prev, next;
-    Status status;
-    I64 stack_offs;
-    Lib *lib;
+    Task *prev, *next;
+    Status status=Status::New;
+    I64 stack_offs=0;
+    Lib *lib=nullptr;
     PC pc;
 
     SArray<Call, MaxCalls> calls;
@@ -41,7 +38,7 @@ namespace snabl {
     Task(const Task &)=delete;
     const Task &operator =(const Task &)=delete;
     
-    Task(Env &env, PC start_pc, const ScopePtr &parent_scope);
+    Task(Env &env, PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr);
     const ScopePtr &begin_scope(Env &env, const ScopePtr &parent=nullptr);
     void end_scope();
   };
