@@ -77,7 +77,7 @@ The same algorithm may be implemented anonymously in a single scope using a lamb
 ```
 
 ### Multitasking
-Snabl supports multitasking in the form of first class green threads. By default, code runs in the main task. New tasks may be started using ```task:```.
+Snabl supports cooperative multitasking using green threads, or tasks. By default, code runs in the main task. New tasks may be started using ```task:```.
 
 ```
 task: (3 times:, 'pong say yield!)
