@@ -1,9 +1,3 @@
-* remove TaskPtr
-** use Task *
-** remove TaskType
-** allocate main task statically
-** don't push in task:
-** compare perf
 * add derived methods
 ** switch type methods to lambdas
 ** call func in default imp
