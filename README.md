@@ -185,7 +185,7 @@ $ cmake ..
 $ sudo make install
 $ snabl
 
-Snabl v0.3.1
+Snabl v0.4.1
 
 Press Return on empty line to eval.
 

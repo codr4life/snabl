@@ -36,7 +36,7 @@ namespace snabl {
   template <typename ValT>
   struct Type;
 
-  const array<int, 3> version {0, 3, 1};
+  const array<int, 3> version {0, 4, 1};
   
   struct Env {
     list<SymImp> syms;
