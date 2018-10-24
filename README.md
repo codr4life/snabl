@@ -80,7 +80,7 @@ The same algorithm may be implemented anonymously in a single scope using a lamb
 Snabl supports multitasking in the form of first class green threads. By default, code runs in the main task. New tasks may be started using ```task:```.
 
 ```
-task: (3 times:, 'pong say yield!) drop!
+task: (3 times:, 'pong say yield!)
 3 times:, 'ping say yield!
 
 ping
