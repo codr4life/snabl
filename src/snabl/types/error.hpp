@@ -7,7 +7,7 @@
 
 namespace snabl {
   struct ErrorType: Type<UserError> {
-    ErrorType(Lib &lib, Sym id);
+    ErrorType(Lib &lib, Sym id, const vector<AType *> &parents);
     void dump(const Box &val, ostream &out) const override;
   };
 }

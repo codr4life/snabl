@@ -100,57 +100,6 @@ namespace snabl {
                   if_skip.end_pc = env.ops.size();
                 }); 
 
-      add_macro(env.sym("is:"),
-                [this](Forms::const_iterator &in,
-                       Forms::const_iterator end,
-                       Env &env) {
-                  auto &form(*in++);                  
-
-                  if (in == end) {
-                    throw SyntaxError(form.pos, "Missing target type");
-                  }
-
-                  auto child(*in++);
-                  const auto &child_id(child.as<forms::Id>().id);
-                  auto child_type(env.lib().get_type(child_id));
-
-                  if (!child_type) {
-                    throw CompileError(form.pos,
-                                       fmt("Target type not found: %0",
-                                           {child_id}));                    
-                  }
-                                                     
-                  if (in == end) {
-                    throw SyntaxError(form.pos, "Missing parent types");
-                  }
-                  
-                  auto parents(*in++);
-
-                  auto derive = [&env, &form, &child_type](Sym parent_id) {
-                    auto parent_type(env.lib().get_type(parent_id));
-                    
-                    if (!parent_type) {
-                      throw CompileError(form.pos,
-                                         fmt("Parent type not found: %0",
-                                             {parent_id}));
-                    }
-
-                    if (!dynamic_cast<Trait *>(parent_type)) {
-                      throw CompileError(form.pos, "Parent type is not a trait");
-                    }
-
-                    child_type->derive(*parent_type);
-                  };
-                  
-                  if (&parents.type == &forms::Id::type) {
-                    derive(parents.as<forms::Id>().id);
-                  } else {
-                    for (auto &id: parents.as<forms::Body>().body) {
-                      derive(id.as<forms::Id>().id);
-                    }
-                  }
-                }); 
-
       add_macro(env.sym("func:"),
                 [](Forms::const_iterator &in,
                    Forms::const_iterator end,

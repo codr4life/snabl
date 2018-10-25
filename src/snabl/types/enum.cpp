@@ -4,7 +4,11 @@
 #include "snabl/types/enum.hpp"
 
 namespace snabl {
-  EnumType::EnumType(Lib &lib, Sym id, const vector<Sym> &alts): Type<Enum>(lib, id) {
+  EnumType::EnumType(Lib &lib,
+                     Sym id,
+                     const vector<AType *> &parents,
+                     const vector<Sym> &alts):
+    Type<Enum>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_enum.i == rhs.as_enum.i; };
     
     I64 i(0);

@@ -7,7 +7,7 @@
 
 namespace snabl { 
   struct CharType: Type<Char> {
-    CharType(Lib &lib, Sym id);
+    CharType(Lib &lib, Sym id, const vector<AType *> &parents);
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     bool as_bool(const Box &val) const override;
     void dump(const Box &val, ostream &out) const override;

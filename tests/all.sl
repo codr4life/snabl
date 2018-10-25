@@ -96,6 +96,3 @@ foo/bar Foo is t test=
 foo/bar foo/baz = f test=
 foo/bar foo/baz < t test=
 foo/bar sym 'foo/bar test=
-
-is: Foo Seq
-foo/bar Seq is t test=

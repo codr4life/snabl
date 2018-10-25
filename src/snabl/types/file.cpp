@@ -2,7 +2,8 @@
 #include "snabl/types/file.hpp"
 
 namespace snabl {
-  FileType::FileType(Lib &lib, Sym id): PtrType<File>(lib, id) { }
+  FileType::FileType(Lib &lib, Sym id, const vector<AType *> &parents):
+    PtrType<File>(lib, id, parents) { }
 
   bool FileType::as_bool(const Box &val) const {
     return !val.as<FilePtr>()->eof();

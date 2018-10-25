@@ -2,7 +2,8 @@
 #include "snabl/types/sym.hpp"
 
 namespace snabl {
-  SymType::SymType(Lib &lib, Sym id): Type<Sym>(lib, id) {
+  SymType::SymType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Sym>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_sym == rhs.as_sym; };
   }
 

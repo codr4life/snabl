@@ -3,7 +3,8 @@
 #include "snabl/types/i64.hpp"
 
 namespace snabl {
-  I64Type::I64Type(Lib &lib, Sym id): Type<I64>(lib, id) {
+  I64Type::I64Type(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<I64>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_i64 == rhs.as_i64; };
   }
 

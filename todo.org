@@ -1,6 +1,6 @@
-* add derived methods
+* add derived type methods
 ** convert remaining methods
-** copy on derive
+*** copy on derive
 * add or: macro
 ** get first operand from stack
 ** treat body forms as multiple operands

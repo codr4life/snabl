@@ -5,7 +5,8 @@
 #include "snabl/types/str.hpp"
 
 namespace snabl {
-  StrType::StrType(Lib &lib, Sym id): PtrType<Str>(lib, id) {
+  StrType::StrType(Lib &lib, Sym id, const vector<AType *> &parents):
+    PtrType<Str>(lib, id, parents) {
     equid = [](const Box &lhs, const Box &rhs) {
       return lhs.as<StrPtr>() == rhs.as<StrPtr>();
     };

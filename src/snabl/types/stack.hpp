@@ -7,7 +7,7 @@
 
 namespace snabl {
   struct StackType: PtrType<Stack> {
-    StackType(Lib &lib, Sym id);
+    StackType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     void push(Box &sink, const Box &val) const override;
     optional<Box> peek(const Box &source) const override;

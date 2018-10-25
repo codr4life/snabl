@@ -7,7 +7,7 @@
 
 namespace snabl {
   struct LambdaType: Type<Lambda> {
-    LambdaType(Lib &lib, Sym id);
+    LambdaType(Lib &lib, Sym id, const vector<AType *> &parents);
     void call(const Box &val, Pos pos) const override;
     void dump(const Box &val, ostream &out) const override;
   };

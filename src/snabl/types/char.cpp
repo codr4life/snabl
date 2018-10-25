@@ -3,7 +3,8 @@
 #include "snabl/types/char.hpp"
 
 namespace snabl {
-  CharType::CharType(Lib &lib, Sym id): Type<Char>(lib, id) {
+  CharType::CharType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Char>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_char == rhs.as_char; };
   }
 

@@ -4,7 +4,8 @@
 #include "snabl/types/bool.hpp"
 
 namespace snabl {
-  BoolType::BoolType(Lib &lib, Sym id): Type<bool>(lib, id) {
+  BoolType::BoolType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<bool>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_bool == rhs.as_bool; };
   }
 

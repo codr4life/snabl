@@ -4,7 +4,8 @@
 #include "snabl/types/float.hpp"
 
 namespace snabl {
-  FloatType::FloatType(Lib &lib, Sym id): Type<Float>(lib, id) {
+  FloatType::FloatType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Float>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_float == rhs.as_float; };
   }
 

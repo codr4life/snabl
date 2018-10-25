@@ -7,7 +7,8 @@
 namespace snabl {
   struct Env;
   
-  StackType::StackType(Lib &lib, Sym id): PtrType<Stack>(lib, id) { }
+  StackType::StackType(Lib &lib, Sym id, const vector<AType *> &parents):
+    PtrType<Stack>(lib, id, parents) { }
 
   bool StackType::as_bool(const Box &val) const {
     return !val.as<StackPtr>()->empty();

@@ -5,7 +5,7 @@
 
 namespace snabl {
   struct TimeType: Type<Time> {
-    TimeType(Lib &lib, Sym id);
+    TimeType(Lib &lib, Sym id, const vector<AType *> &parents);
     void dump(const Box &val, ostream &out) const override;
   };
 }

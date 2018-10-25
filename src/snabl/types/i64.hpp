@@ -7,7 +7,7 @@
 
 namespace snabl { 
   struct I64Type: Type<I64> {
-    I64Type(Lib &lib, Sym id);
+    I64Type(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     IterPtr iter(const Box &val) const override;

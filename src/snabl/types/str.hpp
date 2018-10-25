@@ -7,7 +7,7 @@
 
 namespace snabl {
   struct StrType: PtrType<Str> {
-    StrType(Lib &lib, Sym id);
+    StrType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     void push(Box &sink, const Box &val) const override;

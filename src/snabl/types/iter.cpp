@@ -4,7 +4,8 @@
 #include "snabl/types/iter.hpp"
 
 namespace snabl {
-  IterType::IterType(Lib &lib, Sym id): PtrType<Iter>(lib, id) { }
+  IterType::IterType(Lib &lib, Sym id, const vector<AType *> &parents):
+    PtrType<Iter>(lib, id, parents) { }
 
   bool IterType::as_bool(const Box &val) const {
     return !val.as<IterPtr>()->is_done;

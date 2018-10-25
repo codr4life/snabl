@@ -7,7 +7,7 @@
 
 namespace snabl { 
   struct ByteType: Type<Byte> {
-    ByteType(Lib &lib, Sym id);
+    ByteType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     void dump(const Box &val, ostream &out) const override;

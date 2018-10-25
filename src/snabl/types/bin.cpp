@@ -7,7 +7,8 @@
 namespace snabl {
   struct Env;
   
-  BinType::BinType(Lib &lib, Sym id): PtrType<Bin>(lib, id) { }
+  BinType::BinType(Lib &lib, Sym id, const vector<AType *> &parents): 
+    PtrType<Bin>(lib, id, parents) { }
 
   bool BinType::as_bool(const Box &val) const {
     return !val.as<BinPtr>()->empty();

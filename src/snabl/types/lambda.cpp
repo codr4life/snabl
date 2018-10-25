@@ -5,7 +5,8 @@
 #include "snabl/types/lambda.hpp"
 
 namespace snabl {
-  LambdaType::LambdaType(Lib &lib, Sym id): Type<Lambda>(lib, id) { }
+  LambdaType::LambdaType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Lambda>(lib, id, parents) { }
 
   void LambdaType::call(const Box &val, Pos pos) const {
     val.as<Lambda>().call(val.type->lib.env, pos);

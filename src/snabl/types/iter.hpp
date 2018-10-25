@@ -7,7 +7,7 @@
 
 namespace snabl { 
   struct IterType: PtrType<Iter> {
-    IterType(Lib &lib, Sym id);
+    IterType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     void call(const Box &val, Pos pos) const override;
     IterPtr iter(const Box &val) const override;

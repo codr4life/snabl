@@ -3,7 +3,8 @@
 #include "snabl/types/byte.hpp"
 
 namespace snabl {
-  ByteType::ByteType(Lib &lib, Sym id): Type<Byte>(lib, id) {
+  ByteType::ByteType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Byte>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return lhs.as_byte == rhs.as_byte; };
   }
 

@@ -18,8 +18,8 @@ namespace snabl {
     Lib &lib;
     const I64 size;
     const I64 tag;
-    vector<AType *> parent_types;
-    unordered_set<AType *> child_types;
+    vector<AType *> parents;
+    unordered_set<AType *> children;
 
     function<bool (const Box &, const Box &)> equid =
       [this](const Box &lhs, const Box &rhs) {
@@ -31,28 +31,31 @@ namespace snabl {
     AType(const AType &)=delete;
     const AType &operator =(const AType &)=delete;
     
-    AType(Lib &lib, Sym id, I64 size);
+    AType(Lib &lib, Sym id, I64 size, const vector<AType *> &parents);
 
     virtual ~AType() { }
 
     void derive(AType &parent) {
-      if (I64(parent_types.size()) <= parent.tag) {
-        parent_types.resize(parent.tag+1);
-      }
+      if (I64(parents.size()) <= parent.tag) { parents.resize(parent.tag+1); }
       
-      parent_types[parent.tag] = &parent;
-      for (auto &c: child_types) { c->derive(parent); }
-      parent.child_types.insert(this);
-      
-      for (auto &p: parent.parent_types) {
-        if (p) { derive(*p); }
+      if (!parents[parent.tag]) {
+        parents[parent.tag] = &parent;
+        for (auto &c: children) { c->derive(parent); }
+        parent.children.insert(this);
+        
+        for (auto &p: parent.parents) {
+          if (p) { derive(*p); }
+        }
+
+        equid = parent.equid;
+        eqval = parent.eqval;
       }
     }
     
     bool is(const AType &parent) const {
       return
         &parent == this ||
-        (I64(parent_types.size()) > parent.tag && parent_types[parent.tag]);
+        (I64(parents.size()) > parent.tag && parents[parent.tag]);
     }
                                                              
     virtual Cmp cmp(const Box &lhs, const Box &rhs) const {

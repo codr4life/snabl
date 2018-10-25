@@ -6,7 +6,7 @@
 
 namespace snabl {
   struct FileType: PtrType<File> {
-    FileType(Lib &lib, Sym id);
+    FileType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     void dump(const Box &val, ostream &out) const override;
   };

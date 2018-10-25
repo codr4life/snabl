@@ -6,7 +6,7 @@
 
 namespace snabl {
   struct MetaType: Type<AType *> {
-    MetaType(Lib &lib, Sym id);
+    MetaType(Lib &lib, Sym id, const vector<AType *> &parents);
     void dump(const Box &val, ostream &out) const override;
   };
 }

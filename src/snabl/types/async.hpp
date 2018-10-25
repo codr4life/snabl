@@ -7,7 +7,7 @@
 
 namespace snabl {
   struct AsyncType: PtrType<Async> {
-    AsyncType(Lib &lib, Sym id);
+    AsyncType(Lib &lib, Sym id, const vector<AType *> &parents);
     bool as_bool(const Box &val) const override;
     void dump(const Box &val, ostream &out) const override;
   };

@@ -33,9 +33,7 @@ namespace snabl {
     Macro &add_macro(Sym id, const Macro::Imp &imp);
 
     template <typename TypeT, typename... ArgsT>
-    TypeT &add_type(Sym id,
-                    const vector<AType *> &parent_types={},
-                    ArgsT &&... args);
+    TypeT &add_type(Sym id, const vector<AType *> &parents={}, ArgsT &&... args);
 
     EnumType &add_enum_type(Sym id, const vector<Sym> &alts);
     
@@ -64,22 +62,19 @@ namespace snabl {
   };
 
   template <typename TypeT, typename... ArgsT>
-  TypeT &Lib::add_type(Sym id,
-                       const vector<AType *> &parent_types,
-                       ArgsT &&... args) {
+  TypeT &Lib::add_type(Sym id, const vector<AType *> &parents, ArgsT &&... args) {
     auto found(lib_defs.find(id));
 
     if (found != lib_defs.end()) {
       auto t(dynamic_cast<TypeT *>(found->second.get()));
       t->~TypeT();
-      new (t) TypeT(*this, id, forward<ArgsT>(args)...);
+      new (t) TypeT(*this, id, parents, forward<ArgsT>(args)...);
       return *t;
     }
 
-    auto t(new TypeT(*this, id, forward<ArgsT>(args)...));
+    auto t(new TypeT(*this, id, parents, forward<ArgsT>(args)...));
     defs.emplace(t->id, t);
     lib_defs.emplace(t->id, unique_ptr<Def>(t));
-    for (auto &pt: parent_types) { t->derive(*pt); }
     return *t;
   }
 

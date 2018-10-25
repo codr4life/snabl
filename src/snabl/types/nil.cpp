@@ -5,7 +5,8 @@
 #include "snabl/types/nil.hpp"
 
 namespace snabl {
-  NilType::NilType(Lib &lib, Sym id): Type<Nil>(lib, id) {
+  NilType::NilType(Lib &lib, Sym id, const vector<AType *> &parents):
+    Type<Nil>(lib, id, parents) {
     eqval = [](auto &lhs, auto &rhs) { return true; };
   }
 

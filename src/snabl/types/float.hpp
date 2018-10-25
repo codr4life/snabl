@@ -6,7 +6,7 @@
 
 namespace snabl {  
   struct FloatType: Type<Float> {
-    FloatType(Lib &lib, Sym id);
+    FloatType(Lib &lib, Sym id, const vector<AType *> &parents);
     Cmp cmp(const Box &lhs, const Box &rhs) const override;   
     void dump(const Box &val, ostream &out) const override;
   };
