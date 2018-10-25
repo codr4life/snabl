@@ -1,3 +1,4 @@
+* drop scopeptr
 * add derived type methods
 ** convert remaining methods
 *** copy on derive
