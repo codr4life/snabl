@@ -1,5 +1,5 @@
 #include "snabl/iter.hpp"
-#include "snabl/error.hpp"
+#include "snabl/runtime_error.hpp"
 
 namespace snabl {
   bool Iter::call(Env &env) {
