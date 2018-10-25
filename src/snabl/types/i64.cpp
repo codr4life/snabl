@@ -3,14 +3,12 @@
 #include "snabl/types/i64.hpp"
 
 namespace snabl {
-  I64Type::I64Type(Lib &lib, Sym id): Type<I64>(lib, id) { }
+  I64Type::I64Type(Lib &lib, Sym id): Type<I64>(lib, id) {
+    eqval = [](auto &lhs, auto &rhs) { return lhs.as_i64 == rhs.as_i64; };
+  }
 
   bool I64Type::as_bool(const Box &val) const { return val.as_i64; }
 
-  bool I64Type::eqval(const Box &lhs, const Box &rhs) const {
-    return lhs.as_i64 == rhs.as_i64;
-  }
-  
   Cmp I64Type::cmp(const Box &lhs, const Box &rhs) const {
     return snabl::cmp(lhs.as_i64, rhs.as_i64);
   }

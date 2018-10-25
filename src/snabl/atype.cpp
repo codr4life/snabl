@@ -4,12 +4,13 @@
 
 namespace snabl {
   AType::AType(Lib &lib, Sym id, I64 size):
-    Def(id), lib(lib), size(size), tag(lib.env.next_type_tag()) { }
-  
-  bool AType::eqval(const Box &lhs, const Box &rhs) const {
-    throw Error(fmt("eqval() is not implemented for %0", {lhs.type->id}));
+    Def(id), lib(lib), size(size), tag(lib.env.next_type_tag()) {
+    eqval = [](auto &lhs, auto &rhs) {
+        throw Error(fmt("eqval() is not implemented for %0", {lhs.type->id}));
+        return false;
+    };
   }
-
+  
   optional<Box> AType::peek(const Box &source) const {
     throw Error("peek() is not implemented");
     return nullopt;

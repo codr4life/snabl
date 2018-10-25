@@ -14,7 +14,6 @@ namespace snabl {
   
   struct EnumType: Type<Enum> {
     EnumType(Lib &lib, Sym id, const vector<Sym> &alts={});
-    bool eqval(const Box &lhs, const Box &rhs) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     void print(const Box &val, ostream &out) const override;
     void dump(const Box &val, ostream &out) const override;

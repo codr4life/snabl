@@ -5,9 +5,9 @@
 #include "snabl/types/nil.hpp"
 
 namespace snabl {
-  NilType::NilType(Lib &lib, Sym id): Type<Nil>(lib, id) { }
-
-  bool NilType::eqval(const Box &lhs, const Box &rhs) const { return true; }
+  NilType::NilType(Lib &lib, Sym id): Type<Nil>(lib, id) {
+    eqval = [](auto &lhs, auto &rhs) { return true; };
+  }
 
   bool NilType::as_bool(const Box &val) const { return false; }
 

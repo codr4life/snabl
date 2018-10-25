@@ -3,14 +3,12 @@
 #include "snabl/types/char.hpp"
 
 namespace snabl {
-  CharType::CharType(Lib &lib, Sym id): Type<Char>(lib, id) { }
+  CharType::CharType(Lib &lib, Sym id): Type<Char>(lib, id) {
+    eqval = [](auto &lhs, auto &rhs) { return lhs.as_char == rhs.as_char; };
+  }
 
   bool CharType::as_bool(const Box &val) const { return val.as_char; }
 
-  bool CharType::eqval(const Box &lhs, const Box &rhs) const {
-    return lhs.as_char == rhs.as_char;
-  }
-  
   Cmp CharType::cmp(const Box &lhs, const Box &rhs) const {
     return snabl::cmp(lhs.as_char, rhs.as_char);
   }

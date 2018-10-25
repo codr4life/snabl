@@ -1,7 +1,6 @@
 * add derived methods
-** switch type methods to lambdas
-** call func in default imp
-** copy imps on derive
+** convert remaining methods
+** copy on derive
 * add or: macro
 ** get first operand from stack
 ** treat body forms as multiple operands

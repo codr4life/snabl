@@ -5,14 +5,12 @@
 
 namespace snabl {
   EnumType::EnumType(Lib &lib, Sym id, const vector<Sym> &alts): Type<Enum>(lib, id) {
+    eqval = [](auto &lhs, auto &rhs) { return lhs.as_enum.i == rhs.as_enum.i; };
+    
     I64 i(0);
     for (auto &a: alts) { lib.add_macro(a, *this, Enum(i++, a)); }
   }
 
-  bool EnumType::eqval(const Box &lhs, const Box &rhs) const {
-    return lhs.as_enum.i == rhs.as_enum.i;
-  }
-  
   Cmp EnumType::cmp(const Box &lhs, const Box &rhs) const {
     return snabl::cmp(lhs.as_enum.i, rhs.as_enum.i);
   }

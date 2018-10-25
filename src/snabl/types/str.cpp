@@ -1,20 +1,21 @@
 #include "snabl/box.hpp"
 #include "snabl/env.hpp"
 #include "snabl/iter.hpp"
+#include "snabl/ptr.hpp"
 #include "snabl/types/str.hpp"
 
 namespace snabl {
-  StrType::StrType(Lib &lib, Sym id): PtrType<Str>(lib, id) { }
+  StrType::StrType(Lib &lib, Sym id): PtrType<Str>(lib, id) {
+    equid = [](const Box &lhs, const Box &rhs) {
+      return lhs.as<StrPtr>() == rhs.as<StrPtr>();
+    };
+    
+    eqval = [](const Box &lhs, const Box &rhs) {
+      return *lhs.as<StrPtr>() == *rhs.as<StrPtr>();
+    };
+  }
 
   bool StrType::as_bool(const Box &val) const { return !val.as<StrPtr>()->empty(); }
-
-  bool StrType::equid(const Box &lhs, const Box &rhs) const {
-    return lhs.as<StrPtr>() == rhs.as<StrPtr>();
-  }
-
-  bool StrType::eqval(const Box &lhs, const Box &rhs) const {
-    return *lhs.as<StrPtr>() == *rhs.as<StrPtr>();
-  }
 
   Cmp StrType::cmp(const Box &lhs, const Box &rhs) const {
     return snabl::cmp(*lhs.as<StrPtr>(), *rhs.as<StrPtr>());

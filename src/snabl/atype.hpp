@@ -21,6 +21,13 @@ namespace snabl {
     vector<AType *> parent_types;
     unordered_set<AType *> child_types;
 
+    function<bool (const Box &, const Box &)> equid =
+      [this](const Box &lhs, const Box &rhs) {
+      return eqval(lhs, rhs);
+    };
+    
+    function<bool (const Box &, const Box &)> eqval;
+
     AType(const AType &)=delete;
     const AType &operator =(const AType &)=delete;
     
@@ -47,12 +54,6 @@ namespace snabl {
         &parent == this ||
         (I64(parent_types.size()) > parent.tag && parent_types[parent.tag]);
     }
-
-    virtual bool equid(const Box &lhs, const Box &rhs) const {
-      return eqval(lhs, rhs);
-    }
-    
-    virtual bool eqval(const Box &lhs, const Box &rhs) const;
                                                              
     virtual Cmp cmp(const Box &lhs, const Box &rhs) const {
       throw Error("cmp() is not implemented");

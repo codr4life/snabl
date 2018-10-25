@@ -9,8 +9,6 @@ namespace snabl {
   struct StrType: PtrType<Str> {
     StrType(Lib &lib, Sym id);
     bool as_bool(const Box &val) const override;
-    bool equid(const Box &lhs, const Box &rhs) const override;
-    bool eqval(const Box &lhs, const Box &rhs) const override;
     Cmp cmp(const Box &lhs, const Box &rhs) const override;
     void push(Box &sink, const Box &val) const override;
     optional<Box> peek(const Box &source) const override;
