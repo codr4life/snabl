@@ -7,10 +7,6 @@
 
 namespace snabl {
   using BinPtr = Ptr<Bin>;
-
-  struct Scope;  
-  using ScopePtr = Ptr<Scope>;
-
   using StrPtr = Ptr<Str>;
 
   struct Op;

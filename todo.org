@@ -1,10 +1,17 @@
-* drop scopeptr
+* add SArray Task.scopes
+** add MaxScopes
+** remove scope var
+** remove scope_pool
 * add derived type methods
 ** convert remaining methods
 *** copy on derive
 * add or: macro
 ** get first operand from stack
 ** treat body forms as multiple operands
+* change ddrop! to ndrop!
+** take n as arg
+** use erase
+** update bench/readme
 * add and: macro
 ** like or:
 * add include: macro

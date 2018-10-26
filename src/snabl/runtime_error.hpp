@@ -17,7 +17,7 @@ namespace snabl {
       
       buf << stack << endl
           << "Error in row " << pos.row << ", col " << pos.col << ":\n"
-          << msg;
+          << run_msg;
       
       return buf.str();
     }

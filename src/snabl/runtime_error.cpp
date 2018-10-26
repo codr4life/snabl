@@ -3,5 +3,5 @@
 
 namespace snabl {
   RuntimeError::RuntimeError(Env &env, const string &msg):
-    Error(msg), run_msg(msg), pos(env.pos()), stack(env.task->stack) { }
+    Error(), run_msg(msg), pos(env.pos()), stack(env.task->stack) { }
 }

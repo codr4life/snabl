@@ -87,7 +87,7 @@ namespace snabl {
       env.end_call();
     } else {
       compile(pos);
-      if (parent_scope) { env.begin_scope(parent_scope); }
+      if (vars) { env.begin_scope(*vars); }
       env.begin_split(func.nargs);    
       env.begin_call(*this, pos, env.pc());
       env.jump(start_pc);

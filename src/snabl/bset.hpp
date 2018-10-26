@@ -1,6 +1,10 @@
 #ifndef SNABL_BSET_HPP
 #define SNABL_BSET_HPP
 
+#include "snabl/cmp.hpp"
+#include "snabl/std.hpp"
+#include "snabl/types.hpp"
+
 namespace snabl {
   template <typename KeyT, typename ValT>
   struct BSet {
@@ -9,7 +13,10 @@ namespace snabl {
     KeyT ValT::*key_ptr;
     
     BSet(KeyT ValT::*key_ptr): key_ptr(key_ptr) { }
-    
+
+    BSet(KeyT ValT::*key_ptr, const Vals &source):
+      vals(source), key_ptr(key_ptr) { }
+
     I64 find(const KeyT &key, I64 min, ValT **found=nullptr) const {
       I64 max = vals.size();
       

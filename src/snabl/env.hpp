@@ -44,7 +44,7 @@ namespace snabl {
     I64 type_tag;
     set<char> separators;
     MPool<Task> task_pool;
-    MPool<ScopePtr::Imp> scope_pool;
+    MPool<Scope> scope_pool;
     Task main_task;
     Task *task;
     unordered_map<Sym, unique_ptr<Lib>> libs;
@@ -76,7 +76,7 @@ namespace snabl {
 
     EnumType &enum_type, &io_type;
 
-    const ScopePtr &root_scope;
+    Scope root_scope;
 
     map<char, Char> special_chars;
     map<Char, char> char_specials;
@@ -135,7 +135,7 @@ namespace snabl {
       enum_type(abc_lib.add_type<EnumType>(sym("Enum"), {&cmp_type})),
       io_type(abc_lib.add_enum_type(sym("IO"), {sym("r"), sym("w"), sym("rw")})),
 
-      root_scope(begin_scope()),
+      root_scope(nullptr, {}),
       stdin(&cin),
       stdout(&cout),
       stderr(&cerr) {
@@ -146,6 +146,7 @@ namespace snabl {
         add_special_char('s', 32);
         begin_regs();
         task->lib = &home_lib;
+        task->scope = &root_scope;
         abc_lib.init();
       }
 
@@ -163,8 +164,8 @@ namespace snabl {
 
     void use(Sym lib_id, const vector<Sym> def_ids={});
     
-    Task &start_task(PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr) {
-      auto t(task_pool.acquire(*this, start_pc, parent_scope));
+    Task &start_task(PC start_pc=nullptr, Scope *scope=nullptr) {
+      auto t(task_pool.acquire(*this, start_pc, scope));
       t->next = task;
       t->prev = task->prev;
       t->prev->next = t;
@@ -263,13 +264,17 @@ namespace snabl {
     Lib &lib() const { return *task->lib; }
     PC pc() const { return task->pc; }
     
-    const ScopePtr &begin_scope(const ScopePtr &parent=nullptr) {
-      return task->begin_scope(*this, parent);
+    void begin_scope(const vector<Var> &vars) {
+      task->scope = scope_pool.acquire(task->scope, vars);
     }
 
-    const ScopePtr &scope() const { return task->scope; }
+    Scope &scope() const { return *task->scope; }
 
-    void end_scope() { task->end_scope(); }
+    void end_scope() {
+      auto prev(task->scope->prev);
+      scope_pool.release(task->scope);
+      task->scope = prev;
+    }
 
     void jump(PC pc) { task->pc = pc; }
 
@@ -298,7 +303,7 @@ namespace snabl {
       const auto &s(c.state);
       s.restore_env(*this);
       s.restore_tries(*this);
-      if (t.parent_scope) { task->scope->clear(); }
+      if (t.vars) { task->scope->vars.clear(); }
       jump(t.start_pc);
     }
 
@@ -307,7 +312,7 @@ namespace snabl {
       if (!calls.size) { throw RuntimeError(*this, "Nothing to return from"); }
       auto &c(calls.back());
       auto &t(c.get_target());
-      if (t.parent_scope) { end_scope(); }
+      if (t.vars) { end_scope(); }
       task->pc = c.return_pc;
       auto fi(dynamic_cast<const Fimp *>(&t));
       if (fi && !fi->imp) { end_split(); }
@@ -355,11 +360,16 @@ namespace snabl {
       task->stack_offs = task->splits.size ? task->splits.back() : 0;
     }
 
-    const Box *get(Sym id) const { return task->scope->get(id); }
+    const Box *get(Sym id) const {
+      const auto found(task->scope->vars.find(id));
+      return found ? &found->val : nullptr;
+    }
     
     template <typename...ArgsT>
     void let(Sym id, ArgsT &&...args) {
-      task->scope->let(id, forward<ArgsT>(args)...);
+      if (!task->scope->vars.emplace(id, id, forward<ArgsT>(args)...)) {
+        throw RuntimeError(*this, "Duplicate var: " + id.name());
+      }
     }
 
     optional<Box> async(const function<optional<Box> ()> &fn);

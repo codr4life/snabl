@@ -165,7 +165,7 @@ namespace snabl {
       Op(env, type, pos), fimp(fimp), is_scope(is_scope) { }
 
     void Fimp::run(Env &env) {
-      if (is_scope) { fimp.parent_scope = env.scope(); }
+      if (is_scope) { fimp.vars.emplace(env.scope().vars.vals); }
       env.jump(fimp.end_pc);
     }
     
@@ -216,7 +216,7 @@ namespace snabl {
     Get::Get(Env &env, Pos pos, Sym id): Op(env, type, pos), id(id) { }
 
     void Get::run(Env &env) {
-      auto v(env.scope()->get(id));
+      auto v(env.get(id));
       if (!v) { throw RuntimeError(env, fmt("Unknown var: %0", {id})); }
       env.push(*v);
       env.jump(next);
@@ -274,9 +274,10 @@ namespace snabl {
       Op(env, type, pos),
       is_scope(is_scope), start_pc(nullptr), end_pc(-1) { }
     
-    void Lambda::run(Env &env) {
+    void Lambda::run(Env &env) {      
       env.push(env.lambda_type,
-               snabl::Lambda(is_scope ? env.scope() : nullptr, start_pc, end_pc));
+               snabl::Lambda(is_scope ? &env.scope() : nullptr, start_pc, end_pc));
+      
       env.jump(end_pc);
     }
     
@@ -287,7 +288,7 @@ namespace snabl {
       auto &s(t.stack);
       if (I64(s.size()) <= t.stack_offs) { throw Error("Nothing to let"); }
       auto &v(s.back());
-      env.scope()->let(id, v);
+      env.let(id, v);
       s.pop_back();
       env.jump(next);
     }
@@ -353,7 +354,7 @@ namespace snabl {
     Scope::Scope(Env &env, Pos pos): Op(env, type, pos) { }
 
     void Scope::run(Env &env) {
-      env.begin_scope(env.scope());
+      env.begin_scope(env.scope().vars.vals);
       env.jump(next);
     }
     

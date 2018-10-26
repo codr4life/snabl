@@ -6,13 +6,15 @@
 #include "snabl/types.hpp"
 
 namespace snabl {
+  struct Scope;
+  struct Var;
+  
   struct Target {
-    ScopePtr parent_scope;
+    optional<vector<Var>> vars;
     PC start_pc;
     I64 end_pc;
 
-    Target(const ScopePtr &parent_scope=nullptr, PC start_pc=nullptr, I64 end_pc=-1):
-      parent_scope(parent_scope), start_pc(start_pc), end_pc(end_pc) { }
+    Target(Scope *parent_scope=nullptr, PC start_pc=nullptr, I64 end_pc=-1);
 
     virtual ~Target() { }
     virtual string target_id() const=0;

@@ -21,7 +21,7 @@ namespace snabl {
     enum struct Status {New, Running, Yielding, Done};
     static const I64 MaxCalls = 8, MaxSplits = 8, MaxTries = 8;
     
-    ScopePtr scope;
+    Scope *scope;
     Stack stack;
     I64 async_depth=0;
 
@@ -38,9 +38,8 @@ namespace snabl {
     Task(const Task &)=delete;
     const Task &operator =(const Task &)=delete;
     
-    Task(Env &env, PC start_pc=nullptr, const ScopePtr &parent_scope=nullptr);
-    const ScopePtr &begin_scope(Env &env, const ScopePtr &parent=nullptr);
-    void end_scope();
+    Task(Env &env, PC start_pc=nullptr, Scope *scope=nullptr):
+      scope(scope), prev(this), next(this), pc(start_pc) { }
   };
 }
 

@@ -1,17 +1,16 @@
 #ifndef SNABL_STATE_HPP
 #define SNABL_STATE_HPP
 
-#include "snabl/ptrs.hpp"
-
 namespace snabl {
   struct Env;
   struct Lib;
-
+  struct Scope;
+  
   namespace ops { struct Try; }
   
   struct State {
     Lib &lib;
-    const ScopePtr scope;
+    Scope *const scope;
     const I64 ncalls, ntries, nstack, nsplits, async_depth;
 
     State(const Env &env);
