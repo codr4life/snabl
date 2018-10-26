@@ -1,3 +1,15 @@
+* remove MPool::Slot
+** add T *mpool_next=nullptr to pooled structs
+** remove casts where possible
+* remove Ptr::Imp
+** add I64 ptr_nrefs=nullptr to pointed structs
+*** grep types/PtrType
+** remove casts where possible
+* add Split struct
+** offs & prev
+** replaces task.splits
+** compare Scope struct size
+* ---
 * add derived type methods
 ** convert remaining methods
 *** copy on derive
