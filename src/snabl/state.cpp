@@ -5,7 +5,7 @@ namespace snabl {
   State::State(const Env &env):
     lib(*env.task->lib),
     scope(env.task->scope),
-    ncalls(env.task->calls.size),
+    call(env.task->call),
     ntries(env.task->tries.size),
     nstack(env.task->stack.size()),
     nsplits(env.task->splits.size),
@@ -20,10 +20,7 @@ namespace snabl {
     env.task->async_depth = async_depth;
   }
 
-  void State::restore_calls(Env &env) const {
-    auto &calls(env.task->calls);
-    if (calls.size > ncalls) { calls.trunc(ncalls); }
-  }
+  void State::restore_call(Env &env) const { env.task->call = call; }
 
   void State::restore_tries(Env &env) const {
     if (env.task->tries.size > ntries) { env.task->tries.trunc(ntries); }

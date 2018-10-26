@@ -81,7 +81,7 @@ namespace snabl {
       auto &t(task->tries.back());
       auto &s(t.state);
       s.restore_env(*this);
-      s.restore_calls(*this);
+      s.restore_call(*this);
       end_try();
       
       push(error_type, e);

@@ -43,6 +43,7 @@ namespace snabl {
     unordered_map<string, Sym> sym_table;
     I64 type_tag;
     set<char> separators;
+    MPool<Call> call_pool;
     MPool<Task> task_pool;
     MPool<Scope> scope_pool;
     Task main_task;
@@ -284,21 +285,22 @@ namespace snabl {
 
     Pos pos() const { return task->pc ? task->pc->pos : Pos(-1, -1); }
     
-    void begin_call(Fimp &target, Pos pos, PC return_pc=nullptr) {
-      task->calls.emplace_back(*this, target, pos, return_pc);
+    template <typename TargetT>
+    void begin_call(TargetT &target, Pos pos, PC return_pc=nullptr) {
+      task->call = call_pool.acquire(*this, target, pos, return_pc);
     }
 
-    void begin_call(const Lambda &target, Pos pos, PC return_pc) {
-      task->calls.emplace_back(*this, target, pos, return_pc);
-    }
+    Call *call() const { return task->call; }
 
-    const Call &call() const { return task->calls.back(); }
-    void end_call() { task->calls.pop_back(); }
+    void end_call() {
+      auto prev(task->call->prev);
+      call_pool.release(task->call);
+      task->call = prev;
+    }
     
     void recall(Pos pos) {
-      auto &calls(task->calls);
-      if (!calls.size) { throw RuntimeError(*this, "Nothing to recall"); }
-      const auto &c(calls.back());
+      if (!task->call) { throw RuntimeError(*this, "Nothing to recall"); }
+      const auto &c(*task->call);
       const auto &t(c.get_target());
       const auto &s(c.state);
       s.restore_env(*this);
@@ -308,9 +310,8 @@ namespace snabl {
     }
 
     void _return(Pos pos) {
-      auto &calls(task->calls);
-      if (!calls.size) { throw RuntimeError(*this, "Nothing to return from"); }
-      auto &c(calls.back());
+      if (!task->call) { throw RuntimeError(*this, "Nothing to return from"); }
+      auto &c(*task->call);
       auto &t(c.get_target());
       if (t.vars) { end_scope(); }
       task->pc = c.return_pc;

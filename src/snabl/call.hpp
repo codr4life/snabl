@@ -11,6 +11,7 @@ namespace snabl {
   struct Fimp;
   
   struct Call {
+    Call *const prev;
     const variant<Fimp *, Lambda> target;
     const Pos pos;
     const State state;

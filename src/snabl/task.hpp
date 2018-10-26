@@ -19,19 +19,18 @@ namespace snabl {
   
   struct Task {
     enum struct Status {New, Running, Yielding, Done};
-    static const I64 MaxCalls = 8, MaxSplits = 8, MaxTries = 8;
+    static const I64 MaxSplits = 8, MaxTries = 8;
     
-    Scope *scope;
-    Stack stack;
-    I64 async_depth=0;
-
+    Scope *scope;    
     Task *prev, *next;
     Status status=Status::New;
     I64 stack_offs=0;
     Lib *lib=nullptr;
+    Call *call = nullptr;
+    I64 async_depth=0;
+    Stack stack;
     PC pc;
 
-    SArray<Call, MaxCalls> calls;
     SArray<Try, MaxTries> tries;
     SPArray<I64, MaxSplits> splits;
 
