@@ -364,7 +364,7 @@ namespace snabl {
 
     void end_split() {
       task->splits.pop_back();
-      task->stack_offs = task->splits.size ? task->splits.back() : 0;
+      task->stack_offs = task->splits.empty() ? 0 : task->splits.back();
     }
 
     const Box *get(Sym id) const {

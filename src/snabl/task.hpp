@@ -4,7 +4,6 @@
 #include "snabl/call.hpp"
 #include "snabl/op.hpp"
 #include "snabl/ptr.hpp"
-#include "snabl/sparray.hpp"
 #include "snabl/try.hpp"
 
 namespace snabl {
@@ -12,7 +11,6 @@ namespace snabl {
   
   struct Task {
     enum struct Status {New, Running, Yielding, Done};
-    static const I64 MaxSplits = 8;
     
     Scope *scope;    
     Task *prev, *next;
@@ -23,9 +21,8 @@ namespace snabl {
     Try *_try = nullptr;
     I64 async_depth=0;
     Stack stack;
+    vector<I64> splits;
     PC pc;
-
-    SPArray<I64, MaxSplits> splits;
 
     Task(const Task &)=delete;
     const Task &operator =(const Task &)=delete;

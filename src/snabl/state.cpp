@@ -8,7 +8,7 @@ namespace snabl {
     call(env.task->call),
     _try(env.task->_try),
     nstack(env.task->stack.size()),
-    nsplits(env.task->splits.size),
+    nsplits(env.task->splits.size()),
     async_depth(env.task->async_depth) { }
 
   void State::restore_env(Env &env) const {
@@ -16,7 +16,7 @@ namespace snabl {
     env.task->scope = scope;
     auto &s(env.task->stack);
     while (I64(s.size()) > nstack) { s.erase(s.begin()+nstack, s.end()); }
-    if (env.task->splits.size > nsplits) { env.task->splits.trunc(nsplits); }
+    if (I64(env.task->splits.size()) > nsplits) { env.task->splits.resize(nsplits); }
     env.task->async_depth = async_depth;
   }
 
