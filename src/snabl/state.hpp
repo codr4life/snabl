@@ -6,19 +6,19 @@ namespace snabl {
   struct Env;
   struct Lib;
   struct Scope;
-  
-  namespace ops { struct Try; }
+  struct Try;
   
   struct State {
     Lib &lib;
     Scope *const scope;
     Call *const call;
-    const I64 ntries, nstack, nsplits, async_depth;
+    Try *const _try;
+    const I64 nstack, nsplits, async_depth;
 
     State(const Env &env);
     void restore_env(Env &env) const;
     void restore_call(Env &env) const;
-    void restore_tries(Env &env) const;
+    void restore_try(Env &env) const;
   };
 }
 

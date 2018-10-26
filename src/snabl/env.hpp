@@ -45,6 +45,7 @@ namespace snabl {
     set<char> separators;
     MPool<Call> call_pool;
     MPool<Task> task_pool;
+    MPool<Try> try_pool;
     MPool<Scope> scope_pool;
     Task main_task;
     Task *task;
@@ -304,7 +305,7 @@ namespace snabl {
       const auto &t(c.get_target());
       const auto &s(c.state);
       s.restore_env(*this);
-      s.restore_tries(*this);
+      s.restore_try(*this);
       if (t.vars) { task->scope->vars.clear(); }
       jump(t.start_pc);
     }
@@ -320,9 +321,14 @@ namespace snabl {
       end_call();
     }
     
-    void begin_try(ops::Try &op) { task->tries.emplace_back(*this, op); }
-    Try &current_try() { return task->tries.back(); }
-    void end_try() { task->tries.pop_back(); }
+    void begin_try(ops::Try &op) { task->_try = try_pool.acquire(*this, op); }
+    Try *_try() { return task->_try; }
+
+    void end_try() {
+      auto prev(task->_try->prev);
+      try_pool.release(task->_try);
+      task->_try = prev;
+    }
 
     void push(const Box &val) { task->stack.push_back(val); }
 

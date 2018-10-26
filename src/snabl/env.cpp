@@ -77,8 +77,8 @@ namespace snabl {
         goto start;
       }
     } catch (const UserError &e) {
-      if (!task->tries.size) { throw e; }
-      auto &t(task->tries.back());
+      if (!task->_try) { throw e; }
+      auto &t(*task->_try);
       auto &s(t.state);
       s.restore_env(*this);
       s.restore_call(*this);
