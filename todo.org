@@ -1,3 +1,7 @@
+* replace tries with Try.prev like Scope
+** compare perf
+* replace calls with Call.prev like Scope
+** compare perf
 * add derived type methods
 ** convert remaining methods
 *** copy on derive
